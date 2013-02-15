@@ -1137,7 +1137,7 @@ Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\z
 \end{lemma}
 
 \begin{proof}[Proof of \lemref{lem:conversion to unpredictability}]
-Assume that $\distLWE_{(n-k, m, q, \chi)}$ is $\epsilon, s_{sec}$ hard and that $m\geq n$.  Let $\vA\in \zq^{m\times n}, X\in \zq^n$ and $E$ be distributed according to $\chi^m$.  Then according to \lemref{lem:many hardcore bits} we know that $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA , \vA X+E)\geq k\log q$.  By \lemref{lem:hillimplyunpimplyyao}, we know that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA, \vA X+E)\geq k\log q$.  To expand to $E$ we use the following claim:
+Assume that $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ hard and that $m\geq n$.  Let $\vA\in \zq^{m\times n}, X\in \zq^n$ and $E$ be distributed according to $\chi^m$.  Then according to \lemref{lem:many hardcore bits} we know that $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA , \vA X+E)\geq k\log q$.  By \lemref{lem:hillimplyunpimplyyao}, we know that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA, \vA X+E)\geq k\log q$.  To expand to $E$ we use the following claim:
 
 \begin{claim}
 Let $\vA, X, E$ be distributed as in \lemref{lem:conversion to unpredictability} and $m\geq n$ and let $k\leq n$.  Then 
