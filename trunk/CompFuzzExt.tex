@@ -1137,7 +1137,7 @@ Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\z
 \end{lemma}
 
 \begin{proof}[Proof of \lemref{lem:conversion to unpredictability}]
-Assume that $\distLWE_{(n-k, m, q, \chi)}$ is $\epsilon, s_{sec}$ hard and that $m\geq n$.  Let $\vA\in \zq^{m\times n}, X\in \zq^n$ and $E$ be distributed according to $\chi^m$.  Then according to \lemref{lem:many hardcore bits} we know that $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA , \vA X+E)\geq k\log q$.  By \lemref{lem:hillimplyunpimplyyao}, we know that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA, \vA X+E)\geq k\log q$.  To expand to $E$.
+Assume that $\distLWE_{(n-k, m, q, \chi)}$ is $\epsilon, s_{sec}$ hard and that $m\geq n$.  Let $\vA\in \zq^{m\times n}, X\in \zq^n$ and $E$ be distributed according to $\chi^m$.  Then according to \lemref{lem:many hardcore bits} we know that $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA , \vA X+E)\geq k\log q$.  By \lemref{lem:hillimplyunpimplyyao}, we know that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA, \vA X+E)\geq k\log q$.  To expand to $E$ we use the following claim:
 
 \begin{claim}
 Let $\vA, X, E$ be distributed as in \lemref{lem:conversion to unpredictability} and $m\geq n$ and let $k\leq n$.  Then 
@@ -1174,45 +1174,56 @@ H^{\unp}_{\epsilon', s_{sec}'} ( E | \vA X+ E) \geq H^{\unp}_{\epsilon, s_{sec}}
 \begin{proof}
 Suppose that $H^{\unp}_{\epsilon', s_{sec}}( E | \vA X+E) < \ell$.  We will show that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA X+E) < \ell$.  That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}'}}((E, \vA X+E), (Y, \vA+E))\leq \epsilon$, there exists $C$ of size $s_{sec}'$ such that $\Pr[C(\vA, \vA X+E) = Y]> 2^{-\ell}$.  Fix one such $Y$.  Let $\mathcal{E}$ be the event that $A_{1,..., n}^{-1}$ exists.  Note that $\mathcal{E}$ occurs with probability $1-\gamma$.
 
-Define the distribution $Y' = A(%A^{-1}_{1,...,n}(\vA X+E -Y)$.  Then one has that 
+Define the distribution $Y' =A^{-1}_{1,...,n}(\vA X+E -Y)$.  Then one has that 
 \begin{align*}
-\delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E))%&\leq %\delta^{\mathcal{D}_{s_{sec}'}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E) |\mathcal{E} )+ (1-\gamma)\\
-&\leq \delta^{\mathcal{D}_{s_{sec}'}}((\vA X+E - \vA Y', \vA, \vA X+E), (E, \vA, \vA X+E))\\
-&\leq \delta^{\mathcal{D}_{s_{sec}'}}(( \vA (X-Y') +E, \vA, \vA X+E), (E, \vA, \vA X+E))
+\delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E))&\leq \delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E) |\mathcal{E} )+ \gamma\\
+&\leq \delta^{\mathcal{D}_{s_{sec}}}(\vA^{-1}_{1,..., n}(\vA X+E - Y), \vA, \vA X+E), (X, \vA, \vA X+E))+\gamma\\
+&\leq \delta^{\mathcal{D}_{s_{sec}'}}((Y, \vA, \vA X+E), (E, \vA, \vA X+E))+\gamma\leq \epsilon' + \gamma
 \end{align*}
-\end{proof}
+Where the second to last inequality follows by applying the transform $\vA X+E - \vA(\cdot)$ to the first argument.  Note  that $\delta^{\mathcal{D}_{s_{sec}}}((Y'_{1,...k}, \vA, \vA X+E ), (X_{1,..,k}, \vA, \vA X+E))\leq \epsilon' + \gamma$. Otherwise there would be a distinguisher for the entire distribution by just ignoring the last $n-k$ dimensions.
 
-\begin{proof}[Proof of \clref{lem:unp of x and e}]
-First suppose that $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E) < k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((X, \vA, \vA X+E), (Y, \ A, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
+We now show that $\exists C'$ such that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k}$.  Define $C'$ as follows:
 \begin{enumerate}
 \item Input $(\vA, \vA X+E)$.
-\item Run $y\leftarrow I(\vA, \vA X+E)$.
-\item Output $z = \vA y - \vA X+E$.
+\item Run $y\leftarrow C(\vA, \vA X+E)$.
+\item Try to compute $\vA^{-1}_{1,.., n}$, if $\vA^{-1}_{1,..., n}$ does not exist output $\perp$.
+\item Output $z = \vA^{-1}_{1,..., n}(\vA X+E -y)$
 \end{enumerate}
-Note that $|I'|\approx |I|$.
-It suffices to show that $\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, A, \vA X+E))\leq \epsilon$.  One has the following:
-\begin{align*}
-\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
-\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (\vA Y-\vA X+E, \vA, \vA X+E))\\
-&\leq \delta^{\mathcal{D}_s'}((\vA X, \vA, \vA X+E), (\vA Y, \vA, \vA X+E))\\
-&\leq \delta^{\mathcal{D}_s'}((X, \vA, \vA X+E), (Y, \vA, \vA X+E)) \leq \epsilon.
-\end{align*}
-Now suppose that $H^\unp_{\epsilon, s}(E | A, \vA X+E)<k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((E, \vA, \vA X+E), (Y, \vA, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
-\begin{enumerate}
-\item Input $(A, \vA X+E)$.
-\item Run $y\leftarrow I(\vA, \vA X+E)$.
-\item Try to compute $\vA^{-1}$, if $\vA^{-1}$ does not exist output $\perp$.
-\item Output $z = \vA^{-1}(\vA X+E-y)$.
-\end{enumerate}
-Note that $|I'|\approx |I|$.  For sufficient parameter sizes the probability of $A^{-1}$ not existing is negligible.  Denote this probability by $\gamma$.  Then note that $\Pr[I'(\vA, \vA X+E) = Z] > 2^{-k}-\gamma = 2^{-k'}$.  Then one has the following~(conditioned on the event that $\vA^{-1}$ exists):
-\begin{align*}
-\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
-\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (\vA^{-1}(\vA X+E-Y), \vA, \vA X+E)) \\
-&\leq \delta^{\mathcal{D}_s'} ((\vA^{-1}E, \vA, \vA X+E), (\vA^{-1}Y, \vA, \vA X+E))\\
-&\leq \delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Y, \vA, \vA X+E))\leq \epsilon
-\end{align*}
-Since $A^{-1}$ exists with probability $1-\gamma$ we obtain total distance at most $\epsilon(1-\gamma)=\epsilon'$.
+Observer that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k} - \gamma$.  Finally note that $\exists C''$ that simply outputs the first $k$ dimensions of the output of $C'$.  Thus, $H^{\unp}_{\epsilon, s_{sec}}( X_{1,..., n}| \vA , \vA X+E)< 2^{-k} - \gamma$.
 \end{proof}
+
+The statement of \lemref{lem:conversion to unpredictability} follows by the statement of the claim.
+%\begin{proof}[Proof of \clref{lem:unp of x and e}]
+%First suppose that $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E) < k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((X, \vA, \vA X+E), (Y, \ A, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
+%\begin{enumerate}
+%\item Input $(\vA, \vA X+E)$.
+%\item Run $y\leftarrow I(\vA, \vA X+E)$.
+%\item Output $z = \vA y - \vA X+E$.
+%\end{enumerate}
+%Note that $|I'|\approx |I|$.
+%It suffices to show that $\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, A, \vA X+E))\leq \epsilon$.  One has the following:
+%\begin{align*}
+%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
+%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (\vA Y-\vA X+E, \vA, \vA X+E))\\
+%&\leq \delta^{\mathcal{D}_s'}((\vA X, \vA, \vA X+E), (\vA Y, \vA, \vA X+E))\\
+%&\leq \delta^{\mathcal{D}_s'}((X, \vA, \vA X+E), (Y, \vA, \vA X+E)) \leq \epsilon.
+%\end{align*}
+%Now suppose that $H^\unp_{\epsilon, s}(E | A, \vA X+E)<k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((E, \vA, \vA X+E), (Y, \vA, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
+%\begin{enumerate}
+%\item Input $(A, \vA X+E)$.
+%\item Run $y\leftarrow I(\vA, \vA X+E)$.
+%\item Try to compute $\vA^{-1}$, if $\vA^{-1}$ does not exist output $\perp$.
+%\item Output $z = \vA^{-1}(\vA X+E-y)$.
+%\end{enumerate}
+%Note that $|I'|\approx |I|$.  For sufficient parameter sizes the probability of $A^{-1}$ not existing is negligible.  Denote this probability by $\gamma$.  Then note that $\Pr[I'(\vA, \vA X+E) = Z] > 2^{-k}-\gamma = 2^{-k'}$.  Then one has the following~(conditioned on the event that $\vA^{-1}$ exists):
+%\begin{align*}
+%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
+%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (\vA^{-1}(\vA X+E-Y), \vA, \vA X+E)) \\
+%&\leq \delta^{\mathcal{D}_s'} ((\vA^{-1}E, \vA, \vA X+E), (\vA^{-1}Y, \vA, \vA X+E))\\
+%&\leq \delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Y, \vA, \vA X+E))\leq \epsilon
+%\end{align*}
+%Since $A^{-1}$ exists with probability $1-\gamma$ we obtain total distance at most $\epsilon(1-\gamma)=\epsilon'$.
+%\end{proof}
 
 \end{proof}
 
