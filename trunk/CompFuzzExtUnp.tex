@@ -1832,6 +1832,26 @@ c&\leq \frac{n}{n-\log \gamma}\\
 Thus, supporting even a constant number of errors for $q=2^n$ requires lattice problems are exponentially hard to approximate, which would be quite surprising.  
 }
 }
+
+\section{Impossibility of Unpredictable Secure Sketches}
+In this section we argue why constructing computational secure sketches with minimal loss is difficult.
+
+\begin{lemma}
+Let $X$ be the uniform distribution over $\zo^b$.  Suppose that $(\sketch, \rec)$ is a $(\zo^b, b, r, t)$ unpredictable sketch for $\epsilon = 0, s_{sec} = \Omega(|\rec|)$ with error $\delta$.  Then $r < b - t + \log (1-\delta)$.
+\end{lemma}
+\begin{proof}
+It suffices to show that $H^{\unp}( X | \sketch(X)) < b-t + \log (1-\delta)$.  That is, it suffices to construct $D$ such that $\Pr[D(\sketch(X)) = X] > 2^{-b+t} (1-\delta)$.  We describe $D$:
+\begin{enumerate}
+\item Input $s = \sketch(x)$.
+\item Sample $z \leftarrow \zo^b$.
+\item Output $\rec(s, z)$.
+\end{enumerate}
+Now 
+\[
+\Pr[D(\sketch(X)) = X] \geq \Pr[Z \in B_t(X)] \Pr[\rec(Z, \sketch(X)) =X | \dis(Z, X)\leq t] = 2^{b-t}(1-\delta)
+\]
+That is $r < b-t+\log (1-\delta)$.
+\end{proof}
 \end{document}
 
 
