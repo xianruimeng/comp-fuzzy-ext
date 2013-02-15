@@ -672,7 +672,7 @@ Set $X'_{1,..., n}$ be the first half bits of $X'$.
 
 
 Intuitively, security comes from the computational hardness of decoding random linear codes from a high number of errors (introduced by $w$).  
-In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp1978}; however, this statement is not sufficient for our security goal, which is to show  $H^{\unp}_{\epsilon, s_{sec}}(W|\sketch(W)) \approx \Hoo(W)$.  Efficiency comes from the fact that up to some number of errors $t$, decoding is easy and thus $\mathcal{I}_t$ can be made polynomial-time.
+In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp1978}; however, this statement is not sufficient for our security goal, which is to show  $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\sketch(W)) \approx \Hoo(W)$.  Efficiency comes from the fact that up to some number of errors $t$, decoding is easy and thus $\mathcal{I}_t$ can be made polynomial-time.
 
 The rest of this section is devoted to making these intuitive statements precise.
  We describe the \class{LWE} problem and the security of our construction in \secref{subsec:LWE}.
@@ -722,7 +722,7 @@ We present the formulation of D\"{o}ttling and M\"{u}ller-Quade:
 Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, the $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))\mbox{-}$hard, where $\epsilon = \ngl(n)$.
 \end{lemma}
 
-We will use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show there are many bits of $X$ that are unpredictable.  This says that if $\distLWE$ is hard then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
+We will use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  This says that if $\distLWE$ is hard then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
 Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  Then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$ assuming $\distLWE_{(n-k, m, q, \chi)}$.
@@ -987,23 +987,23 @@ In the information theoretic setting, Dodis et. al.~\cite{DBLP:journals/siamcomp
 \bibliography{crypto}
 \appendix
 \section{Background}
-\subsection{Notions of Computational Entropy}
-\label{sec:notionsEntropy}
-In this sections we provide some further definitions of computational entropy.  HILL entropy is defined in \secref{sec:defCompFuzzyExtractors}.  HILL entropy generalizes the notion of indistinguishability.  Yao entropy~\cite{DBLP:conf/focs/Yao82a, barak-computational} generalizes the notion of compressibility.  Here we present the computational definition due to~\cite{DBLP:conf/eurocrypt/HsiaoLR07}:
-\begin{definition}
-\label{def:yao entropy}
-For a distribution $X, Z$ we say that $X$ has Yao entropy at least $k$ conditioned on $Z$, denoted $H^{\yao}_{\epsilon, s}(X|Z)\geq k$, if for every pair of circuits $c,d$ of total size at most $s$ with the outputs of $c$ having length $\ell$,
-\[
-\Pr_{(x,z)\leftarrow (X,Z)}[d(c(x,z),z) = x]\leq 2^{\ell-k}+\epsilon
-\]
-\end{definition}
-It should be clear that HILL entropy implies Yao entropy in both the unconditional and conditional case.  In the conditional case it is possible for Yao entropy to be significantly larger than HILL entropy~\cite{DBLP:conf/eurocrypt/HsiaoLR07}.  We also use a less common notion called unpredictability entropy.  This measures an adversaries ability to recover a secret given some side information, see \defref{def:unp entropy}.
-Unpredictability entropy is a notion between HILL and Yao entropy:
-\begin{lemma}~\cite[Lemmas 8, 9]{DBLP:conf/eurocrypt/HsiaoLR07}\label{lem:hillimplyunpimplyyao}
-\[ H^{\hill}_{\epsilon, s}(X|Z)\geq k \Rightarrow H^{\unp}_{\epsilon, s}(X|Z)\geq k\Rightarrow H^{\yao}_{\epsilon, s}(X|Z)\geq k.
-\]
-\end{lemma} 
-\subsection{Unique Witness Relations}
+%\subsection{Notions of Computational Entropy}
+%\label{sec:notionsEntropy}
+%In this sections we provide some further definitions of computational entropy.  HILL entropy is defined in \secref{sec:defCompFuzzyExtractors}.  HILL entropy generalizes the notion of indistinguishability.  Yao entropy~\cite{DBLP:conf/focs/Yao82a, barak-computational} generalizes the notion of compressibility.  Here we present the computational definition due to~\cite{DBLP:conf/eurocrypt/HsiaoLR07}:
+%\begin{definition}
+%\label{def:yao entropy}
+%For a distribution $X, Z$ we say that $X$ has Yao entropy at least $k$ conditioned on $Z$, denoted $H^{\yao}_{\epsilon, s}(X|Z)\geq k$, if for every pair of circuits $c,d$ of total size at most $s$ with the outputs of $c$ having length $\ell$,
+%\[
+%\Pr_{(x,z)\leftarrow (X,Z)}[d(c(x,z),z) = x]\leq 2^{\ell-k}+\epsilon
+%\]
+%\end{definition}
+%It should be clear that HILL entropy implies Yao entropy in both the unconditional and conditional case.  In the conditional case it is possible for Yao entropy to be significantly larger than HILL entropy~\cite{DBLP:conf/eurocrypt/HsiaoLR07}.  We also use a less common notion called unpredictability entropy.  This measures an adversaries ability to recover a secret given some side information, see \defref{def:unp entropy}.
+%Unpredictability entropy is a notion between HILL and Yao entropy:
+%\begin{lemma}~\cite[Lemmas 8, 9]{DBLP:conf/eurocrypt/HsiaoLR07}\label{lem:hillimplyunpimplyyao}
+%\[ H^{\hill}_{\epsilon, s}(X|Z)\geq k \Rightarrow H^{\unp}_{\epsilon, s}(X|Z)\geq k\Rightarrow H^{\yao}_{\epsilon, s}(X|Z)\geq k.
+%\]
+%\end{lemma} 
+%\subsection{Unique Witness Relations}
 
 We will need the ability to verify if we have a correct solution in~\consref{cons:informal construction}.  
 
@@ -1457,7 +1457,7 @@ In this section, we explain the different parameters that go into our constructi
 \item $q$: The size of the field.  
 \item $\rho$: The fraction of the field needed for error sampling.  
 \item $m$: The size of each number of samples in the LWE instance.  
-\item $k$: The number of hardcore bits in $X$~(from \lemref{lem:conversion to unpredictability}).
+\item $k$: The number of hardcore bits in $X$~(from \lemref{lem:many hardcore bits}).
 \end{itemize}
 We will split the source $|W|$ into $m$ blocks each of size $\rho q$~(that is, $|W| = m\log \rho q$).  We will ignore the parameter $|W|$ and focus on $t, n, q, \rho,$ and $m$.  As stated above we have three constraints:
 \begin{itemize}
