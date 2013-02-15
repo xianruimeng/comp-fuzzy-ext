@@ -835,7 +835,7 @@ $\epsilon = \ngl(n), s_{sec} = \poly(n)$,  sketch time $s_{sketch} = O(n^3\log n
 Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:conversion to unpredictability}, efficiency follows by \lemref{lem:i t poly time}.
 \end{proof}
 
-For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe setting $q = poly(n)$.  
+For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe how to set $q = \poly(n)$.  
 \thref{thm:lossless secure sketch log} shows that a computational secure sketch can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point $B$ and thus providing no information about either $X$ or $W$.  A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
 \section{\consref{cons:informal construction} with Symbol Fixing Sources}
@@ -1461,7 +1461,7 @@ t&\leq d\log n\left(\frac{ m }{n} -1\right)\\
 %f \log n &= \frac{m}{n}\log 2n^2m\\
 f &= \frac{m}{n}\frac{\log 2n^{1/2+3\gamma} m}{\log n}
 \end{align*}
-To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k = n /g$ for some constant $g$.  Finally we assume that $t = d \log n(m/n-1)$~(this means we have only as many dimensions as necessary for polynomial time recovery):
+To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k = n /g$ for some constant $g> 1$.  Finally we assume that $t = d \log n(m/n-1)$~(this means we have only as many dimensions as necessary for polynomial time recovery):
 \begin{align*}
 n_0&< n\\
 m &= \frac{(c+d)n \log n}{d \log n} = \frac{(c+d)n}{d}\\
@@ -1477,7 +1477,7 @@ m &= \frac{(c+d)n}{d}\\
 q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n}} = \poly(n)\\
 \rho q &= 2n^{1/2+3\gamma}m = \frac{2(c+d)n^{3/2+3\gamma}}{d}
 \end{align*}
-Furthermore, we get decoding in time $O(n^{2d}(n^3\log n+s_{ver}))$.  We will set $g = 2$, that is the first half of $X$ our sketch will output the first half of $X$. This is the setting of parameters in \thref{thm:lossless secure sketch log}.
+Furthermore, we get decoding in time $O(n^{2d}(n^3\log n+s_{ver}))$.  We will set $g = 2$, that is our sketch will output the first half of $X$. This is the setting of parameters in \thref{thm:lossless secure sketch log}.
 
 \ignore{
 \subsection{Old parameter setting}
