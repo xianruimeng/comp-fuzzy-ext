@@ -908,40 +908,50 @@ $\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expect
 
 
 \section{Computational Fuzzy Extractors}
-In this section, we show that any computational secure sketch implies a computationally fuzzy extractor using a paradigm similar to \lemref{lem:fuzzy ext construction}.  We begin with a formal definition of a computational fuzzy extractor:
+In this section, we show that any computational secure sketch implies a computationally fuzzy extractor using the same paradigm as \lemref{lem:fuzzy ext construction}.  We begin with a formal definition of a computational fuzzy extractor:
 \label{sec:comp fuzzy extractors}
 \begin{definition}[Computational Fuzzy Extractor]\label{def:comp fuzzy extractor}
-An $(\mathcal{M}, m, \ell, t, s_{rec}, s_{sec}, \epsilon)$-\emph{computational fuzzy extractor} is a pair of randomized procedures, ``generate'' (\gen) and ``reproduce'' (\rep), with the following properties:
+An $(\mathcal{M}, m, \ell, t)$-\emph{computational fuzzy extractor} is a pair of randomized procedures, ``generate'' (\gen) and ``reproduce'' (\rep), with the following properties:
 \begin{itemize}
 \item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $R\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
-\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\rep( w', P) = R$.  Furthermore \rep is computable by a circuit of size at most $s_{rec}$.  If $d(w, w') > t$, then no guarantee is provided about the output of \rep.
+\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\rep( w', P) = R$.  %%Furthermore \rep is computable by a circuit of size at most $s_{rec}$.  
+If $d(w, w') > t$, then no guarantee is provided about the output of \rep.
 \item The \emph{security} property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $R$ has full HILL entropy conditioned on $P$, that is $H^\hill_{\epsilon, s_{sec}}(R | P) = \ell$.
 \end{itemize}
+We say that $\gen, \rep$ is $(\epsilon, s_{sec})$ hard with error $\delta$.
 \end{definition}
-Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters ($s_{rec}$ is the size of the circuit that computes \rec and $s_{sec}$ is unbounded).  
+Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters.% ($s_{rec}$ is the size of the circuit that computes \rec and $s_{sec}$ is unbounded).  
 
-\textbf{Note: }A computational fuzzy extractor can be constructed by making the extractor computational~(using a standard extractor and then running a pseudorandom generator on its output).  However, the entropy loss due to error correction may mean there is not be enough remaining bits to run a pseudorandom generator.  Depending on the application, it may be appropriate to make the sketch and/or extractor computational.
+\textbf{Note: }A computational fuzzy extractor can be constructed by making the extractor computational~(using a standard extractor and then running a pseudorandom generator on its output).  However, the entropy loss due to error correction may mean there is not be enough remaining bits to run a pseudorandom generator.  Depending on the application, it may be appropriate to make the noise correction procedure and/or extractor computational.
 
-Recall, we defined noisy computational conductor using unpredictability entropy~(\defref{def:comp secure sketch}).  It is not known if unpredictability entropy can be extracted from, so we cannot use the construction of \lemref{lem:fuzzy ext construction}.  However, unpredictability entropy implies Yao entropy~(\defref{def:yao entropy}) and this can be extracted from using a reconstructive extractor~(defined in~\cite{barak-computational}).  
-\begin{definition}
-An $(\ell, \epsilon)$-reconstruction for a function $\rext:\{0,1\}^n\times \{0,1\}^d\rightarrow \{0,1\}^m\times\{0,1\}^d$~(where the last $d$ outputs are equal to the last $d$ input bits) is a pair of machines $C$ and $D$, where $C:\{0,1\}^n\rightarrow \{0,1\}^\ell$ is a randomized Turing machine and $D^{(\cdot)}:\{0,1\}^\ell\rightarrow \{0,1\}^n$ is a randomized oracle Turing machine which runs in time polynomial in $n$.  Furthermore, for every $x$ and $T$, if $|\Pr[T(\rext(x, U_d)) =1] -\Pr[T(U_m\times U_d)=1]|>\epsilon$, then $\Pr[D^T(C^T(x))=x]>1/2$~(the probability is over the random choices of $C$ and $D$).
-\end{definition}
-\begin{lemma}~\cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}
-\label{lem:unp extraction} 
-Let $X$ be a distribution with $H^{\unp}_{\epsilon, s_{sec}}(X|Z)\geq k$, and let $\rext$ be an extractor with a $(k-\log 1/\epsilon, \epsilon)$-reconstruction $(C,D)$.  Then $\delta^{\mathcal{D}_{s'}}((\rext(X, U_d), Z), U_m\times U_d\times Z)\leq 5\epsilon,$ where $s'=s_{sec}/(|C|+|D|)$.
+Average-case extractors produce pseudorandom bits if the input distribution has high HILL entropy:
+\begin{lemma}
+Let $\ext: \chi \times \zo^d \rightarrow \zo^\ell \times \zo^d$ be a $(k, \epsilon_{ext})$-extractor computable by a circuit of size $s_{ext}$.  Let $X$ be a distribution over $\chi$ with $H^{\hill}_{\epsilon, s_{sec}}(X| Z)\geq k$.  Let, $s' = s_{sec}-s_{ext}$, then 
+$H^{\hill}_{\epsilon+\epsilon_{ext}, s_{sec}}(\ext (X, U_d) | Z, U_d)\geq \ell$.
 \end{lemma}
+%  the same paradigm from 
+%Recall, we defined computational secure sketches using unpredictability entropy~(\defref{def:comp secure sketch}).  It is not known if unpredictability entropy can be extracted from, so we cannot use the construction of \lemref{lem:fuzzy ext construction}.  However, unpredictability entropy implies Yao entropy~(\defref{def:yao entropy}) and this can be extracted from using a reconstructive extractor~(defined in~\cite{barak-computational}).  
+%\begin{definition}
+%An $(\ell, \epsilon)$-reconstruction for a function $\rext:\{0,1\}^n\times \{0,1\}^d\rightarrow \{0,1\}^m\times\{0,1\}^d$~(where the last $d$ outputs are equal to the last $d$ input bits) is a pair of machines $C$ and $D$, where $C:\{0,1\}^n\rightarrow \{0,1\}^\ell$ is a randomized Turing machine and $D^{(\cdot)}:\{0,1\}^\ell\rightarrow \{0,1\}^n$ is a randomized oracle Turing machine which runs in time polynomial in $n$.  Furthermore, for every $x$ and $T$, if $|\Pr[T(\rext(x, U_d)) =1] -\Pr[T(U_m\times U_d)=1]|>\epsilon$, then $\Pr[D^T(C^T(x))=x]>1/2$~(the probability is over the random choices of $C$ and $D$).
+%\end{definition}
+%\begin{lemma}~\cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}
+%\label{lem:unp extraction} 
+%Let $X$ be a distribution with $H^{\unp}_{\epsilon, s_{sec}}(X|Z)\geq k$, and let $\rext$ be an extractor with a $(k-\log 1/\epsilon, \epsilon)$-reconstruction $(C,D)$.  Then $\delta^{\mathcal{D}_{s'}}((\rext(X, U_d), Z), U_m\times U_d\times Z)\leq 5\epsilon,$ where $s'=s_{sec}/(|C|+|D|)$.
+%\end{lemma}
 We are now ready to provide a computational analogue of \lemref{lem:fuzzy ext construction}:
 \begin{lemma}
-Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, s_{sec}, s_{sketch}, s_{rec}, t)$-noisy computational conductor, and let $\rext:\mathcal{M}\times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an reconstructive extractor with $(\tilde{m}-\log 1/\epsilon, \epsilon)$-reconstruction $(C, D)$.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, s_{sec}/(|C|+|D|), s_{rec}, 5\epsilon)$-computational fuzzy extractor:
-\begin{itemize}
-\item $\gen(w;r, x)$: set $P= (\sketch(w; r), x), R = \rext(w, x)$, and output $(R,P)$.
-\item $\rep(w', (s, x)):$ recover $w = \rec(w', s)$ and output $R = \rext(w;x)$.
-\end{itemize}
+Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-noisy computational conductor that is $(\epsilon, s_{sec})$ hard with error $\delta$ and denote the range $\rec$ by $\chi$.  Let $\ext:\chi \times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an $(\tilde{m}, \epsilon_{ext})$ extractor.  Then the following $(\gen , \rep)$ is an $(\mathcal{M}, m, \ell, t)$-computational fuzzy extractor that is $(\epsilon + \epsilon_{ext}, s_{sec}- s_{ext})$-hard with error $\delta$.
 \end{lemma}
-\begin{proof}
-Consequence of \defref{def:comp secure sketch} and \lemref{lem:unp extraction}.
-\end{proof}
-
+%reconstructive extractor with $(\tilde{m}-\log 1/\epsilon, \epsilon)$-reconstruction $(C, D)$.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, s_{sec}/(|C|+|D|), s_{rec}, 5\epsilon)$-computational fuzzy extractor:
+%\begin{itemize}
+%\item $\gen(w;r, x)$: set $P= (\sketch(w; r), x), R = \rext(w, x)$, and output $(R,P)$.
+%\item $\rep(w', (s, x)):$ recover $w = \rec(w', s)$ and output $R = \rext(w;x)$.
+%\end{itemize}
+%\end{lemma}
+%\begin{proof}
+%Consequence of \defref{def:comp secure sketch} and \lemref{lem:unp extraction}.
+%\end{proof}
+%
 %For completeness, we describe a computational fuzzy extractor based on Construction~\ref{cons:LWESecureSketch} in \secref{sec:fuzzy extractor phrasing}.
 
 \ignore{
