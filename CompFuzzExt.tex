@@ -714,7 +714,7 @@ Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer a
 We will restate any $\distLWE_{n, m, q, \chi}$ formulation using unpredictability entropy~(recall \defref{def:unp entropy}).  We have the following statement about the unpredictability of $\LWE$ problems~(proof in \secref{sec:proof of unpred conversion}).
 \begin{lemma}
 \label{lem:conversion to unpredictability}
-Assume that $\distLWE_{n-k, m, q, \chi}$ is $(\epsilon, s_{sec})$-hard and $m\geq n$ then  $H^{\unp}_{\epsilon', s_{sec}'}(E|\vA, \vA X+E) \geq k\log q$
+Assume that $\distLWE_{n-k, m, q, \chi}$ is $(\epsilon, s_{sec})$-hard then  $H^{\unp}_{\epsilon', s_{sec}'}(X_{1,..., k}|\vA, \vA X+E) \geq k\log q$
 for $\epsilon' \approx \epsilon, s_{sec}'\approx s_{sec}$.
 \end{lemma}
 %\begin{lemma}
@@ -810,7 +810,7 @@ Let $\vA, \vA X+W$ be a  $(n,m, q, \chi)$-LWE instance that is a unique witness 
 
 \subsection{Lossless Secure Sketch}
 \label{sec:lossless sketch}
-We now state a setting of parameters that yields a lossless sketch.  For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  There exist efficient lossless secure sketches based on \consref{cons:informal construction}:
+We now state a setting of parameters that yields a lossless sketch.  
 
 %\begin{theorem}
 %\label{thm:lossless secure sketch}
@@ -823,7 +823,7 @@ We now state a setting of parameters that yields a lossless sketch.  For a more 
 
 \begin{theorem}
 \label{thm:lossless secure sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be uniform over $\zo^{(c+d)/d(n\log b)}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms, then \consref{cons:informal construction} is a lossless secure sketch.  That is, $H^{\unp}_{\epsilon, s_{sec}}(W|\sketch(W)) = H_\infty(W)$
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be uniform over $\zo^{(c+d)/d(n\log b)}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless secure sketch.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\sketch(W)) = H_\infty(W)$
 % for following parameters:
 %\[
 %(\zo^{(c+d)/dn\log b}, |W|, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)
@@ -835,6 +835,7 @@ $\epsilon = \ngl(n), s_{sec} = \poly(n)$,  sketch time $s_{sketch} = O(n^3\log n
 Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:conversion to unpredictability}, efficiency follows by \lemref{lem:i t poly time}.
 \end{proof}
 
+For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe setting $q = poly(n)$.  
 \thref{thm:lossless secure sketch log} shows that a computational secure sketch can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point $B$ and thus providing no information about either $X$ or $W$.  A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
 \section{\consref{cons:informal construction} with Symbol Fixing Sources}
@@ -881,7 +882,7 @@ Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-
 
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)n/d+\alpha)b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms.   \consref{cons:informal construction} is a lossless secure sketch.  That is, $H^{\unp}_{\epsilon, s_{sec}}(W|\sketch(W)) = H_\infty(W)$ for %the following parameters:
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)n/d+\alpha)b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms.   There is a setting of $q = poly(n)$ such that \consref{cons:informal construction} is a lossless secure sketch.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\sketch(W)) = H_\infty(W)$ for %the following parameters:
 %\[
 %(\zo^{((c+d)n/d+\alpha)b}, \Hoo(W),\Hoo(W), \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)\text{-computational secure sketch}
 %\]
