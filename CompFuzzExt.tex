@@ -711,12 +711,17 @@ We present the formulation of D\"{o}ttling and M\"{u}ller-Quade:
 Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, the $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))\mbox{-}$hard, where $\epsilon = \ngl(n)$.
 \end{lemma}
 
-We will restate any $\distLWE_{n, m, q, \chi}$ formulation using unpredictability entropy~(recall \defref{def:unp entropy}).  We have the following statement about the unpredictability of $\LWE$ problems~(proof in \secref{sec:proof of unpred conversion}).
-\begin{lemma}
-\label{lem:conversion to unpredictability}
-Assume that $\distLWE_{n-k, m, q, \chi}$ is $(\epsilon, s_{sec})$-hard then  $H^{\unp}_{\epsilon', s_{sec}'}(X_{1,..., k}|\vA, \vA X+E) \geq k\log q$
-for $\epsilon' \approx \epsilon, s_{sec}'\approx s_{sec}$.
+We will use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show there are many bits of $X$ that are unpredictable.  This says that if $\distLWE$ is hard then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
+\begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
+\label{lem:many hardcore bits}
+Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  Then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$ assuming $\distLWE_{(n-k, m, q, \chi)}$.
 \end{lemma}
+
+%\begin{lemma}
+%\label{lem:conversion to unpredictability}
+%Assume that $\distLWE_{n-k, m, q, \chi}$ is $(\epsilon, s_{sec})$-hard then  $H^{\unp}_{\epsilon', s_{sec}'}(X_{1,..., k}|\vA, \vA X+E) \geq k\log q$
+%for $\epsilon' \approx \epsilon, s_{sec}'\approx s_{sec}$.
+%\end{lemma}
 %\begin{lemma}
 %\label{lem:dmq with unp entropy}
 %Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$.  Assume that approximating GAPSVP and SIVP using a polynomial time quantum algorithm is hard within a factor of $\tilde{O}(n^{1/2+3\gamma}m/\rho)$.  Let $\vA\in \Fq^{m\times n}, X\in\Fq^{n}, E\in [-\rho q, \rho q]^m$ be drawn uniformly.  Then for $s_{sec} = \poly(n)$ and $\epsilon = \ngl(n)$
@@ -724,7 +729,7 @@ for $\epsilon' \approx \epsilon, s_{sec}'\approx s_{sec}$.
 %H^{\unp}_{\epsilon, s_{sec}}(E| AX+E) = \min\{|X|, |E|\} = \min \{ n\log q, m\log \rho q\}
 %\]
 %\end{lemma}
-With \lemref{lem:uniform LWE decision} we can use the code-offset construction in \consref{cons:informal construction} and retain unpredictability entropy $n\log q$.  We provide a formal description of our algorithm in the next section.
+With Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} we can use the code-offset construction in \consref{cons:informal construction} and retain HILL entropy $k\log q$.  
 %\lemref{lem:uniform LWE decision} has two advantages: 1) We can use the code-offset construction from \consref{cons:informal construction}. 2) The error term is distributed over a smaller interval $[-\rho q, \rho q]$ instead of $\Fq$.
 
 %\subsection{Computational Secure Sketch based on \class{LWE}}
@@ -832,7 +837,7 @@ with
 $\epsilon = \ngl(n), s_{sec} = \poly(n)$,  sketch time $s_{sketch} = O(n^3\log n)$, and recover time $s_{rec}= O(n^{2d+3} \log n)$.
 \end{theorem}
 \begin{proof}
-Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:conversion to unpredictability}, efficiency follows by \lemref{lem:i t poly time}.
+Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, efficiency follows by \lemref{lem:i t poly time}.
 \end{proof}
 
 For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe how to set $q = \poly(n)$.  
@@ -863,7 +868,7 @@ Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integ
 \end{problem}
 
 The dist-$\LWE_{n, m, q, W}$ with symbol fixing sources is implied by standard $\distLWE_{n, m, q, \chi}$~(proof in \secref{sec:proof of block theorem}).
-\vspace{.1in}
+%\vspace{.1in}
 \begin{theorem}
 \label{thm:blockLWE}
 Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  Then the $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha, m+\alpha, q, W}$ w/ symbol fixing sources problem.
@@ -1113,120 +1118,120 @@ Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q 
 We can restate Assumption~\ref{assume:indist LWE} in terms of unpredictability entropy~(see Definition~\ref{def:unp entropy}).  
 }
 
-\section{\lemref{lem:conversion to unpredictability}}
-\label{sec:proof of unpred conversion}
-In this section we show that for an indistinguishable LWE instance, the unpredictability entropy of $E$ conditioned on $\vA X+E$ remains high.  %We first note that any inverter that can recover $X$ can recover $E$ and vice versa by using simple a single addition and multiplication~(and vice versa).  Thus, we have the following claim:
-%\begin{claim}
-%\label{lem:unp of x and e}
-%Let $A, X, E$ be as above, then:
-%\begin{itemize}
-%\item $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E)\geq k \Rightarrow H^{\unp}_{\epsilon, s'}(E| \vA, \vA X+E) \geq k$ for $s'\approx s$.
-%\item $H^{\unp}_{\epsilon, s}(E | \vA, \vA X+E) \geq k \Rightarrow H^{\unp}_{\epsilon', s'}(X | \vA, \vA X+E) \geq k'$ for $k'\approx k, \epsilon' \approx \epsilon, s'\approx s$. 
-%\end{itemize}
-%\end{claim}
-%In the body of the text we use \lemref{lem:unp of x and e} to present  \assref{assume:indist LWE} in terms of unpredictability entropy~(\assref{assume:entropy LWE}).
-%We now restate Assumption~\ref{assume:indist LWE} in terms of unpredictability entropy:
-%\begin{assumption}
-%\label{assume:entropy LWE}
-%Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be prime and let $\chi$ be a distribution on $\Fq$.  If $X\in\Fq^n, A\in\Fq^{m\times n}$ are chosen uniformly at random and $E$ is chosen according to $\chi$, $H^{\unp}_{\epsilon, s}(X | A, AX+E) =H^{\unp}_{\epsilon, s'}(E| A, AX+E) \geq m\log q $ for $s'\approx s$.  
-%\end{assumption}
-%For clarity, we delay the proof of \clref{lem:unp of x and e} until the end of this section~(the proof is quite straightforward).
-We first recall a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009}.  This says that if $\distLWE$ is hard then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
-\begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
-\label{lem:many hardcore bits}
-Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  Then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )= k\log q$ assuming $\distLWE_{(n-k, m, q, \chi)}$.
-\end{lemma}
-
-\begin{proof}[Proof of \lemref{lem:conversion to unpredictability}]
-Assume that $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ hard and that $m\geq n$.  Let $\vA\in \zq^{m\times n}, X\in \zq^n$ and $E$ be distributed according to $\chi^m$.  Then according to \lemref{lem:many hardcore bits} we know that $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA , \vA X+E)\geq k\log q$.  By \lemref{lem:hillimplyunpimplyyao}, we know that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA, \vA X+E)\geq k\log q$.  To expand to $E$ we use the following claim:
-
-\begin{claim}
-Let $\vA, X, E$ be distributed as in \lemref{lem:conversion to unpredictability} and $m\geq n$ and let $k\leq n$.  Then 
-\[
-H^{\unp}_{\epsilon', s_{sec}'} ( E | \vA X+ E) \geq H^{\unp}_{\epsilon, s_{sec}} ( X_{1,..., k} | \vA X+E)
-\]
-\end{claim}
-%\begin{claim}
-%If $H^{\unp}_{0, s}(X_{1,..., k} | Z) \geq k$ then $H^{\unp}_{0, s}(X|Z)\geq k$.
-%\end{claim}
-%\begin{proof}
-%Suppose that $H^{\unp}_{0, s}(X|Z)< k$ that is there exists a circuit $C$ of size at most $s$ such that $\Pr[C(Z) = X]> 2^{-k}$.  Then let $C'$ be a circuit that simply takes the output of $C$ and returns the first $k$ bits.  Then $\Pr[C'(Z) = X_{1,...,k}]\geq \Pr[C(Z) = X] > 2^{-k}$.  This completes the claim.
-%\end{proof}
-
-%\begin{claim}
-%If $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | Z) \geq k$ then $H^{\unp}_{\epsilon, s_{sec}'}(X|Z)\geq k$ for $s_{sec} \approx s_{sec}'$.
-%\end{claim}
-%\begin{proof}
-%Assume that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,...,k}|Z)\geq k$.
-%Suppose that $H^{\unp}_{\epsilon, s_{sec}'}(X|Z)< k$.  Let $Y$ be a distribution such that $\delta^{\mathcal{D}_{s_{sec}'}}((X, Z), (Y, Z))\leq \epsilon$.  Furthermore, let $C$ be a circuit of size at most $s_{sec}'$ where $\Pr[C(Z) = Y] > 2^{-k}$.  Define the circuit $C'$ that outputs the first $k$ bits of $C$'s output.  Thus, $\Pr[C'(Z) = Y_{1,..., k}] \geq \Pr[C(Z) = Y] > 2^{-k}$.  Note that $\delta^{\mathcal{D}_{s_{sec}}}((X_{1,...,k}, Z), (Y_{1,..., k}, Z))<\delta^{\mathcal{D}_{s_{sec}'}}((X, Z), (Y, Z))\leq \epsilon$.  Together, these two facts contradict $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k}|Z)\geq k$.
-%This completes the claim.
-%\bnote{This claim isn't accurate because we can't show for all $Y_{1,..., k}$.  In order to complete the proof we need to show that $\forall Y_{1,..., k}$ such that $(X_{1,..., k}, Z), (Y_{1,...k}, Z)<\epsilon$ there exists an extension which is also indistinguishable.}
-% that is there exists a circuit $C$ of size at most $s$ such that $\Pr[C(Z) = X]> 2^{-k}$.  Then let $C'$ be a circuit that simply takes the output of $C$ and returns the first $k$ bits.  Then $\Pr[C'(Z) = X_{1,...,k}]\geq \Pr[C(Z) = X] > 2^{-k}$.  This completes the claim.
-%\end{proof}
-
-%\begin{claim}
-%If $H^{\yao}_{\epsilon, s_{sec}}(X_{1,..., k} | Z)\geq k$ then $H^{\yao}_{\epsilon , s_{sec}'}(X|Z)\geq k$ for $s_{sec}\approx s_{sec}'$.
-%\end{claim}
-%Suppose that $H^{\yao}_{\epsilon, s_{sec}}(X_{1,..., k} |Z ) \geq k$.  This implies $\exists c, d$ of total size $s_{sec}$ where $c$ has outputs of length $\ell$ such that $\Pr[d(c(X_{1,..., k}, Z), Z) = X_{1,..., k}] \leq 2^{\ell -k} + \epsilon$.  Furthermore, suppose $\forall c', d'$ of total size $s_{sec}$ where $c$ has output length $\ell$ and $\Pr[d(c(X), Z), Z) = X] > 2^{\ell-k} +\epsilon$.
+%\section{\lemref{lem:conversion to unpredictability}}
+%\label{sec:proof of unpred conversion}
+%In this section we show that for an indistinguishable LWE instance, the unpredictability entropy of $E$ conditioned on $\vA X+E$ remains high.  %We first note that any inverter that can recover $X$ can recover $E$ and vice versa by using simple a single addition and multiplication~(and vice versa).  Thus, we have the following claim:
+%%\begin{claim}
+%%\label{lem:unp of x and e}
+%%Let $A, X, E$ be as above, then:
+%%\begin{itemize}
+%%\item $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E)\geq k \Rightarrow H^{\unp}_{\epsilon, s'}(E| \vA, \vA X+E) \geq k$ for $s'\approx s$.
+%%\item $H^{\unp}_{\epsilon, s}(E | \vA, \vA X+E) \geq k \Rightarrow H^{\unp}_{\epsilon', s'}(X | \vA, \vA X+E) \geq k'$ for $k'\approx k, \epsilon' \approx \epsilon, s'\approx s$. 
+%%\end{itemize}
+%%\end{claim}
+%%In the body of the text we use \lemref{lem:unp of x and e} to present  \assref{assume:indist LWE} in terms of unpredictability entropy~(\assref{assume:entropy LWE}).
+%%We now restate Assumption~\ref{assume:indist LWE} in terms of unpredictability entropy:
+%%\begin{assumption}
+%%\label{assume:entropy LWE}
+%%Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be prime and let $\chi$ be a distribution on $\Fq$.  If $X\in\Fq^n, A\in\Fq^{m\times n}$ are chosen uniformly at random and $E$ is chosen according to $\chi$, $H^{\unp}_{\epsilon, s}(X | A, AX+E) =H^{\unp}_{\epsilon, s'}(E| A, AX+E) \geq m\log q $ for $s'\approx s$.  
+%%\end{assumption}
+%%For clarity, we delay the proof of \clref{lem:unp of x and e} until the end of this section~(the proof is quite straightforward).
+%We first recall a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009}.  This says that if $\distLWE$ is hard then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
+%\begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
+%\label{lem:many hardcore bits}
+%Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  Then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )= k\log q$ assuming $\distLWE_{(n-k, m, q, \chi)}$.
+%\end{lemma}
 %
+%\begin{proof}[Proof of \lemref{lem:conversion to unpredictability}]
+%Assume that $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ hard and that $m\geq n$.  Let $\vA\in \zq^{m\times n}, X\in \zq^n$ and $E$ be distributed according to $\chi^m$.  Then according to \lemref{lem:many hardcore bits} we know that $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA , \vA X+E)\geq k\log q$.  By \lemref{lem:hillimplyunpimplyyao}, we know that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA, \vA X+E)\geq k\log q$.  To expand to $E$ we use the following claim:
 %
-%Thus, we know that $H^{\unp}_{\epsilon, s_{sec}'}(X | \vA, \vA X+E)\geq k\log q$.  By \lemref{lem:unp of x and e} we know that $H^{\unp}_{\epsilon, s_{sec}'} (E | \vA, \vA X+E)\geq k\log q$.  This completes the proof of \lemref{lem:conversion to unpredictability}.
-%\end{proof}
-\begin{proof}
-Suppose that $H^{\unp}_{\epsilon', s_{sec}}( E | \vA X+E) < \ell$.  We will show that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA X+E) < \ell$.  That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}'}}((E, \vA X+E), (Y, \vA+E))\leq \epsilon$, there exists $C$ of size $s_{sec}'$ such that $\Pr[C(\vA, \vA X+E) = Y]> 2^{-\ell}$.  Fix one such $Y$.  Let $\mathcal{E}$ be the event that $A_{1,..., n}^{-1}$ exists.  Note that $\mathcal{E}$ occurs with probability $1-\gamma$.
-
-Define the distribution $Y' =A^{-1}_{1,...,n}(\vA X+E -Y)$.  Then one has that 
-\begin{align*}
-\delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E))&\leq \delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E) |\mathcal{E} )+ \gamma\\
-&\leq \delta^{\mathcal{D}_{s_{sec}}}(\vA^{-1}_{1,..., n}(\vA X+E - Y), \vA, \vA X+E), (X, \vA, \vA X+E))+\gamma\\
-&\leq \delta^{\mathcal{D}_{s_{sec}'}}((Y, \vA, \vA X+E), (E, \vA, \vA X+E))+\gamma\leq \epsilon' + \gamma
-\end{align*}
-Where the second to last inequality follows by applying the transform $\vA X+E - \vA(\cdot)$ to the first argument.  Note  that $\delta^{\mathcal{D}_{s_{sec}}}((Y'_{1,...k}, \vA, \vA X+E ), (X_{1,..,k}, \vA, \vA X+E))\leq \epsilon' + \gamma$. Otherwise there would be a distinguisher for the entire distribution by just ignoring the last $n-k$ dimensions.
-
-We now show that $\exists C'$ such that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k}$.  Define $C'$ as follows:
-\begin{enumerate}
-\item Input $(\vA, \vA X+E)$.
-\item Run $y\leftarrow C(\vA, \vA X+E)$.
-\item Try to compute $\vA^{-1}_{1,.., n}$, if $\vA^{-1}_{1,..., n}$ does not exist output $\perp$.
-\item Output $z = \vA^{-1}_{1,..., n}(\vA X+E -y)$
-\end{enumerate}
-Observer that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k} - \gamma$.  Finally note that $\exists C''$ that simply outputs the first $k$ dimensions of the output of $C'$.  Thus, $H^{\unp}_{\epsilon, s_{sec}}( X_{1,..., n}| \vA , \vA X+E)< 2^{-k} - \gamma$.
-\end{proof}
-
-The statement of \lemref{lem:conversion to unpredictability} follows by the statement of the claim.
-%\begin{proof}[Proof of \clref{lem:unp of x and e}]
-%First suppose that $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E) < k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((X, \vA, \vA X+E), (Y, \ A, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
+%\begin{claim}
+%Let $\vA, X, E$ be distributed as in \lemref{lem:conversion to unpredictability} and $m\geq n$ and let $k\leq n$.  Then 
+%\[
+%H^{\unp}_{\epsilon', s_{sec}'} ( E | \vA X+ E) \geq H^{\unp}_{\epsilon, s_{sec}} ( X_{1,..., k} | \vA X+E)
+%\]
+%\end{claim}
+%%\begin{claim}
+%%If $H^{\unp}_{0, s}(X_{1,..., k} | Z) \geq k$ then $H^{\unp}_{0, s}(X|Z)\geq k$.
+%%\end{claim}
+%%\begin{proof}
+%%Suppose that $H^{\unp}_{0, s}(X|Z)< k$ that is there exists a circuit $C$ of size at most $s$ such that $\Pr[C(Z) = X]> 2^{-k}$.  Then let $C'$ be a circuit that simply takes the output of $C$ and returns the first $k$ bits.  Then $\Pr[C'(Z) = X_{1,...,k}]\geq \Pr[C(Z) = X] > 2^{-k}$.  This completes the claim.
+%%\end{proof}
+%
+%%\begin{claim}
+%%If $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | Z) \geq k$ then $H^{\unp}_{\epsilon, s_{sec}'}(X|Z)\geq k$ for $s_{sec} \approx s_{sec}'$.
+%%\end{claim}
+%%\begin{proof}
+%%Assume that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,...,k}|Z)\geq k$.
+%%Suppose that $H^{\unp}_{\epsilon, s_{sec}'}(X|Z)< k$.  Let $Y$ be a distribution such that $\delta^{\mathcal{D}_{s_{sec}'}}((X, Z), (Y, Z))\leq \epsilon$.  Furthermore, let $C$ be a circuit of size at most $s_{sec}'$ where $\Pr[C(Z) = Y] > 2^{-k}$.  Define the circuit $C'$ that outputs the first $k$ bits of $C$'s output.  Thus, $\Pr[C'(Z) = Y_{1,..., k}] \geq \Pr[C(Z) = Y] > 2^{-k}$.  Note that $\delta^{\mathcal{D}_{s_{sec}}}((X_{1,...,k}, Z), (Y_{1,..., k}, Z))<\delta^{\mathcal{D}_{s_{sec}'}}((X, Z), (Y, Z))\leq \epsilon$.  Together, these two facts contradict $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k}|Z)\geq k$.
+%%This completes the claim.
+%%\bnote{This claim isn't accurate because we can't show for all $Y_{1,..., k}$.  In order to complete the proof we need to show that $\forall Y_{1,..., k}$ such that $(X_{1,..., k}, Z), (Y_{1,...k}, Z)<\epsilon$ there exists an extension which is also indistinguishable.}
+%% that is there exists a circuit $C$ of size at most $s$ such that $\Pr[C(Z) = X]> 2^{-k}$.  Then let $C'$ be a circuit that simply takes the output of $C$ and returns the first $k$ bits.  Then $\Pr[C'(Z) = X_{1,...,k}]\geq \Pr[C(Z) = X] > 2^{-k}$.  This completes the claim.
+%%\end{proof}
+%
+%%\begin{claim}
+%%If $H^{\yao}_{\epsilon, s_{sec}}(X_{1,..., k} | Z)\geq k$ then $H^{\yao}_{\epsilon , s_{sec}'}(X|Z)\geq k$ for $s_{sec}\approx s_{sec}'$.
+%%\end{claim}
+%%Suppose that $H^{\yao}_{\epsilon, s_{sec}}(X_{1,..., k} |Z ) \geq k$.  This implies $\exists c, d$ of total size $s_{sec}$ where $c$ has outputs of length $\ell$ such that $\Pr[d(c(X_{1,..., k}, Z), Z) = X_{1,..., k}] \leq 2^{\ell -k} + \epsilon$.  Furthermore, suppose $\forall c', d'$ of total size $s_{sec}$ where $c$ has output length $\ell$ and $\Pr[d(c(X), Z), Z) = X] > 2^{\ell-k} +\epsilon$.
+%%
+%%
+%%Thus, we know that $H^{\unp}_{\epsilon, s_{sec}'}(X | \vA, \vA X+E)\geq k\log q$.  By \lemref{lem:unp of x and e} we know that $H^{\unp}_{\epsilon, s_{sec}'} (E | \vA, \vA X+E)\geq k\log q$.  This completes the proof of \lemref{lem:conversion to unpredictability}.
+%%\end{proof}
+%\begin{proof}
+%Suppose that $H^{\unp}_{\epsilon', s_{sec}}( E | \vA X+E) < \ell$.  We will show that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA X+E) < \ell$.  That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}'}}((E, \vA X+E), (Y, \vA+E))\leq \epsilon$, there exists $C$ of size $s_{sec}'$ such that $\Pr[C(\vA, \vA X+E) = Y]> 2^{-\ell}$.  Fix one such $Y$.  Let $\mathcal{E}$ be the event that $A_{1,..., n}^{-1}$ exists.  Note that $\mathcal{E}$ occurs with probability $1-\gamma$.
+%
+%Define the distribution $Y' =A^{-1}_{1,...,n}(\vA X+E -Y)$.  Then one has that 
+%\begin{align*}
+%\delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E))&\leq \delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E) |\mathcal{E} )+ \gamma\\
+%&\leq \delta^{\mathcal{D}_{s_{sec}}}(\vA^{-1}_{1,..., n}(\vA X+E - Y), \vA, \vA X+E), (X, \vA, \vA X+E))+\gamma\\
+%&\leq \delta^{\mathcal{D}_{s_{sec}'}}((Y, \vA, \vA X+E), (E, \vA, \vA X+E))+\gamma\leq \epsilon' + \gamma
+%\end{align*}
+%Where the second to last inequality follows by applying the transform $\vA X+E - \vA(\cdot)$ to the first argument.  Note  that $\delta^{\mathcal{D}_{s_{sec}}}((Y'_{1,...k}, \vA, \vA X+E ), (X_{1,..,k}, \vA, \vA X+E))\leq \epsilon' + \gamma$. Otherwise there would be a distinguisher for the entire distribution by just ignoring the last $n-k$ dimensions.
+%
+%We now show that $\exists C'$ such that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k}$.  Define $C'$ as follows:
 %\begin{enumerate}
 %\item Input $(\vA, \vA X+E)$.
-%\item Run $y\leftarrow I(\vA, \vA X+E)$.
-%\item Output $z = \vA y - \vA X+E$.
+%\item Run $y\leftarrow C(\vA, \vA X+E)$.
+%\item Try to compute $\vA^{-1}_{1,.., n}$, if $\vA^{-1}_{1,..., n}$ does not exist output $\perp$.
+%\item Output $z = \vA^{-1}_{1,..., n}(\vA X+E -y)$
 %\end{enumerate}
-%Note that $|I'|\approx |I|$.
-%It suffices to show that $\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, A, \vA X+E))\leq \epsilon$.  One has the following:
-%\begin{align*}
-%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
-%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (\vA Y-\vA X+E, \vA, \vA X+E))\\
-%&\leq \delta^{\mathcal{D}_s'}((\vA X, \vA, \vA X+E), (\vA Y, \vA, \vA X+E))\\
-%&\leq \delta^{\mathcal{D}_s'}((X, \vA, \vA X+E), (Y, \vA, \vA X+E)) \leq \epsilon.
-%\end{align*}
-%Now suppose that $H^\unp_{\epsilon, s}(E | A, \vA X+E)<k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((E, \vA, \vA X+E), (Y, \vA, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
-%\begin{enumerate}
-%\item Input $(A, \vA X+E)$.
-%\item Run $y\leftarrow I(\vA, \vA X+E)$.
-%\item Try to compute $\vA^{-1}$, if $\vA^{-1}$ does not exist output $\perp$.
-%\item Output $z = \vA^{-1}(\vA X+E-y)$.
-%\end{enumerate}
-%Note that $|I'|\approx |I|$.  For sufficient parameter sizes the probability of $A^{-1}$ not existing is negligible.  Denote this probability by $\gamma$.  Then note that $\Pr[I'(\vA, \vA X+E) = Z] > 2^{-k}-\gamma = 2^{-k'}$.  Then one has the following~(conditioned on the event that $\vA^{-1}$ exists):
-%\begin{align*}
-%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
-%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (\vA^{-1}(\vA X+E-Y), \vA, \vA X+E)) \\
-%&\leq \delta^{\mathcal{D}_s'} ((\vA^{-1}E, \vA, \vA X+E), (\vA^{-1}Y, \vA, \vA X+E))\\
-%&\leq \delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Y, \vA, \vA X+E))\leq \epsilon
-%\end{align*}
-%Since $A^{-1}$ exists with probability $1-\gamma$ we obtain total distance at most $\epsilon(1-\gamma)=\epsilon'$.
+%Observer that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k} - \gamma$.  Finally note that $\exists C''$ that simply outputs the first $k$ dimensions of the output of $C'$.  Thus, $H^{\unp}_{\epsilon, s_{sec}}( X_{1,..., n}| \vA , \vA X+E)< 2^{-k} - \gamma$.
 %\end{proof}
-
-\end{proof}
+%
+%The statement of \lemref{lem:conversion to unpredictability} follows by the statement of the claim.
+%%\begin{proof}[Proof of \clref{lem:unp of x and e}]
+%%First suppose that $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E) < k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((X, \vA, \vA X+E), (Y, \ A, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
+%%\begin{enumerate}
+%%\item Input $(\vA, \vA X+E)$.
+%%\item Run $y\leftarrow I(\vA, \vA X+E)$.
+%%\item Output $z = \vA y - \vA X+E$.
+%%\end{enumerate}
+%%Note that $|I'|\approx |I|$.
+%%It suffices to show that $\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, A, \vA X+E))\leq \epsilon$.  One has the following:
+%%\begin{align*}
+%%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
+%%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (\vA Y-\vA X+E, \vA, \vA X+E))\\
+%%&\leq \delta^{\mathcal{D}_s'}((\vA X, \vA, \vA X+E), (\vA Y, \vA, \vA X+E))\\
+%%&\leq \delta^{\mathcal{D}_s'}((X, \vA, \vA X+E), (Y, \vA, \vA X+E)) \leq \epsilon.
+%%\end{align*}
+%%Now suppose that $H^\unp_{\epsilon, s}(E | A, \vA X+E)<k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((E, \vA, \vA X+E), (Y, \vA, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
+%%\begin{enumerate}
+%%\item Input $(A, \vA X+E)$.
+%%\item Run $y\leftarrow I(\vA, \vA X+E)$.
+%%\item Try to compute $\vA^{-1}$, if $\vA^{-1}$ does not exist output $\perp$.
+%%\item Output $z = \vA^{-1}(\vA X+E-y)$.
+%%\end{enumerate}
+%%Note that $|I'|\approx |I|$.  For sufficient parameter sizes the probability of $A^{-1}$ not existing is negligible.  Denote this probability by $\gamma$.  Then note that $\Pr[I'(\vA, \vA X+E) = Z] > 2^{-k}-\gamma = 2^{-k'}$.  Then one has the following~(conditioned on the event that $\vA^{-1}$ exists):
+%%\begin{align*}
+%%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
+%%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (\vA^{-1}(\vA X+E-Y), \vA, \vA X+E)) \\
+%%&\leq \delta^{\mathcal{D}_s'} ((\vA^{-1}E, \vA, \vA X+E), (\vA^{-1}Y, \vA, \vA X+E))\\
+%%&\leq \delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Y, \vA, \vA X+E))\leq \epsilon
+%%\end{align*}
+%%Since $A^{-1}$ exists with probability $1-\gamma$ we obtain total distance at most $\epsilon(1-\gamma)=\epsilon'$.
+%%\end{proof}
+%
+%\end{proof}
 
 \section{Proof of Theorem \ref{thm:blockLWE}}
 \label{sec:proof of block theorem}
