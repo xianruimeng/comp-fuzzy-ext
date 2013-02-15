@@ -499,7 +499,7 @@ Let $C$ be a distribution with $\Hoo(C)\geq k$ and let $C$ be a $(t, \epsilon)$-
 
 We are now ready to show our main result: HILL-entropy secure sketches imply maximal-error Shannon codes~(proof in \secref{sec:proof of thm sketch implies code}).
 \begin{theorem}\label{thm:impSketchArbitraryW}
-Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an $(\epsilon,s_{sec})$-HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists $x$ and a set $C$ with $|C'|\geq 2^{\tilde{m}-1}$ that is a $(t, 2(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
+Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists $x$ and a set $C$ with $|C'|\geq 2^{\tilde{m}-1}$ that is a $(t, 2(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
 %Let $W$ be a flat distribution~(all points in the support of $W$ have the same probability) over $\mathcal{M}$ where $\Hoo(W)\geq k$ and   Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$.  If $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $O(s_{neigh}+s_{rec})$, then $\exists x, W'$ where $|W'|\geq |W|/2 \geq 2^{k-1}$ such that $W'$ is a $(t, 2\epsilon)$ Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
 \end{theorem}
 %The code provided in \thref{thm:impSketchArbitraryW} is weaker than a Shannon error correcting code~\cite{shannon1948}.  In a Shannon code, for all codewords $c, \Pr[c'\leftarrow \sample(c) \wedge \rec(c') \neq c]<\epsilon$.  Bounds for this type of code are well known~\cite{shannon1948} and efficient constructions exist~\cite{forney1966}.  Requiring proper decoding for only a random codeword is a significant restriction particularly in the case where the probability of outcomes in $W$ differs significantly~(e.g. where $\exists w_1,w_2\in W$ such that $\Pr[W=w_1]/\Pr[W=w_2] = \ngl$).  However, this is still a meaningful set of error correcting codes.  A similar question is considered in Appendix C of \cite{DBLP:journals/siamcomp/DodisORS08}.  They are able to achieve results for Hamming codes~(as they are not restricted to sampling a polynomial portion of the space)\bnote{expand on this explanation}.
@@ -622,13 +622,13 @@ In \secref{sec:imp HILL sketch}, we showed that defining a noisy computational c
 %\end{definition}
 %We now provide a definition of a robust computational sketch using unpredictability entropy:
 \begin{definition}\label{def:comp secure sketch}
-A pair of randomized procedures $(\sketch, \rec)$ is a $(\mathcal{M},m, \tilde{m}, \epsilon,  t)$-\emph{noisy computational conductor} is a pair of randomized procedures, sketch (\sketch) and recover (\rec), with the following properties:
+A pair of randomized procedures $(\sketch, \rec)$ is a $(\mathcal{M},m, \tilde{m}, \epsilon,  t)$-\emph{noisy computational conductor} if the following properties hold:
 \begin{enumerate}
 \item The sketching procedure \sketch on input $w\in\mathcal{M}$ returns a bit string $s\in\{0,1\}^*$ and runs in expected time $s_{sketch}$.
 \item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $s\in\{0,1\}^*$.  The \emph{correctness} property of secure sketches guarantees that if $d(w,w')\leq t$, then $\Pr[\rec(w',\sketch(w))\neq \rec(w, \sketch(w))] = \delta$ and \rec runs in expected time $s_{rec}$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rec.  
 \item The \emph{security} property guarantees that for any distribution $W$ over $\mathcal{M}$ with min-entropy $m$, the output $\rec$ has high HILL entropy given $\sketch(W)$.  That is, $H^{\hill}_{\epsilon, s_{sec}}(\rec(W, \sketch(W))|\sketch(W))\geq \tilde{m}$.
 \end{enumerate}
-We say that $(\sketch, \rec)$ is $(\epsilon, s_{sec})$ hard with error probability $\delta$.
+We say that $(\sketch, \rec)$ is $(\epsilon, s_{sec})$-secure with error probability $\delta$.
 If $m=\tilde{m}$ we say a conductor is \emph{lossless} and we omit the parameter $\tilde{m}$.
 \end{definition}
 %We make $s_{sketch}, s_{rec}$ explicit in the definition as we are considering computationally bounded adversaries and the definition is only meaningful if both $s_{rec}$ and $s_{sketch}$ are significantly smaller than $s_{sec}$.  
@@ -690,10 +690,10 @@ The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} a
 \begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}
 Let $m = m(n) = \poly(n)$ be an integer, $q = q(n) = \poly(n)$. The decisional version of the $\LWE$ problem, denoted \class{dist}-$\LWE_{n, m, q, \chi}$, is to distinguish between $m$ samples chosen according to $A_{\vx, \chi}$ for a uniformly random $\vx$ from samples chosen according to the uniform distribution over $(\Fq^{m\times n}, \Fq^m)$. 
 
-We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, t)$-hard if no (probabilistic) distinguisher running in time $t$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.
+We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, t)$-secure if no (probabilistic) distinguisher running in time $t$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.
 \end{definition}
 
-Denote by $\bar{\Psi}_\alpha$ the discretized Gaussian distribution over $\Fq$ with variance $(\alpha q)^2/(2\pi)$, Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} shows that, when $\chi = \bar{\Psi}_{\alpha}$, $\class{dist}$-$\lwe_{n, m, q, \chi}$ is hard under the worst-case lattice problems.
+Denote by $\bar{\Psi}_\alpha$ the discretized Gaussian distribution over $\Fq$ with variance $(\alpha q)^2/(2\pi)$, Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} shows that, when $\chi = \bar{\Psi}_{\alpha}$, $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure if the worst-case lattice problems are hard.
 %The matrix $\vA$ and secret $\vx$ are drawn from the uniform distribution, while the error term is drawn from a discretized Gaussian distribution $\bar{\Psi}_{\alpha}$.  
 Furthermore, Regev \cite{regev2005LWE} shows a decision to search equivalence for $q=\poly(n)$.
 %We state the decisional version in terms of unpredictability entropy~(see \defref{def:unp entropy} for the definition of unpredictability entropy and \secref{sec:LWEoverview} for an equivalence to the standard formulation of decisional LWE):
@@ -701,7 +701,7 @@ Furthermore, Regev \cite{regev2005LWE} shows a decision to search equivalence fo
 
 \begin{proposition} 
 \label{assume:entropy LWE}
-Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime and let $\bar{\Psi}_\alpha$ be the discretized Gaussian distribution with variance $(\alpha q)^2/2\pi$.  If GAPSVP and SIVP are hard to approximate within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))\mbox{-}hard$ for all probabilistic distinguisher $D$, where $\epsilon = \ngl(n)$.
+Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime and let $\bar{\Psi}_\alpha$ be the discretized Gaussian distribution with variance $(\alpha q)^2/2\pi$.  If GAPSVP and SIVP are hard to approximate within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))$-secure for all probabilistic distinguisher $D$, where $\epsilon = \ngl(n)$.
 
 %H^{\unp}_{\epsilon, s_{sec}}(X | \vA, \vA X+E) =H^{\unp}_{\epsilon, s'_{sec}}(E| \vA, \vA X+E) \geq n\log q $ for $s'_{sec}\approx s_{sec}$.  
 \end{proposition}
@@ -720,10 +720,10 @@ We present the formulation of D\"{o}ttling and M\"{u}ller-Quade:
 %This problem can be stated in the language of indistinguishability using the Decision-to-search reduction of Regev or Peikert:
 \begin{lemma}~\protect{~\cite[Corollary 10]{dottling2012}}
 \label{lem:uniform LWE decision}
-Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, the $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))\mbox{-}$hard, where $\epsilon = \ngl(n)$.
+Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, the $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))\mbox{-}$secure, where $\epsilon = \ngl(n)$.
 \end{lemma}
 
-We will use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  This says that if $\distLWE$ is hard then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
+We will use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  This says that if $\distLWE$ is secure then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
 Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  Then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$ assuming $\distLWE_{(n-k, m, q, \chi)}$.
@@ -919,7 +919,7 @@ An $(\mathcal{M}, m, \ell, t)$-\emph{computational fuzzy extractor} is a pair of
 If $d(w, w') > t$, then no guarantee is provided about the output of \rep.
 \item The \emph{security} property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $R$ has full HILL entropy conditioned on $P$, that is $H^\hill_{\epsilon, s_{sec}}(R | P) = \ell$.
 \end{itemize}
-We say that $\gen, \rep$ is $(\epsilon, s_{sec})$-hard with error $\delta$.
+We say that $\gen, \rep$ is $(\epsilon, s_{sec})$-secure with error $\delta$.
 \end{definition}
 Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters.% ($s_{rec}$ is the size of the circuit that computes \rec and $s_{sec}$ is unbounded).  
 
