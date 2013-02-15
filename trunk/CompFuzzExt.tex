@@ -662,7 +662,7 @@ Define $\sketch, \rec$ as follows:%The following construction is a computational
 \item Parse $s$ as $(\vA, \vect{C})$; let $\vect{D}=\vect{C}-w'$.
 \item Let $X' = \mathcal{I}_t(\vA, \vect{D})$\\
 Set $X'_{n/2}$ be the first half bits of $X'$.		 
-\item Output $w = X'_{n/2}$.
+\item Output $X'_{n/2}$.
 \end{enumerate}
 \end{minipage} 
 \end{tabular}
@@ -1448,7 +1448,7 @@ Thus, the expected number of iterations in step 2 is $n^{2d}$.  We assume all ma
 
 \section{Parameter Settings for \consref{cons:informal construction}}
 \label{sec:parameter settings}
-In this section, we explain the different parameters that go into our construction.  In \thref{thm:lossless secure conductor log} we give lossless sketches from a security parameter $n$ and an error $t$.  In this section, we discuss constraints imposed by 1) efficient decoding 2) maintaining security of the LWE instance and 3) ensuring no entropy loss of the construction.  In this section, we will assume that the inverter runs in time proportional to the number of errors~(\lemref{lem:i t poly time}).  We begin by reviewing the parameters that make up our construction:
+In this section, we explain the different parameters that go into our construction.  In \thref{thm:lossless secure conductor log} we give lossless conductors from a security parameter $n$ and an error $t$.  In this section, we discuss constraints imposed by 1) efficient decoding 2) maintaining security of the LWE instance and 3) ensuring no entropy loss of the construction.  In this section, we will assume that the inverter runs in time proportional to the number of errors~(\lemref{lem:i t poly time}).  We begin by reviewing the parameters that make up our construction:
 
 \begin{itemize}
 \item $|W|$: The length of the source.  
