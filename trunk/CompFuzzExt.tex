@@ -714,8 +714,8 @@ Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer a
 We will restate any $\distLWE_{n, m, q, \chi}$ formulation using unpredictability entropy~(recall \defref{def:unp entropy}).  We have the following statement about the unpredictability of $\LWE$ problems~(proof in \secref{sec:proof of unpred conversion}).
 \begin{lemma}
 \label{lem:conversion to unpredictability}
-Assume that $\distLWE_{n-k, m, q, \chi}$ is $(\epsilon, s_{sec})$-hard and $m\geq n$ then  $H^{\unp}_{\epsilon, s_{sec}'}(E|\vA, \vA X+E) \geq k\log q$
-for $s_{sec}'\approx s_{sec}$.
+Assume that $\distLWE_{n-k, m, q, \chi}$ is $(\epsilon, s_{sec})$-hard and $m\geq n$ then  $H^{\unp}_{\epsilon', s_{sec}'}(E|\vA, \vA X+E) \geq k\log q$
+for $\epsilon' \approx \epsilon, s_{sec}'\approx s_{sec}$.
 \end{lemma}
 %\begin{lemma}
 %\label{lem:dmq with unp entropy}
