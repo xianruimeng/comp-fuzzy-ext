@@ -339,7 +339,8 @@ $(Y, Z)$, such that $\tilde{H}_\infty(Y|Z)\geq k$ and $\delta^{\mathcal{D}_{s_{s
 
 Intuitively, conditional HILL entropy is as good as average min-entropy for all computationally-bounded observers.  Thus, redefining secure sketches using HILL entropy is a  natural relaxation of the original information-theoretic definition; in particular, the construction in \lemref{lem:fuzzy ext construction} would yield pseudorandom outputs if the secure sketch ensured high HILL entropy.  However, as we show in Section~\ref{sec:imp HILL sketch}, such secure sketches cannot  perform much better than the information-theoretic ones.
 
-Instead, in \secref{sec:unp secure sketch}, we define computational secure sketches using unpredictability, and work with that definition for the rest of the paper.  In particular, in \secref{sec:comp fuzzy extractors}, we show a natural construction of computational fuzzy extractors from secure sketches defined using unpredictability.
+Instead, in \secref{sec:unp secure sketch}, we relax the definition by allowing by outputting a new random variable that can be recovered when $\dis (w, w')\leq t$.  This object is the computational analogue of a noisy conductor~\cite{KanukurthiR09}.%This is a noisy computational conductor define computational secure sketches using unpredictability, and work with that definition for the rest of the paper.  
+  In \secref{sec:comp fuzzy extractors}, we show that computational fuzzy extractors can be constructed from noisy computational conductors.
 %The size of the circuits becomes important, we would like the \rec procedure to be computable by a circuit significantly smaller than the \hill entropy circuit size.  We simply include both of these parameters in the definition.  We review other definitions of computational entropy in Appendix~\ref{sec:notionsEntropy}.
 
 
@@ -349,10 +350,9 @@ Suppose we redefine secure sketches using HILL entropy: that is, an \emph{$(\eps
 Unfortunately, we will show below that such a secure sketch implies an error correcting code with approximately $2^{\tilde{m}}$ points that can correct $t$ random errors (see  \cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08} for a similar bound on information-theoretic secure sketches). For the Hamming metric, our result essentially matches the bound on information-theoretic secure sketches of \cite[Proposition 8.2]{DBLP:journals/siamcomp/DodisORS08}.  In fact, we show that, for the Hamming metric, HILL-entropy secure sketches imply information-theoretic ones with similar parameters, and, therefore, the HILL relaxation gives no advantage. 
 
 
-The intuition for building error-correcting codes from HILL-entropy secure sketches is as follows. Consider a function $\rec$ where $\rec (w', \sketch(w)) = w$ when $\dis(w, w')\leq t$.  In order to have  $H^{\hill}_{\epsilon, s_{sec}}(W|\sketch(W))\ge \tilde{m}$, there must be a distribution $Y$ with $\Hoo(Y)\geq \tilde{m}$ \lnote{uncondtional?}; this distribution must be indistinguishable from \lnote{which one}, and, in particular, such that $\Pr_{y\in Y} [y'\leftarrow B_t(y) \wedge \rec(y', \sketch(y)) = y ]\geq 1-\epsilon$ \lnote{explain why}.  This means the points in $Y$ form an error correcting code and $\rec$ is an efficient decoder.  We can then use standard arguments to turn this code into an information theoretic sketch.  \lnote{this intuition is confusing, esp. given notational inconsistencies of all the capital letters with what comes above and below}
-
-We need the following technical condition to make this intuition precise: 
-we assume that sampling a random neighbor of a point is efficient.
+The intuition for building error-correcting codes from HILL-entropy secure sketches is as follows. Consider a function $\rec$ where $\rec (w', \sketch(w)) = w$ when $\dis(w, w')\leq t$.  When we consider the distribution $W$, to have  $H^{\hill}_{\epsilon, s_{sec}}(W|\sketch(W))\ge \tilde{m}$, there must be a distribution $Y$ with $\Hav(Y | \sketch(W))\geq \tilde{m}$ and $Y| \sketch(W)$ is computationally indistinguishable from $W | \sketch(W)$.  Since we know that $\rec$ succeeds with high probability, this means $\rec$ must succeed on $Y$ with high probability.  In particular, $\Pr_{y\in Y} [y'\leftarrow B_t(y) \wedge \rec(y', \sketch(y)) = y ]\geq 1-\epsilon$.  This means we can construct a set $C$ out of the points in the support of $Y$.  Then $C$ will be an error correcting code and $\rec$ an efficient decoder.  We can then use standard arguments to turn this code into an information theoretic sketch.  
+%\lnote{this intuition is confusing, esp. given notational inconsistencies of all the capital letters with what comes above and below}
+To make this intuition precise, we need an additional technical condition:  sampling a random neighbor of a point is efficient.
 \begin{definition}
 We say a metric space $(\mathcal{M}, \dis)$ is $(s_{sam}, t)$-\emph{neighborhood efficently-samplable} if there exists a randomized circuit $\sample$ of size $s_{sam}$ that for all $t'\leq t$, $\sample (x, t')$ outputs a random point at distance $t'$ of $x$.  
 %That is $\exists \sample$ of size at most $s$ such that $\forall x\in \mathcal{M},$
@@ -360,7 +360,7 @@ We say a metric space $(\mathcal{M}, \dis)$ is $(s_{sam}, t)$-\emph{neighborhood
 %\Delta(\sample(x, t') , \{x'| \dis(x,x') = t'\})=0
 %\]
 \end{definition}
-We require that \sample returns a point different from $x$ to ensure that each $B_t(x)$ contains at least one other point.  While we could consider metric spaces where balls only contain their center, secure sketches are trivial in this context.
+We require that \sample returns a point different from $x$ to ensure that each $B_t(x)$ contains at least one other point.  While we could consider metric spaces where balls only contain their center, secure sketches are not interesting in this context.
 
 %We will concentrate on metrics where the size of each ball is fixed.  We say a metric space that obeys this property is regular~(using terminology from graph theory).  This will allow us to show that the neighbor of a uniformly chosen point is also uniformly random.  
 %\begin{definition}
@@ -487,20 +487,19 @@ Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ 
 \end{definition}
 This is a slightly stronger formulation than usual, in that we require the code to correct random errors of every size $t'<t$. \footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compare to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 
-Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. \lnote{notation here is messed up: why are we using $W$ for the code and $X$ for the input distribution in theorem 3.6?}
-\begin{definition}
-Let $W$ be a distribution over space $\mathcal{M}$.  We say that $W$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
-$\Pr_{w\leftarrow W}[\rec(\sample(w, t')) \neq w]<\epsilon$.
+Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. \begin{definition}
+Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
+$\Pr_{c\leftarrow C}[\rec(\sample(c, t')) \neq c]<\epsilon$.
 \end{definition}
 An average error Shannon code is convertible to a maximal error Shannon code with a small loss.  We use the following pruning argument from Cover and Thomas~\cite[Pages 202-204]{cover2006elements} (we provide a proof in \secref{sec:proof of average to maximal error}):
 \begin{lemma}
 \label{lem:averageToMaximalError}
-Let $W$ be a distribution with $\Hoo(W)\geq k$ and let $W$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$.  There is a set $W'$ with $|W'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
+Let $C$ be a distribution with $\Hoo(C)\geq k$ and let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$.  There is a set $C'$ with $|C'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
 \end{lemma}
 
 We are now ready to show our main result: HILL-entropy secure sketches imply maximal-error Shannon codes~(proof in \secref{sec:proof of thm sketch implies code}).
 \begin{theorem}\label{thm:impSketchArbitraryW}
-Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an $(\epsilon,s_{sec})$-HILL-entropy $(\mathcal{M}, m, k, t)$-secure sketch \lnote{why did we switch from $\tilde{m}$ to $k$?} with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists $x$ and a set $W'$ with $|W'|\geq 2^{k-1}$ that is a $(t, 2(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
+Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an $(\epsilon,s_{sec})$-HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists $x$ and a set $C$ with $|C'|\geq 2^{\tilde{m}-1}$ that is a $(t, 2(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
 %Let $W$ be a flat distribution~(all points in the support of $W$ have the same probability) over $\mathcal{M}$ where $\Hoo(W)\geq k$ and   Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$.  If $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $O(s_{neigh}+s_{rec})$, then $\exists x, W'$ where $|W'|\geq |W|/2 \geq 2^{k-1}$ such that $W'$ is a $(t, 2\epsilon)$ Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
 \end{theorem}
 %The code provided in \thref{thm:impSketchArbitraryW} is weaker than a Shannon error correcting code~\cite{shannon1948}.  In a Shannon code, for all codewords $c, \Pr[c'\leftarrow \sample(c) \wedge \rec(c') \neq c]<\epsilon$.  Bounds for this type of code are well known~\cite{shannon1948} and efficient constructions exist~\cite{forney1966}.  Requiring proper decoding for only a random codeword is a significant restriction particularly in the case where the probability of outcomes in $W$ differs significantly~(e.g. where $\exists w_1,w_2\in W$ such that $\Pr[W=w_1]/\Pr[W=w_2] = \ngl$).  However, this is still a meaningful set of error correcting codes.  A similar question is considered in Appendix C of \cite{DBLP:journals/siamcomp/DodisORS08}.  They are able to achieve results for Hamming codes~(as they are not restricted to sampling a polynomial portion of the space)\bnote{expand on this explanation}.
@@ -654,6 +653,7 @@ Define $\sketch, \rec$ as follows:%The following construction is a computational
 \item Sample $\vA\in\Fq^{m\times n}, X\in\Fq^n$ uniformly.
 \item Output $s = (\vA, \vA X+w)$.
 \\
+\\
 \end{enumerate}
  \end{minipage} &
 \begin{minipage}{3in}
@@ -661,9 +661,9 @@ Define $\sketch, \rec$ as follows:%The following construction is a computational
 \begin{enumerate}
 \item \underline{Input}: $(w', s)$ (where the Hamming distance between $w'$ and $w$ is at most $t$).
 \item Parse $s$ as $(\vA, \vect{C})$; let $\vect{D}=\vect{C}-w'$.
-\item Let $X' = \mathcal{I}_t(\vA, \vect{D})$\\
-Set $X'_{1,..., n}$ be the first half bits of $X'$.		 
-\item Output $X'_{1,...,n}$.
+\item Let $X = \mathcal{I}_t(\vA, \vect{D})$\\
+Set $X_{1,..., n/2}$ be the first of $X$.		 
+\item Output $X_{1,...,n/2}$.
 \end{enumerate}
 \end{minipage} 
 \end{tabular}
@@ -1402,11 +1402,11 @@ This is a contradiction.  The statement of~\lemref{lem:averageToMaximalError} fo
 \subsection{Proof of \thref{thm:impSketchArbitraryW}}
 \label{sec:proof of thm sketch implies code}
 \begin{proof}
-  Let $X$ be an arbitrary distribution of minentropy $m$.  Let $W$ be a distribution over $\mathcal{M}$ with $\Hoo(W)\geq k$ such that 
+  Let $X$ be an arbitrary distribution of min-entropy $m$.  Let $Y$ be a distribution over $\mathcal{M}$ with $\Hoo(Y)\geq k$ such that 
 \[ 
-\delta^{\mathcal{D}_s}((X, \sketch(X)), (W, \sketch(X)))<\epsilon.
+\delta^{\mathcal{D}_s}((X, \sketch(X)), (Y, \sketch(X)))<\epsilon.
 \]  
-where  $s = O(t(s_{neigh}+s_{rec}))$.  One such $W$ must exist by the definition of conditional HILL entropy.
+where  $s = O(t(s_{neigh}+s_{rec}))$.  One such $Y$ must exist by the definition of conditional HILL entropy.
 %Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$. Let $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $s=O(s_{neigh}+s_{rec})$.  This implies that $H^{\hill}_{\epsilon, s}(X|\sketch(X))\geq k$.  
 Define $D$ as:
 \begin{enumerate}
@@ -1417,12 +1417,12 @@ Define $D$ as:
 \item Output $1$.
 \end{enumerate}
   By correctness of the sketch $ \expe D(X, \sketch(X)) \ge 1-\delta$.  Since 
-$\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon.$ then $D(W, SS(X))>1-\epsilon-\delta$.  This means at least one $x'$ where this equation holds.  Fix one such $x'$.  
+$\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon.$ then $D(Y, SS(X))>1-\epsilon-\delta$.  This means at least one $x'$ where this equation holds.  Fix one such $x'$.  
 %This implies that $D(W, \sketch(x'))\geq 1-\epsilon$.  
-Thus, for all $t', 1\leq t'\leq t$ on a random $w$
-\[ \Pr_{w\leftarrow W}[w'\leftarrow \sample(w, t') \wedge \rec(w', \sketch(x')) = w]\geq 1-\epsilon-\delta.\]  
+Thus, for all $t', 1\leq t'\leq t$ on a random $y$
+\[ \Pr_{y\leftarrow Y}[y'\leftarrow \sample(y, t') \wedge \rec(y', \sketch(x')) = y]\geq 1-\epsilon-\delta.\]  
 %Thus, $\rec(\cdot, \sketch(x'))$ is a decoding procedure that succeeds on a random neighbor of a random codeword with probability all but $\epsilon$.  
-Thus,  $W$ is a $(t, \epsilon)$-average error Shannon code with recovery $\rec(\cdot, \sketch(x'))$.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
+Thus,  $Y$ is a $(t, \epsilon)$-average error Shannon code with recovery $\rec(\cdot, \sketch(x'))$.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
 \end{proof}
 
 %\subsection{Proof of \lemref{lem:i t constant time}}
