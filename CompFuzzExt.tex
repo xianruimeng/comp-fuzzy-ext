@@ -603,7 +603,7 @@ Together \corref{cor:rec yields sketch} and \propref{prop:lower bound entropy dr
 
 \subsection{Defining Noisy Computational Conductors}
 \label{sec:unp secure sketch}
-In \secref{sec:imp HILL sketch}, we showed that defining a computational secure sketch using HILL entropy connects the parameters to the best information-theoretic sketches.  The basic problem is that an adversary had access to both $X$ and $SS(X)$ and could test if neighborhoods correctly decoded.  However, our sketch outputs a new random variable, this problem does not occur.  Instead of building a computational sketch, we will build a computational conductor.  We adapt the definition of a noisy conductor from~\cite{KanukurthiR09} to the computational setting:
+In \secref{sec:imp HILL sketch}, we showed that defining a noisy computational conductor using HILL entropy connects the parameters to the best information-theoretic sketches.  The basic problem is that an adversary had access to both $X$ and $SS(X)$ and could test if neighborhoods correctly decoded.  However, our sketch outputs a new random variable, this problem does not occur.  Instead of building a computational sketch, we will build a computational conductor.  We adapt the definition of a noisy conductor from~\cite{KanukurthiR09} to the computational setting:
 %\begin{definition}\protect{\cite[Definition]{KanukurthiR09}}
 %The procedures $(\sketch, \rec)$ are an $(\mathcal{M}, m, \tilde{m},t, \epsilon)$-\emph{weakly robust fuzzy conductor} if:
 %\begin{enumerate}
@@ -632,7 +632,7 @@ We say that $(\sketch, \rec)$ is $(\epsilon, s_{sec})$ hard with error probabili
 If $m=\tilde{m}$ we say a conductor is \emph{lossless} and we omit the parameter $\tilde{m}$.
 \end{definition}
 %We make $s_{sketch}, s_{rec}$ explicit in the definition as we are considering computationally bounded adversaries and the definition is only meaningful if both $s_{rec}$ and $s_{sketch}$ are significantly smaller than $s_{sec}$.  
-In \secref{sec:comp fuzzy extractors}, we show a natural construction of a computational fuzzy extractor from a noisy computational conductor that meets \defref{def:comp secure sketch}.  We show in the next section that a lossless construction is achievable for the uniform distribution using the LWE problem.
+In \secref{sec:comp fuzzy extractors}, we show a natural construction of a computational fuzzy extractor from a noisy computational conductor that meets \defref{def:comp secure sketch}.  We show in the next section that a lossless construction is achievable for the uniform distribution using the $\LWE$ problem.
 
 \section{Lossless conductor based on \class{LWE}}
 \label{sec:fuzzyCompExt}
@@ -818,7 +818,7 @@ We consider the setting where the running time of $\mathcal{I}_t$ grows with $t$
 %\end{lemma}
 \begin{lemma}[Efficiency of $\mathcal{I}_t$ when $t\leq d\log n (m/n-1)$]
 \label{lem:i t poly time}
-Let $\vA, \vA X+W$ be a  $(n,m, q, \chi)$-LWE instance that is a unique witness relation~(except with negligible probability).  Assume that $W$ is split into $m$ blocks of length $b$ and let $\dis$ be the Hamming distance over alphabet $2^b$.  Let $d$ be a constant and assume that $\dis(W, W')\leq t$ where $t\leq d\log n(m/n-1)$.  Then $\mathcal{I}_t$ runs in expected time $O(n^{2d}(n^3\log q))$ on input distribution $\vA, \vA X+W - W'$ and outputs $W$ for all but a negligible fraction of inputs over $\vA, \vA X+W - W'$.
+Let $\vA, \vA X+W$ be a  $\distLWE_{n,m, q, \chi}$ instance that is a unique witness relation~(except with negligible probability).  Assume that $W$ is split into $m$ blocks of length $b$ and let $\dis$ be the Hamming distance over alphabet $2^b$.  Let $d$ be a constant and assume that $\dis(W, W')\leq t$ where $t\leq d\log n(m/n-1)$.  Then $\mathcal{I}_t$ runs in expected time $O(n^{2d}(n^3\log q))$ on input distribution $\vA, \vA X+W - W'$ and outputs $W$ for all but a negligible fraction of inputs over $\vA, \vA X+W - W'$.
 \end{lemma}
 \textbf{Note:} If we consider the setting where $t\leq m/n-1$, then $\mathcal{I}_t$ will run in expected time $O(n^3\log n)$.  Our main theorems apply when $t\leq m/n$ with slightly better parameters.  We concentrate on the setting $t\leq d\log n(m/n-1)$.  Also even though we are correcting $O(\log n)$ errors, this a super polynomial number of error patterns and the running time of $\mathcal{I}_t$ is significantly better than exhaustive search over these error patterns.
 
@@ -875,7 +875,7 @@ Let $A\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and let $x\in\Fq^{n+\alpha}$.  No PP
 }
 We now define the decisional $\LWE$ problem with symbol fixing errors is defined as follows: 
 \begin{problem}[$\distLWE$ w/ symbol fixing errors]
-Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and output $\vA X + W$. The decisional learning with error problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
+Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and output $\vA X + W$. The decisional learning with error problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
 \end{problem}
 
 The dist-$\LWE_{n, m, q, W}$ with symbol fixing sources is implied by standard $\distLWE_{n, m, q, \chi}$~(proof in \secref{sec:proof of block theorem}).
