@@ -193,6 +193,7 @@
 \newcommand{\vt}{\vect{t}}
 \newcommand{\vu}{\vect{u}}
 \newcommand{\vF}{\vect{F}}
+\newcommand{\recout}{x}
 \newcommand{\ignore}[1]{}
 
 \title{\textbf{Computational Fuzzy Extractors}}
@@ -202,6 +203,7 @@
 \maketitle
 
 \begin{abstract} 
+\lnote{This is an old abstract, no longer correct}
 One-message information reconciliation protocols called secure sketches remove noise
 from secrets without revealing too much about them.  They are a crucial ingredient in
 fuzzy extractors, which provide an information-theoretic mechanism for reliable key derivation from noisy sources.
@@ -212,6 +214,7 @@ We overcome these bounds by considering computational, rather than information-t
 
 \begin{itemize}
 \item \textbf{New Definitions:} In seeking the right computational relaxation of the information-theoretic definition of a secure sketch, we rule out most natural one, which uses HILL pseudoentropy.  We do so by demonstrating that a secure sketch defined via HILL pseudoentropy is subject to the same coding-based  bounds as the information-theoretic secure sketch.  We then find a different relaxation, using unpredictability entropy, and show that it can be used to construct computational fuzzy extractors.
+
 
 \item \textbf{New Construction:} We build a lossless secure sketch for uniform sources and certain other sources of high entropy (namely, symbol-fixing sources, in which each dimension is either uniform or fixed),  based on the hardness of the LWE problem.  This construction requires us to show that the decision version of LWE is secure when a small number of dimensions have no error---a result that may be of independent interest.
 \end{itemize}
@@ -236,22 +239,22 @@ the best code that can correct $t$ random errors with high probability~\cite[Pro
 %(the argument is the same as in \cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}\lnote{probably we should double-check that this is correct}).
 
 \paragraph {Our Contributions}
-To see if entropy loss can be improved, we explore secure sketches with the relaxed secrecy requirement that is computational rather than information-theoretic.  The definition of  \cite{DBLP:journals/siamcomp/DodisORS08} uses min-entropy as the information-theoretic measure of secrecy. 
- Finding the right computational measure of secrecy requires us to consider different possible computational analogs of min-entropy.
+To see if entropy loss can be improved, we explore secure sketches with the relaxed secrecy requirement that is computational rather than information-theoretic.  
+The natural relaxation of the secrecy requirement is to require HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99}~(namely, that the distribution of $w$ conditioned on $s$ be \emph{indistinguishable} from a high-min-entropy distribution).  Under this definition, using the paradigm for constructing fuzzy extractors from~\cite{DBLP:journals/siamcomp/DodisORS08} would yield a pseudorandom key.  
 
-The natural relaxation of this secrecy requirement is to require HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99}~(namely, that the distribution of $w$ conditioned on $s$ be \emph{indistinguishable} from a high-min-entropy distribution).  Under this definition, using the paradigm for constructing fuzzy extractors from~\cite{DBLP:journals/siamcomp/DodisORS08} would yield a pseudorandom key.  
-
-On the negative side, we show defining sketches using HILL entropy is unlikely to be fruitful. We prove in \corref{cor:rec yields sketch} that the entropy loss of such secure sketches is subject to the same coding bounds as the ones that constrain information-theoretic secure sketches.
+On the negative side, we show defining sketches using HILL entropy is unlikely to be fruitful. We prove in Theorem~\ref{thm:impSketchArbitraryW} that the entropy loss of such secure sketches is subject to the same coding bounds as the ones that constrain information-theoretic secure sketches.
 %Furthermore, we have (asymptotic)~constructions that meet these bounds.
 
-On the positive side, we show that a different relaxation of the security requirement can in fact lead to a \emph{lossless} construction of secure sketches, in which the knowledge of $s$ does not reduce entropy of $w$ (see Theorem~%s~%\ref{thm:lossless secure sketch} and
-~\ref{thm:lossless secure conductor log})).  This relaxation requires that $w$ have high \emph{unpredictability} entropy conditioned on $s$ (unpredictability  entropy is a computational notion originally defined in \cite[Section 5]{DBLP:conf/eurocrypt/HsiaoLR07}).  We demonstrate how to build such lossless sketches based on the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey},  which says that decoding a random linear code is computationally difficult. 
+On the positive side, we show that a different relaxation of the definition can in fact lead to a \emph{lossless} construction. The idea is to give up on reconstructing $w$ and, instead, to focus on producing a consistent string $\recout$  each time $\rec(w', s)$ is called.  This string $\recout$ is  required to have high HILL entropy even conditioned on $s$. Because this object \emph{conducts} the entropy from $w$ to $\recout$ and tolerates noise in its input, following \cite{CRVW02,KanukurthiR09}, we call it a \emph{computational fuzzy conductor}.
+
+Given this relaxation, we are able to build \emph{lossless} computational fuzzy conductors, in which the HILL entropy of $\recout$ conditioned on $s$ is the same as the entropy of $w$ without conditioning on anything---i.e., before $\sketch$ is run (see Theorem~%s~%\ref{thm:lossless secure sketch} and
+~\ref{thm:lossless secure conductor log})).  We demonstrate how to build such lossless conductors based on the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey},  which says that decoding a random linear code is computationally difficult. 
 
 We show that this relaxation of the security requirement is  useful.  Specifically, we also define the notion of computational fuzzy extractors, in which the extracted key is required to be pseudorandom---i.e., to look random to any computationally bounded observer.
 We show that our relaxed notion of secure sketches is sufficient to construct computational  fuzzy extractors via a simple and efficient construction, utilizing reconstructive extractors~\cite{barak-computational}.  The resulting fuzzy extractor produces a key that is as long as the entropy of $w$, minus only the loss necessary in any extractor construction.
 \lnote{it would be good to find another application} 
 
-Both our lossless secure sketch and the resulting fuzzy extractor are built via the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} already used in prior work.  To be able to apply the LWE assumption, we use a random linear code (unfortunately, our decoding algorithm can only reconcile a logarithmic number of differences).  We utilize the recent result of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} that shows security of LWE when the error vector comes from the uniform distribution, with each coordinate ranging over a small interval.  The LWE error vector, in our case, is the input $w$ itself.  To utilize the result of~\cite{dottling2012}, we need to assume that the input comes from the uniform distribution. We are able to relax this limitation somewhat and allow $w$ to come from a symbol-fixing source~\cite{KZ07} (where each dimension is either uniform or fixed). This relaxation requires new results about the hardness of LWE when samples have a fixed error vector, which may be of independent interest~(\thref{thm:blockLWE}).
+Both our lossless fuzzy conductor and the resulting fuzzy extractor are built via the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} already used in prior work.  To be able to apply the LWE assumption, we use a random linear code (unfortunately, our decoding algorithm can only reconcile a logarithmic number of differences).  We utilize the recent result of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} that shows security of LWE when the error vector comes from the uniform distribution, with each coordinate ranging over a small interval.  The LWE error vector, in our case, is the input $w$ itself.  To utilize the result of~\cite{dottling2012}, we need to assume that the input comes from the uniform distribution. We are able to relax this limitation somewhat and allow $w$ to come from a symbol-fixing source~\cite{KZ07} (where each dimension is either uniform or fixed). This relaxation requires new results about the hardness of LWE when samples have a fixed error vector, which may be of independent interest~(\thref{thm:blockLWE}).
 
 \section{Preliminaries}
 \label{sec:preliminaries}
@@ -339,8 +342,8 @@ $(Y, Z)$, such that $\tilde{H}_\infty(Y|Z)\geq k$ and $\delta^{\mathcal{D}_{s_{s
 
 Intuitively, conditional HILL entropy is as good as average min-entropy for all computationally-bounded observers.  Thus, redefining secure sketches using HILL entropy is a  natural relaxation of the original information-theoretic definition; in particular, the construction in \lemref{lem:fuzzy ext construction} would yield pseudorandom outputs if the secure sketch ensured high HILL entropy.  However, as we show in Section~\ref{sec:imp HILL sketch}, such secure sketches cannot  perform much better than the information-theoretic ones.
 
-Instead, in \secref{sec:unp secure sketch}, we relax the definition by allowing by outputting a new random variable that can be recovered when $\dis (w, w')\leq t$.  This object is the computational analogue of a noisy conductor~\cite{KanukurthiR09}.%This is a noisy computational conductor define computational secure sketches using unpredictability, and work with that definition for the rest of the paper.  
-  In \secref{sec:comp fuzzy extractors}, we show that computational fuzzy extractors can be constructed from noisy computational conductors.
+Instead, in \secref{sec:unp secure sketch}, we relax the definition by allowing by outputting a new random variable that can be recovered when $\dis (w, w')\leq t$.  This object is the computational analogue of a fuzzy conductor~\cite{KanukurthiR09}.%This is a noisy computational conductor define computational secure sketches using unpredictability, and work with that definition for the rest of the paper.  
+  In \secref{sec:comp fuzzy extractors}, we show that computational fuzzy extractors can be constructed from  computational fuzzy conductors.
 %The size of the circuits becomes important, we would like the \rec procedure to be computable by a circuit significantly smaller than the \hill entropy circuit size.  We simply include both of these parameters in the definition.  We review other definitions of computational entropy in Appendix~\ref{sec:notionsEntropy}.
 
 
@@ -601,9 +604,9 @@ $2(\epsilon+\delta)$.
 %
 %\end{proof}
 
-\subsection{Defining Noisy Computational Conductors}
+\subsection{Defining  Computational Fuzzy Conductors}
 \label{sec:unp secure sketch}
-In \secref{sec:imp HILL sketch}, we showed that defining a noisy computational conductor using HILL entropy connects the parameters to the best information-theoretic sketches.  The basic problem is that an adversary had access to both $X$ and $SS(X)$ and could test if neighborhoods correctly decoded.  However, our sketch outputs a new random variable, this problem does not occur.  Instead of building a computational sketch, we will build a computational conductor.  We adapt the definition of a noisy conductor from~\cite{KanukurthiR09} to the computational setting:
+In \secref{sec:imp HILL sketch}, we showed that defining a  computational fuzzy conductor using HILL entropy connects the parameters to the best information-theoretic sketches.  The basic problem is that an adversary had access to both $X$ and $SS(X)$ and could test if neighborhoods correctly decoded.  However, our sketch outputs a new random variable, this problem does not occur.  Instead of building a computational sketch, we will build a computational conductor.  We adapt the definition of a fuzzy conductor from~\cite{KanukurthiR09} to the computational setting:
 %\begin{definition}\protect{\cite[Definition]{KanukurthiR09}}
 %The procedures $(\sketch, \rec)$ are an $(\mathcal{M}, m, \tilde{m},t, \epsilon)$-\emph{weakly robust fuzzy conductor} if:
 %\begin{enumerate}
@@ -622,7 +625,7 @@ In \secref{sec:imp HILL sketch}, we showed that defining a noisy computational c
 %\end{definition}
 %We now provide a definition of a robust computational sketch using unpredictability entropy:
 \begin{definition}\label{def:comp secure sketch}
-A pair of randomized procedures $(\sketch, \rec)$ is a $(\mathcal{M},m, \tilde{m}, \epsilon,  t)$-\emph{noisy computational conductor} if the following properties hold:
+A pair of randomized procedures $(\sketch, \rec)$ is a $(\mathcal{M},m, \tilde{m}, \epsilon,  t)$-\emph{computational fuzzy conductor} if the following properties hold:
 \begin{enumerate}
 \item The sketching procedure \sketch on input $w\in\mathcal{M}$ returns a bit string $s\in\{0,1\}^*$ and runs in expected time $s_{sketch}$.
 \item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $s\in\{0,1\}^*$.  The \emph{correctness} property of secure sketches guarantees that if $d(w,w')\leq t$, then $\Pr[\rec(w',\sketch(w))\neq \rec(w, \sketch(w))] = \delta$ and \rec runs in expected time $s_{rec}$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rec.  
@@ -632,7 +635,7 @@ We say that $(\sketch, \rec)$ is $(\epsilon, s_{sec})$-secure with error probabi
 If $m=\tilde{m}$ we say a conductor is \emph{lossless} and we omit the parameter $\tilde{m}$.
 \end{definition}
 %We make $s_{sketch}, s_{rec}$ explicit in the definition as we are considering computationally bounded adversaries and the definition is only meaningful if both $s_{rec}$ and $s_{sketch}$ are significantly smaller than $s_{sec}$.  
-In \secref{sec:comp fuzzy extractors}, we show a natural construction of a computational fuzzy extractor from a noisy computational conductor that meets \defref{def:comp secure sketch}.  We show in the next section that a lossless construction is achievable for the uniform distribution using the $\LWE$ problem.
+In \secref{sec:comp fuzzy extractors}, we show a natural construction of a computational fuzzy extractor from a computational fuzzy conductor that meets \defref{def:comp secure sketch}.  We show in the next section that a lossless construction is achievable for the uniform distribution using the $\LWE$ problem.
 
 \section{Lossless conductor based on \class{LWE}}
 \label{sec:fuzzyCompExt}
@@ -853,11 +856,11 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 \end{proof}
 
 For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe how to set $q = \poly(n)$.  
-\thref{thm:lossless secure conductor log} shows that a noisy computational conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point $B$ and thus providing no information about either $X$ or $W$.  A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
+\thref{thm:lossless secure conductor log} shows that a computational fuzzy conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point $B$ and thus providing no information about either $X$ or $W$.  A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
 \section{\consref{cons:informal construction} with Symbol Fixing Sources}
 \label{sec:LWE block fixing sources}
-In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a noisy computational conductor for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
+In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a computational fuzzy conductor for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
 \begin{definition}
 Let $W = (W_1,..., W_m)$ be a distribution where $W_i$ takes values over $\{0,1\}^b$, we say that a distribution is a $(m-\alpha)$-\emph{symbol fixing source} if $H_\infty(W)\geq (m - \alpha)b$ and for all $W_i$ one of the following conditions is met:
 \begin{itemize}
@@ -886,7 +889,7 @@ The dist-$\LWE_{n, m, q, W}$ with symbol fixing sources is implied by standard $
 Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  Then the $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha, m+\alpha, q, W}$ w/ symbol fixing sources problem.
 \end{theorem}
 
-\thref{thm:blockLWE} allows us to construct a noisy computational conductor from block-fixing sources: 
+\thref{thm:blockLWE} allows us to construct a computational fuzzy conductor from block-fixing sources: 
 
 %\begin{theorem}
 %\label{thm:lossless block sketch}
@@ -941,7 +944,7 @@ $H^{\hill}_{\epsilon+\epsilon_{ext}, s_{sec}}(\ext (X, U_d) | Z, U_d)\geq \ell$.
 %\end{lemma}
 We are now ready to provide a computational analogue of \lemref{lem:fuzzy ext construction}:
 \begin{lemma}
-Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-noisy computational conductor that is $(\epsilon, s_{sec})$ hard with error $\delta$ and denote the range $\rec$ by $\chi$.  Let $\ext:\chi \times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an $(\tilde{m}, \epsilon_{ext})$ extractor.  Then the following $(\gen , \rep)$ is an $(\mathcal{M}, m, \ell, t)$-computational fuzzy extractor that is $(\epsilon + \epsilon_{ext}, s_{sec}- s_{ext})$-hard with error $\delta$.
+Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ hard with error $\delta$ and denote the range $\rec$ by $\chi$.  Let $\ext:\chi \times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an $(\tilde{m}, \epsilon_{ext})$ extractor.  Then the following $(\gen , \rep)$ is an $(\mathcal{M}, m, \ell, t)$-computational fuzzy extractor that is $(\epsilon + \epsilon_{ext}, s_{sec}- s_{ext})$-hard with error $\delta$.
 \end{lemma}
 %reconstructive extractor with $(\tilde{m}-\log 1/\epsilon, \epsilon)$-reconstruction $(C, D)$.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, s_{sec}/(|C|+|D|), s_{rec}, 5\epsilon)$-computational fuzzy extractor:
 %\begin{itemize}
