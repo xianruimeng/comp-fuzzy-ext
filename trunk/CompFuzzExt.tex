@@ -245,7 +245,7 @@ On the negative side, we show defining sketches using HILL entropy is unlikely t
 %Furthermore, we have (asymptotic)~constructions that meet these bounds.
 
 On the positive side, we show that a different relaxation of the security requirement can in fact lead to a \emph{lossless} construction of secure sketches, in which the knowledge of $s$ does not reduce entropy of $w$ (see Theorem~%s~%\ref{thm:lossless secure sketch} and
-~\ref{thm:lossless secure sketch log})).  This relaxation requires that $w$ have high \emph{unpredictability} entropy conditioned on $s$ (unpredictability  entropy is a computational notion originally defined in \cite[Section 5]{DBLP:conf/eurocrypt/HsiaoLR07}).  We demonstrate how to build such lossless sketches based on the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey},  which says that decoding a random linear code is computationally difficult. 
+~\ref{thm:lossless secure conductor log})).  This relaxation requires that $w$ have high \emph{unpredictability} entropy conditioned on $s$ (unpredictability  entropy is a computational notion originally defined in \cite[Section 5]{DBLP:conf/eurocrypt/HsiaoLR07}).  We demonstrate how to build such lossless sketches based on the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey},  which says that decoding a random linear code is computationally difficult. 
 
 We show that this relaxation of the security requirement is  useful.  Specifically, we also define the notion of computational fuzzy extractors, in which the extracted key is required to be pseudorandom---i.e., to look random to any computationally bounded observer.
 We show that our relaxed notion of secure sketches is sufficient to construct computational  fuzzy extractors via a simple and efficient construction, utilizing reconstructive extractors~\cite{barak-computational}.  The resulting fuzzy extractor produces a key that is as long as the entropy of $w$, minus only the loss necessary in any extractor construction.
@@ -622,7 +622,7 @@ In \secref{sec:imp HILL sketch}, we showed that defining a computational secure 
 %\end{definition}
 %We now provide a definition of a robust computational sketch using unpredictability entropy:
 \begin{definition}\label{def:comp secure sketch}
-A pair of randomized procedures $(\sketch, \rec)$ is a $(\mathcal{M},m, \tilde{m}, \epsilon,  t)$-\emph{computational secure sketch} is a pair of randomized procedures, sketch (\sketch) and recover (\rec), with the following properties:
+A pair of randomized procedures $(\sketch, \rec)$ is a $(\mathcal{M},m, \tilde{m}, \epsilon,  t)$-\emph{noisy computational conductor} is a pair of randomized procedures, sketch (\sketch) and recover (\rec), with the following properties:
 \begin{enumerate}
 \item The sketching procedure \sketch on input $w\in\mathcal{M}$ returns a bit string $s\in\{0,1\}^*$ and runs in expected time $s_{sketch}$.
 \item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $s\in\{0,1\}^*$.  The \emph{correctness} property of secure sketches guarantees that if $d(w,w')\leq t$, then $\Pr[\rec(w',\sketch(w))\neq \rec(w, \sketch(w))] = \delta$ and \rec runs in expected time $s_{rec}$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rec.  
@@ -634,7 +634,7 @@ If $m=\tilde{m}$ we say a conductor is \emph{lossless} and we omit the parameter
 %We make $s_{sketch}, s_{rec}$ explicit in the definition as we are considering computationally bounded adversaries and the definition is only meaningful if both $s_{rec}$ and $s_{sketch}$ are significantly smaller than $s_{sec}$.  
 In \secref{sec:comp fuzzy extractors}, we show a natural construction of a computational fuzzy extractor from a noisy computational conductor that meets \defref{def:comp secure sketch}.  We show in the next section that a lossless construction is achievable for the uniform distribution using the LWE problem.
 
-\section{Lossless sketch based on \class{LWE}}
+\section{Lossless conductor based on \class{LWE}}
 \label{sec:fuzzyCompExt}
 
 In this section we describe our main construction.  The secure sketch is computed via the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\mathcal{I}_t$ be an algorithm that decodes a random linear code with at most $t$ errors~(not necessarily efficient).  We provide an informal description below.
@@ -660,8 +660,9 @@ Define $\sketch, \rec$ as follows:%The following construction is a computational
 \begin{enumerate}
 \item \underline{Input}: $(w', s)$ (where the Hamming distance between $w'$ and $w$ is at most $t$).
 \item Parse $s$ as $(\vA, \vect{C})$; let $\vect{D}=\vect{C}-w'$.
-\item Set $X' = \mathcal{I}_t(\vA, \vect{D}) $. 
-\item Output $w = \vect{C}-\vA X'$.
+\item Let $X' = \mathcal{I}_t(\vA, \vect{D})$\\
+Set $X'_{n/2}$ be the first half bits of $X'$.		 
+\item Output $w = X'_{n/2}$.
 \end{enumerate}
 \end{minipage} 
 \end{tabular}
@@ -676,7 +677,7 @@ In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp19
 The rest of this section is devoted to making these intuitive statements precise.
  We describe the \class{LWE} problem and the security of our construction in \secref{subsec:LWE}.
  %a recent variant due to D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} in \secref{subsec:LWE}.  
-We describe conditions for efficient decoding in \secref{sec:time main construction}.  Finally, in \secref{sec:lossless sketch} we describe parameter settings where our construction yields a lossless secure sketch.\lnote{revise after going through the rest}.
+We describe conditions for efficient decoding in \secref{sec:time main construction}.  Finally, in \secref{sec:lossless conductor} we describe parameter settings where our construction yields a lossless secure sketch.\lnote{revise after going through the rest}.
 
 
 
@@ -704,10 +705,10 @@ Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q 
 %H^{\unp}_{\epsilon, s_{sec}}(X | \vA, \vA X+E) =H^{\unp}_{\epsilon, s'_{sec}}(E| \vA, \vA X+E) \geq n\log q $ for $s'_{sec}\approx s_{sec}$.  
 \end{proposition}
 
-We cannot immediately adapt the construction in \consref{cons:informal construction} to the LWE problem.  Standard formulations of LWE require the error term to come from the discretized Gaussian distribution.  
+We cannot immediately adapt the construction in \consref{cons:informal construction} to the $\LWE$ problem.  Standard formulations of $\LWE$ require the error term to come from the discretized Gaussian distribution.  
 %\subsection{LWE with uniform errors}
 %\label{subsec:LWE uniform error}
-Recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of LWE with the uniform distribution over an interval reduces to the security of LWE where the noise comes from the discretized Gaussian.  This allows us to directly encode $w$ as the error term in an LWE problem by splitting it properly into $m$ blocks.
+Recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$ with the uniform distribution over an interval reduces to the security of $\LWE$ where the noise comes from the discretized Gaussian.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it properly into $m$ blocks.
 %As stated above this has two advantages for Construction~\ref{cons:LWESecureSketch}: 1) the bits of $W$ can be used directly and \rep can output $w$ instead of $sam_w$ 2) there is a fixed number of bits required to sample each dimension.  
 We present the formulation of D\"{o}ttling and M\"{u}ller-Quade: 
 %\begin{lemma}~\protect{~\cite[Theorem 5]{dottling2012}}
@@ -823,9 +824,9 @@ Let $\vA, \vA X+W$ be a  $(n,m, q, \chi)$-LWE instance that is a unique witness 
 
 %\textbf{Problems:} Construction~\ref{cons:LWESecureSketch} does not meet Definition~\ref{def:comp secure sketch}.  This is because the sampling algorithm may not be invertible.  Furthermore, in standard $\LWE$ the sampling algorithm is Gaussian and there is no fixed number of bits used to sample error in any dimension.  Approximating the Gaussian distribution using a fixed number of bits may be possible but there are still two error patterns which require a significantly different number of bits.  We will address both of these problems by sampling the error from a uniform distribution.
 
-\subsection{Lossless Secure Sketch}
-\label{sec:lossless sketch}
-We now state a setting of parameters that yields a lossless sketch.  
+\subsection{Lossless Conductor}
+\label{sec:lossless conductor}
+We now state a setting of parameters that yields a lossless conductor.  
 
 %\begin{theorem}
 %\label{thm:lossless secure sketch}
@@ -837,8 +838,8 @@ We now state a setting of parameters that yields a lossless sketch.
 %\end{theorem}
 
 \begin{theorem}
-\label{thm:lossless secure sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be uniform over $\zo^{(c+d)/d(n\log b)}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless secure sketch.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\sketch(W)) = H_\infty(W)$
+\label{thm:lossless secure conductor log}
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be uniform over $\zo^{(c+d)/d(n\log b)}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless conductor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\sketch(W)) = H_\infty(W)$
 % for following parameters:
 %\[
 %(\zo^{(c+d)/dn\log b}, |W|, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)
@@ -851,11 +852,11 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 \end{proof}
 
 For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe how to set $q = \poly(n)$.  
-\thref{thm:lossless secure sketch log} shows that a computational secure sketch can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point $B$ and thus providing no information about either $X$ or $W$.  A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
+\thref{thm:lossless secure conductor log} shows that a noisy computational conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point $B$ and thus providing no information about either $X$ or $W$.  A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
 \section{\consref{cons:informal construction} with Symbol Fixing Sources}
 \label{sec:LWE block fixing sources}
-In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a computational secure sketch for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
+In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a noisy computational conductor for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
 \begin{definition}
 Let $W = (W_1,..., W_m)$ be a distribution where $W_i$ takes values over $\{0,1\}^b$, we say that a distribution is a $(m-\alpha)$-\emph{symbol fixing source} if $H_\infty(W)\geq (m - \alpha)b$ and for all $W_i$ one of the following conditions is met:
 \begin{itemize}
@@ -884,7 +885,7 @@ The dist-$\LWE_{n, m, q, W}$ with symbol fixing sources is implied by standard $
 Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  Then the $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha, m+\alpha, q, W}$ w/ symbol fixing sources problem.
 \end{theorem}
 
-\thref{thm:blockLWE} allows us to construct a computational secure sketch from block-fixing sources: 
+\thref{thm:blockLWE} allows us to construct a noisy computational conductor from block-fixing sources: 
 
 %\begin{theorem}
 %\label{thm:lossless block sketch}
@@ -897,7 +898,7 @@ Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-
 
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)n/d+\alpha)b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms.   There is a setting of $q = poly(n)$ such that \consref{cons:informal construction} is a lossless secure sketch.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\sketch(W)) = H_\infty(W)$ for %the following parameters:
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)n/d+\alpha)b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms.   There is a setting of $q = poly(n)$ such that \consref{cons:informal construction} is a lossless conductor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\sketch(W)) = H_\infty(W)$ for %the following parameters:
 %\[
 %(\zo^{((c+d)n/d+\alpha)b}, \Hoo(W),\Hoo(W), \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)\text{-computational secure sketch}
 %\]
@@ -921,7 +922,7 @@ Any efficient fuzzy extractor is also a computational fuzzy extractor with the s
 
 \textbf{Note: }A computational fuzzy extractor can be constructed by making the extractor computational~(using a standard extractor and then running a pseudorandom generator on its output).  However, the entropy loss due to error correction may mean there is not be enough remaining bits to run a pseudorandom generator.  Depending on the application, it may be appropriate to make the sketch and/or extractor computational.
 
-Recall, we defined computational secure sketches using unpredictability entropy~(\defref{def:comp secure sketch}).  It is not known if unpredictability entropy can be extracted from, so we cannot use the construction of \lemref{lem:fuzzy ext construction}.  However, unpredictability entropy implies Yao entropy~(\defref{def:yao entropy}) and this can be extracted from using a reconstructive extractor~(defined in~\cite{barak-computational}).  
+Recall, we defined noisy computational conductor using unpredictability entropy~(\defref{def:comp secure sketch}).  It is not known if unpredictability entropy can be extracted from, so we cannot use the construction of \lemref{lem:fuzzy ext construction}.  However, unpredictability entropy implies Yao entropy~(\defref{def:yao entropy}) and this can be extracted from using a reconstructive extractor~(defined in~\cite{barak-computational}).  
 \begin{definition}
 An $(\ell, \epsilon)$-reconstruction for a function $\rext:\{0,1\}^n\times \{0,1\}^d\rightarrow \{0,1\}^m\times\{0,1\}^d$~(where the last $d$ outputs are equal to the last $d$ input bits) is a pair of machines $C$ and $D$, where $C:\{0,1\}^n\rightarrow \{0,1\}^\ell$ is a randomized Turing machine and $D^{(\cdot)}:\{0,1\}^\ell\rightarrow \{0,1\}^n$ is a randomized oracle Turing machine which runs in time polynomial in $n$.  Furthermore, for every $x$ and $T$, if $|\Pr[T(\rext(x, U_d)) =1] -\Pr[T(U_m\times U_d)=1]|>\epsilon$, then $\Pr[D^T(C^T(x))=x]>1/2$~(the probability is over the random choices of $C$ and $D$).
 \end{definition}
@@ -931,7 +932,7 @@ Let $X$ be a distribution with $H^{\unp}_{\epsilon, s_{sec}}(X|Z)\geq k$, and le
 \end{lemma}
 We are now ready to provide a computational analogue of \lemref{lem:fuzzy ext construction}:
 \begin{lemma}
-Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, s_{sec}, s_{sketch}, s_{rec}, t)$-computational secure sketch, and let $\rext:\mathcal{M}\times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an reconstructive extractor with $(\tilde{m}-\log 1/\epsilon, \epsilon)$-reconstruction $(C, D)$.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, s_{sec}/(|C|+|D|), s_{rec}, 5\epsilon)$-computational fuzzy extractor:
+Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, s_{sec}, s_{sketch}, s_{rec}, t)$-noisy computational conductor, and let $\rext:\mathcal{M}\times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an reconstructive extractor with $(\tilde{m}-\log 1/\epsilon, \epsilon)$-reconstruction $(C, D)$.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, s_{sec}/(|C|+|D|), s_{rec}, 5\epsilon)$-computational fuzzy extractor:
 \begin{itemize}
 \item $\gen(w;r, x)$: set $P= (\sketch(w; r), x), R = \rext(w, x)$, and output $(R,P)$.
 \item $\rep(w', (s, x)):$ recover $w = \rec(w', s)$ and output $R = \rext(w;x)$.
@@ -1437,7 +1438,7 @@ Thus, the expected number of iterations in step 2 is $n^{2d}$.  We assume all ma
 
 \section{Parameter Settings for \consref{cons:informal construction}}
 \label{sec:parameter settings}
-In this section, we explain the different parameters that go into our construction.  In \thref{thm:lossless secure sketch log} we give lossless sketches from a security parameter $n$ and an error $t$.  In this section, we discuss constraints imposed by 1) efficient decoding 2) maintaining security of the LWE instance and 3) ensuring no entropy loss of the construction.  In this section, we will assume that the inverter runs in time proportional to the number of errors~(\lemref{lem:i t poly time}).  We begin by reviewing the parameters that make up our construction:
+In this section, we explain the different parameters that go into our construction.  In \thref{thm:lossless secure conductor log} we give lossless sketches from a security parameter $n$ and an error $t$.  In this section, we discuss constraints imposed by 1) efficient decoding 2) maintaining security of the LWE instance and 3) ensuring no entropy loss of the construction.  In this section, we will assume that the inverter runs in time proportional to the number of errors~(\lemref{lem:i t poly time}).  We begin by reviewing the parameters that make up our construction:
 
 \begin{itemize}
 \item $|W|$: The length of the source.  
@@ -1492,7 +1493,7 @@ m &= \frac{(c+d)n}{d}\\
 q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n}} = \poly(n)\\
 \rho q &= 2n^{1/2+3\gamma}m = \frac{2(c+d)n^{3/2+3\gamma}}{d}
 \end{align*}
-Furthermore, we get decoding in time $O(n^{2d}(n^3\log n+s_{ver}))$.  We will set $g = 2$, that is our sketch will output the first half of $X$. This is the setting of parameters in \thref{thm:lossless secure sketch log}.
+Furthermore, we get decoding in time $O(n^{2d}(n^3\log n+s_{ver}))$.  We will set $g = 2$, that is our sketch will output the first half of $X$. This is the setting of parameters in \thref{thm:lossless secure conductor log}.
 
 \ignore{
 \subsection{Old parameter setting}
