@@ -255,7 +255,7 @@ Both our lossless secure sketch and the resulting fuzzy extractor are built via 
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-We begin by recalling a few basic entropy definitions.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$, 
+We begin by recalling a few basic definitions.  For a random variable $X = X_1,..., X_n$ where each $X_i$ is over some $\chi$, we denote by $X_{1,..., k} = X_1,..., X_k$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$, 
 %the {\em (worst-case) conditional min-entropy} of $X$ given $Y$ is  $\Hoo(X|Y) = -\log(\max_{x,y} \Pr[X=x|Y=y])$, and
 and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite{DBLP:journals/siamcomp/DodisORS08}.  
 %The {\em collision probability} of  $X$ is 
@@ -661,8 +661,8 @@ Define $\sketch, \rec$ as follows:%The following construction is a computational
 \item \underline{Input}: $(w', s)$ (where the Hamming distance between $w'$ and $w$ is at most $t$).
 \item Parse $s$ as $(\vA, \vect{C})$; let $\vect{D}=\vect{C}-w'$.
 \item Let $X' = \mathcal{I}_t(\vA, \vect{D})$\\
-Set $X'_{n/2}$ be the first half bits of $X'$.		 
-\item Output $X'_{n/2}$.
+Set $X'_{1,..., n}$ be the first half bits of $X'$.		 
+\item Output $X'_{1,...,n}$.
 \end{enumerate}
 \end{minipage} 
 \end{tabular}
@@ -914,7 +914,7 @@ In this section, we show that any computational secure sketch implies a computat
 An $(\mathcal{M}, m, \ell, t)$-\emph{computational fuzzy extractor} is a pair of randomized procedures, ``generate'' (\gen) and ``reproduce'' (\rep), with the following properties:
 \begin{itemize}
 \item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $R\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
-\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\rep( w', P) = R$.  %%Furthermore \rep is computable by a circuit of size at most $s_{rec}$.  
+\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\Pr[\rep( w', P) = R] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.  %%Furthermore \rep is computable by a circuit of size at most $s_{rec}$.  
 If $d(w, w') > t$, then no guarantee is provided about the output of \rep.
 \item The \emph{security} property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $R$ has full HILL entropy conditioned on $P$, that is $H^\hill_{\epsilon, s_{sec}}(R | P) = \ell$.
 \end{itemize}
