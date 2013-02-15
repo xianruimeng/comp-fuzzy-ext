@@ -601,16 +601,16 @@ Together \corref{cor:rec yields sketch} and \propref{prop:lower bound entropy dr
 %
 %\end{proof}
 
-\subsection{Defining Robust Computational Conductors}
+\subsection{Defining Noisy Computational Conductors}
 \label{sec:unp secure sketch}
-In \secref{sec:imp HILL sketch}, we showed that defining a computational secure sketch using HILL entropy connects the parameters to the best information-theoretic sketches.  The basic problem is that an adversary had access to both $X$ and $SS(X)$ and could test if neighborhoods correctly decoded.  However, our sketch outputs a new random variable, this problem does not occur.  Instead of building a computational sketch, we will build a computational conductor.  We review the definition of a computational conductor from~\cite{KanukurthiR09}:
-\begin{definition}\protect{\cite[Definition]{KanukurthiR09}}
-The procedures $(\sketch, \rec)$ are an $(\mathcal{M}, m, \tilde{m},t, \epsilon)$-\emph{weakly robust fuzzy conductor} if:
-\begin{enumerate}
-\item Error Tolerance: If $\dis(w, w')\leq t$ and $s\leftarrow \sketch(w)$, then $\Pr[\rec(w', \sketch(w)) \neq  \rec(w, \sketch(w))] \leq \epsilon$ where the probability is over the coins of $\sketch, \rec$.
-\item Security of $\sketch$: If $H_\infty(W) \geq m$, then $\Hav(\rec(W, \sketch(W)) | \sketch(W))\geq \tilde{m}$.
-\end{enumerate}
-\end{definition}
+In \secref{sec:imp HILL sketch}, we showed that defining a computational secure sketch using HILL entropy connects the parameters to the best information-theoretic sketches.  The basic problem is that an adversary had access to both $X$ and $SS(X)$ and could test if neighborhoods correctly decoded.  However, our sketch outputs a new random variable, this problem does not occur.  Instead of building a computational sketch, we will build a computational conductor.  We adapt the definition of a noisy conductor from~\cite{KanukurthiR09} to the computational setting:
+%\begin{definition}\protect{\cite[Definition]{KanukurthiR09}}
+%The procedures $(\sketch, \rec)$ are an $(\mathcal{M}, m, \tilde{m},t, \epsilon)$-\emph{weakly robust fuzzy conductor} if:
+%\begin{enumerate}
+%\item Error Tolerance: If $\dis(w, w')\leq t$ and $s\leftarrow \sketch(w)$, then $\Pr[\rec(w', \sketch(w)) \neq  \rec(w, \sketch(w))] \leq \epsilon$ where the probability is over the coins of $\sketch, \rec$.
+%\item Security of $\sketch$: If $H_\infty(W) \geq m$, then $\Hav(\rec(W, \sketch(W)) | \sketch(W))\geq \tilde{m}$.
+%\end{enumerate}
+%\end{definition}
 %We will essentially build %if we define the secure sketch using unpredictability entropy~\cite[Section 5]{DBLP:conf/eurocrypt/HsiaoLR07}, this oracle is not available to the adversary.  We begin by defining unpredictability entropy:
 
 %\begin{definition}
@@ -620,17 +620,19 @@ The procedures $(\sketch, \rec)$ are an $(\mathcal{M}, m, \tilde{m},t, \epsilon)
 %\Pr[C(Z) = Y ] \leq 2^{-k}
 %.\]
 %\end{definition}
-We now provide a definition of a robust computational sketch using unpredictability entropy:
+%We now provide a definition of a robust computational sketch using unpredictability entropy:
 \begin{definition}\label{def:comp secure sketch}
-An $(\mathcal{M},m, \tilde{m}, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t, \epsilon)$-\emph{computational secure sketch} is a pair of randomized procedures, sketch (\sketch) and recover (\rec), with the following properties:
+A pair of randomized procedures $(\sketch, \rec)$ is a $(\mathcal{M},m, \tilde{m}, \epsilon,  t)$-\emph{computational secure sketch} is a pair of randomized procedures, sketch (\sketch) and recover (\rec), with the following properties:
 \begin{enumerate}
 \item The sketching procedure \sketch on input $w\in\mathcal{M}$ returns a bit string $s\in\{0,1\}^*$ and runs in expected time $s_{sketch}$.
-\item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $s\in\{0,1\}^*$.  The \emph{correctness} property of secure sketches guarantees that if $d(w,w')\leq t$, then $\Pr[\rec(w',\sketch(w))\neq \rec(w, \sketch(w))] = \epsilon$ and \rec runs in expected time $s_{rec}$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rec.  
+\item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $s\in\{0,1\}^*$.  The \emph{correctness} property of secure sketches guarantees that if $d(w,w')\leq t$, then $\Pr[\rec(w',\sketch(w))\neq \rec(w, \sketch(w))] = \delta$ and \rec runs in expected time $s_{rec}$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rec.  
 \item The \emph{security} property guarantees that for any distribution $W$ over $\mathcal{M}$ with min-entropy $m$, the output $\rec$ has high HILL entropy given $\sketch(W)$.  That is, $H^{\hill}_{\epsilon, s_{sec}}(\rec(W, \sketch(W))|\sketch(W))\geq \tilde{m}$.
 \end{enumerate}
-We say a construction is \emph{lossless} if $m=\tilde{m}$ and we omit the parameter $\tilde{m}$.
+We say that $(\sketch, \rec)$ is $(\epsilon, s_{sec})$ hard with error probability $\delta$.
+If $m=\tilde{m}$ we say a conductor is \emph{lossless} and we omit the parameter $\tilde{m}$.
 \end{definition}
-We make $s_{sketch}, s_{rec}$ explicit in the definition as we are considering computationally bounded adversaries and the definition is only meaningful if both $s_{rec}$ and $s_{sketch}$ are significantly smaller than $s_{sec}$.  In \secref{sec:comp fuzzy extractors}, we show a natural construction of a computational fuzzy extractor from a robust computational conductor that meets \defref{def:comp secure sketch}.  We show in the next section that a lossless construction is achievable for the uniform distribution using the LWE problem.
+%We make $s_{sketch}, s_{rec}$ explicit in the definition as we are considering computationally bounded adversaries and the definition is only meaningful if both $s_{rec}$ and $s_{sketch}$ are significantly smaller than $s_{sec}$.  
+In \secref{sec:comp fuzzy extractors}, we show a natural construction of a computational fuzzy extractor from a noisy computational conductor that meets \defref{def:comp secure sketch}.  We show in the next section that a lossless construction is achievable for the uniform distribution using the LWE problem.
 
 \section{Lossless sketch based on \class{LWE}}
 \label{sec:fuzzyCompExt}
@@ -842,7 +844,7 @@ Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Le
 %(\zo^{(c+d)/dn\log b}, |W|, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)
 %\] 
 with 
-$\epsilon = \ngl(n), s_{sec} = \poly(n)$,  sketch time $s_{sketch} = O(n^3\log n)$, and recover time $s_{rec}= O(n^{2d+3} \log n)$.
+$\epsilon = \ngl(n), s_{sec} = \poly(n)$,  sketch runs in time $O(n^3\log n)$, and recover takes expected time $O(n^{2d+3} \log n)$.
 \end{theorem}
 \begin{proof}
 Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, efficiency follows by \lemref{lem:i t poly time}.
@@ -899,7 +901,7 @@ Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Le
 %\[
 %(\zo^{((c+d)n/d+\alpha)b}, \Hoo(W),\Hoo(W), \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)\text{-computational secure sketch}
 %\]
-$\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $s_{sketch} = O(n^3\log n)$, and recover time $s_{rec}= O(n^{2d+3} \log n)$.
+$\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expected recover time $O(n^{2d+3} \log n)$.
 \end{theorem}
 
 
