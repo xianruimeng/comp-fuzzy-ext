@@ -1430,40 +1430,41 @@ In this section, we explain the different parameters that go into our constructi
 \item $q$: The size of the field.  
 \item $\rho$: The fraction of the field needed for error sampling.  
 \item $m$: The size of each number of samples in the LWE instance.  
+\item $k$: The number of hardcore bits in $X$~(from \lemref{lem:conversion to unpredictability}).
 \end{itemize}
 We will split the source $|W|$ into $m$ blocks each of size $\rho q$~(that is, $|W| = m\log \rho q$).  We will ignore the parameter $|W|$ and focus on $t, n, q, \rho,$ and $m$.  As stated above we have three constraints:
 \begin{itemize}
 \item Maintain security of LWE.  If we assume GAPSVP and SIVP are hard to approximate within polynomial factors then \lemref{lem:uniform LWE decision} says that we get security for all $n$ greater than some minimum $n_0$ and $q = \poly(n)$ and $\rho q \geq 2 n^{1/2 + 3\gamma} m = \poly(n)$.  The only reason to increase $\rho q$ over this minimum amount (other than security) is if the number of errors in $W$ decreases with a slightly larger block size.  We ignore this effect and assume that $\rho q = 2n^{1/2+3\gamma}m$.
 \item Maintain efficient decoding of Construction~\ref{cons:decoding algorithm}.  Using \lemref{lem:i t poly time}, this means that $t\leq d\log n(m/n-1)$.
-\item Minimize entropy loss of the construction.  If we assume that $|X|\leq |W|$ then the entropy loss of the construction is $|W|-|X|$.  We want the entropy loss to be zero, that is, $|W| = |X|$.  Substituting, one has $m\log \rho q = n \log q$.
+\item Minimize entropy loss of the construction.  We will output $X_{1,...,k}$ so the entropy loss of the construction is $|W|-|X_{1,..., k}|$.  We want the entropy loss to be zero, that is, $|W| = |X_{1,..., k}|$.  Substituting, one has $m\log \rho q = k \log q$.
 \end{itemize}
-Collecting constraints we can support any setting where $t, n, q, \rho, m$ satisfy the following constraints~(for constants $d, f$):
+Collecting constraints we can support any setting where $t, n, q, \rho, m, k$ satisfy the following constraints~(for constants $d, f$):
 \begin{align*}
-n_0&< n\\
+n_0&< n -k \\
 t&\leq d \log n\left(\frac{m}{n}-1\right)\\
 q &= n^f\\
 \rho q  &= 2n^{1/2+3\gamma}m\\
-m\log \rho q &= n \log q
+m\log \rho q &= k \log q
 \end{align*}
 Substituting $q = n^f$ and $\rho q = 2n^{1/2+3\gamma}m$ yields the following system of equations:
 \begin{align*}
-n_0&< n\\
+n_0&< n - k\\
 t&\leq d\log n\left(\frac{m}{n}-1\right)\\
-m \log 2n^{1/2+3\gamma}m &= n \log n^f
+m \log 2n^{1/2+3\gamma}m &= k \log n^f
 \end{align*}
 %\xnote{$ m \log 2n^{1/2+3\gamma}m = n \log n^f$}
 This is the most general form of our construction, we can support any $n, t, m$ that satisfy these equations for constants $d, f$.  However, the last equation may have no solution for $f$ constant.  Putting the last equation in terms of $f$ one has:
 \begin{align*}
 n_0&< n\\
-t&\leq d\log n\left(\frac{ m }{n}\right)\\
+t&\leq d\log n\left(\frac{ m }{n} -1\right)\\
 %f \log n &= \frac{m}{n}\log 2n^2m\\
 f &= \frac{m}{n}\frac{\log 2n^{1/2+3\gamma} m}{\log n}
 \end{align*}
-To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$.  Finally we assume that $t = d \log n(m/n-1)$~(this means we have only as many dimensions as necessary for polynomial time recovery):
+To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k = n /g$ for some constant $g$.  Finally we assume that $t = d \log n(m/n-1)$~(this means we have only as many dimensions as necessary for polynomial time recovery):
 \begin{align*}
 n_0&< n\\
 m &= \frac{(c+d)n \log n}{d \log n} = \frac{(c+d)n}{d}\\
-f &= \frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n} = \frac{c+d}{d}\frac{\log 2(c+d)/d n^{3/2+3\gamma}}{\log n}
+f &= \frac{m}{k}\frac{\log 2n^{1/2+3\gamma}m}{\log n} = \frac{g(c+d)}{d}\frac{\log \frac{2(c+d)}{d} n^{3/2+3\gamma}}{\log n}
 \end{align*}
 
 %\xnote{$f = \frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m }{\log n} = \frac{c+d}{d}\frac{\log 2(c+d)/d n^{3/2+3\gamma}}{\log n}$}
@@ -1475,7 +1476,7 @@ m &= \frac{(c+d)n}{d}\\
 q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n}} = \poly(n)\\
 \rho q &= 2n^{1/2+3\gamma}m = \frac{2(c+d)n^{3/2+3\gamma}}{d}
 \end{align*}
-Furthermore, we get decoding in time $O(n^{2d}(n^3\log n+s_{ver}))$.  This is the setting of parameters in \thref{thm:lossless secure sketch log}.
+Furthermore, we get decoding in time $O(n^{2d}(n^3\log n+s_{ver}))$.  We will set $g = 2$, that is the first half of $X$ our sketch will output the first half of $X$. This is the setting of parameters in \thref{thm:lossless secure sketch log}.
 
 \ignore{
 \subsection{Old parameter setting}
