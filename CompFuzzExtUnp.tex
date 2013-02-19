@@ -40,6 +40,7 @@
 \newcommand{\rec}{\ensuremath{\class{Rec}}\xspace}
 \newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
 \newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
+\newcommand{\ver}{\ensuremath{\class{Ver}}\xspace}
 \newcommand{\zo}{\ensuremath{\{0, 1\}}}
 \newcommand{\vect}[1]{\ensuremath{\textbf{#1}}}
 \newcommand{\zq}{\ensuremath{\mathbb{Z}_q}}
@@ -1837,10 +1838,11 @@ Thus, supporting even a constant number of errors for $q=2^n$ requires lattice p
 In this section we argue why constructing computational secure sketches with minimal loss is difficult.
 
 \begin{lemma}
+\label{lem:impossibility of sketch with eps = 0}
 Let $X$ be the uniform distribution over $\zo^b$.  Suppose that $(\sketch, \rec)$ is a $(\zo^b, b, r, t)$ unpredictable sketch for $\epsilon = 0, s_{sec} = \Omega(|\rec|)$ with error $\delta$.  Then $r < b - t -\log (1-\delta)$.
 \end{lemma}
 \begin{proof}
-It suffices to show that $H^{\unp}_{0, s_{sec}}( X | \sketch(X)) < b-t + \log (1-\delta)$.  That is, it suffices to construct $D$ such that $\Pr[D(\sketch(X)) = X] > 2^{-b+t} (1-\delta)$.  We describe $D$:
+It suffices to show that $H^{\unp}_{0, s_{sec}}( X | \sketch(X)) < b-t + \log (1-\delta)$.  That is, it suffices to construct $P$ such that $\Pr[P(\sketch(X)) = X] > 2^{-b+t} (1-\delta)$.  We describe $P$:
 \begin{enumerate}
 \item Input $s = \sketch(x)$.
 \item Sample $z \leftarrow \zo^b$.
@@ -1848,11 +1850,47 @@ It suffices to show that $H^{\unp}_{0, s_{sec}}( X | \sketch(X)) < b-t + \log (1
 \end{enumerate}
 Now 
 \[
-\Pr[D(\sketch(X)) = X] \geq \Pr[Z \in B_t(X)] \Pr[\rec(Z, \sketch(X)) =X | \dis(Z, X)\leq t] = 2^{-b+t}(1-\delta)
+\Pr[P(\sketch(X)) = X] \geq \Pr[Z \in B_t(X)] \Pr[\rec(Z, \sketch(X)) =X | \dis(Z, X)\leq t] = 2^{-b+t}(1-\delta)
 \]
 That is $r < b-t-\log (1-\delta)$.
 \end{proof}
 \bnote{Note we are underestimating the probability that $z\in B_t(x)$.  Just don't want to find the right probability right now.}
+
+We will now consider the impossibility result where $\epsilon \neq 0$.  We will focus on the case where $\rec$ is verifiable, that is, given an $x, s = \sketch(y)$ it is possible to tell whether $x$ is the value encoded in $s$.  
+
+\begin{definition}
+We say a sketch $(\sketch, \rec)$ is $\delta$-verifiable if there exists an efficient randomized function $\ver$ such that with probability $1-\delta$ over the coins of $\sketch, \ver$ for all $y$ in the domain of $\sketch$, $\ver(y', \sketch(y)) = 1$ implies that $y=y'$.  That is, 
+\[
+\forall y\in \mathcal{M}, \Pr[\exists y'\neq y \wedge \ver(y', \sketch(y)) = 1]\leq \delta
+\]
+Furthermore, $\forall y\in\mathcal{M}, \Pr[\ver(y, \sketch(y)) = 1] =1$.
+\end{definition}
+
+We now show that if a sketch is unpredictable then either the quality or quantity of the unpredictability entropy must depend on $t$.
+\begin{theorem}
+Let $W$ be the uniform distribution over $\zo^b$.  Suppose that $(\sketch, \rec)$ is a $(\zo^b, b, r, t)$ unpredictable sketch that is $\delta$-verifiable with verifier $\ver$.   Furthermore assume that $(\sketch, \rec)$ is  $\epsilon, \Omega(|\rec|+|\ver|)$-secure.  Then $r<b-t -\log (1-\epsilon - \delta)$.  That is, either $r$ or $\epsilon$ depends on $t$.
+\end{theorem}
+\begin{proof}
+Let $(\sketch, \rec)$ be a $\delta$-verifiable secure sketch with verification function $\ver$.  Let $W$ be the source, then we have the following claim:
+\begin{claim}
+If $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, \sketch(W))) \leq \epsilon$ for $s_{sec} = \Omega(|\ver|)$ then $\Pr[W = Y]\geq 1-\epsilon - \delta$.
+\end{claim}
+\begin{proof}
+We define a distinguisher $D(x, s) = \ver (x, s)$.  Then note that, 
+\begin{align*}
+1-\epsilon &\leq \Pr[D(Y, \sketch(W)) =1] = \Pr[\ver(Y, \sketch(W)) = 1] \\
+&\leq \Pr[\ver(Y, \sketch(W)) = 1 | \ver\text{ is unique}]\Pr[\ver\text{ is unique}] \\&+ \Pr[\ver(Y, \sketch(W)) = 1 | \ver\text{ is not unique}]\Pr[\ver\text{ is not unique}]\\
+&\leq \Pr[Y = W | \sketch(W)]\Pr[\ver \text{ is unique}] +\Pr[\ver\text{ is not unique}]\\
+&\leq \Pr[Y= W | \sketch(W)](1-\delta) + \delta
+\end{align*}
+This means that $\Pr[Y | \sketch(W)=W | \sketch(W)]\geq \frac{(1-\epsilon -\delta)}{(1-\delta)}\geq 1-\epsilon -\delta$.
+\end{proof}
+Thus, since $W = Y$ with high probability, any predictor for $W$ is also a predictor for $Y$.  We reuse the predictor from \lemref{lem:impossibility of sketch with eps = 0}.  Define $P$ as above.  Then 
+\[
+\Pr[P(\sketch(W) )= Y] \geq \Pr[P(\sketch(W) )= W]\Pr[W = Y | \sketch(W)]\geq 2^{-b+t}(1-\epsilon-\delta)
+\]
+If $\epsilon$ does not depend on $t$ then the remaining entropy must depend on $t$.  The statement of theorem follows.
+\end{proof}
 \end{document}
 
 
