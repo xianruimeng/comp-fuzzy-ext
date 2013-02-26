@@ -561,7 +561,9 @@ If $s_{sec}=\Omega(t(s_{rec} + n))$, then there exists a   $(Z^n, n\log |Z|, \ti
 $4(\epsilon+\delta)$. 
 %Let $(\mathcal{M}, d)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  If no $(t, \epsilon)$-average error Shannon code over $\mathcal{M}$ exists of size $2^k$ then, $\forall (s_{rec}, t)$ recovery procedures $(\sketch, \rec)$ $H^{\hill}_{\epsilon, s}(X|\sketch(X))\not\geq k$ for $s=O(s_{rec}+s_{neigh})$.
 \end{corollary}
-\textbf{Note:} In \corref{cor:rec yields sketch} we make no claim about the efficiency of the resulting  $(\sketch, \rec)$, because the proof of \thref{thm:impSketchArbitraryW} is not constructive.
+\textbf{Notes:} In \corref{cor:rec yields sketch} we make no claim about the efficiency of the resulting  $(\sketch, \rec)$, because the proof of \thref{thm:impSketchArbitraryW} is not constructive.  
+
+\corref{cor:rec yields sketch} extends to non-uniform distributions: if there exists a distribution whose HILL sketch retains $\tilde{m}$ bits of entropy, then for all distributions $W$, there is an information theoretic sketch that retains $\Hoo(W) - (n\log |Z|-\tilde{m})-2$ bits of entropy.
 
 %\corref{cor:rec yields sketch} shows that sketches that retain HILL entropy can be converted into an information-theoretic sketch.  Unfortunately, we have lower bounds for the entropy drop for information-theoretic sketches:
 
