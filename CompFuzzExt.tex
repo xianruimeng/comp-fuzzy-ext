@@ -502,7 +502,7 @@ Let $C$ be a distribution with $\Hoo(C)\geq k$ and let $C$ be a $(t, \epsilon)$-
 
 We are now ready to show our main result: HILL-entropy secure sketches imply maximal-error Shannon codes~(proof in \secref{sec:proof of thm sketch implies code}).
 \begin{theorem}\label{thm:impSketchArbitraryW}
-Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists $x$ and a set $C$ with $|C'|\geq 2^{\tilde{m}-1}$ that is a $(t, 2(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
+Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists $x$ and a set $C$ with $|C'|\geq 2^{\tilde{m}-2}$ that is a $(t, 4(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
 %Let $W$ be a flat distribution~(all points in the support of $W$ have the same probability) over $\mathcal{M}$ where $\Hoo(W)\geq k$ and   Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$.  If $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $O(s_{neigh}+s_{rec})$, then $\exists x, W'$ where $|W'|\geq |W|/2 \geq 2^{k-1}$ such that $W'$ is a $(t, 2\epsilon)$ Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
 \end{theorem}
 %The code provided in \thref{thm:impSketchArbitraryW} is weaker than a Shannon error correcting code~\cite{shannon1948}.  In a Shannon code, for all codewords $c, \Pr[c'\leftarrow \sample(c) \wedge \rec(c') \neq c]<\epsilon$.  Bounds for this type of code are well known~\cite{shannon1948} and efficient constructions exist~\cite{forney1966}.  Requiring proper decoding for only a random codeword is a significant restriction particularly in the case where the probability of outcomes in $W$ differs significantly~(e.g. where $\exists w_1,w_2\in W$ such that $\Pr[W=w_1]/\Pr[W=w_2] = \ngl$).  However, this is still a meaningful set of error correcting codes.  A similar question is considered in Appendix C of \cite{DBLP:journals/siamcomp/DodisORS08}.  They are able to achieve results for Hamming codes~(as they are not restricted to sampling a polynomial portion of the space)\bnote{expand on this explanation}.
@@ -511,7 +511,7 @@ Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhoo
 It is known (see \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein) that, for the Hamming metric, any Shannon code (in the stronger sense defined by us) can be converted into an information-theoretic secure sketch.  The idea is to use the code offset construction, but randomize the order of the bits of $w$ first, via  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement is in the following Lemma.
 \begin{lemma}
 \label{lem:shannon to sketch}
-For an alphabet $Z$, let $\mathcal{C}$ over $Z^n$ be a $(t, \delta)$ Shannon code.% with recovery procedure $\rec'$.
+For an alphabet $Z$, let $\mathcal{C}$ over $Z^n$ be a $(t, \delta)$ Shannon code.  % with recovery procedure $\rec'$.
 %  Let $W$ be a distribution with $\Hoo(W)\geq k$. 
 %
 % Define the following procedures
@@ -557,8 +557,8 @@ Putting together \thref{thm:impSketchArbitraryW} and \lemref{lem:shannon to sket
 \begin{corollary}
 \label{cor:rec yields sketch}
 Let $Z$ be an alphabet. Let $(\sketch', \rec')$ be an $(\epsilon,s_{sec})$-HILL-entropy $(Z^n, n\log |Z|, \tilde{m}, t)$-secure sketch with error $\delta$ for the Hamming metric over $Z^n$, with $\rec'$ of circuit size $s_{rec}$.
-If $s_{sec}=\Omega(t(s_{rec} + n))$, then there exists a   $(Z^n, n\log |Z|, \tilde{m}-1,t)$ (information-theoretic) secure sketch with error
-$2(\epsilon+\delta)$. 
+If $s_{sec}=\Omega(t(s_{rec} + n))$, then there exists a   $(Z^n, n\log |Z|, \tilde{m}-2,t)$ (information-theoretic) secure sketch with error
+$4(\epsilon+\delta)$. 
 %Let $(\mathcal{M}, d)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  If no $(t, \epsilon)$-average error Shannon code over $\mathcal{M}$ exists of size $2^k$ then, $\forall (s_{rec}, t)$ recovery procedures $(\sketch, \rec)$ $H^{\hill}_{\epsilon, s}(X|\sketch(X))\not\geq k$ for $s=O(s_{rec}+s_{neigh})$.
 \end{corollary}
 \textbf{Note:} In \corref{cor:rec yields sketch} we make no claim about the efficiency of the resulting  $(\sketch, \rec)$, because the proof of \thref{thm:impSketchArbitraryW} is not constructive.
@@ -1467,11 +1467,11 @@ This is a contradiction.  The statement of~\lemref{lem:averageToMaximalError} fo
 \subsection{Proof of \thref{thm:impSketchArbitraryW}}
 \label{sec:proof of thm sketch implies code}
 \begin{proof}
-  Let $X$ be an arbitrary distribution of min-entropy $m$.  Let $Y$ be a distribution over $\mathcal{M}$ with $\Hoo(Y)\geq k$ such that 
+  Let $W$ be an arbitrary distribution of min-entropy $m$.  Let $Y_s$ be a collection of distributions over $\mathcal{M}$ giving rise to $Y$ such that $\Hav(Y | \sketch(W))\geq k$ such that 
 \[ 
-\delta^{\mathcal{D}_s}((X, \sketch(X)), (Y, \sketch(X)))<\epsilon.
+\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, \sketch(W)))<\epsilon.
 \]  
-where  $s = O(t(s_{neigh}+s_{rec}))$.  One such $Y$ must exist by the definition of conditional HILL entropy.
+where  $s_{sec} = O(t(s_{neigh}+s_{rec}))$.  One such $Y$ must exist by the definition of conditional HILL entropy.
 %Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$. Let $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $s=O(s_{neigh}+s_{rec})$.  This implies that $H^{\hill}_{\epsilon, s}(X|\sketch(X))\geq k$.  
 Define $D$ as:
 \begin{enumerate}
@@ -1481,13 +1481,23 @@ Define $D$ as:
 \subitem If $\rec(z', s) \neq  z$ output $0$.
 \item Output $1$.
 \end{enumerate}
-  By correctness of the sketch $ \expe D(X, \sketch(X)) \ge 1-\delta$.  Since 
-$\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon.$ then $D(Y, SS(X))>1-\epsilon-\delta$.  This means at least one $x'$ where this equation holds.  Fix one such $x'$.  
+  By correctness of the sketch $ \Pr[D(W, \sketch(W)) =1]\ge 1-\delta$.  Since 
+$\delta^D((Y, \sketch(W)), (Y, \sketch(W)))<\epsilon.$ then $\Pr[D(Y, SS(W)) = 1]>1-\epsilon-\delta$.  By Markov inequality there exists a set $S_W$ such that $\Pr[S_W]\geq 1/2$ and $\Pr[ D(Y, s) =1 | \sketch(W) = s \wedge s\in S_W]> 1- 2(\epsilon + \delta)$.  Consider the random variable $1_{S_W}$ that is $1$ when $s\in S_X$ and otherwise.  Then 
+\[
+\Hav(Y  | W) = -\log \left( \Pr[W\in 1_{S_W}] 2^{-\Hav(Y | W\in 1_{S_W})} + \Pr[W\not\in 1_{S_W}] 2^{-\Hav (Y|W\not\in 1_{S_W})} \right)
+\] 
+Rearranging terms:
+\begin{align*}
+\Pr[W\in 1_{S_W}] 2^{-\Hav(Y | W\in 1_{S_W})} &= 2^{-\Hav(Y  | W) } - \Pr[W\not\in 1_{S_W}] 2^{-\Hav (Y|W\not\in 1_{S_W})}\\
+&=2^{-\Hav(Y  | W) } = 2^{-k}
+\end{align*}
+This means that $2^{-\Hav(Y | W\in 1_{S_W})} \geq 2^{-k}/\Pr[W\in 1_{S_W}] = 2^{-k+1}$.  That is, $\Hav(Y|W\in 1_{S_W})\geq k-1$.  Fix one value $s \in 1_{S_W}$ such that $\Hav(Y | s)\geq k-1$.
+%This means at least one $x'$ where this equation holds.  Fix one such $x'$.  
 %This implies that $D(W, \sketch(x'))\geq 1-\epsilon$.  
 Thus, for all $t', 1\leq t'\leq t$ on a random $y$
-\[ \Pr_{y\leftarrow Y}[y'\leftarrow \sample(y, t') \wedge \rec(y', \sketch(x')) = y]\geq 1-\epsilon-\delta.\]  
+\[ \Pr_{y\leftarrow Y_s}[y'\leftarrow \sample(y, t') \wedge \rec(y',s) = y]\geq 1-2(\epsilon+\delta).\]  
 %Thus, $\rec(\cdot, \sketch(x'))$ is a decoding procedure that succeeds on a random neighbor of a random codeword with probability all but $\epsilon$.  
-Thus,  $Y$ is a $(t, \epsilon)$-average error Shannon code with recovery $\rec(\cdot, \sketch(x'))$.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
+Thus,  $Y$ is a $(t, \epsilon)$-average error Shannon code with recovery $\rec(\cdot,s)$.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
 \end{proof}
 
 %\subsection{Proof of \lemref{lem:i t constant time}}
