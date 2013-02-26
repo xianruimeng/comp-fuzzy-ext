@@ -621,59 +621,14 @@ We consider this notion to be a natural notion for a computational sketch as it 
 \label{lem:unp extraction} 
 Let $X$ be a distribution with $H^{\unp}_{\epsilon, s_{sec}}(X|Z)\geq k$, and let $\rext$ be an extractor with a $(k-\log 1/\epsilon, \epsilon)$-reconstruction $(C,D)$.  Then $\delta^{\mathcal{D}_{s'}}((\rext(X, U_d), Z), U_m\times U_d\times Z)\leq 5\epsilon,$ where $s'=s_{sec}/(|C|+|D|)$.
 \end{lemma}
-Thus, using a sketch that retained unpredictability entropy and a reconstructive extractor we could build a computational fuzzy extractor~(in a similar fashion to \lemref{lem:fuzzy ext construction}).  Unfortunately, we show that the unpredictability entropy must decrease with the $O(\log B_t(\cdot))$.  
+Thus, using a sketch that retained unpredictability entropy and a reconstructive extractor we could build a computational fuzzy extractor~(in a similar fashion to \lemref{lem:fuzzy ext construction}).  
+
+Unfortunately, unpredictability entropy must also decrease with $t$.  That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)) , (Y, \sketch(W))$ our ability to predict $Y$ increases as $|B_t(\cdot)|$ increases.  The formal statement is below~(proof in \secref{sec:proof of imp unp entropy})
 \begin{theorem}
+\label{thm:imp of unp entropy}
 Let $W$ be a distribution over $\zo^b$ and let $(\sketch, \rec)$ be an Unpredictability-entropy $(\zo^b, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} = \Omega(|\rec|+b)$, then $\tilde{m}\leq b - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.
 \end{theorem}
-\begin{proof}
-Let $W$ be a distribution over $\zo^b$ and let $(\sketch, \rec)$ be an Unpredictability-entropy $(\zo^b, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$ where $s_{sec} = \Omega(|\rec|+b)$.  Let $Y_{W=w \wedge \sketch(w) = s} $ be a collection of distributions giving rise to a joint distribution $Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, \sketch(W)))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(\sketch(W)) = Y]\geq 2^{\tilde{m}}$ where $\tilde{m} = n - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.  We begin by showing that $Y$ must correctly recover most of the time.
-\begin{claim}
-\label{clm:y is recoverable}
-\begin{align*}
-\Pr[\rec(B_t(Y), \sketch(W)) = Y]&=\\
-\Pr[y\leftarrow Y\wedge y'\leftarrow B_t(y) \wedge \rec(y', s) = y] &=\\ 
-\Pr[w\leftarrow W, s\leftarrow \sketch(w), \wedge y \leftarrow Y_{s} \wedge y' \leftarrow B_t(y) \wedge \rec(y', s) =y ] &\geq 1-\epsilon -\delta.
-\end{align*}
-\end{claim}
-\begin{proof}
-Suppose that $\Pr[\rec(B_t(Y), \sketch(W)) = Y]<1-\epsilon -\delta$.  We construct the following $D\in\mathcal{D}_{s_{sec}}$:
-\begin{itemize}
-\item Input $x\in \zo^b, s\in\zo^*$.
-\item Sample $x'\leftarrow B_t(x)$.
-\item Output $1$ if $\rec(x', s) = x$ otherwise output $0$.
-\end{itemize}
-Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in\zo^b$ such that \[\dis(w, w')\leq t, \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This immediately implies that $\Pr[\rec(W, \sketch(W))  ]\geq 1-\delta$.  The statement of the claim follows as 
-\begin{align*}
-\Pr[D(W, \sketch(W)) = 1]  - \Pr[D(Y, \sketch(W))] &=\\
-\Pr[\rec(B_t(W), \sketch(W) )= W] - \Pr[\rec(B_t(Y), \sketch(W)) = Y] &> (1-\delta)-(1-\delta - \epsilon)>\epsilon.
-\end{align*}
-\end{proof}
-We now consider a fixed $w\leftarrow W, s\leftarrow \sketch(w), y\leftarrow Y_{s}, y'\leftarrow B_t(y)$ and define the quantity $P_{y' , s, y} = \Pr[\rec(y', s) =y]$.  \clref{clm:y is recoverable} says that 
-\[
- \Pr[w\leftarrow W, s\leftarrow \sketch(w), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[B_t(y) =y' | Y = y] P_{y',  s, y} \geq 1-\delta -\epsilon.
-\]
-We note that for any particular $y, y'$ such that $\dis(y, y')\leq t, \Pr[B_t(y) = y' | Y=y] = 1/|B_t(\cdot)|$ and if $\dis(y, y')>t, Pr[B_t(y) = y' | Y=y] = 0$.  We restate this as $y, y', \Pr[B_t(y) = y' | Y=y] \leq 1/|B_t(\cdot)|$
-We now define $\mathcal{I}\in\mathcal{D}_{s_{sec}}$ as follows:
-\begin{itemize}
-\item Input $s\in\zo^*$.
-\item Sample $x'\leftarrow \zo^b$.
-\item Output $\rec(x', s)$.
-\end{itemize}
-We define by $X$ the random variable corresponding to the sample $x'$ performed by $\mathcal{I}_t$.
-We now show that $\mathcal{I}$ predicts $Y$, defining :
-\begin{align*}
-2^{\tilde{m}}& = \Pr[\mathcal{I}(\sketch(W)) = Y] \\
-&= \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \Pr[\mathcal{I}(s) = y]\\
-&\geq \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[X = y' ]\Pr[\mathcal{I}(s) = y | X = y']\\
-&\geq \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[X = y' ] P_{y', s, y}\\
-&\geq \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \frac{\Pr[X = y']}{\Pr[B_t(y) = y' | Y = y]}\Pr[B_t(y) = y' | Y=y ] P_{y', s, y}\\
-&\geq  \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \frac{|B_t(\cdot)|}{2^b} \Pr[B_t(y) = y' | Y=y ] P_{y', s, y}\\
-&\geq \frac{|B_t(\cdot)|}{2^b} \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[B_t(y) = y' | Y=y ] P_{y', s, y}\\
-&\geq \frac{|B_t(\cdot)|}{2^b}(1-\epsilon - \delta)
-\end{align*}
-Finally converting to entropy, one has $\tilde{m}\leq b-\log |B_t(\cdot)| - \log (1-\epsilon - \delta)$.
-\end{proof}
-This result has a weaker condition than \corref{cor:rec yields sketch} and yields a weaker conclusion.  The two statements are incomparable.
+This result has a weaker condition than \corref{cor:rec yields sketch} and yields a weaker conclusion.  The main difference with \thref{thm:impSketchArbitraryW} is that it is unknown if the indistinguishable distribution $Y$ actually contains many points.  This means we cannot construct a good code out of the points of $Y$.  Our bound is a result of the Hamming bound for the space.  
 \subsection{Defining  Computational Fuzzy Conductors}
 \label{sec:unp secure sketch}
 In \secref{sec:imp HILL sketch}, we showed that defining a  computational fuzzy conductor using HILL entropy connects the parameters to the best information-theoretic sketches.  The basic problem is that an adversary had access to both $X$ and $SS(X)$ and could test if neighborhoods correctly decoded.  However, our sketch outputs a new random variable, this problem does not occur.  Instead of building a computational sketch, we will build a computational conductor.  We adapt the definition of a fuzzy conductor from~\cite{KanukurthiR09} to the computational setting:
@@ -1500,6 +1455,57 @@ Thus, for all $t', 1\leq t'\leq t$ on a random $y$
 \[ \Pr_{y\leftarrow Y_s}[y'\leftarrow \sample(y, t') \wedge \rec(y',s) = y]\geq 1-2(\epsilon+\delta).\]  
 %Thus, $\rec(\cdot, \sketch(x'))$ is a decoding procedure that succeeds on a random neighbor of a random codeword with probability all but $\epsilon$.  
 Thus,  $Y$ is a $(t, \epsilon)$-average error Shannon code with recovery $\rec(\cdot,s)$.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
+\end{proof}
+
+\subsection{Proof of \thref{thm:imp of unp entropy}}
+\label{sec:proof of imp unp entropy}
+\begin{proof}
+Let $W$ be a distribution over $\zo^b$ and let $(\sketch, \rec)$ be an Unpredictability-entropy $(\zo^b, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$ where $s_{sec} = \Omega(|\rec|+b)$.  Let $Y_{W=w \wedge \sketch(w) = s} $ be a collection of distributions giving rise to a joint distribution $Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, \sketch(W)))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(\sketch(W)) = Y]\geq 2^{\tilde{m}}$ where $\tilde{m} = n - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.  We begin by showing that $Y$ must correctly recover most of the time.
+\begin{claim}
+\label{clm:y is recoverable}
+\begin{align*}
+\Pr[\rec(B_t(Y), \sketch(W)) = Y]&=\\
+\Pr[y\leftarrow Y\wedge y'\leftarrow B_t(y) \wedge \rec(y', s) = y] &=\\ 
+\Pr[w\leftarrow W, s\leftarrow \sketch(w), \wedge y \leftarrow Y_{s} \wedge y' \leftarrow B_t(y) \wedge \rec(y', s) =y ] &\geq 1-\epsilon -\delta.
+\end{align*}
+\end{claim}
+\begin{proof}
+Suppose that $\Pr[\rec(B_t(Y), \sketch(W)) = Y]<1-\epsilon -\delta$.  We construct the following $D\in\mathcal{D}_{s_{sec}}$:
+\begin{itemize}
+\item Input $x\in \zo^b, s\in\zo^*$.
+\item Sample $x'\leftarrow B_t(x)$.
+\item Output $1$ if $\rec(x', s) = x$ otherwise output $0$.
+\end{itemize}
+Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in\zo^b$ such that \[\dis(w, w')\leq t, \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This immediately implies that $\Pr[\rec(W, \sketch(W))  ]\geq 1-\delta$.  The statement of the claim follows as 
+\begin{align*}
+\Pr[D(W, \sketch(W)) = 1]  - \Pr[D(Y, \sketch(W))] &=\\
+\Pr[\rec(B_t(W), \sketch(W) )= W] - \Pr[\rec(B_t(Y), \sketch(W)) = Y] &> (1-\delta)-(1-\delta - \epsilon)>\epsilon.
+\end{align*}
+\end{proof}
+We now consider a fixed $w\leftarrow W, s\leftarrow \sketch(w), y\leftarrow Y_{s}, y'\leftarrow B_t(y)$ and define the quantity $P_{y' , s, y} = \Pr[\rec(y', s) =y]$.  \clref{clm:y is recoverable} says that 
+\[
+ \Pr[w\leftarrow W, s\leftarrow \sketch(w), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[B_t(y) =y' | Y = y] P_{y',  s, y} \geq 1-\delta -\epsilon.
+\]
+We note that for any particular $y, y'$ such that $\dis(y, y')\leq t, \Pr[B_t(y) = y' | Y=y] = 1/|B_t(\cdot)|$ and if $\dis(y, y')>t, Pr[B_t(y) = y' | Y=y] = 0$.  We restate this as $y, y', \Pr[B_t(y) = y' | Y=y] \leq 1/|B_t(\cdot)|$
+We now define $\mathcal{I}\in\mathcal{D}_{s_{sec}}$ as follows:
+\begin{itemize}
+\item Input $s\in\zo^*$.
+\item Sample $x'\leftarrow \zo^b$.
+\item Output $\rec(x', s)$.
+\end{itemize}
+We define by $X$ the random variable corresponding to the sample $x'$ performed by $\mathcal{I}_t$.
+We now show that $\mathcal{I}$ predicts $Y$, defining :
+\begin{align*}
+2^{\tilde{m}}& = \Pr[\mathcal{I}(\sketch(W)) = Y] \\
+&= \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \Pr[\mathcal{I}(s) = y]\\
+&\geq \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[X = y' ]\Pr[\mathcal{I}(s) = y | X = y']\\
+&\geq \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[X = y' ] P_{y', s, y}\\
+&\geq \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \frac{\Pr[X = y']}{\Pr[B_t(y) = y' | Y = y]}\Pr[B_t(y) = y' | Y=y ] P_{y', s, y}\\
+&\geq  \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \frac{|B_t(\cdot)|}{2^b} \Pr[B_t(y) = y' | Y=y ] P_{y', s, y}\\
+&\geq \frac{|B_t(\cdot)|}{2^b} \Pr[w\leftarrow W, s\leftarrow \sketch(W), y\leftarrow Y_s] \sum_{y'\in \zo^b} \Pr[B_t(y) = y' | Y=y ] P_{y', s, y}\\
+&\geq \frac{|B_t(\cdot)|}{2^b}(1-\epsilon - \delta)
+\end{align*}
+Finally converting to entropy, one has $\tilde{m}\leq b-\log |B_t(\cdot)| - \log (1-\epsilon - \delta)$.
 \end{proof}
 
 %\subsection{Proof of \lemref{lem:i t constant time}}
