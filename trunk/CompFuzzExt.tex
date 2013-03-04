@@ -259,13 +259,14 @@ Both our lossless fuzzy conductor and the resulting fuzzy extractor are built vi
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-For a random variable $X = X_1,..., X_n$ where each $X_i$ is over some $\chi$, we denote by $X_{1,..., k} = X_1,..., X_k$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$, 
+For a random variable $X = X_1||...|| X_n$ where each $X_i$ is over some alphabet $Z$, we denote by $X_{1,..., k} = X_1||...|| X_k$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$, 
 %the {\em (worst-case) conditional min-entropy} of $X$ given $Y$ is  $\Hoo(X|Y) = -\log(\max_{x,y} \Pr[X=x|Y=y])$, and
 and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.  
 %The {\em collision probability} of  $X$ is 
 %$\col(X) = \sum_{x} \Pr[X=x]^2$.
-The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. We write $X \approx_{\epsilon} Y$ if $\Delta(X,Y) \leq \epsilon$, and when $\epsilon$ is negligible (in the appropriate parameter, as clear from the context) then we say $X$ and $Y$ are \emph{statistically close}.  For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
-For a metric space $(\mathcal{M}, \dis)$ be define the \emph{(closed) ball of radius $t$ around $x$} as the  set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$. $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.
+The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. %We write $X \approx_{\epsilon} Y$ if $\Delta(X,Y) \leq \epsilon$, and when $\epsilon$ is negligible (in the appropriate parameter, as clear from the context) then we say $X$ and $Y$ are \emph{statistically close}.  
+For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$. $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.
 
 \subsection{Fuzzy Extractors and Secure Sketches}
 \label{sec:fuzzy extractors}
@@ -283,7 +284,7 @@ An $(\mathcal{M}, m, \ell, t, \epsilon)$-\emph{fuzzy extractor} with error $\del
 \end{enumerate}
 \end{definition}
 
-Secure sketches are the main technical tool in the construction of fuzzy extractors.  They produces a string $s$ that does not decrease the entropy of $w$ too much, while allowing recovery of $w$ from a  close $w'$:
+Secure sketches are the main technical tool in the construction of fuzzy extractors.  Secure sketches produce a string $s$ that does not decrease the entropy of $w$ too much, while allowing recovery of $w$ from a  close $w'$:
 \begin{definition}%\protect{\cite[Definition 3]{DBLP:journals/siamcomp/DodisORS08}}
 \label{def:secure sketch}
 An $(\mathcal{M},m, \tilde{m}, t)$-\emph{secure sketch} with error $\delta$ is a pair of randomized procedures, ``sketch'' $(\sketch)$ and ``recover'' $(\rec)$, with the following properties:
@@ -325,7 +326,7 @@ Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch wi
 \item $\rep(w', (s, x)):$ recover $w=\rec(w',s)$ and output $R=\ext(w;x)$.
 \end{itemize}
 \end{lemma}
-The main parameter we will be concerned with is the entropy loss of the construction.  We relax the security requirement of \defref{def:fuzzy extractor} to require a pseudorandom output instead of a truly random output.
+The main parameter we will be concerned with is the entropy loss of the construction.  In this paper, we ask whether a smaller entropy loss can be achieved by considering a fuzzy extractor with a computational security requirement.  We relax the security requirement of \defref{def:fuzzy extractor} to require a pseudorandom output instead of a truly random output.
 
 \begin{definition}[Computational Fuzzy Extractor]\label{def:comp fuzzy extractor}
 A pair of randomized procedures ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$ is a $(\mathcal{M}, m, \ell, t)$-\emph{computational fuzzy extractor} is that is $(\epsilon, s_{sec})$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
@@ -333,12 +334,12 @@ A pair of randomized procedures ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$
 \item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $R\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
 \item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\Pr[\rep( w', P) = R] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.  %%Furthermore \rep is computable by a circuit of size at most $s_{rec}$.  
 If $d(w, w') > t$, then no guarantee is provided about the output of \rep.
-\item The \emph{security} property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $R$ has full HILL entropy conditioned on $P$, that is $H^\hill_{\epsilon, s_{sec}}(R | P) = \ell$.
+\item The \emph{security} property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\ell, P))\leq \epsilon$.
 \end{itemize}
 \end{definition}
 Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters.% ($s_{rec}$ is the size of the circuit that computes \rec and $s_{sec}$ is unbounded).  
 
-It seems natural to construct a computational fuzzy extractor using a sketch that retains computational entropy and then a randomness extractor.  In the next section, we show this paradigm is difficult to realize. 
+It seems natural to construct a computational fuzzy extractor using a sketch that retains computational entropy and then apply a randomness extractor~(extractors convert distributions with high computational entropy to pseudorandom).  In the next section, we show this paradigm is difficult to realize. 
 
 %\textbf{Note: }A computational fuzzy extractor could also be constructed by making the extractor computational~(using a standard extractor and then running a pseudorandom generator on its output).  We compare the two approaches in \secref{sec:prg based comparison} after presenting our construction.
 %, specifically, the entropy loss in the definition of the secure sketch~($m-\tilde{m}$).  %The cause for the entropy loss in the secure sketch is the additional bits added for error correction.  In the definition of a fuzzy extractor this is the input min-entropy less the size of the output: $m-\ell$.   
@@ -349,7 +350,8 @@ It seems natural to construct a computational fuzzy extractor using a sketch tha
 \section{Impossibility of Computational Secure Sketches}
 \label{sec:defCompFuzzyExtractors}
 In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational entropy than information theoretic entropy.  %We will not provide formal definitions for these sketches but use the notation HILL/unpredictability~$(\mathcal{M}, m, \tilde{m}, t)$-secure sketch to denote a sketch that retains $\tilde{m}$ bits of HILL~(resp. unpredictability) entropy when given a source with $m$ bits of entropy.  
-In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the unpredictability of a sketch must decrease with the number of neighbors of a point in the metric space.  These results are strongest for high entropy sources.  The results get weaker as we consider sources with lower starting entropy.  If a source contains points from a good error code, then the sketch procedure does not need to output any public value so no drop occurs in entropy.  
+In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the unpredictability of a sketch must decrease with the size of a ball in the metric space.  
+%These results are strongest for high entropy sources.  The results get weaker as we consider sources with lower starting entropy.  If a source contains points from a good error code, then the sketch procedure does not need to output any public value so no drop occurs in entropy.  
 
 \subsection{Bounds on Secure Sketches using HILL entropy}
 \label{sec:imp HILL sketch}
@@ -365,8 +367,8 @@ $(Y, Z)$, such that $\tilde{H}_\infty(Y|Z)\geq k$ and $\delta^{\mathcal{D}_{s_{s
 
 Intuitively, conditional HILL entropy is as good as average min-entropy for all computationally-bounded observers.  Thus, redefining secure sketches using HILL entropy is a  natural relaxation of the original information-theoretic definition; in particular, the construction in \lemref{lem:fuzzy ext construction} would yield pseudorandom outputs if the secure sketch ensured high HILL entropy.  However, as we show in Section~\ref{sec:imp HILL sketch}, such secure sketches cannot  perform much better than the information-theoretic ones.
 
-Instead, in \secref{sec:unp secure sketch}, we relax the definition by allowing by outputting a new random variable that can be recovered when $\dis (w, w')\leq t$.  This object is the computational analogue of a fuzzy conductor~\cite{KanukurthiR09}.%This is a noisy computational conductor define computational secure sketches using unpredictability, and work with that definition for the rest of the paper.  
-  In \secref{sec:comp fuzzy extractors}, we show that computational fuzzy extractors can be constructed from  computational fuzzy conductors.
+%Instead, in \secref{sec:unp secure sketch}, we relax the definition by allowing by outputting a new random variable that can be recovered when $\dis (w, w')\leq t$.  This object is the computational analogue of a fuzzy conductor~\cite{KanukurthiR09}.%This is a noisy computational conductor define computational secure sketches using unpredictability, and work with that definition for the rest of the paper.  
+%  In \secref{sec:comp fuzzy extractors}, we show that computational fuzzy extractors can be constructed from  computational fuzzy conductors.
 %The size of the circuits becomes important, we would like the \rec procedure to be computable by a circuit significantly smaller than the \hill entropy circuit size.  We simply include both of these parameters in the definition.  We review other definitions of computational entropy in Appendix~\ref{sec:notionsEntropy}.
 
 
@@ -374,7 +376,7 @@ Suppose we redefine secure sketches using HILL entropy: that is, we say that $(\
 Unfortunately, we will show below that such a secure sketch implies an error correcting code with approximately $2^{\tilde{m}}$ points that can correct $t$ random errors (see  \cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08} for a similar bound on information-theoretic secure sketches). For the Hamming metric, our result essentially matches the bound on information-theoretic secure sketches of \cite[Proposition 8.2]{DBLP:journals/siamcomp/DodisORS08}.  In fact, we show that, for the Hamming metric, HILL-entropy secure sketches imply information-theoretic ones with similar parameters, and, therefore, the HILL relaxation gives no advantage. 
 
 
-The intuition for building error-correcting codes from HILL-entropy secure sketches is as follows. Consider a function $\rec$ where $\rec (w', \sketch(w)) = w$ when $\dis(w, w')\leq t$.  When we consider the distribution $W$, to have  $H^{\hill}_{\epsilon, s_{sec}}(W|\sketch(W))\ge \tilde{m}$, there must be a distribution $Y$ with $\Hav(Y | \sketch(W))\geq \tilde{m}$ and $Y| \sketch(W)$ is computationally indistinguishable from $W | \sketch(W)$.  Since we know that $\rec$ succeeds with high probability, this means $\rec$ must succeed on $Y$ with high probability.  In particular, $\Pr_{y\in Y} [y'\leftarrow B_t(y) \wedge \rec(y', \sketch(y)) = y ]\geq 1-\epsilon$.  This means we can construct a set $C$ out of the points in the support of $Y$.  Then $C$ will be an error correcting code and $\rec$ an efficient decoder.  We can then use standard arguments to turn this code into an information theoretic sketch.  
+The intuition for building error-correcting codes from HILL-entropy secure sketches is as follows. Consider a function $\rec$ where $\rec (w', \sketch(w)) = w$ when $\dis(w, w')\leq t$.  When we consider the distribution $W$, to have  $H^{\hill}_{\epsilon, s_{sec}}(W|\sketch(W))\ge \tilde{m}$, there must be a distribution $Y$ with $\Hav(Y | \sketch(W))\geq \tilde{m}$ and $Y| \sketch(W)$ is computationally indistinguishable from $W | \sketch(W)$.  Since we know that $\rec$ succeeds with high probability, this means $\rec$ must succeed on $Y, \sketch(W)$ with high probability.  In particular, $\Pr [s\leftarrow \sketch(W) \wedge y\leftarrow Y_s\wedge y'\leftarrow B_t(y) \wedge \rec(y', s) = y ]\geq 1-\epsilon$.  This means we can construct a large set $C$ from the support of $Y$.  $C$ will be an error correcting code and $\rec$ an efficient decoder.  We can then use standard arguments to turn this code into an information theoretic sketch.  
 %\lnote{this intuition is confusing, esp. given notational inconsistencies of all the capital letters with what comes above and below}
 To make this intuition precise, we need an additional technical condition:  sampling a random neighbor of a point is efficient.
 \begin{definition}
@@ -509,7 +511,7 @@ We review definitions of Shannon codes~\cite{shannon1949mathematical}:
 \begin{definition}
 Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\sample(c, t')) \neq c]<\epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
 \end{definition}
-This is a slightly stronger formulation than usual, in that we require the code to correct random errors of every size $t'<t$. \footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compare to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
+This is a slightly stronger formulation than usual, in that we require the code to correct random errors of every size $t'<t$\footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compare to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 
 Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. \begin{definition}
 Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
@@ -518,18 +520,19 @@ $\Pr_{c\leftarrow C}[\rec(\sample(c, t')) \neq c]<\epsilon$.
 An average error Shannon code is convertible to a maximal error Shannon code with a small loss.  We use the following pruning argument from Cover and Thomas~\cite[Pages 202-204]{cover2006elements} (we provide a proof in \secref{sec:proof of average to maximal error}):
 \begin{lemma}
 \label{lem:averageToMaximalError}
-Let $C$ be a distribution with $\Hoo(C)\geq k$ and let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$.  There is a set $C'$ with $|C'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
+Let $C$ be a distribution over space $\mathcal{M}$ with $\Hoo(C)\geq k$ and let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$.  There is a set $C'$ with $|C'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
 \end{lemma}
 
 We are now ready to show our main result: HILL-entropy secure sketches imply maximal-error Shannon codes~(proof in \secref{sec:proof of thm sketch implies code}).
 \begin{theorem}\label{thm:impSketchArbitraryW}
-Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists $x$ and a set $C$ with $|C'|\geq 2^{\tilde{m}-2}$ that is a $(t, 4(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
+Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Assume $s_{sec}= \Omega(t(s_{neigh}+s_{rec}))$, where $s_{rec}$ is the circuit size of $\rec$.  Then there exists a value $s$ and a set $C$ with $|C'|\geq 2^{\tilde{m}-2}$ that is a $(t, 4(\epsilon+\delta))$-Shannon code with recovery procedure $\rec(\cdot, s)$.
 %Let $W$ be a flat distribution~(all points in the support of $W$ have the same probability) over $\mathcal{M}$ where $\Hoo(W)\geq k$ and   Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$.  If $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $O(s_{neigh}+s_{rec})$, then $\exists x, W'$ where $|W'|\geq |W|/2 \geq 2^{k-1}$ such that $W'$ is a $(t, 2\epsilon)$ Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
 \end{theorem}
 %The code provided in \thref{thm:impSketchArbitraryW} is weaker than a Shannon error correcting code~\cite{shannon1948}.  In a Shannon code, for all codewords $c, \Pr[c'\leftarrow \sample(c) \wedge \rec(c') \neq c]<\epsilon$.  Bounds for this type of code are well known~\cite{shannon1948} and efficient constructions exist~\cite{forney1966}.  Requiring proper decoding for only a random codeword is a significant restriction particularly in the case where the probability of outcomes in $W$ differs significantly~(e.g. where $\exists w_1,w_2\in W$ such that $\Pr[W=w_1]/\Pr[W=w_2] = \ngl$).  However, this is still a meaningful set of error correcting codes.  A similar question is considered in Appendix C of \cite{DBLP:journals/siamcomp/DodisORS08}.  They are able to achieve results for Hamming codes~(as they are not restricted to sampling a polynomial portion of the space)\bnote{expand on this explanation}.
 
 
-It is known (see \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein) that, for the Hamming metric, any Shannon code (in the stronger sense defined by us) can be converted into an information-theoretic secure sketch.  The idea is to use the code offset construction, but randomize the order of the bits of $w$ first, via  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement is in the following Lemma.
+%It is known (see \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein) that, 
+For the Hamming metric, any Shannon code (in the stronger sense defined by us) can be converted into an information-theoretic secure sketch~(see \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, but randomize the order of the bits of $w$ first, via  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement is in the following Lemma.
 \begin{lemma}
 \label{lem:shannon to sketch}
 For an alphabet $Z$, let $\mathcal{C}$ over $Z^n$ be a $(t, \delta)$ Shannon code.  % with recovery procedure $\rec'$.
@@ -578,7 +581,7 @@ Putting together \thref{thm:impSketchArbitraryW} and \lemref{lem:shannon to sket
 \begin{corollary}
 \label{cor:rec yields sketch}
 Let $Z$ be an alphabet. Let $(\sketch', \rec')$ be an $(\epsilon,s_{sec})$-HILL-entropy $(Z^n, n\log |Z|, \tilde{m}, t)$-secure sketch with error $\delta$ for the Hamming metric over $Z^n$, with $\rec'$ of circuit size $s_{rec}$.
-If $s_{sec}=\Omega(t(s_{rec} + n))$, then there exists a   $(Z^n, n\log |Z|, \tilde{m}-2,t)$ (information-theoretic) secure sketch with error
+If $s_{sec}=\Omega(t(s_{rec} + n\log |Z|))$, then there exists a   $(Z^n, n\log |Z|, \tilde{m}-2,t)$ (information-theoretic) secure sketch with error
 $4(\epsilon+\delta)$. 
 %Let $(\mathcal{M}, d)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  If no $(t, \epsilon)$-average error Shannon code over $\mathcal{M}$ exists of size $2^k$ then, $\forall (s_{rec}, t)$ recovery procedures $(\sketch, \rec)$ $H^{\hill}_{\epsilon, s}(X|\sketch(X))\not\geq k$ for $s=O(s_{rec}+s_{neigh})$.
 \end{corollary}
@@ -638,28 +641,27 @@ For a distribution $(X, Z)$, we say that $X$ has \emph{unpredictability entropy}
 \Pr[C(Z) = Y ] \leq 2^{-k}
 .\]
 \end{definition}
-We will say a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy}$(\mathcal{M}, m, \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfied \defref{def:secure sketch} with the security requirement replaces with $H^{\unp}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
+We will say a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch} with the security requirement replaced with $H^{\unp}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
 We consider this notion to be a natural notion for a computational sketch as it can be extracted from using a reconstructive extractor~(defined in~\cite{barak-computational}):
 \begin{lemma}~\cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}
 \label{lem:unp extraction} 
 Let $X$ be a distribution with $H^{\unp}_{\epsilon, s_{sec}}(X|Z)\geq k$, and let $\rext$ be an extractor with a $(k-\log 1/\epsilon, \epsilon)$-reconstruction $(C,D)$.  Then $\delta^{\mathcal{D}_{s'}}((\rext(X, U_d), Z), U_m\times U_d\times Z)\leq 5\epsilon,$ where $s'=s_{sec}/(|C|+|D|)$.
 \end{lemma}
-Thus, using a sketch that retained unpredictability entropy and a reconstructive extractor we could build a computational fuzzy extractor~(in a similar fashion to \lemref{lem:fuzzy ext construction}).  
-
-Unfortunately, unpredictability entropy must also depend on $t$.  An adversaries ability to predict the output of the \rec algorithm increases with as $t$ grows.  %That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)) , (Y, \sketch(W))$ our ability to predict $Y$ increases as $|B_t(\cdot)|$ increases.  
+Thus, if a sketch retained unpredictability entropy we could build a computational fuzzy extractor~(using the construction in \lemref{lem:fuzzy ext construction}).  
+Unfortunately, the unpredictability entropy conditioned on the sketch must recreate with $t$.  
+%An adversaries ability to predict the output of the \rec algorithm increases with as $t$ grows.  %That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)) , (Y, \sketch(W))$ our ability to predict $Y$ increases as $|B_t(\cdot)|$ increases.  
 The formal statement is below:
 \begin{theorem}
 \label{thm:imp of unp entropy}
-Let $W$ be a distribution over $\zo^b$ and let $(\sketch, \rec)$ be an Unpredictability-entropy $(\zo^b, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} = \Omega(|\rec|+b)$, then $\tilde{m}\leq b - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.
+Let $W$ be a distribution over $Z^n$ and let $(\sketch, \rec)$ be an unpredictability-entropy $(Z^n, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} = \Omega(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.
 \end{theorem}
 This result has a weaker condition than \corref{cor:rec yields sketch} and yields a weaker conclusion.  The main difference with \thref{thm:impSketchArbitraryW} is that it is unknown if the indistinguishable distribution contains many points.  This means we cannot construct a good code out of the points of $Y$.  In \secref{sec:proof of imp unp entropy}, we prove a stronger version of \thref{thm:imp of unp entropy}, based on a relaxed notion of unpredictability entropy.%Our bound is a result of the Hamming bound for the space.  
 
 \textbf{Avoiding lower bounds from \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy}:}
 
-The lower bounds of \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy} are strongest for high entropy sources.  The results get weaker as we consider sources with lower starter entropy.  This is necessary, if a source contains only codewords (of an error correcting code), no sketch is necessary.  This means we cannot rule out computational sketches for other arbitrary lower entropy distributions.  
+The lower bounds of \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy} are strongest for high entropy sources.  The results get weaker as we consider sources with lower starter entropy.  This is necessary, if a source contains only codewords (of an error correcting code), no sketch is necessary.  This means we cannot rule out computational sketches for other arbitrary lower entropy distributions.  This same situation occurs when considering lower bounds for information-theoretic sketches.
 
-Both of the lower bound results arise because the reduction can ensure that \rec functions as an error-correcting code for many points of the output distribution.  It may be possible to avoid this problem if \rec outputs a fresh random variable\footnote{If some efficient algorithm can take the output of $\rec$ and efficiently transform it back to the source $W$, the bounds of \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy} both apply.  This means that we need to consider constructions that are hard to invert~(either information-theoretically or computationally).}.  An algorithm that outputs a fresh random variable would be a computational fuzzy conductor~(see~\cite{KanukurthiR09} for the definition of a fuzzy conductor).  Our construction~(in \secref{sec:fuzzyCompExt}) has pseudorandom output and immediately satisfies definition of a computational fuzzy extractor~(\defref{def:comp fuzzy extractor}).  It is unknown if a more efficient construction could be achieved using a computational fuzzy conductor that is not also a computational fuzzy extractor.
-\bnote{Not happy with this wording, revise}
+Both of the lower bound results arise because the reduction can ensure that \rec functions as an error-correcting code for many points of the indistinguishable distribution.  It may be possible to avoid this problem if \rec outputs a fresh random variable\footnote{If some efficient algorithm can take the output of $\rec$ and efficiently transform it back to the source $W$, the bounds of \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy} both apply.  This means that we need to consider constructions that are hard to invert~(either information-theoretically or computationally).}.  An algorithm that outputs a fresh random variable would be a computational fuzzy conductor~(see~\cite{KanukurthiR09} for the definition of a fuzzy conductor).  Our construction~(in \secref{sec:fuzzyCompExt}) has pseudorandom output and immediately satisfies definition of a computational fuzzy extractor~(\defref{def:comp fuzzy extractor}).  It may be possible to achieve significantly better parameters with a construction that is a computational fuzzy conductor~(but not a computational fuzzy extractor) and then applying an extractor.  We leave this as an open problem.
 
 
 %\subsection{Defining  Computational Fuzzy Conductors}
@@ -693,11 +695,11 @@ Both of the lower bound results arise because the reduction can ensure that \rec
 \section{Computational Fuzzy Extractor based on \class{LWE}}
 \label{sec:fuzzyCompExt}
 
-In this section we describe our main construction.  Our construction uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\mathcal{I}_t$ be an algorithm that decodes a random linear code with at most $t$ errors~(not necessarily efficient).  We provide an informal description below.
+In this section we describe our main construction.  In this section, we consider only a uniform source $W$, we consider other distributions in \secref{sec:LWE block fixing sources}.  Our construction uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\mathcal{I}_t$ be an algorithm that decodes a random linear code with at most $t$ errors.  We provide an informal description below.
 %Please refer to \consref{cons:informal construction} for the description of the construction.  
 
 \begin{construction}
-Let $n$ be a security parameter and let $m>n$.  %Let $W = W_1,..., W_m$ and let $b$ be a constant and let $W_i \in \zo^b$ for all $i$.  
+Let $n$ be a security parameter and let $m> n$.  %Let $W = W_1,..., W_m$ and let $b$ be a constant and let $W_i \in \zo^b$ for all $i$.  
 Define $\gen, \rep$ as follows:%The following construction is a computational secure sketch:
 %Code-offset construction of a secure sketch using a random linear code over a finite field $\Fq$. $\mathcal{I}_t (\vA, \vect{D})$ denotes an algorithm that decodes up to $t$ errors, i.e., an algorithm that finds $X'\in \Fq^n$ such that $\vect{A}X'$ is of Hamming distance at most $t$ from $\vect{D}$. $m > n$ are parameters to be figured out later.
 \begin{center}
@@ -717,7 +719,7 @@ Define $\gen, \rep$ as follows:%The following construction is a computational se
 \item \underline{Input}: $(w', p)$ (where the Hamming distance between $w'$ and $w$ is at most $t$).
 \item Parse $p$ as $(\vA, \vect{C})$; let $\vect{D}=\vect{C}-w'$.
 \item Let $X = \mathcal{I}_t(\vA, \vect{D})$\\
-\item Output $X_{1,...,n/2}$.
+\item Output $r = X_{1,...,n/2}$.
 \end{enumerate}
 \end{minipage} 
 \end{tabular}
@@ -727,12 +729,12 @@ Define $\gen, \rep$ as follows:%The following construction is a computational se
 
 
 Intuitively, security comes from the computational hardness of decoding random linear codes from a high number of errors (introduced by $w$).  
-In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp1978}; however, this statement is not sufficient for our security goal, which is to show  $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|P) \approx \Hoo(W)$.  Efficiency comes from the fact that up to some number of errors $t$, decoding is easy and thus $\mathcal{I}_t$ can be made polynomial-time.
+In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp1978}; however, this statement is not sufficient for our security goal, which is to show  $\delta^{\mathcal{D}_{s_{sec}}}((X_{1,..., n/2},P), (U_{n/2 \log q}, P))\leq \epsilon$.  Furthermore, this construction is only useful if $\mathcal{I}_t$ can be efficiently implemented.  We demonstrate an efficient $\mathcal{I}_t$ that corrects a super-polynomial number of error patterns in polynomial time.
 
 The rest of this section is devoted to making these intuitive statements precise.
  We describe the \class{LWE} problem and the security of our construction in \secref{subsec:LWE}.
  %a recent variant due to D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} in \secref{subsec:LWE}.  
-We describe conditions for efficient decoding in \secref{sec:time main construction}.  In \secref{sec:lossless extractor} we describe parameter settings where our construction yields a lossless secure sketch.  In \secref{sec:prg based comparison} we compare \consref{cons:informal construction} to using a information-theoretic fuzzy extractor and running a pseudorandom generator on the output.\lnote{revise after going through the rest}.
+We describe conditions for efficient decoding in \secref{sec:time main construction}.  In \secref{sec:lossless extractor}, we describe parameter settings where we extract as many bits as the size of our input distribution and thus our construction is lossless.  In \secref{sec:prg based comparison}, we compare \consref{cons:informal construction} to using a information-theoretic fuzzy extractor and running a pseudorandom generator on the output.
 
 
 
@@ -747,7 +749,7 @@ Let $m = m(n) = \poly(n)$ be an integer, $q = q(n) = \poly(n)$. The decisional v
 We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, t)$-secure if no (probabilistic) distinguisher running in time $t$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.
 \end{definition}
 
-Denote by $\bar{\Psi}_\alpha$ the discretized Gaussian distribution over $\Fq$ with variance $(\alpha q)^2/(2\pi)$, Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} shows that, when $\chi = \bar{\Psi}_{\alpha}$, $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure if the worst-case lattice problems are hard.
+Denote by $\bar{\Psi}_\alpha$ the discretized Gaussian distribution over $\Fq$ with variance $(\alpha q)^2/(2\pi)$, Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} show that, when $\chi = \bar{\Psi}_{\alpha}$, $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure if the worst-case lattice problems are hard to approximate using quantum algorithms.
 %The matrix $\vA$ and secret $\vx$ are drawn from the uniform distribution, while the error term is drawn from a discretized Gaussian distribution $\bar{\Psi}_{\alpha}$.  
 Furthermore, Regev \cite{regev2005LWE} shows a decision to search equivalence for $q=\poly(n)$.
 %We state the decisional version in terms of unpredictability entropy~(see \defref{def:unp entropy} for the definition of unpredictability entropy and \secref{sec:LWEoverview} for an equivalence to the standard formulation of decisional LWE):
@@ -755,7 +757,7 @@ Furthermore, Regev \cite{regev2005LWE} shows a decision to search equivalence fo
 
 \begin{proposition} 
 \label{assume:entropy LWE}
-Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime and let $\bar{\Psi}_\alpha$ be the discretized Gaussian distribution with variance $(\alpha q)^2/2\pi$.  If GAPSVP and SIVP are hard to approximate within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))$-secure for all probabilistic distinguisher $D$, where $\epsilon = \ngl(n)$.
+Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime and let $\bar{\Psi}_\alpha$ be the discretized Gaussian distribution with variance $(\alpha q)^2/2\pi$.  If GAPSVP and SIVP are hard to approximate~(on lattices of dimension $n$) within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure for $\epsilon = \ngl(n)$ and $s_{sec} = \poly(n)$.  That is, $\delta^{\mathcal{D}_{s_{sec}}}(\vA, \vA X+E ), (\vA, U_q^m))\leq \epsilon$.
 
 %H^{\unp}_{\epsilon, s_{sec}}(X | \vA, \vA X+E) =H^{\unp}_{\epsilon, s'_{sec}}(E| \vA, \vA X+E) \geq n\log q $ for $s'_{sec}\approx s_{sec}$.  
 \end{proposition}
@@ -774,14 +776,15 @@ We present the formulation of D\"{o}ttling and M\"{u}ller-Quade:
 %This problem can be stated in the language of indistinguishability using the Decision-to-search reduction of Regev or Peikert:
 \begin{lemma}~\protect{~\cite[Corollary 10]{dottling2012}}
 \label{lem:uniform LWE decision}
-Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, the $\distLWE_{n, m, q, \chi}$ is $(\epsilon, \poly(n))\mbox{-}$secure, where $\epsilon = \ngl(n)$.
+Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate~(on lattices of dimension $n$) with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, the $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
 \end{lemma}
 
-We will use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  This says that if $\distLWE$ is secure then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
+To extract pseudoranom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
-Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  Then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$ assuming $\distLWE_{(n-k, m, q, \chi)}$.
+Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  If $\distLWE_{(n-k, m, q, \chi)}$ is $\epsilon, s_{sec}$ hard then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$.
 \end{lemma}
+\bnote{Need to check on gap in the reduction, the claim here is that there is no loss.}
 
 %\begin{lemma}
 %\label{lem:conversion to unpredictability}
@@ -851,7 +854,7 @@ With Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, \co
 \subsection{Efficiency of \consref{cons:informal construction}}
 \label{sec:time main construction}
 %\subsection{Analysis of Construction~\ref{cons:LWESecureSketch}}
-\consref{cons:informal construction} is only useful if $\mathcal{I}_t$ can be efficiently implemented.  We now present a particular $\mathcal{I}_t$ and consider its efficiency:
+\consref{cons:informal construction} is only useful if $\mathcal{I}_t$ can be efficiently implemented.  We now present a particular $\mathcal{I}_t$ and consider its efficiency:\bnote{Unique witness.  BAD!!!}
 
 \begin{construction}
 \label{cons:decoding algorithm} Suppose that for a $(n, m, q, \chi)$ that the LWE errors problem is a unique witness relation except with negligible probability.  Let $R$ be the relation that decides whether $X$ is a witness for an instance $\vA, \vA X+W$.  We describe inverter $\mathcal{I}_t$:
@@ -859,8 +862,8 @@ With Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, \co
 \item Input $\vA , \vect{C} = \vA X + E - E'$
 \item Randomly select rows without replacement $i_1,..., i_n\leftarrow [1,m]$.  
 \item Restrict $\vA, \vect{C}$ to rows $i_1,...,i_n$, denote this is $A_{i_1,...,i_n}, C_{i_1,...,i_n}$.
-\item Compute $x = \vA^{-1}_{i_1,...,i_n}\vect{C}_{i_1,...,i_n}$.  If $R(x, \vA, \vect{C}) \neq 1$.  Go to step (2).
-\item Output $x$.
+\item Compute $X = \vA^{-1}_{i_1,...,i_n}\vect{C}_{i_1,...,i_n}$.  If $R(X, \vA, \vect{C}) \neq 1$.  Go to step (2).
+\item Output $X$.
 \end{enumerate}
 \end{construction}
 
@@ -895,7 +898,7 @@ We now state a setting of parameters that yields a lossless construction.
 
 \begin{theorem}
 \label{thm:lossless secure conductor log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be uniform over $\zo^{(c+d)/d(n\log b)}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\sketch(W)) = H_\infty(W)$
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be uniform over $\zo^{(c+d)nb/d}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\sketch(W)) = H_\infty(W)$
 % for following parameters:
 %\[
 %(\zo^{(c+d)/dn\log b}, |W|, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)
@@ -908,17 +911,18 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 \end{proof}
 
 For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe how to set $q = \poly(n)$.  
-\thref{thm:lossless secure conductor log} shows that a computational fuzzy conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point $B$ and thus providing no information about either $X$ or $W$.  A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
+\thref{thm:lossless secure conductor log} shows that a computational fuzzy conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point and thus providing no information about either $X$ or $W$.  
+%A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
 \subsection{Comparison with \prg based construction}
 \label{sec:prg based comparison}
-In this section we showed how to construct a computational fuzzy extractor by making the whole process ``computational''.  Alternatively, a computational fuzzy extractor could be constructed by using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  In particular, using the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. use LWE to achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  Namely, consider $\vA$ as a public value, they show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log t)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
+In this section we to constructed a computational fuzzy extractor by making the whole process ``computational.''  Alternatively, a computational fuzzy extractor could be constructed by using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  In particular, using the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. use LWE to achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  Namely, consider $\vA$ as a public value, they show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log t)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
 
 \section{\consref{cons:informal construction} with Symbol Fixing Sources}
 \label{sec:LWE block fixing sources}
 In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a computational fuzzy extractor for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
 \begin{definition}
-Let $W = (W_1,..., W_m)$ be a distribution where $W_i$ takes values over $\{0,1\}^b$, we say that a distribution is a $(m-\alpha)$-\emph{symbol fixing source} if $H_\infty(W)\geq (m - \alpha)b$ and for all $W_i$ one of the following conditions is met:
+Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where $W_i$ takes values over $\{0,1\}^b$, we say that a distribution is a $m$-\emph{symbol fixing source} if $H_\infty(W)\geq mb$ and for all $W_i$ one of the following conditions is met:
 \begin{itemize}
 \item $W_i \overset{d}= U_b$
 \item There exists a value $c_i$ such that $\Pr[W_i = c_i] =1$.
@@ -935,7 +939,7 @@ Let $A\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and let $x\in\Fq^{n+\alpha}$.  No PP
 }
 We now define the decisional $\LWE$ problem with symbol fixing errors is defined as follows: 
 \begin{problem}[$\distLWE$ w/ symbol fixing errors]
-Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and output $\vA X + W$. The decisional learning with error problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
+Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and output $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
 \end{problem}
 
 The dist-$\LWE_{n, m, q, W}$ with symbol fixing sources is implied by standard $\distLWE_{n, m, q, \chi}$~(proof in \secref{sec:proof of block theorem}).
@@ -944,6 +948,7 @@ The dist-$\LWE_{n, m, q, W}$ with symbol fixing sources is implied by standard $
 \label{thm:blockLWE}
 Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  Then the $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha, m+\alpha, q, W}$ w/ symbol fixing sources problem.
 \end{theorem}
+\bnote{We should add some exposition here.  Some intuition about the proof.}
 
 \thref{thm:blockLWE} allows us to construct a computational fuzzy extractor from block-fixing sources: 
 
@@ -958,7 +963,7 @@ Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-
 
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)n/d+\alpha)b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms.   There is a setting of $q = poly(n)$ such that \consref{cons:informal construction} is a lossless conductor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\sketch(W)) = H_\infty(W)$ for %the following parameters:
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)nb/d+\alpha b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n$) using quantum algorithms.   There is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless conductor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\sketch(W)) = H_\infty(W)$ for %the following parameters:
 %\[
 %(\zo^{((c+d)n/d+\alpha)b}, \Hoo(W),\Hoo(W), \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)\text{-computational secure sketch}
 %\]
@@ -1494,11 +1499,11 @@ For a distribution $(X, Z)$, we say that $X$ has \emph{relaxed unpredictability 
 \end{definition}
 
 \begin{theorem}
-Let $W$ be a distribution over $\zo^b$ and let $(\sketch, \rec)$ be a relaxed unpredictability-entropy $(\zo^b, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} = \Omega(|\rec|+b)$, then $\tilde{m}\leq b - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.
+Let $W$ be a distribution over $Z^n$ and let $(\sketch, \rec)$ be a relaxed unpredictability-entropy $(Z^n, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} = \Omega(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.
 
 \end{theorem}
 \begin{proof}
-Let $W$ be a distribution over $\zo^b$ and let $(\sketch, \rec)$ be an relaxed unpredictability-entropy $(\zo^b, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$ where $s_{sec} = \Omega(|\rec|+b)$.  Let $Y, Z'$ be a joint distribution such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, Z'))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(Z') = Y]\geq 2^{\tilde{m}}$ where $\tilde{m} = n - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.  We begin by showing that \rec must recover points of $Y$.
+Let $W$ be a distribution over $Z^n$ and let $(\sketch, \rec)$ be an relaxed unpredictability-entropy $(Z^n, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$ where $s_{sec} = \Omega(|\rec|+b)$.  Let $Y, Z'$ be a joint distribution such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, Z'))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(Z') = Y]\geq 2^{\tilde{m}}$ where $\tilde{m} = n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -\delta)$.  We begin by showing that \rec must recover points of $Y$.
 \begin{claim}
 \label{clm:y is recoverable}
 \begin{align*}
@@ -1509,11 +1514,11 @@ Let $W$ be a distribution over $\zo^b$ and let $(\sketch, \rec)$ be an relaxed u
 \begin{proof}
 Suppose that $\Pr[\rec(B_t(Y), Z') = Y]<1-\epsilon -\delta$.  We construct the following $D\in\mathcal{D}_{s_{sec}}$:
 \begin{itemize}
-\item Input $x\in \zo^b, s\in\zo^*$.
+\item Input $x\in Z^n, s\in\zo^*$.
 \item Sample $x'\leftarrow B_t(x)$.
 \item Output $1$ if $\rec(x', s) = x$ otherwise output $0$.
 \end{itemize}
-Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in\zo^b$ such that \[\dis(w, w')\leq t, \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This immediately implies that $\Pr[\rec(B_t(W), \sketch(W) = W)  ]\geq 1-\delta$.  The statement of the claim follows as 
+Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in Z^n$ where $\dis(w, w')\leq t$ \[ \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This immediately implies that $\Pr[\rec(B_t(W), \sketch(W) = W)  ]\geq 1-\delta$.  The statement of the claim follows as 
 \begin{align*}
 \Pr[D(W, \sketch(W)) = 1]  - \Pr[D(Y, Z')] &=\\
 \Pr[\rec(B_t(W), \sketch(W) )= W] - \Pr[\rec(B_t(Y), Z') = Y] &> (1-\delta)-(1-\delta - \epsilon)>\epsilon.
@@ -1521,13 +1526,13 @@ Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in\zo^b$ 
 \end{proof}
 We now consider the experiment $(y, z)\leftarrow (Y, Z'), y'\leftarrow B_t(y)$ and define the quantity $P_{y' , z, y} = \Pr[\rec(y', z) =y]$.  \clref{clm:y is recoverable} says that 
 \[
- \Pr[(y, z\leftarrow (Y, Z')] \sum_{y'\in \zo^b} \Pr[B_t(y) =y' | Y = y] P_{y',  z, y} \geq 1-\delta -\epsilon.
+ \Pr[(y, z\leftarrow (Y, Z')] \sum_{y'\in Z^n} \Pr[B_t(y) =y' | Y = y] P_{y',  z, y} \geq 1-\delta -\epsilon.
 \]
 We note that for any particular $y, y'$ such that $\dis(y, y')\leq t, \Pr[B_t(y) = y' | Y=y] = 1/|B_t(\cdot)|$ and if $\dis(y, y')>t, \Pr[B_t(y) = y' | Y=y] = 0$.  Thus, for all $y, y', \Pr[B_t(y) = y' | Y=y] \leq 1/|B_t(\cdot)|$
 We now define $\mathcal{I}\in\mathcal{D}_{s_{sec}}$ as follows:
 \begin{itemize}
 \item Input $z\in\zo^*$.
-\item Sample $x\leftarrow \zo^b$.
+\item Sample $x\leftarrow Z^n$.
 \item Output $\rec(x, z)$.
 \end{itemize}
 Let $X$ the random variable corresponding to the sample $x$ taken by $\mathcal{I}_t$.
@@ -1535,14 +1540,14 @@ We now show that $\mathcal{I}$ predicts $Y$:
 \begin{align*}
 2^{\tilde{m}}& = \Pr[\mathcal{I}(Z') = Y] \\
 &= \Pr[(y, z)\leftarrow (Y, Z')] \Pr[\mathcal{I}(z) = y]\\
-&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in \zo^b} \Pr[X = y' ]\Pr[\mathcal{I}(z) = y | X = y']\\
-&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in \zo^b} \Pr[X = y' ] P_{y', z, y}\\
-&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in \zo^b} \frac{\Pr[X = y']}{\Pr[B_t(y) = y' | Y = y]}\Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
-&\geq  \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in \zo^b} \frac{2^{-b}}{1/|B_t(\cdot)|} \Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
-&\geq \frac{|B_t(\cdot)|}{2^b} \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in \zo^b} \Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
-&\geq \frac{|B_t(\cdot)|}{2^b}(1-\epsilon - \delta)
+&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in Z^n} \Pr[X = y' ]\Pr[\mathcal{I}(z) = y | X = y']\\
+&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in Z^n} \Pr[X = y' ] P_{y', z, y}\\
+&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in Z^n} \frac{\Pr[X = y']}{\Pr[B_t(y) = y' | Y = y]}\Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
+&\geq  \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in Z^n} \frac{|Z|^{-n}}{1/|B_t(\cdot)|} \Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
+&\geq \frac{|B_t(\cdot)|}{|Z|^n} \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in Z^n} \Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
+&\geq \frac{|B_t(\cdot)|}{|Z|^n}(1-\epsilon - \delta)
 \end{align*}
-Finally converting to entropy, one has $\tilde{m}\leq b-\log |B_t(\cdot)| - \log (1-\epsilon - \delta)$.
+Finally converting to entropy, one has $\tilde{m}\leq n\log |Z|-\log |B_t(\cdot)| - \log (1-\epsilon - \delta)$.
 \end{proof}
 
 %\bnote{This is the proof for not relaxed unpredictability entropy}
