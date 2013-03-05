@@ -1,0 +1,30 @@
+Need to be consistent about what size means.  In some places we use s_{rec} for circuit size and in others we mean running time.  Need to be consistent.
+
+-Abstract:  
+-Intro: 
+--Polish further if time permits.
+-- add a connection to Dodis-Smith as another relaxation that gives lossless.
+-Preliminaries: 
+--
+-Definitions: 
+-Construction:  
+--Security: We make a claim that AGV is lossless it isn't.  Figure out loss.
+--Efficiency: Remove unique witness garbage.
+
+-Extension:  
+--I think we should add some exposition about the proof, since it is interesting and stuff.
+
+-References:  
+--Should go through and check for misspelling, capitalization, etc.
+-LWE extended: 
+
+-Unique Witness:
+--Need to eliminate this by saying that codes are high distance with high probability.
+-Proofs:
+--Main proof the notation needs to be consistent.
+--Need to prove stronger version of claim about uniform b.
+
+-Parameter Settings: 
+--I'd like to be a little clearer about how to achieve linear stretch but I don't want to introduce another parameter.
+
+--
