@@ -267,6 +267,7 @@ and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) 
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. %We write $X \approx_{\epsilon} Y$ if $\Delta(X,Y) \leq \epsilon$, and when $\epsilon$ is negligible (in the appropriate parameter, as clear from the context) then we say $X$ and $Y$ are \emph{statistically close}.  
 For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
 For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t(\cdot)|$ the size of a ball of radius $t$.  For the Hamming metric over $Z^n$ the size of $B_t(\cdot) = \sum_{i=0}^t {n \choose t} (|Z|-1)^i $, for clarity we express this value as $B_t(\cdot)$.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.
+During the presentation, we denote bold letters to be vectors or matrix, capitalized letters to be random variables, and lower case letter to be the elements in the vector. 
 
 \subsection{Fuzzy Extractors and Secure Sketches}
 \label{sec:fuzzy extractors}
@@ -1309,7 +1310,7 @@ We can restate Assumption~\ref{assume:indist LWE} in terms of unpredictability e
 \section{Proof of Theorem \ref{thm:blockLWE}}
 \label{sec:proof of block theorem}
 
-\bnote{We need to be clear about notation here.  Why are $x, e$ sometimes bold and sometimes capital?} 
+%\bnote{We need to be clear about notation here.  Why are $x, e$ sometimes bold and sometimes capital?} 
 \begin{proof}
 We assume that all of the fixed blocks are located at the end and their fixed value is $0$, that is, $W_{m+1}, ..., W_{m+\alpha} =0$.  If the blocks are fixed to some other value the reduction is essentially the same.
 
@@ -1325,7 +1326,8 @@ We build a distinguish $\D'$ that distinguishes standard LWE instances from unif
 It suffices to show that $\D'$ properly prepares a random instance for the distinguisher.  We show this in three claims: 
 \begin{enumerate}
 \item If $\vA'$ is a random matrix then $\vA$ is a random matrix.
-\item If $\vb'$ is uniformly distributed then $\vb$ is uniformly distributed.\bnote{This should be if $\vb' | A$ is uniformly distributed, then $\vb |A $ is uniformly distributed.}
+\item If $\vb'$ is uniformly distributed conditioned on $\vA'$ then $\vb$ is uniformly distributed conditioned on $\vA$.
+%\bnote{This should be if $\vb' | A$ is uniformly distributed, then $\vb |A $ is uniformly distributed.}
 \item If $\vb' = \vA'\vx'+\ve'$ then $\exists \vx$~(uniformly distributed) such that $\vb = \vA \vx + \ve'$ where the last $\alpha$ coordinates of $\ve'$ are $0$ and $\ve_i' = \ve_i$ for $1\leq i\leq m$.
 \end{enumerate}
 \begin{figure}
@@ -1374,6 +1376,10 @@ For a matrix $\vA$ we will denote the $i$-th row by $\va_i$~(similarly for the m
 %, we have added $\alpha$ equations as well as $\alpha$ unknowns, furthermore, those $\alpha$ equations have no error.  The number of unknowns we added are $x_{n+i} = b^*_{m+i} - \sum^{n}_{j=1}R_{ij}x_j$ for $i=n+1,..., n+\alpha$.
 \bnote{We need to justify these steps better.}
 \bnote{Is it really standard to go to lower case for the rows?}
+\xnote{lower case for vectors, which is row vector in the matrix}
+
+
+\xnote{Needs to be clean up the $\gamma$, it's not correct, at least not consistent with the randomized algorithm.}
 We have the following for all $i=1,..., m+\alpha$:
 \begin{align*}
 \va_i \vx^* + e_i^* &=\va^*_i\vx^*+\sum_{k=1}^\alpha \gamma_{i} \va^*_{m+k}\vx^*+e_i^*\\
@@ -1391,13 +1397,16 @@ We have the following for all $i=1,..., m+\alpha$:
 \end{proof}
 \begin{claim} 
 \label{clm:random b}
-If $\D'$ is provided with input distributed as $\vA', \vb'$ where $\vb'$ is uniformly random then $\vb$ is uniformly random.
+If $\D'$ is provided with the input distributed as $\vA', \vb'$ where $\vb'$ is uniformly random, then $\vb$ is uniformly random conditioned on $\vA$.
 \end{claim}
 \begin{proof}
-As before this is clearly satisfied before step~\ref{step:randomization}.  That is, each $b_i^*$ is uniformly and independently random.  After step~\ref{step:randomization} each $b_i$ is a fresh random linear combination of random values:\bnote{We need to better argue this property.}
+Before step~\ref{step:randomization}, each $b_i^*$ is uniformly and independently random.  After step~\ref{step:randomization}, since the $b_i*$ and $\gamma_i$ are random, then each $b_i$ is a fresh random linear combination of random values:
 \[
 b_i = b_i^* + \sum_{k=1}^\alpha \gamma_i b_{m+k}^*.
 \]
+%We also need to show that $\vb$ is uniformly distributed even conditioned on $\vA$. Step~\ref{step:randomization} randomized each 
+
+$\vb$ doesn't dependent on $\vA$ simply because $\vb'$ doesn't dependent on $\vA'$ \xnote{I need show more work on this, maybe?}
 Thus, each of these values is uniformly and independently random.
 \end{proof}
 
