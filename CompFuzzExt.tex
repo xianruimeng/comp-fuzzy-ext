@@ -777,15 +777,14 @@ We present the formulation of D\"{o}ttling and M\"{u}ller-Quade:
 %This problem can be stated in the language of indistinguishability using the Decision-to-search reduction of Regev or Peikert:
 \begin{lemma}~\protect{~\cite[Corollary 10]{dottling2012}}
 \label{lem:uniform LWE decision}
-Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate~(on lattices of dimension $n$) with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, the $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
+Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate~(on lattices of dimension $n/2$) with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
 \end{lemma}
 
 To extract pseudoranom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
-Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  If $\distLWE_{(n-k, m, q, \chi)}$ is $\epsilon, s_{sec}$ hard then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$.
+Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  If $\distLWE_{(n-k, m, q, \chi)}$ is $\epsilon, s_{sec}$ hard then $H^{\hill}_{\epsilon, s_{sec}'}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$ where $s_{sec}' \approx s_{sec} - n^3$.
 \end{lemma}
-\bnote{Need to check on gap in the reduction, the claim here is that there is no loss.  I think it will go from $\ngl, \poly$ to $\ngl', \poly'$}
 
 %\begin{lemma}
 %\label{lem:conversion to unpredictability}
@@ -919,7 +918,8 @@ For a more detailed explanation of the various parameters and constraints see \s
 \label{sec:prg based comparison}
 In this section we to constructed a computational fuzzy extractor by making the whole process ``computational.''  Alternatively, a computational fuzzy extractor could be constructed by using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  In particular, using the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. use LWE to achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  Namely, consider $\vA$ as a public value, they show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log t)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
 
-\section{\consref{cons:informal construction} with Symbol Fixing Sources}
+\section{\consref{cons:informal construction} with Nonuniform Sources}
+\subsection{\consref{cons:informal construction} with Symbol Fixing Sources}
 \label{sec:LWE block fixing sources}
 In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a computational fuzzy extractor for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
 \begin{definition}
@@ -964,12 +964,24 @@ Let $n$ be a security parameter and define $q, m = \poly(n)$.  Let $W$ be a $m$-
 
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)nb/d+\alpha b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n$) using quantum algorithms.   There is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\vA, \vA X+W) = H_\infty(W)$ for %the following parameters:
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)nb/d+\alpha b}$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/2$) using quantum algorithms.   There is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\vA, \vA X+W) = H_\infty(W)$ for %the following parameters:
 %\[
 %(\zo^{((c+d)n/d+\alpha)b}, \Hoo(W),\Hoo(W), \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)\text{-computational secure sketch}
 %\]
 $\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expected recover time $O(n^{2d+3} \log n)$.
 \end{theorem}
+
+\subsection{\consref{cons:informal construction} with slightly deficient sources}
+\label{sec:DP general error LWE}
+In this section, we discuss how to generalize \consref{cons:informal construction} to an arbitrary high min-entropy distribution.  We will show security using a result of Micciancio and Peikert~\cite{micciancio2013hardness}.  This result allows us to argue security for an arbitrary distribution that is nearly high entropy.  This result should be seen as a complement to the proceeding sections.  It allows for a more general error distribution, but with worse parameters than \thref{thm:lossless secure conductor log}.  Also \thref{thm:lossless block sketch log} allows for more deficient sources but of a more restricted form~(symbol fixing sources).
+\begin{theorem}
+Let $n$ be a security parameter and let $m=cn, \ell = m-n/2$.  Let $C$ be a constant and define the parameter $\rho \geq (Cm)^{\frac{m-n/2}{n/2}} = (Cm)^{2c-1}$ and let $q$ be a prime where $\poly(n) = q\geq (4\rho)^{\frac{c}{c-1}}$.  Consider a distribution $\chi$ over the space $\{-\rho, ..., \rho \}^m$.  If $\Hoo(\chi)\geq m\log \rho$ and SIVP is hard to approximate in the worst case for quantum algorithms within an approximation factor of $\gamma=\tilde{O}(\sqrt{n} q)$~(on lattices of $n/2$ dimensions), then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
+\end{theorem}
+\textbf{Note:}  The above theorem is a generalized version of~\cite[Theorem 4.6]{micciancio2013hardness}.  In particular, we note the requirement of sampling from the uniform distribution over some set $\chi \subset \{-\rho,..., \rho\}^m$ is not necessary.  The only requirement in the proof is that $|\chi|\geq m\log \rho$.  Requiring that $\Hoo(\chi) = m\log \rho$ implies that the support of $\chi$ contains at least $2^{m\log \rho}$ elements.  This theorem allows all distributions over a space of size $(2\rho)^m$ that have entropy at least $m\log \rho$.  This means we support all distributions whose entropy gap is no more than $m$ bits.
+
+\bnote{Need to continue and go through their Lemma 2.1 and 2.4 to be sure I believe this.  Everything else should go through fine.}
+
+\bnote{We need to turn this hardness result into a statement about computational fuzzy extractors.  Use the Akavia result.  Then we need to suggest parameters.  How much detail should we go into?}
 
 
 %\section{Computational Fuzzy Extractors}
