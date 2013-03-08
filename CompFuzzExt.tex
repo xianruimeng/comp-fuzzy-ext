@@ -1362,30 +1362,27 @@ In the randomized matrix $\vect{A}$, for $1\le i \le m$ and $n+1\le j \le n+\alp
 If $\D'$ is provided with input distributed as $\vA', \vA'\vx'+\ve'$ then $\vb = \vA \vx+\ve$ where $x_i = x_i'$ for $1\leq i \leq n$ and $x_{n+i} = b_{m+i}^*$ is uniformly generated otherwise and  $e_i = e_i'$ for $1\leq i\leq m$ and $e_i = 0$ for $m<i\leq m+\alpha$.
 \end{claim}
 \begin{proof}
-Before step \ref{step:randomization} the claim is satisfied.  Denote by $\vx'$ the value such that $\vA'\vx'+\ve = \vb$.  
-Then define $\vx^*$ as:
+Denote by $\vx'$ the value such that $\vA'\vx'+\ve = \vb$.  
+Then define $\vx$ as:
 \[
-x^*_i = \begin{cases}
+x_i = \begin{cases}
 x_i', & \text{if }1\leq i\leq n \\
-b_{m-n+i}^*-\sum_{j=1}^n R_{i, j} x_j', & n+1\leq i\leq n+\alpha\,.
+b_{m+i}^*-\sum_{j=1}^n R_{i, j} x_j', & n+1\leq i\leq n+\alpha\,.
 \end{cases}
 \]
-Then $\vx^*$ is uniformly random and $\vb^* = \vA^*\vx^* + \ve^*$~(where $\ve^*$ is $\ve'$ with $\alpha$ 0s appended).  Thus, it remains to show that step~\ref{step:randomization} preserves a solution.
+We denote by $\vA^*$ the matrix before step~\ref{step:randomization}.  The vector $\vx$ is uniformly random and $\vb^* = \vA^*\vx + \ve$~(where $\ve$ is $\ve'$ with $\alpha$ 0s appended).  Thus, it remains to show that step~\ref{step:randomization} preserves a solution.
 %For convenience, denote by $\vx^*$ the vector where $x_i^* = x_i'$ for $1\leq i \leq n$ and $x_{n+i}^* = b_{m+i}^*$ otherwise.  
-For a matrix $\vA$ we will denote the $i$-th row by $\va_i$~(similarly for the matrix formed by $\gamma_{i,j}$).  Thus it suffices to show for all rows $i$, if $b_i^* = \va^*_i \vx^*+e^*_i$  then $b_i = \va_i \vx^* + e^*_i$.
+For a matrix $\vA$ we will denote the $i$-th row by $\va_i$.  We now show that for all rows $i$, if $b_i^* = \va^*_i \vx+e_i$  then $b_i = \va_i \vx + e_i$.
 %, we have added $\alpha$ equations as well as $\alpha$ unknowns, furthermore, those $\alpha$ equations have no error.  The number of unknowns we added are $x_{n+i} = b^*_{m+i} - \sum^{n}_{j=1}R_{ij}x_j$ for $i=n+1,..., n+\alpha$.
-\bnote{We need to justify these steps better.}
-\xnote{lower case for vectors, which is row vector in the matrix}
-
-We have the following for all $i=1,..., m+\alpha$:
+We have the following for all rows $i$:
 \begin{align*}
-\va_i \vx^* + e_i^* &= \sum_{j=1}^{n+\alpha} \vA_{ij} x^*_j + e_i^*\\
-& = \sum_{j=1}^{n+\alpha}\left((\vA^*_{ij}+\sum_{k=1}^\alpha \gamma_{i, k} \vA^*_{(m+k)j})x^*_j\right) + e_i^*\\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x^*_j + e_i^* + \sum_{j=1}^{n+\alpha}\sum_{k=1}^\alpha \gamma_{i, k} \vA^*_{(m+k)j}x^*_j \\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x^*_j + e_i^* + \sum_{k=1}^\alpha  \gamma_{i, k} \sum_{j=1}^{n+\alpha} \vA^*_{(m+k)j}x^*_j\\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x^*_j + e_i^* + \sum_{k=1}^\alpha \gamma_{i, k} \left(\left( \sum_{j=1}^n \vR_{i, j}x_j^* \right) + x_{n+k}^*\right)\\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x^*_j + e_i^* + \sum_{k=1}^\alpha\gamma_{i, k} b_{m+k}^*\\
-&= b_i^* +\sum_{k=1}^\alpha\gamma_i b_{m+k}^*= b_i
+\va_i \vx + e_i &= \sum_{j=1}^{n+\alpha} \vA_{ij} x_j + e_i\\
+& = \sum_{j=1}^{n+\alpha}\left(\left(\vA^*_{ij}+\sum_{k=1}^\alpha \gamma_{i, k} \vA^*_{(m+k)j}\right)x_j\right) + e_i\\
+& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{j=1}^{n+\alpha}\sum_{k=1}^\alpha \gamma_{i, k} \vA^*_{(m+k)j}x_j \\
+& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{k=1}^\alpha  \gamma_{i, k} \sum_{j=1}^{n+\alpha} \vA^*_{(m+k)j}x_j\\
+& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{k=1}^\alpha \gamma_{i, k} \left(\left( \sum_{j=1}^n \vR_{i, j}x_j^* \right) + x_{n+k}^*\right)\\
+& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{k=1}^\alpha\gamma_{i, k} b_{m+k}^*\\
+&= b_i^* +\sum_{k=1}^\alpha\gamma_{i,k} b_{m+k}^*= b_i
 \end{align*}
 %\begin{align*}
 %\vA_i \vx + e_i &= \sum_{j=1}^{n+\alpha} A_{ij} x_j +e_i = \sum_{j=1}^{n+\alpha}(A^*_{ij}x_j+\sum_{k=1}^\alpha \gamma_{i, k} A^*_{(m+k)j}x_j)+e_i\\
