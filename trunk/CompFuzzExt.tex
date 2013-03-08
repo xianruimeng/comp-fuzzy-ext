@@ -191,6 +191,7 @@
 \newcommand{\vx}{\vect{x}}
 \newcommand{\va}{\vect{a}}
 \newcommand{\vb}{\vect{b}}
+\newcommand{\vgamma}{\mathbf{\Gamma}}
 \newcommand{\vt}{\vect{t}}
 \newcommand{\vu}{\vect{u}}
 \newcommand{\vF}{\vect{F}}
@@ -1334,7 +1335,7 @@ It suffices to show that $\D'$ properly prepares a random instance for the disti
 \begin{enumerate}
 \item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve$.
 \item Randomly generate $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$.
-\item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, where $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.
+\item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, where $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.\label{step:b generation}
 
 \item Initialize $\vA^*  = \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right)$.
 \item \label{step:randomization}
@@ -1414,6 +1415,25 @@ Thus, each of these values is uniformly and independently random.
 %& =\left|\Pr\left[\D(\vA'+ \tilde{\vA}, \vu' + \tilde{\vb})=1\right]- \Pr\left[\D(\vA' + \tilde{\vA}, \vA'\vx + \ve + \tilde{\vb})=1\right]  \right|\\
 %&= \left| \Pr\left[\D(\vA, \vu)=1\right]- \Pr\left[\D(\vA, \vA\vx + \ve)=1\right]  \right| \ge \epsilon
 %\end{align*}
+
+\begin{claim}
+If the pair $(\vA', \vb')$ is uniformly distributed, then the pair $(\vA, \vb)$ is uniformly distributed.
+\end{claim}
+\begin{proof}
+Assume that $(\vA', \vb')$ is uniformly distributed.  By \clref{cl:randomMatrixDist}, $\vA$ is uniformly distributed.  Thus, it suffices to show that $\vb | \vA$ is uniformly distributed.  Let $\vb^*$ be the vector generated in step~\ref{step:b generation} and note that $\vb^*$ is uniformly random.  
+We show  a stronger claim that $\vb |( \vA, \vA', \vR)$ is uniformly distributed.  Let $\vgamma$ represent the matrix formed by $\gamma_{i,j}$.  
+ 
+ The matrix $\vgamma$ is a deterministic function of $(\vA, \vA', \vR)$.  Thus, $\vb | (\vA, \vA', \vR) \overset{d}= \vb | (\vA, \vA', \vR, \vgamma)$.  The only dependence of $\vb$ on $(\vA, \vA', \vR, \vgamma)$ is in the matrix $\vgamma$.  Thus, $ \vb | (\vA, \vA', \vR, \vgamma) \overset{d}= \vb | \vgamma$. Recall that $\vb = \vb^* +  \left(\begin{array}{c | c}\mathbf{0} &\vgamma\end{array}\right)\vb^*$.  Let $\vT = \vect{I}+  \left(\begin{array}{c | c}\mathbf{0} & \vgamma \end{array}\right)$.  Since $\vT$ is a deterministic function of $\vgamma$, $\vb | \vgamma \overset{d} = \vb | \vT$.
+ 
+ \bnote{Now we want to say that $\vb$ is uniformly distributed since $\vb'$ is.  If $\vT$ exists we can just that $\vb | \vT = (\vT^{-1} \vb )| \vT = \vb' | \vT = U | \vT$.  It does with very high probability, but I don't want to add this restriction.  Is there a way to get around this problem?}
+%\[
+%\vA=  \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) + \left(\begin{array}{c | c}\mathbf{0} & \mathbf{\Gamma}\end{array}\right) \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) 
+%\]
+%\begin{align*}
+%(\vA, \vb) =  \left(\left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) + \left(\begin{array}{c | c}\mathbf{0} & \mathbf{\Gamma}\end{array}\right) \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) \right) , \left(\vb' + \left(\begin{array}{c | c}\mathbf{0} & \mathbf{\Gamma}\end{array}\right) \vb'\right)
+%\end{align*}
+\end{proof}
+\bnote{Remember this isn't good enough.  We need the enhanced claim above.}
 Together Claims~\ref{cl:randomMatrixDist},~\ref{cl:random ax+e}, and~\ref{clm:random b} show that $\D'$ properly prepares the instance thus, 
 \begin{align*}
 &\left|\Pr\left[\D'(\vA', \vu') = 1\right]- \Pr\left[\D'(\vA', \vb'=\vA'\vx + \ve)=1\right]  \right|\\
