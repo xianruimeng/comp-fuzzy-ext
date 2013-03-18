@@ -987,7 +987,17 @@ Let $n$ be a security parameter and let $m=cn, \ell = m-n/2$.  Let $C$ be a cons
 
 \bnote{We need to turn this hardness result into a statement about computational fuzzy extractors.  Use the Akavia result.  Then we need to suggest parameters.  How much detail should we go into?}
 
-
+The main item I think needs to change is their Lemma 2.4
+\begin{lemma}~\cite[Min-Entropy Version of Lemma 2.4]{micciancio2013hardness}
+Let $\mathcal{L}$ be a family of functions on a common domain $X$ and let $Z$ be a distribution over $X$.  Then $(\mathcal{L}, Z)$ is $\epsilon$-uninvertible~(even statistically, with respect to computationally unbounded adversaries) for $\epsilon = \expe_{f\leftarrow \mathcal{L}} [|f(X)|]/ 2^{-H_\infty(Z)}$.
+\end{lemma}
+\begin{proof}
+Fix a function $f$.  The best way to predict $Z$ given $f(Z)$ is the average predictability of $Z | f(Z)$.  This predictability is $2^{-\Hav(Z | f(Z))}$.  By Lemma 2.2 of Dodis et.al.~\cite{DBLP:journals/siamcomp/DodisORS08}, 
+\[
+\tilde{H}_\infty(Z | f(Z))\geq H_\infty(Z) - \log |f(Z)| \geq \Hoo(Z) - \log |f(X)|.
+\]
+  The statement of the lemma follows by converting to predictability.
+\end{proof}
 %\section{Computational Fuzzy Extractors}
 %In this section, we show that any computational secure sketch implies a computationally fuzzy extractor using the same paradigm as \lemref{lem:fuzzy ext construction}.  We begin with a formal definition of a computational fuzzy extractor:
 %\label{sec:comp fuzzy extractors}
