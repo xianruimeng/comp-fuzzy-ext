@@ -1530,12 +1530,12 @@ For {$i=1,..., n$}:
 \caption{A PPT $\mathcal{D'}$ that distinguishes LWE using distinguisher for LWE w/ block fixing source}
 \label{fig:perfectLWEreduction}
 \end{figure}
-The distinguisher $\mathcal{D'}$ has an advantage when $S$ is of rank $\alpha$.  This occurs with overwhelming probability~(we use techniques from Cooper~\cite{cooper2000rank}):
+The distinguisher $\mathcal{D'}$ has an advantage when $S$ is of rank $\alpha$.  This occurs with overwhelming probability~(techniques from Cooper~\cite{cooper2000rank}):
 \begin{claim}
 Let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times \alpha+\beta}$ be randomly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \ngl(n)$.
 \end{claim}
 \begin{proof}
-The probability that all $\alpha$ rows are linearly independent is the successive probability that each row is linearly independent of the previous rows, for the $i$th row this probability is $q^{i-1}/q^{\alpha+\beta}$, thus by union bound this probability is:
+The probability that all $\alpha$ rows are linearly independent is the successive probability that each row is linearly independent of the previous rows, for the $i$th row this probability is $q^{i-1}/q^{\alpha+\beta}$.  By union bound, the probability that $\vS$ is not full rank is:
 \begin{align*}
 \Pr[\rank(\vS) < \alpha] &= \sum_{i=1}^{\alpha} \frac{q^{i-1}}{q^{\alpha+\beta}}
 \leq \alpha \frac{q^{\alpha}}{q^{\beta+\alpha} }= \frac{\alpha}{q^{\beta}} = \ngl(n)\\
