@@ -1514,12 +1514,12 @@ We will make a single call to $\D$ so we focus on how to prepare a random block 
 \item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, where $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.\label{step:b generation}
 \item For all $x_i$ where $n\leq i$ and $i\not \in T$:\label{step:fill in matrix}
 \subitem Generate $x_i\overset{\$}\leftarrow \Fq$.  
-\subitem For $j=1,..., n$:
+\subitem For $j=1,..., m$:
 \subsubitem Generate $\vW_{j, i}\overset{\$}\leftarrow \Fq$
 \subsubitem Set $b_j^* = b_j^* + \vW_{j, i} x_i$.
 \item Initialize $\vA^*  = \left(\begin{array}{c | c}\vA' & \vW\\\hline \vR & \vS\end{array}\right)$.
 \item \label{step:randomization}
-For {$i=1,..., n$}:
+For {$i=1,..., m$}:
 \subitem Randomly generate $\gamma_i \leftarrow \Fq^{1\times \alpha}$.
 \subitem Set $\va_{i} \leftarrow \va^*_{i}+\gamma_i (\vR||\vS)$
 \subitem Set $b_i \leftarrow b^*_i + \gamma_i (b^*_{m+1},..., b^*_{m+k})$
