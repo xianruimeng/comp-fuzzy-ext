@@ -1369,6 +1369,7 @@ We can restate Assumption~\ref{assume:indist LWE} in terms of unpredictability e
 %
 %\end{proof}
 
+\ignore{
 \section{Proof of Theorem \ref{thm:blockLWE}}
 \label{sec:proof of block theorem}
 
@@ -1516,8 +1517,13 @@ For $i = 1\ldots \alpha$,
 $$\sum^{n+\alpha}_{j=1}A_{(m+i)j}x_j = \sum^{n}_{j=1}F_{ij}x_j + x_{n+i} = b_{m+i}$$
 }
 \end{proof}
+}
 
-\section{Proof of Theorem \ref{thm:blockLWE} Revised}
+
+
+
+
+\section{Proof of Theorem \ref{thm:blockLWE}}
 \label{sec:proof of block theorem}
 
 %\bnote{We need to be clear about notation here.  Why are $x, e$ sometimes bold and sometimes capital?} 
@@ -1531,7 +1537,7 @@ Let $\D$ be a distinguisher that breaks $\distLWE_{(m+\alpha), (n+\alpha+\beta),
 \[
 |\Pr[\D(\vA, \vA\vx+\ve) = 1] - \Pr[\D(\vA, \vu) =1]|> \epsilon.
 \]
-We build a distinguisher that breaks $\distLWE_{m, n, q, \chi}$.  Let $\vA'$ be uniform over $\Fq^{m\times n}$, $\vx'$ be uniform over $\Fq^n$ and $\ve'$ be drawn from $\chi^m$.  It suffices to build a distinguisher $\D'$ whose size at most \bnote{fill in} bigger than $\D$ where 
+We build a distinguisher that breaks $\distLWE_{m, n, q, \chi}$.  Let $\vA'$ be uniform over $\Fq^{m\times n}$, $\vx'$ be uniform over $\Fq^n$ and $\ve'$ be drawn from $\chi^m$.  It suffices to build a ppt distinguisher $\D'$  where 
 \begin{align}
 \label{eq:block LWE dist}
 |\Pr[\D'(\vA', \vA'\vx'+\ve') = 1] - \Pr[\D'(\vA', \vu) =1]|> (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon.
@@ -1542,12 +1548,11 @@ We will make a single call to $\D$ so we focus on how to prepare a random block 
 \begin{framed}
 \begin{enumerate}
 \item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve$.
-\item Randomly generate $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$.
-\item Randomly generate $\vect{S} \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$.
-\item If $\rank(\vect{S})<\alpha$, stop and output a random bit.
-\item Find a set of $\alpha$ linearly independent columns.  Let  $T$ be the set of these indices.
-\item Initialize $\vW \in \Fq^{n\times (\alpha+\beta)}$ to be the zero matrix.
+\item Randomly generate $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$. Initialize $\vW \in \Fq^{n\times (\alpha+\beta)}$ to be the zero matrix.
 \item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, where $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.\label{step:b generation}
+\item Randomly generate $\vect{S} \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$.
+		\subitem If $\rank(\vect{S})<\alpha$, stop and output a random bit.
+\item Find a set of $\alpha$ linearly independent columns in $\vS$.  Let $T$ be the set of these indices.
 \item For all $x_i$ where $n\leq i$ and $i\not \in T$:\label{step:fill in matrix}
 \subitem Generate $x_i\overset{\$}\leftarrow \Fq$.  
 \subitem For $j=1,..., m$:
@@ -1556,7 +1561,7 @@ We will make a single call to $\D$ so we focus on how to prepare a random block 
 \item Initialize $\vA^*  = \left(\begin{array}{c | c}\vA' & \vW\\\hline \vR & \vS\end{array}\right)$.
 \item \label{step:randomization}
 For {$i=1,..., m$}:
-\subitem Randomly generate $\gamma_i \leftarrow \Fq^{1\times \alpha}$.
+\subitem Randomly generate $\gamma_i \leftarrow \Fq^{1 \times \alpha}$.
 \subitem Set $\va_{i} \leftarrow \va^*_{i}+\gamma_i (\vR||\vS)$
 \subitem Set $b_i \leftarrow b^*_i + \gamma_i (b^*_{m+1},..., b^*_{m+k})$
 \item Run $\D$ on input $\vA, \vb$.
@@ -1568,13 +1573,13 @@ For {$i=1,..., m$}:
 \end{figure}
 The distinguisher $\mathcal{D'}$ has an advantage when $S$ is of rank $\alpha$.  This occurs with overwhelming probability~(techniques from Cooper~\cite{cooper2000rank}):
 \begin{claim}
-Let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times \alpha+\beta}$ be randomly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \ngl(n)$.
+Let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ be randomly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \ngl(n)$.
 \end{claim}
 \begin{proof}
-The probability that all $\alpha$ rows are linearly independent is the successive probability that each row is linearly independent of the previous rows, for the $i$th row this probability is $q^{i-1}/q^{\alpha+\beta}$.  By union bound, the probability that $\vS$ is not full rank is:
+The probability that all $\alpha$ rows are linearly independent is the successive probability that each row is linearly independent of the previous rows, for the $i$th row this probability is $q^{i-1}/q^{\alpha+\beta}$.  By union bound and $\beta = \omega(1)$, the probability that $\vS$ is not full rank is:
 \begin{align*}
 \Pr[\rank(\vS) < \alpha] &= \sum_{i=1}^{\alpha} \frac{q^{i-1}}{q^{\alpha+\beta}}
-\leq \alpha \frac{q^{\alpha}}{q^{\beta+\alpha} }= \frac{\alpha}{q^{\beta}} = \ngl(n)\\
+\leq \alpha \frac{q^{\alpha}}{q^{\alpha+\beta} }=\ngl(n)\\
 \end{align*}
 Thus, $\Pr[\rank(\vS) = \alpha] \geq 1-\ngl(n)$.
 \end{proof}
@@ -1584,8 +1589,7 @@ $
 $
 \end{corollary}
 
-We restrict analysis to the case where $\rank(\vS) = \alpha$.  
-It suffices to show that $\D'$ properly prepares a random instance in this case.  We show this in three claims: 
+We are interested in the case where $\rank(\vS) = \alpha$, and it suffices to show that $\D'$ can properly prepares a random instance in this case. We show this in the following three claims: 
 \begin{enumerate}
 \item If $\vA'$ is a random matrix then $\vA$ is a random matrix with $\rank(\vS) = \alpha$.
 %\bnote{This should be if $\vb' | A$ is uniformly distributed, then $\vb |A $ is uniformly distributed.}
@@ -1634,12 +1638,11 @@ We consider the product $(\vR|| \vS) \vx$.  It suffices to show that $(\vR|| \vS
 \end{align*}
 This completes the proof of the claim.
 \end{proof}
-\begin{claim}
+\begin{claim}\label{clm:random b}
 If the pair $\vb' | \vA'$ is uniformly distributed, then $\vb |\vA$ is uniformly distributed.
 \end{claim}
 \begin{proof}
-\bnote{This needs to be checked.}
-Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}.  The only correlation between $\vb^*$ and $\vA^*$ is in the matrix $\vW$.  That is, for $1\leq i\leq n$, $b_i^* = b_i + \sum_{n<j \wedge j\not\in T} \vW_{i, j} x_j$, thus conditioning on $\vW$, $b_i^*$ is uniform assuming $b_i$ is uniform.  Thus $b^* | \vA^*$ is uniformly distributed.  Instead of showing that $\vb | \vA$ is uniformly distributed after step~\ref{step:randomization}, we show that $\vb |( \vA, \vA^*)$ is uniformly distributed.  Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  
+Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}.  The only correlation between $\vb^*$ and $\vA^*$ is in the matrix $\vW$, i.e. for $1\leq i\leq n$, $b_i^* = b_i + \sum_{n<j \wedge j\not\in T} \vW_{i, j} x_j$, thus conditioning on $\vW$, $b_i^*$ is uniform assuming $b_i$ is uniform.  Thus $\vb^* | \vA^*$ is uniformly distributed. We show that $\vb |( \vA, \vA^*)$ is uniformly distributed, therefore, showing that $\vb | \vA$ is uniformly distributed after step~\ref{step:randomization}.  Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  
  
  The matrix $\vgamma$ is a deterministic function of $(\vA, \vA^*)$.  Thus, $\vb | (\vA, \vA^*) \overset{d}= \vb | (\vA, \vA^*, \vgamma)$.  The only dependence of $\vb$ on $(\vA, \vA^*, \vgamma)$ is in the matrix $\vgamma$.  Thus, $ \vb | (\vA, \vA^*, \vgamma) \overset{d}= \vb | \vgamma$. Recall that 
  \[
@@ -1647,10 +1650,11 @@ Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}.  The o
 \]
 Thus, $b_1,..., b_m $ are uniformly distributed conditioned on $\vgamma, b_{m+1}^*,..., b_{m+\alpha}^*$.  This completes the claim.
 \end{proof}
-Together Claims~\ref{cl:randomMatrixDist},~\ref{cl:random ax+e}, and~\ref{clm:random b} show that when $\rank(\vS) = \alpha$ the distinguisher $\D'$ properly prepares the instance thus, 
+
+Finally, the reduction runs in polynomial time and together Claims~\ref{cl:randomMatrixDist},~\ref{cl:random ax+e}, and~\ref{clm:random b} show that when $\rank(\vS) = \alpha$ the distinguisher $\D'$ properly prepares the instance thus, 
 \begin{align*}
 &\left|\Pr\left[\D'(\vA', \vu') = 1\right]- \Pr\left[\D'(\vA', \vb'=\vA'\vx + \ve)=1\right]  \right|\\
-&\left|\Pr\left[\D'(\vA', \vu') = 1 | \rank(\vS) = \alpha \right]- \Pr\left[\D'(\vA', \vb'=\vA'\vx + \ve)=1 | \rank(\vS) = \alpha\right] \Pr[\rank(\vS) = \alpha] \right|\\
+&\, = \left| \Pr\left[\D'(\vA', \vu') = 1 | \rank(\vS) = \alpha \right]- \Pr\left[\D'(\vA', \vb'=\vA'\vx + \ve)=1 | \rank(\vS) = \alpha\right]\right| \Pr[\rank(\vS) = \alpha] \\
 &\, =\left|\Pr\left[\D(\vA, \vu)=1 | \rank(S) =\alpha \right]- \Pr\left[\D(\vA, \vb)=1 | \rank(S) =\alpha \right]  \right| \Pr[\rank(\vS) = \alpha] \\
 &\, \geq (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon
 \end{align*}
