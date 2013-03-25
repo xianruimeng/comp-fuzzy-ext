@@ -751,7 +751,7 @@ The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} a
 \begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}
 Let $m = m(n) = \poly(n)$ be an integer, $q = q(n) = \poly(n)$. The decisional version of the $\LWE$ problem, denoted \class{dist}-$\LWE_{n, m, q, \chi}$, is to distinguish between $m$ samples chosen according to $A_{\vx, \chi}$ for a uniformly random $\vx$ from samples chosen according to the uniform distribution over $(\Fq^{m\times n}, \Fq^m)$. 
 
-We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, t)$-secure if no (probabilistic) distinguisher running in time $t$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.
+We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, t)$-secure if no (probabilistic) distinguisher running in time $t$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.  If $\distLWE_{n, m, q, \chi}$ is secure for all $t = \poly(n), \epsilon  = 1/\poly(n)$ we say it is \emph{secure}.
 \end{definition}
 
 Denote by $\bar{\Psi}_\alpha$ the discretized Gaussian distribution over $\Fq$ with variance $(\alpha q)^2/(2\pi)$, Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} show that, when $\chi = \bar{\Psi}_{\alpha}$, $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure if the worst-case lattice problems are hard to approximate using quantum algorithms.
@@ -946,14 +946,13 @@ We now define the decisional $\LWE$ problem with symbol fixing errors is defined
 Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and output $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
 \end{problem}
 
-The $\distLWE$ with symbol fixing sources is implied by standard $\distLWE$~(proof in \secref{sec:proof of block theorem}).
+The $\distLWE$ with symbol fixing sources is implied by standard $\distLWE$.
 %\vspace{.1in}
 \begin{theorem}
 \label{thm:blockLWE}
-Let $n$ be a security parameter and define $q, m , \alpha = \poly(n)$.  Let $\beta  = \omega(1)$, and $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  Then the $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ w/ symbol fixing sources problem.
+Let $n$ be a security parameter and define $q, m , \alpha = \poly(n)$.  Let $\beta  = \omega(1)$, and $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  The $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ w/ symbol fixing sources problem.
 \end{theorem}
-\bnote{Work on this writeup.}
-We believe this statement is of independent interest.  It says that as long as there are security parameter more variables than equations no error we still get a secure $\LWE$ instance.  Intuitively, providing a single sample with no error should provide information should fix at most a single variable.  Thus, if there are significantly more variables than samples with no error, search $\LWE$ should still be hard.  We are able to show that $\distLWE$ is still hard.  In the reduction, we argue that the additional $\alpha+ \beta$ variables allow us to prepare a random block fixing instance even without knowing the values for the first $n$ variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.
+We believe this statement is of interest outside our setting.  \thref{thm:blockLWE} says that $\LWE$ is still secure when a small number of $\LWE$ samples have known error.  Roughly, we need the number of variables to be security parameter larger than the number of equations with known error.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, search $\LWE$ should still be hard.  We are able to show~(a stronger result) that $\distLWE$ is still hard.  In the reduction, we argue that the additional $\alpha+ \beta$ variables allow us to explain a random value for the last $\alpha$ samples without knowledge of the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
 
 
 \thref{thm:blockLWE} allows us to construct a computational fuzzy extractor from block-fixing sources: 
@@ -1589,7 +1588,7 @@ $
 $
 \end{corollary}
 
-We are interested in the case where $\rank(\vS) = \alpha$, and it suffices to show that $\D'$ can properly prepares a random instance in this case. We show this in the following three claims: 
+We are interested in the case where $\rank(\vS) = \alpha$, and it suffices to show that $\D'$ prepares a random instance in this case. We show this in the following three claims: 
 \begin{enumerate}
 \item If $\vA'$ is a random matrix then $\vA$ is a random matrix with $\rank(\vS) = \alpha$.
 %\bnote{This should be if $\vb' | A$ is uniformly distributed, then $\vb |A $ is uniformly distributed.}
@@ -1620,7 +1619,7 @@ Then partially define $\vx$ as $x_i = x_i'$ if $1\leq i \leq n$ and $x_i$ as the
 \[
 \vS_T  \vx_T = \begin{pmatrix} b_{m+1}  \\ \vdots \\b_{m+\alpha} \end{pmatrix}  - \vR \begin{pmatrix} \vx_1  \\ \vdots \\\vx_n \end{pmatrix}- \vS_{T^c} \vx_{T^c}  
 \]
-A solution $\vx_T$ exists as $\vS_T$ is full rank and $\vx_T$ is uniformly distributed.
+A solution $\vx_T$ exists as $\vS_T$ is full rank and furthermore, $\vx_T$ is uniformly distributed.
 Denote by $\vA^*$ the matrix before step~\ref{step:randomization} and denote by $\ve$ the vector $\ve'$ with $\alpha$ 0s appended.  The vector $\vx$ is uniformly random and $\vb^* = \vA^*\vx + \ve$.  Thus, it remains to show that step~\ref{step:randomization} preserves this solution.
 %For convenience, denote by $\vx^*$ the vector where $x_i^* = x_i'$ for $1\leq i \leq n$ and $x_{n+i}^* = b_{m+i}^*$ otherwise.  
 We now show that for all rows $1\leq i\leq m$, if $b_i^* = \va^*_i \vx+e_i$  then $b_i = \va_i \vx + e_i$.
@@ -1630,7 +1629,7 @@ We have the following for $1\leq i\leq m$:
 \va_i \vx + e_i &= \left(\va_{i}^*+ \gamma_i(\vR || \vS)\right) \vx + e_i\\
 &=\va_i^* \vx + e_i +\gamma_i(\vR||\vS) \vx\\&= b_i^* + \gamma_i (\vR||\vS)\vx
 \end{align*}
-We consider the product $(\vR|| \vS) \vx$.  It suffices to show that $(\vR|| \vS) \vx = (b_{m+1}^*,..., b_{m+\alpha}^*)$,
+Recall that $b_i =b_i^* + \gamma_i(b_{m+1}^*,..., b_{m+k}^*)$.  We consider the product $(\vR|| \vS) \vx$.  It suffices to show that $(\vR|| \vS) \vx = (b_{m+1}^*,..., b_{m+\alpha}^*)$,
 \begin{align*}
 (\vR|| \vS) \vx &= \vR \begin{pmatrix} \vx_1  \\ \vdots \\\vx_n \end{pmatrix}+  \vS_{T^c} \vx_{T^c}  + \vS_T \vx_T \\
 &=\vR \begin{pmatrix} \vx_1  \\ \vdots \\\vx_n \end{pmatrix}+  \vS_{T^c} \vx_{T^c}   + \begin{pmatrix} b_{m+1}  \\ \vdots \\b_{m+\alpha} \end{pmatrix}  - \vR \begin{pmatrix} \vx_1  \\ \vdots \\\vx_n \end{pmatrix}- \vS_{T^c} \vx_{T^c}  
@@ -1667,24 +1666,28 @@ Thus, Equation~(\ref{eq:block LWE dist}) is satisfied, this completes the proof.
 \begin{proof}
 Let $C$ be a distribution with $\Hoo(C)\geq k$ and let $C$ be a  $(t,\epsilon)$-average error Shannon code with recovery procedure $\rec$.  This implies that for all $t'\le t$
 \[
-\sum_{w\in W} \Pr[W=w]\Pr[ w'\leftarrow \sample (w, t') \wedge \rec(w') \neq w]\leq \epsilon.
+\sum_{c\in C} \Pr[C=c]\Pr[ c'\leftarrow \sample (c, t') \wedge \rec(c') \neq c]\leq \epsilon.
 \]
-For $w$ denote by $\epsilon_w = \Pr[w'\leftarrow \sample(w, t') \wedge \rec(w') \neq w]$.  \bnote{There is something weird going on here.  The Markov inequality doesn't connect to what is below it.}Then by Markov inequality:
+For $c$ denote by $\epsilon_c = \Pr[c'\leftarrow \sample(c, t') \wedge \rec(c') \neq c]$.  
+Then by Markov inequality:
 \[
-\Pr_{w\in W}[ \epsilon_w \leq 2\expe_{w\leftarrow W} [\epsilon_w ] ] = \Pr_{w\in W} [\epsilon_w \le 2\epsilon ] \geq \frac{1}{2}
+\Pr_{c\in C}[ \epsilon_c \leq 2\expe_{c\leftarrow C} [\epsilon_c ] ] = \Pr_{c\in C} [\epsilon_c \le 2\epsilon ] \geq \frac{1}{2}
 \]
-Now suppose that for all $W'\subset W$ where $|W'|\geq 2^{k-1}$ there exists a $w\in W'$ such that $\Pr[ w'\leftarrow \sample (w,t') \wedge \rec(w') \neq w]> 2\epsilon$.  This implies that there exists a set $V$of size $V\geq |W|-2^{k-1}+1$ where $\forall v\in V, \epsilon_v >2\epsilon$.  Then note that $\Pr[W\in V]> 1/2$ as $W\setminus V$ contains at most $2^{k-1}-1$ points each of which has probability at most $1/2^k$ so $\Pr[W\in (W\setminus V)]\leq (2^{k-1}-1)/2^k < 1/2$.  Thus,
-\begin{align*}
-\Pr_{w\in W}[ w'\leftarrow \sample (w,t') \wedge \rec(w') \neq w]&\geq \sum_{w\in V}  \Pr[W=w]\Pr[ w'\leftarrow \sample (w,t') \wedge \rec(w') \neq w]\\
-&\geq \sum_{w\in V} \Pr[W=w] 2\epsilon   = 2\epsilon \Pr[W\in V]> 2\epsilon\left(\frac{1}{2}\right)= \epsilon
-\end{align*}
-% where $\forall d\in D, \Pr[d'\leftarrow \sample(d) \wedge \rec(d') > 2\epsilon$.  In turn this implies that  
+Let $C'$ denote the of  set all $c\in C$ where $\epsilon_c\leq 2\epsilon$.  Note that $\Pr_{c\leftarrow C}[c\in C']\geq 1/2$.  Since $H_\infty(C)\geq k, |C'|\geq 2^{k-1}$~(otherwise $C'$ would contain total weight less that $2^{k-1}\frac{1}{2^k} = 1/2$).  This completes the proof of the~\lemref{lem:averageToMaximalError}.
+
+%Suppose that for all $W'\subset W$ where $|W'|\geq 2^{k-1}$ there exists a $w\in W'$ such that $\Pr[ w'\leftarrow \sample (w,t') \wedge \rec(w') \neq w]> 2\epsilon$.  
+%This implies that there exists a set $V$of size $V\geq |W|-2^{k-1}+1$ where $\forall v\in V, \epsilon_v >2\epsilon$.  Then note that $\Pr[W\in V]> 1/2$ as $W\setminus V$ contains at most $2^{k-1}-1$ points each of which has probability at most $1/2^k$ so $\Pr[W\in (W\setminus V)]\leq (2^{k-1}-1)/2^k < 1/2$.  Thus,
 %\begin{align*}
-%\Pr_{c\in C}[ c'\leftarrow \sample (c) \wedge \rec(c') \neq c]&=\frac{1}{|C|} \sum_{c\in C}  \Pr[ c'\leftarrow \sample (c) \wedge \rec(c') \neq c]\\
-%&\geq \frac{1}{|C|} \sum_{d\in D}  \Pr[ d'\leftarrow \sample (d) \wedge \rec(d') \neq d]\\
-%&\geq \frac{1}{|C|}\sum_{d\in D} 2\epsilon = \frac{1}{|C|}\left(\frac{|C|}{2}+1\right)2\epsilon = \epsilon + 2\epsilon/|C|> \epsilon
+%\Pr_{w\in W}[ w'\leftarrow \sample (w,t') \wedge \rec(w') \neq w]&\geq \sum_{w\in V}  \Pr[W=w]\Pr[ w'\leftarrow \sample (w,t') \wedge \rec(w') \neq w]\\
+%&\geq \sum_{w\in V} \Pr[W=w] 2\epsilon   = 2\epsilon \Pr[W\in V]> 2\epsilon\left(\frac{1}{2}\right)= \epsilon
 %\end{align*}
-This is a contradiction.  The statement of~\lemref{lem:averageToMaximalError} follows directly.
+%% where $\forall d\in D, \Pr[d'\leftarrow \sample(d) \wedge \rec(d') > 2\epsilon$.  In turn this implies that  
+%%\begin{align*}
+%%\Pr_{c\in C}[ c'\leftarrow \sample (c) \wedge \rec(c') \neq c]&=\frac{1}{|C|} \sum_{c\in C}  \Pr[ c'\leftarrow \sample (c) \wedge \rec(c') \neq c]\\
+%%&\geq \frac{1}{|C|} \sum_{d\in D}  \Pr[ d'\leftarrow \sample (d) \wedge \rec(d') \neq d]\\
+%%&\geq \frac{1}{|C|}\sum_{d\in D} 2\epsilon = \frac{1}{|C|}\left(\frac{|C|}{2}+1\right)2\epsilon = \epsilon + 2\epsilon/|C|> \epsilon
+%%\end{align*}
+%This is a contradiction.  The statement of~\lemref{lem:averageToMaximalError} follows directly.
 \end{proof}
 
 \subsection{Proof of \thref{thm:impSketchArbitraryW}}
