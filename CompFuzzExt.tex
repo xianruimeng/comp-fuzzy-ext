@@ -1002,15 +1002,16 @@ We believe this statement is of interest outside our setting.  \thref{thm:blockL
 % for $s = \poly(n), s_{sketch} = O(n^3\log n )$ and $s_{rec}= O(n^3 \log n)$.
 %\end{theorem}
 
-\bnote{Need to rework this statement based on addition of $\beta$ above.}
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\Fq^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $W$ be $\alpha$-symbol fixing source over $\zo^{((c+d)nb/d+\alpha b})$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/2$) using quantum algorithms.   There is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2} |\vA, \vA X+W) = H_\infty(W)$ for %the following parameters:
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+d)/d)$.  Let $\alpha \leq n/3$, and let $W$ be $m$-symbol fixing source over $\zo^{\left((c+d)n/d+\alpha \right)b})$.  Assume GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/2$) using quantum algorithms.   There is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/3} |\vA, \vA X+W) = H_\infty(W)$ for %the following parameters:
 %\[
 %(\zo^{((c+d)n/d+\alpha)b}, \Hoo(W),\Hoo(W), \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)\text{-computational secure sketch}
 %\]
 $\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expected recover time $O(n^{2d+3} \log n)$ with error probability $\delta = e^{-\Omega(n)}$ over the choice of $\vA$.
 \end{theorem}
+
+\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$ and extract fewer hardcore dimensions.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant in $n$.  The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for smal values of $n$.
 
 \subsection{\consref{cons:informal construction} with slightly deficient sources}
 \label{sec:DP general error LWE}
@@ -1744,7 +1745,7 @@ Define $D$ as:
 \item Output $1$.
 \end{enumerate}
   By correctness of the sketch $ \Pr[D(W, \sketch(W)) =1]\ge 1-t\delta$.  Since 
-$\delta^D((Y, \sketch(W)), (Y, \sketch(W)))<\epsilon.$ then $\Pr[D(Y, SS(W)) = 1]>1-\epsilon-t\delta$.  By Markov inequality there exists a set $S_W$ such that $\Pr[S_W]\geq 1/2$ and $\Pr[ D(Y, s) =1 | \sketch(W) = s \wedge s\in S_W]> 1- 2(\epsilon + t\delta)$.  Consider the random variable $1_{S_W}$ that is $1$ when $s\in S_X$ and otherwise.  Then \bnote{I am splitting average min-entropy based on an indicator variable, everyone is okay with this?}
+$\delta^D((Y, \sketch(W)), (Y, \sketch(W)))<\epsilon.$ then $\Pr[D(Y, SS(W)) = 1]>1-\epsilon-t\delta$.  By Markov inequality there exists a set $S_W$ such that $\Pr[S_W]\geq 1/2$ and $\Pr[ D(Y, s) =1 | \sketch(W) = s \wedge s\in S_W]> 1- 2(\epsilon + t\delta)$.  Consider the random variable $1_{S_W}$ that is $1$ when $s\in S_X$ and otherwise.  Then,
 \[
 \Hav(Y  | W) = -\log \left( \Pr[W\in 1_{S_W}] 2^{-\Hav(Y | W\in 1_{S_W})} + \Pr[W\not\in 1_{S_W}] 2^{-\Hav (Y|W\not\in 1_{S_W})} \right)
 \] 
@@ -1937,9 +1938,9 @@ This is the most general form of our construction, we can support any $n, t, m$ 
 n_0&< n -k \\
 t&\leq d\log n\left(\frac{ m }{n} -1\right)\\
 %f \log n &= \frac{m}{n}\log 2n^2m\\
-f &= \frac{m}{n}\frac{\log 2n^{1/2+3\gamma} m}{\log n}
+f &= \frac{m}{k}\frac{\log 2n^{1/2+3\gamma} m}{\log n}
 \end{align*}
-To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k = n /g$ for some constant $g> 1$.  Finally we assume that $t = d \log n(m/n-1)$~(that is, there are only as many dimensions as necessary for decoding using \lemref{lem:i t poly time}):
+To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k = n /g$ for some constant $g> 1$.  Finally we assume that $m$ is the minimum value such that $t \leq d \log n(m/n-1)$~(that is, there are only as many dimensions as necessary for decoding using \lemref{lem:i t poly time}):
 \begin{align*}
 n_0&< n -k \\
 m &= \frac{(c+d)n \log n}{d \log n} = \frac{(c+d)n}{d}\\
@@ -1956,6 +1957,44 @@ q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n}} = \poly(n)\\
 \rho q &= 2n^{1/2+3\gamma}m = \frac{2(c+d)n^{3/2+3\gamma}}{d}
 \end{align*}
 Furthermore, we get decoding in time $O(n^{2d}(n^3\log n))$.  We can output a $k$ fraction of $X$ and the bits will be pseudorandom~(conditioned on $\vA, \vA X+W$).  The parameter $g$ allows is a tradeoff between the number of dimensions needed for security and the size of the field $q$.  In \thref{thm:lossless secure conductor log}, we set $g=2$ and output the first half of $X$.  This analysis proceeds similarly when we desire a linear stretch instead of $m\log \rho q = k\log q$.  Essentially, this corresponds to multiplying $g$ by the inverse of the desired stretch factor.
+
+\subsection{Parameter Settings for \thref{thm:lossless block sketch log}}
+\label{ssec:block params}
+We repeat parameter settings for block fixing sources.  We now have $m+\alpha$ as the number of samples, while $n + \alpha+\omega(1)$ is the number of variables.  We can support any setting where $t, n, q, \rho, m, k, \alpha$ satisfy the following constraints~(for $\beta = \omega(1)$ and constants $d, f$):
+\begin{align*}
+n_0&< n -k  -\alpha -\beta\\
+t&\leq d \log n\left(\frac{m}{n}-1\right)\\
+q &= n^f\\
+\rho q  &= 2n^{1/2+3\gamma}m\\
+m\log \rho q &= k \log q
+\end{align*}
+Substituting $q = n^f$ and $\rho q = 2n^{1/2+3\gamma}m$ yields the following system of equations:
+\begin{align*}
+n_0&< n - k - \alpha -\beta\\
+t&\leq d\log n\left(\frac{m}{n}-1\right)\\
+m \log 2n^{1/2+3\gamma}m &= k \log n^f
+\end{align*}
+As before we can support any setting any $n, t, m, \alpha$ that satisfy these equations for $\beta = \omega(1)$ and constants $d, f$.  However, the last equation may have no solution for $f$ constant.  Putting the last equation in terms of $f$ one has:
+\begin{align*}
+n_0&< n -k  - \alpha - \omega(1) \\
+t&\leq d\log n\left(\frac{ m }{n} -1\right)\\
+%f \log n &= \frac{m}{n}\log 2n^2m\\
+f &= \frac{m}{k}\frac{\log 2n^{1/2+3\gamma} m}{\log n}
+\end{align*}
+To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k, \alpha = n/3$ and $\beta = \log n$.  Finally we assume that $m$ is the minimum value such that $t \leq  d \log n(m/n-1)$~(that is, there are only as many dimensions as necessary for decoding using \lemref{lem:i t poly time}):
+\begin{align*}
+n_0&< n/3 -  \log n\\
+m &= \frac{(c+d)n \log n}{d \log n} = \frac{(c+d)n}{d}\\
+f &= \frac{m}{k}\frac{\log 2n^{1/2+3\gamma}m}{\log n} = \left(\frac{3(c+d)}{d}\right)\frac{\log \frac{2(c+d)}{d} n^{3/2+3\gamma}}{\log n}
+\end{align*}
+
+Assuming $n/3-\log(n)> n_0$ and letting $t= c\log n$ we get the following setting:
+\begin{align*}
+m &= \frac{(c+d)n}{d}\\
+q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n}} = \poly(n)\\
+\rho q &= 2n^{1/2+3\gamma}m = \frac{2(c+d)n^{3/2+3\gamma}}{d}
+\end{align*}
+
 
 \ignore{
 \subsection{Old parameter setting}
