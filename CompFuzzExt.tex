@@ -912,7 +912,7 @@ With Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, \co
 \begin{enumerate}
 \item Input $\vA , \vect{C} = \vA X + W - W'$
 \item Randomly select rows without replacement $i_1,..., i_n\leftarrow [1,m]$.  
-\item Restrict $\vA, \vect{C}$ to rows $i_1,...,i_n$, denote this is $A_{i_1,...,i_n}, C_{i_1,...,i_n}$.
+\item Restrict $\vA, \vect{C}$ to rows $i_1,...,i_n$, denote this as $A_{i_1,...,i_n}, C_{i_1,...,i_n}$.
 \item Compute $X' = \vA^{-1}_{i_1,...,i_n}\vect{C}_{i_1,...,i_n}$.  If $C- AX'$ has more than $t$ nonzero coordinates, go to step (2).
 \item Output $X'$.
 \end{enumerate}
