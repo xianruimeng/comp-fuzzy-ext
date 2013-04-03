@@ -54,6 +54,7 @@
 
 \newcommand{\metric}{\ensuremath{\mathtt{Metric}}\xspace}
 \newcommand{\hill}{\ensuremath{\mathtt{HILL}}\xspace}
+\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL-rlx}}\xspace}
 \newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
 \newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
 \newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
@@ -403,29 +404,28 @@ In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy 
 
 \subsection{Bounds on Secure Sketches using HILL entropy}
 \label{sec:imp HILL sketch}
-We recall a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}, as extended to the conditional case by Hsiao, Lu, Reyzin~\cite{DBLP:conf/eurocrypt/HsiaoLR07}.
+HILL entropy is a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}.  It was extended to the conditional case by Hsiao, Lu, Reyzin~\cite{DBLP:conf/eurocrypt/HsiaoLR07}, here we recall a weaker definition due to Gentry and Wichs~\cite{gentry2011separating}~(the term relaxed HILL entropy was introduced in~\cite{reyzin2011some}).
 
 \begin{definition}
-Let $(X, Z)$ be a pair of random variables.  $X$ has 
-\emph{conditional HILL entropy} at least $k$ conditioned on $Z$,
-denoted $H^{\hill}_{\epsilon, s_{sec}}(X|Z)\geq k$ if there exists a collection of
-distributions $Y_z$ for each $z\in Z$, giving rise to a joint distribution
-$(Y, Z)$, such that $\tilde{H}_\infty(Y|Z)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((X, Z),(Y,Z))\leq \epsilon$.
+Let $(W, X)$ be a pair of random variables.  $W$ has 
+\emph{relaxed HILL entropy} at least $k$ conditioned on $X$,
+denoted $H^{\hill-rlx}_{\epsilon, s_{sec}}(W|X)\geq k$ if there exists a joint distribution $(Y, Z)$, such that $\tilde{H}_\infty(Y|Z)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, X),(Y,Z))\leq \epsilon$.
 \end{definition}
 
-\lnote{is there any reason we can't work for the more relaxed notion of HILL, where the condition can be changed, too?}Intuitively, conditional HILL entropy is as good as average min-entropy for all computationally-bounded observers.  Thus, redefining secure sketches using HILL entropy is a  natural relaxation of the original information-theoretic definition; in particular, the construction in \lemref{lem:fuzzy ext construction} would yield pseudorandom outputs if the secure sketch ensured high HILL entropy.  However, as we show in Section~\ref{sec:imp HILL sketch}, such secure sketches cannot  perform much better than the information-theoretic ones. \lnote{this paragraph needs rephrasing and better gluing with the next one}
+%\lnote{is there any reason we can't work for the more relaxed notion of HILL, where the condition can be changed, too?}
 
+Intuitively, HILL entropy is as good as average min-entropy for all computationally-bounded observers.  Thus, redefining secure sketches using HILL entropy is a  natural relaxation of the original information-theoretic definition; in particular, the construction in \lemref{lem:fuzzy ext construction} would yield pseudorandom outputs if the secure sketch ensured high HILL entropy.  
 %Instead, in \secref{sec:unp secure sketch}, we relax the definition by allowing by outputting a new random variable that can be recovered when $\dis (w, w')\leq t$.  This object is the computational analogue of a fuzzy conductor~\cite{KanukurthiR09}.%This is a noisy computational conductor define computational secure sketches using unpredictability, and work with that definition for the rest of the paper.  
 %  In \secref{sec:comp fuzzy extractors}, we show that computational fuzzy extractors can be constructed from  computational fuzzy conductors.
 %The size of the circuits becomes important, we would like the \rec procedure to be computable by a circuit significantly smaller than the \hill entropy circuit size.  We simply include both of these parameters in the definition.  We review other definitions of computational entropy in Appendix~\ref{sec:notionsEntropy}.
+We will consider secure sketches that retain relaxed HILL entropy: that is, we say that $(\sketch, \rec)$ is a  \emph{HILL-entropy~$(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon,s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\hillrlx}_{\epsilon, s_{sec}}(W|\sketch(W))\geq \tilde{m}$. 
 
-
-Suppose we redefine secure sketches using HILL entropy: that is, we say that $(\sketch, \rec)$ is a  \emph{HILL-entropy~$(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon,s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\hill}_{\epsilon, s_{sec}}(W|\sketch(W))\geq \tilde{m}$. 
 Unfortunately, we will show below that such a secure sketch implies an error correcting code with approximately $2^{\tilde{m}}$ points that can correct $t$ random errors (see  \cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08} for a similar bound on information-theoretic secure sketches). For the Hamming metric, our result essentially matches the bound on information-theoretic secure sketches of \cite[Proposition 8.2]{DBLP:journals/siamcomp/DodisORS08}.  In fact, we show that, for the Hamming metric, HILL-entropy secure sketches imply information-theoretic ones with similar parameters, and, therefore, the HILL relaxation gives no advantage. 
 
 
-The intuition for building error-correcting codes from HILL-entropy secure sketches is as follows.  In order to have  $H^{\hill}_{\epsilon, s_{sec}}(W|\sketch(W))\ge \tilde{m}$, there must be a distribution $Y$ such that $\Hav(Y | \sketch(W))\geq \tilde{m}$ and $(Y, \sketch(W))$ is computationally indistinguishable from $(W, \sketch(W))$.  Sample a sketch $s\leftarrow \sketch(W)$. We know that $\sketch$ followed by $\rec$ likely succeeds on $W|s$  (i.e., $\rec (w', s) = w$ with high probability for $w\leftarrow W|s$ and $w'\leftarrow B_t(w)$).  So, by indistinguishability, it must also succeed on $Y$: specifically, $\rec (y',s) = y$ with high probability, for $y\leftarrow Y|s$ and $y'\leftarrow B_t(y)$).
- This means we can construct a large set $C$ from the support of $Y|s$.  $C$ will be an error correcting code and $\rec$ an efficient decoder.  We can then use standard arguments to turn this code into an information theoretic sketch.  
+The intuition for building error-correcting codes from HILL-entropy secure sketches is as follows.  In order to have  $H^{\hillrlx}_{\epsilon, s_{sec}}(W|\sketch(W))\ge \tilde{m}$, there must be a distribution $Y, Z$ such that $\Hav(Y | Z)\geq \tilde{m}$ and $(Y, Z)$ is computationally indistinguishable from $(W, \sketch(W))$.  Sample a sketch $s\leftarrow \sketch(W)$. We know that $\sketch$ followed by $\rec$ likely succeeds on $W|s$  (i.e., $\rec (w', s) = w$ with high probability for $w\leftarrow W|s$ and $w'\leftarrow B_t(w)$).  %So, by indistinguishability, it must also succeed on $Y$. 
+ Consider the following experiment: 1) sample $z\leftarrow Z$, 2) draw $y\leftarrow Y|z$ and 3) $y'\leftarrow B_t(y)$. By indistinguishability $\rec (y',z) = y$ with high probability.
+ This means we can construct a large set $C$ from the support of $Y|z$.  $C$ will be an error correcting code and $\rec$ an efficient decoder.  We can then use standard arguments to turn this code into an information theoretic sketch.  
 
 
 To make this intuition precise, we need an additional technical condition:  sampling a random neighbor of a point is efficient.
@@ -564,19 +564,19 @@ Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ 
 \end{definition}
 This is a slightly stronger formulation than usual, in that we require the code to correct random errors of every size $t'<t$\footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compare to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 
-Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. \lnote{is there a source we can reference for the terms average-error and maximal-error?}\bnote{I think the right thing to reference is Cover-Thomas, but I don't have a copy to check right now}
+Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. 
 
  \begin{definition}
 Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
 $\Pr_{c\leftarrow C}[\rec(\sample(c, t')) \neq c]<\epsilon$.
 \end{definition}
-An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from Cover and Thomas~\cite[Pages 202-204]{cover2006elements} (we provide a proof in \secref{sec:proof of average to maximal error}):
+An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} (we provide a proof in \secref{sec:proof of average to maximal error}):
 \begin{lemma}
 \label{lem:averageToMaximalError}
 Let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$ such that $\Hoo(C)\geq k$.  There is a set $C'$ with $|C'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
 \end{lemma}
 
-We can now formalize the intuition above.  A sketch that retains $\tilde{m}$-bits of HILL entropy implies a good error correcting code with nearly $2^{\tilde{m}}$ points~(proof in \secref{sec:proof of thm sketch implies code}).
+We can now formalize the intuition above.  A sketch that retains $\tilde{m}$-bits of relaxed HILL entropy implies a good error correcting code with nearly $2^{\tilde{m}}$ points~(proof in \secref{sec:proof of thm sketch implies code}).
 \begin{theorem}\label{thm:impSketchArbitraryW}
 Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{sam}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Let $s_{rec}$ denote the size of the circuit that computes $\rec$.  If $s_{sec}\geq (t(s_{neigh}+s_{rec}))$,  then there exists a value $s$ and a set $C$ with $|C|\geq 2^{\tilde{m}-2}$  that is a $(t, 4(\epsilon+t\delta))$-Shannon code with recovery procedure $\rec(\cdot, s)$.
 %Let $W$ be a flat distribution~(all points in the support of $W$ have the same probability) over $\mathcal{M}$ where $\Hoo(W)\geq k$ and   Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$.  If $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $O(s_{neigh}+s_{rec})$, then $\exists x, W'$ where $|W'|\geq |W|/2 \geq 2^{k-1}$ such that $W'$ is a $(t, 2\epsilon)$ Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
@@ -1745,26 +1745,26 @@ Let $C'$ denote the of  set all $c\in C$ where $\epsilon_c\leq 2\epsilon$.  Note
 \subsection{Proof of \thref{thm:impSketchArbitraryW}}
 \label{sec:proof of thm sketch implies code}
 \begin{proof}
-  Let $W$ be an arbitrary distribution of min-entropy $m$.  Let $Y_s$ be a collection of distributions over $\mathcal{M}$ giving rise to $Y$ such that $\Hav(Y | \sketch(W))\geq k$ and
+  Let $W$ be an arbitrary distribution of min-entropy $m$.  Let $(Y, Z)$ be a joint distribution such that $\Hav(Y | Z)\geq k$ and
 \[ 
-\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, \sketch(W)))<\epsilon.
+\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, Z))<\epsilon.
 \]  
-where  $s_{sec} \geq t(s_{neigh}+s_{rec})$.  One such $Y$ must exist by the definition of conditional HILL entropy.
+where  $s_{sec} \geq t(s_{neigh}+s_{rec})$.  One such $(Y, Z)$ must exist by the definition of conditional HILL entropy.
 %Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$. Let $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $s=O(s_{neigh}+s_{rec})$.  This implies that $H^{\hill}_{\epsilon, s}(X|\sketch(X))\geq k$.  
 Define $D$ as:
 \begin{enumerate}
-\item Input $z\in\mathcal{M}, s \in\{0, 1\}^*, t$.
+\item Input $y\in\mathcal{M}, z \in\{0, 1\}^*, t$.
 \item For all $1\leq t'\leq t$: 
-\subitem  $z'\leftarrow \sample(z, t')$.
-\subitem If $\rec(z', s) \neq  z$ output $0$.
+\subitem  $y'\leftarrow \sample(y, t')$.
+\subitem If $\rec(y', z) \neq  y$ output $0$.
 \item Output $1$.
 \end{enumerate}
  By correctness of the sketch $ \Pr[D(W, \sketch(W)) =1]\ge 1-t\delta$.  Since 
-$\delta^D((Y, \sketch(W)), (Y, \sketch(W)))<\epsilon$, we know $\Pr[D(Y, \sketch(W)) = 1]>1-\epsilon-t\delta$.  By Markov's inequality,  there exists a set $S_W$ such that $\Pr[\sketch(W)\in S_W]\ge 1/2$ and for all $s\in \sketch(W)$, $\Pr[ D(Y_s, s) =1]> 1- 2(\epsilon + t\delta)$.  Moreover, by \cite[Lemma 2.2a]{DBLP:journals/siamcomp/DodisORS08} (which is derived simply via Markov's inequality applied to the positive random variable $\max_y \Pr[Y_s=y]$), there exists a set $S'_W$ such that $\Pr[\sketch(W)\in S'_W]> 1/2$ and for all $s\in \sketch(W)$, $\Hoo(Y_s)\ge k-1$. \lnote{simplified this derivation}\bnote{I don't believe this fix}  Fix one value $s \in S_W\cap S'_W$ (which exists because the sum of probabilities of $S_W$ and $S'_W$ is greater than 1).  
+$\delta^D((W, \sketch(W)), (Y, Z))<\epsilon$, we know $\Pr[D(Y, Z) = 1]>1-\epsilon-t\delta$.  By Markov's inequality,  there exists a set $S_Z$ such that $\Pr[Z\in S_Z]\ge 1/2$ and for all $z\in S_Z$, $\Pr[ D(Y|z, z) =1]> 1- 2(\epsilon + t\delta)$.  Moreover, by \cite[Lemma 2.2a]{DBLP:journals/siamcomp/DodisORS08} (which is derived simply via Markov's inequality applied to the positive random variable $\max_y \Pr[Y_s=y]$), there exists a set $S'_Z$ such that $\Pr[z\in S'_Z]> 1/2$ and for all $z\in S'_Z$, $\Hoo(Y | z)\ge k-1$. \lnote{simplified this derivation}\bnote{I don't believe this fix}  Fix one value $z \in S_Z\cap S'_Z$ (which exists because the sum of probabilities of $S_Z$ and $S'_Z$ is greater than 1).  
 Thus, for all such that $t', 1\leq t'\leq t$, 
-\[ \Pr_{y\leftarrow Y_s}[y'\leftarrow \sample(y, t') \wedge \rec(y',s) = y]> 1-2(\epsilon+t\delta).\]  
+\[ \Pr_{y\leftarrow Y|z}[y'\leftarrow \sample(y, t') \wedge \rec(y',s) = y]> 1-2(\epsilon+t\delta).\]  
 %Thus, $\rec(\cdot, \sketch(x'))$ is a decoding procedure that succeeds on a random neighbor of a random codeword with probability all but $\epsilon$.  
-Thus,  $Y$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,s)$.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
+Thus,  $Y|z$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,s)$ and $2^{k-1}$ points.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
 \end{proof}
 
 \subsection{Proof of \thref{thm:imp of unp entropy}}
@@ -2005,7 +2005,7 @@ q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n}} = \poly(n)\\
 \ignore{
 \subsection{Old parameter setting}
 The question then becomes whether there is a setting 
-Our construction has two goals: 1) maximizing correcting capability~(while retaining polynomial time decoding, and 2) maximizing the unpredictability entropy of $W$ conditioned on the construction~($\tilde{m}$ in \defref{def:comp secure sketch}).  Our parameters will differ significantly depending on what setting of $t$ is used.  We will consider both settings where $t\leq m/n-1$ and $t\leq c\log n (m/n-1)$.  Recall these corresponding to Construction~\ref{cons:decoding algorithm} running either in fixed polynomial time or time approximately $n^{2c}$.  We consider each of these settings:
+Our construction has two goals: 1) maximizing correcting capability~(while retaining polynomial time decoding, and 2) maximizing the unpredictability entropy of $W$ conditioned on the construction~($\tilde{m}$ in \defref{def:comp secure sketch}).  Our parameters will differ significantly depending on what setting of $t$ is used.  We will consider both settings where $t\leq m/n-2$ and $t\leq c\log n (m/n-2)$.  Recall these corresponding to Construction~\ref{cons:decoding algorithm} running either in fixed polynomial time or time approximately $n^{2c}$.  We consider each of these settings:
 
 $\mathbf{t \leq m/n-1}$
 
