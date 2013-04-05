@@ -1762,9 +1762,9 @@ Define $D$ as:
  By correctness of the sketch $ \Pr[D(W, \sketch(W)) =1]\ge 1-t\delta$.  Since 
 $\delta^D((W, \sketch(W)), (Y, Z))<\epsilon$, we know $\Pr[D(Y, Z) = 1]>1-\epsilon-t\delta$.  By Markov's inequality,  there exists a set $S_Z$ such that $\Pr[Z\in S_Z]\ge 1/2$ and for all $z\in S_Z$, $\Pr[ D(Y|z, z) =1]> 1- 2(\epsilon + t\delta)$.  Moreover, by \cite[Lemma 2.2a]{DBLP:journals/siamcomp/DodisORS08} (which is derived simply via Markov's inequality applied to the positive random variable $\max_y \Pr[Y_s=y]$), there exists a set $S'_Z$ such that $\Pr[z\in S'_Z]> 1/2$ and for all $z\in S'_Z$, $\Hoo(Y | z)\ge k-1$. \lnote{simplified this derivation}\bnote{I don't believe this fix}  Fix one value $z \in S_Z\cap S'_Z$ (which exists because the sum of probabilities of $S_Z$ and $S'_Z$ is greater than 1).  
 Thus, for all such that $t', 1\leq t'\leq t$, 
-\[ \Pr_{y\leftarrow Y|z}[y'\leftarrow \sample(y, t') \wedge \rec(y',s) = y]> 1-2(\epsilon+t\delta).\]  
+\[ \Pr_{y\leftarrow Y|z}[y'\leftarrow \sample(y, t') \wedge \rec(y',z) = y]> 1-2(\epsilon+t\delta).\]  
 %Thus, $\rec(\cdot, \sketch(x'))$ is a decoding procedure that succeeds on a random neighbor of a random codeword with probability all but $\epsilon$.  
-Thus,  $Y|z$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,s)$ and $2^{k-1}$ points.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
+Thus,  $Y|z$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,z)$ and $2^{k-1}$ points.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
 \end{proof}
 
 \subsection{Proof of \thref{thm:imp of unp entropy}}
