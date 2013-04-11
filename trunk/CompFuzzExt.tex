@@ -16,6 +16,8 @@
 \usepackage{framed}
 \usepackage{algpseudocode} 
 
+\mathchardef\mhyphen="2D
+
 \newcommand{\secref}[1]{\mbox{Section~\ref{#1}}}
 \newcommand{\subsecref}[1]{\mbox{Subsection~\ref{#1}}}
 \newcommand{\apref}[1]{\mbox{Appendix~\ref{#1}}}
@@ -54,7 +56,7 @@
 
 \newcommand{\metric}{\ensuremath{\mathtt{Metric}}\xspace}
 \newcommand{\hill}{\ensuremath{\mathtt{HILL}}\xspace}
-\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL-rlx}}\xspace}
+\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL\mhyphen rlx}}\xspace}
 \newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
 \newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
 \newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
@@ -407,19 +409,21 @@ It seems natural to construct a computational fuzzy extractor using a sketch tha
 %=============================================================
 \section{Impossibility of Computational Secure Sketches}
 \label{sec:defCompFuzzyExtractors}
-In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational entropy than information theoretic entropy.  %We will not provide formal definitions for these sketches but use the notation HILL/unpredictability~$(\mathcal{M}, m, \tilde{m}, t)$-secure sketch to denote a sketch that retains $\tilde{m}$ bits of HILL~(resp. unpredictability) entropy when given a source with $m$ bits of entropy.  
-In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the unpredictability of a sketch is at most $n - |B_t(\cdot)|$.  For comparison, random linear codes achieve unpredictability $n(1-o(1)) - B_t(\cdot) $.
+In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational than information-theoretic entropy.  We consider two different notions for computational entropy, and for both of them show that we can do essentially as well information-theoretically as computationally.
+
+%We will not provide formal definitions for these sketches but use the notation HILL/unpredictability~$(\mathcal{M}, m, \tilde{m}, t)$-secure sketch to denote a sketch that retains $\tilde{m}$ bits of HILL~(resp. unpredictability) entropy when given a source with $m$ bits of entropy.  
+In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $n - |B_t(\cdot)|$.  Since random linear codes already achieve min-entropy $n(1-o(1)) - B_t(\cdot)$ on uniform inputs, it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on uniform inputs. \lnote{$B_t$ notation is not correct here -- it denotes the ball, not the logarithm of its volume} \lnote{Should we say something about efficiency of decoding?  Also, should we be clearer that these bounds are tight for uniform inputs and Hamming metric, but not necessarily otherwise? Perhaps just a pointer to the last part of this section (which could be called 3.3?}
 
 %These results are strongest for high entropy sources.  The results get weaker as we consider sources with lower starting entropy.  If a source contains points from a good error code, then the sketch procedure does not need to output any public value so no drop occurs in entropy.  
 
 \subsection{Bounds on Secure Sketches using HILL entropy}
 \label{sec:imp HILL sketch}
-HILL entropy is a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}.  It was extended to the conditional case by Hsiao, Lu, Reyzin~\cite{DBLP:conf/eurocrypt/HsiaoLR07}, here we recall a weaker definition due to Gentry and Wichs~\cite{gentry2011separating}~(the term relaxed HILL entropy was introduced in~\cite{reyzin2011some}).
+HILL entropy is a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}.  It was extended to the conditional case by Hsiao, Lu, Reyzin~\cite{DBLP:conf/eurocrypt/HsiaoLR07}. Here we recall a weaker definition due to Gentry and Wichs~\cite{gentry2011separating}~(the term relaxed HILL entropy was introduced in~\cite{reyzin2011some}); since we show impossibility even for this weaker definition, impossibility for the stronger definition follows immediately.
 
 \begin{definition}
 Let $(W, X)$ be a pair of random variables.  $W$ has 
 \emph{relaxed HILL entropy} at least $k$ conditioned on $X$,
-denoted $H^{\hill-rlx}_{\epsilon, s_{sec}}(W|X)\geq k$ if there exists a joint distribution $(Y, Z)$, such that $\tilde{H}_\infty(Y|Z)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, X),(Y,Z))\leq \epsilon$.
+denoted $H^{\hillrlx}_{\epsilon, s_{sec}}(W|X)\geq k$ if there exists a joint distribution $(Y, Z)$, such that $\tilde{H}_\infty(Y|Z)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, X),(Y,Z))\leq \epsilon$.
 \end{definition}
 
 %\lnote{is there any reason we can't work for the more relaxed notion of HILL, where the condition can be changed, too?}
@@ -586,7 +590,7 @@ An average error Shannon code is one whose average probability of error is bound
 Let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$ such that $\Hoo(C)\geq k$.  There is a set $C'$ with $|C'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
 \end{lemma}
 
-We can now formalize the intuition above.  A sketch that retains $\tilde{m}$-bits of relaxed HILL entropy implies a good error correcting code with nearly $2^{\tilde{m}}$ points~(proof in \secref{sec:proof of thm sketch implies code}).
+We can now formalize the intuition above and show that a sketch that retains $\tilde{m}$-bits of relaxed HILL entropy implies a good error correcting code with nearly $2^{\tilde{m}}$ points~(proof in \secref{sec:proof of thm sketch implies code}).
 \begin{theorem}\label{thm:impSketchArbitraryW}
 Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{sam}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Let $s_{rec}$ denote the size of the circuit that computes $\rec$.  If $s_{sec}\geq (t(s_{neigh}+s_{rec}))$,  then there exists a value $s$ and a set $C$ with $|C|\geq 2^{\tilde{m}-2}$  that is a $(t, 4(\epsilon+t\delta))$-Shannon code with recovery procedure $\rec(\cdot, s)$.
 %Let $W$ be a flat distribution~(all points in the support of $W$ have the same probability) over $\mathcal{M}$ where $\Hoo(W)\geq k$ and   Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$.  If $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $O(s_{neigh}+s_{rec})$, then $\exists x, W'$ where $|W'|\geq |W|/2 \geq 2^{k-1}$ such that $W'$ is a $(t, 2\epsilon)$ Shannon code with recovery procedure $\rec(\cdot, \sketch(x))$.
@@ -1759,7 +1763,7 @@ Let $C'$ denote the of  set all $c\in C$ where $\epsilon_c\leq 2\epsilon$.  Note
 \[ 
 \delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, Z))<\epsilon.
 \]  
-where  $s_{sec} \geq t(s_{neigh}+s_{rec})$.  One such $(Y, Z)$ must exist by the definition of conditional HILL entropy.
+where  $s_{sec} \geq t(s_{neigh}+s_{rec})$.  One such $(Y, Z)$ must exist by the definition of conditional HILL entropy. Let $Y_z$ denote the random variable $Y|Z=z$.
 %Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$. Let $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $s=O(s_{neigh}+s_{rec})$.  This implies that $H^{\hill}_{\epsilon, s}(X|\sketch(X))\geq k$.  
 Define $D$ as:
 \begin{enumerate}
@@ -1770,11 +1774,13 @@ Define $D$ as:
 \item Output $1$.
 \end{enumerate}
  By correctness of the sketch $ \Pr[D(W, \sketch(W)) =1]\ge 1-t\delta$.  Since 
-$\delta^D((W, \sketch(W)), (Y, Z))<\epsilon$, we know $\Pr[D(Y, Z) = 1]>1-\epsilon-t\delta$.  By Markov's inequality,  there exists a set $S_Z$ such that $\Pr[Z\in S_Z]\ge 1/2$ and for all $z\in S_Z$, $\Pr[ D(Y|z, z) =1]> 1- 2(\epsilon + t\delta)$.  Moreover, by \cite[Lemma 2.2a]{DBLP:journals/siamcomp/DodisORS08} (which is derived simply via Markov's inequality applied to the positive random variable $\max_y \Pr[Y_s=y]$), there exists a set $S'_Z$ such that $\Pr[z\in S'_Z]> 1/2$ and for all $z\in S'_Z$, $\Hoo(Y | z)\ge k-1$. \lnote{simplified this derivation}\bnote{I don't believe this fix}  Fix one value $z \in S_Z\cap S'_Z$ (which exists because the sum of probabilities of $S_Z$ and $S'_Z$ is greater than 1).  
+$\delta^D((W, \sketch(W)), (Y, Z))<\epsilon$, we know $\Pr[D(Y, Z) = 1]>1-\epsilon-t\delta$.  By Markov's inequality,  there exists a set $S_Z$ such that $\Pr[Z\in S_Z]\ge 1/2$ and for all $z\in S_Z$, $\Pr[ D(Y_z, z) =1]> 1- 2(\epsilon + t\delta)$.  
+
+Because $\Hav(Y | Z)\geq k$, we know that $\expe_{z\leftarrow Z} \max_y \Pr[Y_z=y]\geq 2^k$.  Applying Markov's inequality to the random variable $\max_y \Pr[Y_z=y]$, there exists a set $S'_Z$ such that $\Pr[z\in S'_Z]> 1/2$, and for all $z\in S'_Z$, $\Hoo(Y_z)\ge k-1$ (we can use the strict version of Markov's inequality here, because the random variable $\max_y \Pr[Y_z=y]$ is positive).  Fix one value $z \in S_Z\cap S'_Z$ (which exists because the sum of probabilities of $S_Z$ and $S'_Z$ is greater than 1).  
 Thus, for all such that $t', 1\leq t'\leq t$, 
-\[ \Pr_{y\leftarrow Y|z}[y'\leftarrow \sample(y, t') \wedge \rec(y',z) = y]> 1-2(\epsilon+t\delta).\]  
+\[ \Pr_{y\leftarrow Y_z}[y'\leftarrow \sample(y, t') \wedge \rec(y',z) = y]> 1-2(\epsilon+t\delta).\]  
 %Thus, $\rec(\cdot, \sketch(x'))$ is a decoding procedure that succeeds on a random neighbor of a random codeword with probability all but $\epsilon$.  
-Thus,  $Y|z$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,z)$ and $2^{k-1}$ points.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
+Thus,  $Y_z$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,z)$ and $2^{k-1}$ points.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
 \end{proof}
 
 \subsection{Proof of \thref{thm:imp of unp entropy}}
