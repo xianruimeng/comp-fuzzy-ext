@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\def\shownotes{1}
+\def\shownotes{0}
 
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
 \geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
@@ -218,8 +218,11 @@ Fuzzy extractors derive cryptographically strong keys from noisy sources.  They 
 %from secrets without revealing too much about them.  They are a crucial ingredient in
 %fuzzy extractors, which provide an information-theoretic mechanism for reliable key derivation from noisy sources.
 
-Secure sketches necessarily reveal some information about the noisy secret, and thus the derived key in fuzzy extractors has lower entropy than the source.  
-The minimal entropy loss is dictated by bounds on error-correcting codes.  Fuzzy extractors suffer from similar bounds imposed by coding theory.
+Secure sketches necessarily reveal some information about the noisy secret.
+% and thus the key derived by fuzzy extractors has lower entropy than the source.  
+The minimal entropy loss is dictated by bounds on error-correcting codes.  
+Fuzzy extractors constructed using secure sketches suffer a similar entropy loss.  This entropy loss decreases the length of the derived key.  
+%suffer from similar bounds imposed by coding theory.
 
 We ask whether these bounds can be overcome by considering computational, rather than information-theoretic, secure sketches and fuzzy extractors.  %The answer we provide an answer for both secure sketches and fuzzy extractors.  
 The answer to this question is mixed, For secure sketches the answer is no, and for fuzzy extractors the answer is yes.
@@ -242,7 +245,7 @@ The answer to this question is mixed, For secure sketches the answer is no, and 
 
 Authentication generally require a secret drawn from some high-entropy source.  One of the primary building blocks for authentication is reliable key derivation.  Unfortunately, many sources that contain sufficient entropy to derive a key are  noisy, and provide similar, but not identical secret values at each reading (examples of such sources include biometrics~\cite{daugman2004}, human memory~\cite{zviran1993comparison}, pictorial passwords~\cite{brostoff2000passfaces}, measurements of capacitance~\cite{tuyls2006puf}, timing~\cite{suh2007physical}, motion~\cite{castelluccia2005shake},  quantum information~\cite{bennett1988privacy} etc.).  %Information reconciliation protocols~\cite{bennett1988privacy} remove the noise without revealing the secrets.
 
-Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} achieve reliable key derivation from noisy sources.  (\bnote{Are these references for fuzzy extractors or secure sketches?} as well as in other contexts, e.g.,~\cite{Boyen05secureremote,dodisWichs2009,chandran2010privacy}).  The setting 
+Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} achieve reliable key derivation from noisy sources~(see \cite{Boyen05secureremote,dodisWichs2009,chandran2010privacy} for applications of fuzzy extractors).  The setting 
 %We will specifically focus on a one-round information reconciliation  mechanism called ``secure sketch,''  which, aside from its immediate application to authentication, is also
 %a crucial ingredient in the construction of fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} (as well as in other contexts, e.g.,~\cite{Boyen05secureremote,dodisWichs2009,chandran2010privacy}).
 consists of  two algorithms: Generate (used once) and Reproduce (used subsequently).  The Generate ($\gen$) algorithm takes an input $w$ and produces a key $r$ and a public value $p$.  This information allows
@@ -1045,6 +1048,7 @@ $\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expect
 
 \thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$ and extract fewer hardcore dimensions.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant in $n$.  The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for smal values of $n$.
 
+
 \subsection{\consref{cons:informal construction} with slightly deficient sources}
 \label{sec:DP general error LWE}
 In this section, we discuss how to generalize \consref{cons:informal construction} to an arbitrary high min-entropy distribution.  We will show security using a result of Micciancio and Peikert~\cite{micciancio2013hardness}.  This result allows us to argue security for an arbitrary distribution that is nearly high entropy.  This result should be seen as a complement to the proceeding sections.  It allows for a more general error distribution, but with worse parameters than \thref{thm:lossless secure conductor log}.  Also \thref{thm:lossless block sketch log} allows for more deficient sources but of a more restricted form~(symbol fixing sources).
@@ -1068,6 +1072,7 @@ Fix a function $f$.  The best way to predict $Z$ given $f(Z)$ is the average pre
 \]
   The statement of the lemma follows by converting to predictability.
 \end{proof}
+
 %\section{Computational Fuzzy Extractors}
 %In this section, we show that any computational secure sketch implies a computationally fuzzy extractor using the same paradigm as \lemref{lem:fuzzy ext construction}.  We begin with a formal definition of a computational fuzzy extractor:
 %\label{sec:comp fuzzy extractors}
