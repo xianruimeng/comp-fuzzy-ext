@@ -824,13 +824,14 @@ We describe conditions for efficient decoding in \secref{sec:time main construct
 The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." For positive integers $n$ and $q \ge 2$, a vector $\vx \in \Fq^n$, and a probability distribution $\chi$ on $\Fq$, let $A_{\vect{x}, \chi}$ be the distribution obtained by choosing $\vA \overset{\$}\leftarrow \Fq^{m\times n}$ uniformly at random and a noise term $\ve \overset{\$}\leftarrow \chi^m$, and outputting $(\vA, \vA\vx+\ve)$. 
 %The Learning With Errors ($\lwe$) is defined as follows: given access to the oracle that outputs a sample from the distribution $A_{\vx, \chi}$ for a uniform $\vx$, and output $\vx$ with high probability. 
 
-\begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}
-Let $m = m(n) = \poly(n)$ be an integer, $q = q(n) = \poly(n)$. The decisional version of the $\LWE$ problem, denoted \class{dist}-$\LWE_{n, m, q, \chi}$, is to distinguish between $m$ samples chosen according to $A_{\vx, \chi}$ for a uniformly random $\vx$ from samples chosen according to the uniform distribution over $(\Fq^{m\times n}, \Fq^m)$. 
+\begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}Let $n$ be a security parameter.  
+Let $m = m(n) = \poly(n)$ and $q = q(n) = \poly(n)$ be integers. The decisional version of the $\LWE$ problem, denoted \class{dist}-$\LWE_{n, m, q, \chi}$, is to distinguish between $m$ samples chosen according to $A_{\vx, \chi}$ for a uniformly random $\vx$ from samples chosen according to the uniform distribution over $(\Fq^{m\times n}, \Fq^m)$. 
 
-We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, t)$-secure if no (probabilistic) distinguisher running in time $t$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.  If $\distLWE_{n, m, q, \chi}$ is secure for all $t = \poly(n), \epsilon  = 1/\poly(n)$ we say it is \emph{secure}.
+We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure if no (probabilistic) distinguisher of size $s_{sec}$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.  If $\distLWE_{n, m, q, \chi}$ is secure for all $s_{sec} = \poly(n), \epsilon  = 1/\poly(n)$ we say it is \emph{secure}.
 \end{definition}
 
 Denote by $\bar{\Psi}_\alpha$ the discretized Gaussian distribution over $\Fq$ with variance $(\alpha q)^2/(2\pi)$, Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} show that, when $\chi = \bar{\Psi}_{\alpha}$, $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure if the worst-case lattice problems are hard to approximate using quantum algorithms.
+\bnote{Should we mention the recent classical reduction here?}
 %The matrix $\vA$ and secret $\vx$ are drawn from the uniform distribution, while the error term is drawn from a discretized Gaussian distribution $\bar{\Psi}_{\alpha}$.  
 Furthermore, Regev \cite{regev2005LWE} shows a decision to search equivalence for $q=\poly(n)$.
 %We state the decisional version in terms of unpredictability entropy~(see \defref{def:unp entropy} for the definition of unpredictability entropy and \secref{sec:LWEoverview} for an equivalence to the standard formulation of decisional LWE):
@@ -838,7 +839,7 @@ Furthermore, Regev \cite{regev2005LWE} shows a decision to search equivalence fo
 
 \begin{proposition} 
 \label{assume:entropy LWE}
-Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime and let $\bar{\Psi}_\alpha$ be the discretized Gaussian distribution with variance $(\alpha q)^2/2\pi$.  If GAPSVP and SIVP are hard to approximate~(on lattices of dimension $n$) within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure for $\epsilon = \ngl(n)$ and $s_{sec} = \poly(n)$.  That is, $\delta^{\mathcal{D}_{s_{sec}}}(\vA, \vA X+E ), (\vA, U_q^m))\leq \epsilon$.
+Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime and let $\bar{\Psi}_\alpha$ be the discretized Gaussian distribution with variance $(\alpha q)^2/2\pi$.  If GAPSVP and SIVP are hard to approximate~(on lattices of dimension $n$) within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure for $\epsilon = \ngl(n)$ and $s_{sec} = \poly(n)$.  That is, $\delta^{\mathcal{D}_{s_{sec}}}(\vA, \vA X+E ), (\vA, U_{m\log q}))\leq \epsilon$.
 
 %H^{\unp}_{\epsilon, s_{sec}}(X | \vA, \vA X+E) =H^{\unp}_{\epsilon, s'_{sec}}(E| \vA, \vA X+E) \geq n\log q $ for $s'_{sec}\approx s_{sec}$.  
 \end{proposition}
@@ -846,9 +847,9 @@ Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q 
 We cannot immediately adapt the construction in \consref{cons:informal construction} to the $\LWE$ problem.  Standard formulations of $\LWE$ require the error term to come from the discretized Gaussian distribution.  
 %\subsection{LWE with uniform errors}
 %\label{subsec:LWE uniform error}
-Recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$ with the uniform distribution over an interval reduces to the security of $\LWE$ where the noise comes from the discretized Gaussian.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it properly into $m$ blocks.
+Recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$ with the uniform distribution over an interval reduces to the security of $\LWE$ where the noise comes from the discretized Gaussian\footnote{Micciancio and Peikert provide a similar formulation in~\cite{micciancio2013hardness}.  The result D\"{o}ttling and M\"{u}ller-Quade provides better parameters for our setting.}.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it  into $m$ blocks.  The size of these blocks is dictated by the following result of D\"{o}ttling and M\"{u}ller-Quade:
 %As stated above this has two advantages for Construction~\ref{cons:LWESecureSketch}: 1) the bits of $W$ can be used directly and \rep can output $w$ instead of $sam_w$ 2) there is a fixed number of bits required to sample each dimension.  
-We present the formulation of D\"{o}ttling and M\"{u}ller-Quade: 
+%We present the formulation of D\"{o}ttling and M\"{u}ller-Quade: 
 %\begin{lemma}~\protect{~\cite[Theorem 5]{dottling2012}}
 %\label{lem:uniform LWE}
 %Let $n$ be a security parameter.  Let $q = q(n))$ and $m = m(n) = \poly(n)$ be integers.  Let $\rho = \rho(n) \in (0,1)$ be such that $\rho q\geq 2n^2m$.  Assume there exists a PPT-algorithm that solves the LWE decision problem where $\vA,X$ are drawn uniformly at random and $E$ is drawn from the interval $[-\rho q, \rho q]$ with non-negligible probability.  Then there exists an efficient quantum-algorithm that approximates the decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) to within $\tilde{O}(n^{5/2}m/\rho)$ in the worst case.
@@ -857,13 +858,14 @@ We present the formulation of D\"{o}ttling and M\"{u}ller-Quade:
 %This problem can be stated in the language of indistinguishability using the Decision-to-search reduction of Regev or Peikert:
 \begin{lemma}~\protect{~\cite[Corollary 10]{dottling2012}}
 \label{lem:uniform LWE decision}
-Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. Assume decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate~(on lattices of dimension $n/2$) with the factor $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi = [-\rho q, \rho q]$, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
+\bnote{I'm confused, how can the decision version of lattice problems be hard to approximate?  Should it just be if GAPSVP and SIVP are hard to approximate?}
+Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. If the decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate~(on lattices of dimension $n/2$) within a factor of $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi$ the uniform distribution over $[-\rho q, \rho q]$, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
 \end{lemma}
 
 To extract pseudorandom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
-Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  If $\distLWE_{(n-k, m, q, \chi)}$ is $\epsilon, s_{sec}$ hard then $H^{\hill}_{\epsilon, s_{sec}'}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$ where $s_{sec}' \approx s_{sec} - n^3$.
+Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\Fq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  If $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ hard then $H^{\hill}_{\epsilon, s_{sec}'}(X_{1,..., k}| \vA, \vA X+E )\geq k\log q$ where $s_{sec}' \approx s_{sec} - n^3$.
 \end{lemma}
 
 %\begin{lemma}
@@ -939,17 +941,17 @@ With Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, \co
 \begin{construction}
 \label{cons:decoding algorithm} We consider a setting of $(n, m, q, \chi)$ where $m\geq 3n$.  We describe inverter $\mathcal{I}_t$:
 \begin{enumerate}
-\item Input $\vA , \vc = \vA X + W - W'$
+\item Input $\vA , B = \vA X + W - W'$
 \item Randomly select rows without replacement $i_1,..., i_{2n}\leftarrow [1,m]$.  
-\item Restrict $\vA, \vc$ to rows $i_1,...,i_{2n}$, denote this as $\vA_{i_1,...,i_{2n}}, \vc_{i_1,...,i_{2n}}$.
+\item Restrict $\vA, B$ to rows $i_1,...,i_{2n}$, denote this as $\vA_{i_1,...,i_{2n}}, B_{i_1,...,i_{2n}}$.
 \item Find $n$ rows of $\vA_{i_1,..., i_{2n}}$ that are linearly independent.  
-Denote by $\vA', \vc'$ the restriction of $\vA_{i_1,..., i_{2n}}, \vc_{i_1,..., i_{2n}}$ (respectively) to these rows.  If no such rows exist go to step (2).
-\item Compute $X' = \vA'\vc'$.  If $C- AX'$ has more than $t$ nonzero coordinates, go to step (2).
+Denote by $\vA', B'$ the restriction of $\vA_{i_1,..., i_{2n}}, B_{i_1,..., i_{2n}}$ (respectively) to these rows.  If no such rows exist go to step (2).
+\item Compute $X' = (\vA')^{-1}B'$.  If $B- AX'$ has more than $t$ nonzero coordinates, go to step (2).
 \item Output $X'$.
 \end{enumerate}
 \end{construction}
 
-$\mathcal{I}_t$ is an efficient inverter/recovery procedure when $t$ is small enough.  We need $t$ to be small enough for step (4) to succeed with probability at least $\frac{1}{\poly(n)}$, furthermore, we need the code generated by $\vA$ to have distance at least $t$ with high probability.  The second condition is to ensure that there are few false positives in step (5).  This condition is satisfied for $t = O(\frac{m}{n}\log n)$, since random codes have high distance with probability $1-e^{-\Omega(n)}$.  The exact statement is in \corref{cor:code high distance}.  Furthermore, steps (3-5) are computable in time $O(n^3)$.
+$\mathcal{I}_t$ is an efficient inverter/recovery procedure when $t$ is small enough.  We need $t$ to be small enough for none of the selected rows to have errors with probability at least $\frac{1}{\poly(n)}$, furthermore, we need the code generated by $\vA$ to have distance at least $t$ with high probability.  The second condition is to ensure that there are few false positives in step (5).  This condition is satisfied for $t = O(\frac{m}{n}\log n)$, since random codes have high distance with probability $1-e^{-\Omega(n)}$.  The exact statement is in \corref{cor:code high distance}.  Furthermore, steps (3-5) are computable in time $O(n^3)$.
 This is also a sufficient condition for steps (3-5) to succeed with probability at least $1/\poly(n)$.  We consider the setting where the running time of $\mathcal{I}_t$ grows with $t$.  $\mathcal{I}_t$ is efficient as long as $t$ is small enough.  The formal statement is below~(proof in \secref{sec:proof lem i t poly time}):
 %  We provide the results in \lemref{lem:i t constant time} and \lemref{lem:i t poly time} respectively~(proofs in Sections~\ref{sec:proof lem i t constant time},~\ref{sec:proof lem i t poly time}).  \lnote{can we combine these lemmas into one?  It's hard for the reader to compare line-by-line to see where the differences are.  More errors seems better; we could simply point out that constant number of erros leads to better running time, right in the statement of the lemma or right after it}
 %\begin{lemma}[Efficiency of $\mathcal{I}_t$ when $t\leq m/n-1$]
@@ -958,7 +960,7 @@ This is also a sufficient condition for steps (3-5) to succeed with probability 
 %\end{lemma}
 \begin{lemma}[Efficiency of $\mathcal{I}_t$ when $t\leq d\log n (m/n-2)$]
 \label{lem:i t poly time}
-Let $\vA, \vA X+W$ be a  $\distLWE_{n,m, q, \chi}$ instance where $m\geq 3n$.  Assume that $W$ is split into $m$ blocks of length $b$ and let $\dis$ be the Hamming distance over alphabet $2^b$.  Let $d$ be a constant and assume that $\dis(W, W')\leq t$ where $t\leq d(\frac{m}{n}-1)\log n$.  Then $\mathcal{I}_t$ runs in expected time $O(n^{4d}(n^3\log q))$ on input distribution $\vA, \vA X+W - W'$ and outputs $W$ with probability $1-e^{-\Omega(n)}$ when $\vA$ is a random matrix.
+Let $\vA, \vA X+W$ be a  $\distLWE_{n,m, q, \chi}$ instance where $m\geq 3n$.  Assume that $W$ is split into $m$ blocks of length $b$ and let $\dis$ be the Hamming distance over alphabet $2^b$.  Let $d$ be a constant and assume that $\dis(W, W')\leq t$ where $t\leq d\log n(\frac{m}{n}-2)$.  Then $\mathcal{I}_t$ runs in expected time $O(n^{4d}(n^3\log q))$ on input distribution $\vA, \vA X+W - W'$ and outputs $W$ with probability $1-e^{-\Omega(n)}$ when $\vA$ is a random matrix.
 \end{lemma}
 \textbf{Note:} If we consider the setting where $t\leq m/n-2$, then $\mathcal{I}_t$ will run in expected time $O(n^3\log n)$.  Our main theorems apply when $t\leq m/n-2$ with slightly better parameters.  We concentrate on the setting $t\leq d\log n(m/n-2)$.  Also even though we are correcting $O(\log n)$ errors, this a super polynomial number of error patterns and the running time of $\mathcal{I}_t$ is significantly better than exhaustive search over these error patterns.
 
@@ -979,7 +981,7 @@ We now state a setting of parameters that yields a lossless construction.
 
 \begin{theorem}
 \label{thm:lossless secure conductor log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+2d)/d)$.  Let $W$ be uniform over $\zo^{(c+2d)nb/d}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\vA, \vA X+W) = H_\infty(W)$
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+2d)/d)$.  Let $W$ be uniform over $\zo^{(c+2d)nb/d}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\vA, \vA X+W) = n/2\log q = H_\infty(W)$
 % for following parameters:
 %\[
 %(\zo^{(c+d)/dn\log b}, |W|, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)
@@ -992,12 +994,12 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 \end{proof}
 
 For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe how to set $q = \poly(n)$.  
-\thref{thm:lossless secure conductor log} shows that a computational fuzzy conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point and thus providing no information about either $X$ or $W$.  
+\thref{thm:lossless secure conductor log} shows that a computational fuzzy conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point and providing no information about either $X$ or $W$.  
 %A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
 \subsection{Comparison with \prg based construction}
 \label{sec:prg based comparison}
-In this section we to constructed a computational fuzzy extractor by making the whole process ``computational.''  Alternatively, a computational fuzzy extractor could be constructed by using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  In particular, using the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. use LWE to achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  Namely, consider $\vA$ as a public value, they show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log t)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
+In this section we to constructed a computational fuzzy extractor by making the whole process ``computational.''  Alternatively, a computational fuzzy extractor could be constructed by using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  This is the extract-then-expand computational extractor suggested by Krawczyk in~\cite{krawczyk2010cryptographic}.  In particular, using the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. use LWE to achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  Namely, consider $\vA$ as a public value, they show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log t)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
 
 \section{\consref{cons:informal construction} with Nonuniform Sources}
 \subsection{\consref{cons:informal construction} with Symbol Fixing Sources}
@@ -1012,7 +1014,7 @@ Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where $W_i$ takes values ove
 \end{definition}
 %A block fixing source is an extension of a entropy source where each bit is independently random or fixed to larger alphabets.  
 
-We now study \consref{cons:informal construction} with a symbol fixing source.  Obviously, if $\alpha \geq n$ then the adversary knows $n$ equations with no error and $W$ can be recovered with Gaussian elimination.  We show that security degrades exponentially as symbols are fixed.
+We now study \consref{cons:informal construction} with a symbol fixing source.  Obviously, if $\alpha \geq n$ then the adversary knows $n$ equations and their error and $W$ can be recovered with Gaussian elimination.  We show that security degrades exponentially as symbols are fixed.
 \ignore{
 \begin{assumption}[LWE w/ entropic errors]
 Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-block fixing distribution over $\{0,1\}^{(m+\alpha)\ell}$. For a vector 
@@ -1021,7 +1023,7 @@ Let $A\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and let $x\in\Fq^{n+\alpha}$.  No PP
 }
 We now define the decisional $\LWE$ problem with symbol fixing errors is defined as follows: 
 \begin{problem}[$\distLWE$ w/ symbol fixing errors]
-Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and output $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
+Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and outputting $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
 \end{problem}
 
 The $\distLWE$ with symbol fixing sources is implied by standard $\distLWE$.
@@ -1053,7 +1055,7 @@ Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Le
 $\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expected recover time $O(n^{4d+3} \log n)$ with error probability $\delta = e^{-\Omega(n)}$ over the choice of $\vA$.
 \end{theorem}
 
-\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$ and extract fewer hardcore dimensions.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant in $n$.  The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for smal values of $n$.
+\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$ and extract fewer hardcore dimensions.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant in $n$.  The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for small values of $n$.
 
 
 \ignore{
