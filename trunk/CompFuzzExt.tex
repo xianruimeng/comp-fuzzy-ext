@@ -776,7 +776,8 @@ Both of the lower bound results arise because the reduction can ensure that \rec
 \label{sec:fuzzyCompExt}
 
 In this section we describe our main construction.  In this section, we consider only a uniform source $W$, we consider other distributions in \secref{sec:LWE block fixing sources}.  Our construction uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\mathcal{I}_t$ be an algorithm that decodes a random linear code with at most $t$ errors.  We provide an informal description below.
-\bnote{$\mathcal{I}$ is overloaded as the inverter in unpredictability entropy.  We okay?}
+\bnote{$\mathcal{I}$ is overloaded as the inverter in unpredictability entropy.  We okay?} 
+\xnote{change it to \class{Decode()}?}
 %Please refer to \consref{cons:informal construction} for the description of the construction.  
 
 \begin{construction}
@@ -847,7 +848,7 @@ Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q 
 We cannot immediately adapt the construction in \consref{cons:informal construction} to the $\LWE$ problem.  Standard formulations of $\LWE$ require the error term to come from the discretized Gaussian distribution.  
 %\subsection{LWE with uniform errors}
 %\label{subsec:LWE uniform error}
-Recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$ with the uniform distribution over an interval reduces to the security of $\LWE$ where the noise comes from the discretized Gaussian\footnote{Micciancio and Peikert provide a similar formulation in~\cite{micciancio2013hardness}.  The result D\"{o}ttling and M\"{u}ller-Quade provides better parameters for our setting.}.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it  into $m$ blocks.  The size of these blocks is dictated by the following result of D\"{o}ttling and M\"{u}ller-Quade:
+Recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$ with the uniform distribution over a small interval reduces to the security of $\LWE$ where the noise comes from the discretized Gaussian\footnote{Micciancio and Peikert provide a similar formulation in~\cite{micciancio2013hardness}.  The result D\"{o}ttling and M\"{u}ller-Quade provides better parameters for our setting.}.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it  into $m$ blocks.  The size of these blocks is dictated by the following result of D\"{o}ttling and M\"{u}ller-Quade:
 %As stated above this has two advantages for Construction~\ref{cons:LWESecureSketch}: 1) the bits of $W$ can be used directly and \rep can output $w$ instead of $sam_w$ 2) there is a fixed number of bits required to sample each dimension.  
 %We present the formulation of D\"{o}ttling and M\"{u}ller-Quade: 
 %\begin{lemma}~\protect{~\cite[Theorem 5]{dottling2012}}
@@ -859,6 +860,7 @@ Recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the secu
 \begin{lemma}~\protect{~\cite[Corollary 10]{dottling2012}}
 \label{lem:uniform LWE decision}
 \bnote{I'm confused, how can the decision version of lattice problems be hard to approximate?  Should it just be if GAPSVP and SIVP are hard to approximate?}
+\xnote{Approximating to decision version of GapSVP is to decision problem of SVP by creating the `gap'... don't think it's confusing...}
 Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. If the decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard to approximate~(on lattices of dimension $n/2$) within a factor of $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi$ the uniform distribution over $[-\rho q, \rho q]$, then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
 \end{lemma}
 
