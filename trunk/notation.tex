@@ -1,0 +1,128 @@
+\documentclass[11pt]{article}
+
+\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+\usepackage[parfill]{parskip}    
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath, amsthm, amsfonts}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{algpseudocode} 
+
+\newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
+\newcommand{\gen}{\ensuremath{\class{Gen}}\xspace}
+\newcommand{\rep}{\ensuremath{\class{Rep}}\xspace}
+\newcommand{\sketch}{\ensuremath{\class{SS}}\xspace}
+\newcommand{\rec}{\ensuremath{\class{Rec}}\xspace}
+\newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
+\newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
+\newcommand{\prg}{\ensuremath{\class{prg}}\xspace}
+\newcommand{\zo}{\ensuremath{\{0, 1\}}}
+\newcommand{\vect}[1]{\ensuremath{\textbf{#1}}}
+\newcommand{\zq}{\ensuremath{\mathbb{Z}_q}}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}}
+\newcommand{\sample}{\ensuremath{\class{Sample}}\xspace}
+\newcommand{\neigh}{\ensuremath{\class{Neigh}}\xspace}
+\newcommand{\dis}{\ensuremath{\mathsf{dis}}}
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\D}{\mathcal{D}}
+
+\newcommand{\metric}{\ensuremath{\mathtt{Metric}}\xspace}
+\newcommand{\hill}{\ensuremath{\mathtt{HILL}}\xspace}
+\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL\mhyphen rlx}}\xspace}
+\newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
+\newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
+\newcommand{\unprlx}{\ensuremath{\mathtt{unp\mhyphen rlx}}\xspace}
+\newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
+\newcommand{\metricd}{\ensuremath{\mathtt{Metric}^*\mathtt{-d}}\xspace}
+\newcommand{\hillstar}{\ensuremath{\mathtt{HILL}^*}\xspace}
+\newcommand{\hillprime}{\ensuremath{\mathtt{HILL'}}\xspace}
+\newcommand{\metricprime}{\ensuremath{\mathtt{Metric'}}\xspace}
+\newcommand{\metricprimestar}{\ensuremath{\mathtt{Metric'}^*}\xspace}
+\newcommand{\hillprimestar}{\ensuremath{\mathtt{HILL'}^*}\xspace}
+\newcommand{\poly}{\ensuremath{\mathtt{poly}}\xspace}
+\newcommand{\rank}{\ensuremath{\mathtt{rank}}\xspace}
+\newcommand{\ngl}{\ensuremath{\mathtt{ngl}}\xspace}
+\newcommand{\Hoo}{\mathrm{H}_\infty}
+\newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
+\newcommand{\Dom}{\mathsl{Dom}}
+\newcommand{\Range}{\mathsl{Rng}}
+\newcommand{\Keys}{\mathsl{Keys}}
+\def\col{\mathrm{Col}}
+
+\newcommand{\ddetbin}{\ensuremath{\mathcal{D}^{det,\{0,1\}}}}
+\newcommand{\drandbin}{\ensuremath{\mathcal{D}^{rand,\{0,1\}}}}
+\newcommand{\ddetrange}{\ensuremath{\mathcal{D}^{det,[0,1]}}}
+\newcommand{\drandrange}{\ensuremath{\mathcal{D}^{rand,[0,1]}}}
+
+\newcommand{\expinfo}{\ensuremath{\mathcal{E}}}
+\newcommand{\ext}{\ensuremath{\mathtt{ext}}}
+\newcommand{\rext}{\ensuremath{\mathtt{rext}}}
+\newcommand{\cons}{\ensuremath{\mathtt{cons}}}
+\newcommand{\decons}{\ensuremath{\mathtt{decons}}}
+
+
+\begin{document}
+Notation:
+\begin{itemize}
+\item $B_t(x)$ - the ball of radius $t$ around a point $x$
+\item $\sketch$ - secure sketch procedure
+\item $\rec$ - recover procedure for secure sketch
+\item $\gen$ - fuzzy extractor generate
+\item $\rep$ - fuzzy extractor reproduce
+\item $w/W$ - the noisy source we are drawing from
+\item $s$ - output of secure sketch
+\item $S$ - the distribution W is conditioned on, we also denote this by $\sketch(W)$
+\item $R$ - key from fuzzy extractor
+\item $P$ - helper value for fuzzy extractor
+\item $X, Y$ - these are used for the indistinguishable distributions, for the $\hill$ and $\unp$ entropy.
+\item $D, \mathcal{D}$ - distinguisher and distinguisher class
+\item $Z$ - the alphabet when we consider Hamming metric
+\item $\ell$ - derived key length
+\item $\epsilon$ - distance from uniform either for extractor or fuzzy extractor
+\item $\delta$ - error rate of a fuzzy extractor or secure sketch
+\item $\ext$ - extractor
+\item $\rext$ - reconstructive extractor
+\item $(\mathcal{M}, \dis)$ - metric space and associated distance
+\item $s_{sam}$ - size of $\sample$
+\item $s_{sec}$ - size of security circuit
+\item $s_{rec}$ - size of recover circuit
+\item $t$- bounded such that $\dis(w, w')\leq t$
+\item $k$- the number of hardcore dimensions in AKV09, this is the size of our resulting key
+\item $m$- starting min-entropy of source
+\item $\tilde{m}$ - resulting min-entropy of a construction
+\item $\vect{A}$ - random matrix in LWE
+\item $n$ - security parameter for LWE
+\item $q$ - size of field for LWE
+\item $m$ - number of samples in LWE
+\item $\vect{x} / X$ - secret vector in LWE
+\item $\chi$ - arbitrary error distribution for LWE
+\item $\bar{\Psi}_\alpha$ - discretized Gaussian distribution
+\item $\gamma$ - Parameter in DMQ error size and lattice hardness
+\item $d$ - running time of inverter, tied to number of errors that can be corrected and redundancy in m
+\item $c$ - constant log errors that can be corrected
+\item $\rho$ - $\rho q$ is the noise width
+\item $b$ - the number of bits in a block $b = \log \rho q$
+\item $\mathcal{C}$ - a set that forms a code
+\item $C$ - a distribution of points that we use to form a code
+\item $C, D$ - the reconstruction procedures for a reconstructive extractor
+   NOTE: both of these are used above, need to change
+\item $\neigh , s_{neigh}$- algorithm for sampling a neighbor
+\item $\sample, s_{sam} $- algorithm for picking a random point in the metric space
+\item $\vect{C}, \vect{D} $ used in the decoding algorithms of code-offset construction
+\item $f$ - the degree of the polynomial used to express the size of the field q
+\item $n_0$ - first point where LWE is considered secure
+\item $\alpha$ - the number of fixed dimensions for a block fixing source
+\item $\beta$ - the extra variables added in Theorem 5.3
+\item $\gamma$ - parameter in DMQ13, slightly changes their setting, we consider $\gamma = 1/2$
+\item $g$ - the fraction of n that we will output as hardcore bits
+\end{itemize}
+
+\end{document}
