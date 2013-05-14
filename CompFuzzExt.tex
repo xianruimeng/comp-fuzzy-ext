@@ -60,6 +60,7 @@
 \newcommand{\hillrlx}{\ensuremath{\mathtt{HILL\mhyphen rlx}}\xspace}
 \newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
 \newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
+\newcommand{\unprlx}{\ensuremath{\mathtt{unp\mhyphen rlx}}\xspace}
 \newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
 \newcommand{\metricd}{\ensuremath{\mathtt{Metric}^*\mathtt{-d}}\xspace}
 \newcommand{\hillstar}{\ensuremath{\mathtt{HILL}^*}\xspace}
@@ -712,9 +713,9 @@ In the previous section, we showed that any sketch that retained HILL entropy co
 
 \begin{definition}~\cite[Definition 7]{DBLP:conf/eurocrypt/HsiaoLR07}
 \label{def:unp entropy}
-For a distribution $(W, S)$, we say that $W$ has \emph{unpredictability entropy} at least $k$ conditioned on $S,$ denoted by $H^{\unp}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a collection of distributions $X_s$ (giving rise to a joint distribution $(X, S)$) such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, S))\leq \epsilon$, and for all circuits $I$ of size $s_{sec}$,
+For a distribution $(W, S)$, we say that $W$ has \emph{unpredictability entropy} at least $k$ conditioned on $S,$ denoted by $H^{\unp}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a collection of distributions $X_s$ (giving rise to a joint distribution $(X, S)$) such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, S))\leq \epsilon$, and for all circuits $\mathcal{I}$ of size $s_{sec}$,
 \[
-\Pr[I(Z) = Y ] \leq 2^{-k}
+\Pr[\mathcal{I}(Z) = Y ] \leq 2^{-k}
 .\]
 \end{definition}
 We will say a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch} with the security requirement replaced with $H^{\unp}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
@@ -728,6 +729,7 @@ Thus, if a sketch retained unpredictability entropy we could build a computation
 Unfortunately, the unpredictability entropy conditioned on the sketch must decrease as $t$ increases.  
 %An adversaries ability to predict the output of the \rec algorithm increases with as $t$ grows.  %That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)) , (Y, \sketch(W))$ our ability to predict $Y$ increases as $|B_t(\cdot)|$ increases.  
 The formal statement is below:
+\bnote{Should we list the stronger statement in the appendix or keep this for clarity?}
 \begin{theorem}
 \label{thm:imp of unp entropy}
 Let $W$ be a distribution over $Z^n$ and let $(\sketch, \rec)$ be an unpredictability-entropy \\$(Z^n, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq t(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
@@ -774,6 +776,7 @@ Both of the lower bound results arise because the reduction can ensure that \rec
 \label{sec:fuzzyCompExt}
 
 In this section we describe our main construction.  In this section, we consider only a uniform source $W$, we consider other distributions in \secref{sec:LWE block fixing sources}.  Our construction uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\mathcal{I}_t$ be an algorithm that decodes a random linear code with at most $t$ errors.  We provide an informal description below.
+\bnote{$\mathcal{I}$ is overloaded as the inverter in unpredictability entropy.  We okay?}
 %Please refer to \consref{cons:informal construction} for the description of the construction.  
 
 \begin{construction}
@@ -812,7 +815,7 @@ In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp19
 The rest of this section is devoted to making these intuitive statements precise.
  We describe the \class{LWE} problem and the security of our construction in \secref{subsec:LWE}.
  %a recent variant due to D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} in \secref{subsec:LWE}.  
-We describe conditions for efficient decoding in \secref{sec:time main construction}.  In \secref{sec:lossless extractor}, we describe parameter settings where we extract as many bits as the size of our input distribution and thus our construction is lossless.  In \secref{sec:prg based comparison}, we compare \consref{cons:informal construction} to using a information-theoretic fuzzy extractor and running a pseudorandom generator on the output.
+We describe conditions for efficient decoding in \secref{sec:time main construction}.  In \secref{sec:lossless extractor}, we describe parameter settings where we extract as many bits as the size of our input distribution and thus our construction is lossless.  In \secref{sec:prg based comparison}, we compare \consref{cons:informal construction} to using a information-theoretic fuzzy extractor and running a pseudorandom generator on the output~(this is replacing the randomness extractor with a computational extractor).
 
 
 
@@ -1804,12 +1807,11 @@ Thus,  $X_y$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with rec
 \label{sec:proof of imp unp entropy}
 Instead of proving \thref{thm:imp of unp entropy}, we will prove a stronger result based on a weaker form of entropy.  This relaxed definition allows both the variable and the condition to be replaced.  This is analogous to the relaxed HILL entropy~(see \defref{def:relaxed hill}).%Gentry and Wichs utilize an analogous relaxation for HILL entropy in~\cite[Lemma 3.1]{gentry2011separating}~(we provide a formulation of this notion in \defref{def:relaxed hill}).
 
-\bnote{This needs to be consistent with the notation above.  Should be $W, S$ for original and $X, Y$ for indistinguishable distribution.}
 \begin{definition}
 \label{def:relaxed unp entropy}
-For a distribution $(X, Z)$, we say that $X$ has \emph{relaxed unpredictability entropy} at least $k$ conditioned on $Z,$ denoted by $H^{\unp}_{\epsilon, s_{sec}} (X|Z) \geq k$, if there exists a joint distribution $Y, Z'$ such that $\delta^{\mathcal{D}_{s_{sec}}}((X, Z),(Y, Z'))\leq \epsilon$, and for all circuits $C$ of size at most $s_{sec}$,
+For a distribution $(W, S)$, we say that $W$ has \emph{relaxed unpredictability entropy} at least $k$ conditioned on $S,$ denoted by $H^{\unprlx}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a joint distribution $X, Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, Y))\leq \epsilon$, and for all circuits $\mathcal{I}$ of size at most $s_{sec}$,
 \[
-\Pr[C(Z) = Y ] \leq 2^{-k}
+\Pr[\mathcal{I}(Y) = X ] \leq 2^{-k}
 .\]
 \end{definition}
 
@@ -1823,19 +1825,19 @@ Let $W$ be a distribution over a metric space $(\mathcal{M}, \dis)$ that is $s_{
 \end{theorem}
 \begin{proof}
 Let $\mathcal{M}, \dis$ be a $s_{sam}$ samplable and $(s_{neigh}, t)$ neighborhood samplable metric space~(by procedures $\sample$ and $\neigh$ respectively).  
-Let $W$ be a distribution over $\mathcal{M}$ and let $(\sketch, \rec)$ be an relaxed unpredictability-entropy $(\mathcal{M}, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$ where $s_{sec} \geq \max\{ t(|\rec| +s_{neigh}), |\rec| + s_{sam}\}$.  Let $Y, Z'$ be a joint distribution such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (Y, Z'))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(Z') = Y]\geq 2^{\tilde{m}}$ where $\tilde{m} = n\log |Z| - \log |B_t(\cdot)| - \log(1-\epsilon -t\delta)$.  
+Let $W$ be a distribution over $\mathcal{M}$ and let $(\sketch, \rec)$ be an relaxed unpredictability-entropy $(\mathcal{M}, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$ where $s_{sec} \geq \max\{ t(|\rec| +s_{neigh}), |\rec| + s_{sam}\}$.  Let $X, Y$ be a joint distribution such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (X, Y))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(Y) = X]\geq 2^{\tilde{m}}$ where $\tilde{m} = \log |\mathcal{M}| - \log |B_t(\cdot)| - \log(1-\epsilon -t\delta)$.  
 
-Let $B_t(y)$ denote the random variable of a random neighbor of distance at most $t$ from $y$.  Recall, the algorithm $\neigh$ outputs neighbors at a fixed distance, the random variable $B_t(y)$ may not be efficiently computable, we only use it as a random variable.
-We begin by showing that \rec must recover points of $Y$.  
+Let $B_t(x)$ denote the random variable of a random neighbor of distance at most $t$ from $x$.  Recall, the algorithm $\neigh$ outputs neighbors at a fixed distance, the random variable $B_t(x)$ may not be efficiently computable, we use it as a random variable.
+We begin by showing that \rec must recover points of $X$.  
 \begin{claim}
 \label{clm:y is recoverable}
 \begin{align*}
-\Pr[\rec(B_t(Y), Z') = Y]&=\\
-\Pr[(y, z)\leftarrow (Y, Z) \wedge y'\leftarrow B_t(y) \wedge \rec(y', z) = y] &\geq 1-\epsilon -t\delta.
+\Pr[\rec(B_t(X), Y) = X]&=\\
+\Pr[(x, y)\leftarrow (X, Y) \wedge x'\leftarrow B_t(x) \wedge \rec(x', y) = x] &\geq 1-\epsilon -t\delta.
 \end{align*}
 \end{claim}
 \begin{proof}
-Suppose that $\Pr[\rec(B_t(Y), Z') = Y]<1-\epsilon -t\delta$.  We construct the following $D\in\mathcal{D}_{s_{sec}}$:
+Suppose that $\Pr[\rec(B_t(X), Y) = X]<1-\epsilon -t\delta$.  We construct the following $D\in\mathcal{D}_{s_{sec}}$:
 \begin{itemize}
 \item Input $w\in \mathcal{M}, s\in\zo^*$.
 \item For all $1\leq t'\leq t$: 
@@ -1843,34 +1845,34 @@ Suppose that $\Pr[\rec(B_t(Y), Z') = Y]<1-\epsilon -t\delta$.  We construct the 
 \subitem If $\rec(w', z) \neq  w$ output $0$.
 \item Output $1$.
 \end{itemize}
-First note that $|D| = t( |\rec|+ s_{neigh} )$.  Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in \mathcal{M}$ where $\dis(w, w')\leq t$ \[ \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This implies that for all $1\leq t'\leq t$, $\Pr[\rec(\neigh(W, t'), \sketch(W) )= W)  ]\geq 1-\delta$ and thus $\Pr[D(W, \sketch(W)) = 1]\geq 1-t\delta$.  If $\Pr[\rec(B_t(Y), Z') = Y] < 1-\epsilon -t\delta$ there must exist some $1\leq t'\leq t$ where this is true.  Then 
+First note that $|D| = t( |\rec|+ s_{neigh} )$.  Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in \mathcal{M}$ where $\dis(w, w')\leq t$ \[ \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This implies that for all $1\leq t'\leq t$, $\Pr[\rec(\neigh(W, t'), \sketch(W) )= W)  ]\geq 1-\delta$ and thus $\Pr[D(W, \sketch(W)) = 1]\geq 1-t\delta$.  If $\Pr[\rec(B_t(X), Y) = X] < 1-\epsilon -t\delta$ there must exist some $1\leq t'\leq t$ where this is true.  Then 
 \begin{align*}
-\Pr[D(W, \sketch(W)) = 1]  - \Pr[D(Y, Z')=1] &\geq\\
-(1-t\delta) - \Pr[\rec(\neigh(Y, t'), Z') = Y] &> (1-t\delta)-(1-t\delta - \epsilon)>\epsilon.
+\Pr[D(W, \sketch(W)) = 1]  - \Pr[D(X, Y)=1] &\geq\\
+(1-t\delta) - \Pr[\rec(\neigh(X, t'), Y) = X] &> (1-t\delta)-(1-t\delta - \epsilon)>\epsilon.
 \end{align*}
 This is a contradiction and the statement of the claim follows.
 \end{proof}
-We now consider the experiment $(y, z)\leftarrow (Y, Z'), y'\leftarrow B_t(y)$ and define the quantity $P_{y' , z, y} = \Pr[\rec(y', z) =y]$.  \clref{clm:y is recoverable} says that 
+We now consider the experiment $(x, y)\leftarrow (X, Y), x'\leftarrow B_t(x)$ and define the quantity $P_{x' , y,x} = \Pr[\rec(x', y) =x]$.  \clref{clm:y is recoverable} says that 
 \[
- \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in \mathcal{M}} \Pr[B_t(y) =y' | Y = y] P_{y',  z, y} \geq 1-\epsilon - t\delta.
+ \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in \mathcal{M}} \Pr[B_t(x) =x' | X = x] P_{x',  y,x} \geq 1-\epsilon - t\delta.
 \]
-We note that for any particular $y, y'$ such that $\dis(y, y')\leq t, \Pr[B_t(y) = y' | Y=y] = 1/|B_t(\cdot)|$ and if $\dis(y, y')>t, \Pr[B_t(y) = y' | Y=y] = 0$.  Thus, for all $y, y', \Pr[B_t(y) = y' | Y=y] \leq 1/|B_t(\cdot)|$.
+We note that for any particular $x, x'$ such that $\dis(x, x')\leq t, \Pr[B_t(x) = x' | X=x] = 1/|B_t(\cdot)|$ and if $\dis(x, x')>t, \Pr[B_t(x) = x' | X=x] = 0$.  Thus, for all $x, x', \Pr[B_t(x) = x' | X=x] \leq 1/|B_t(\cdot)|$.
 Now define $\mathcal{I}\in\mathcal{D}_{s_{sec}}$ as follows:
 \begin{itemize}
-\item Input $z\in\zo^*$.
+\item Input $y\in\zo^*$.
 \item Sample $x\leftarrow \sample(\cdot)$.
 \item Output $\rec(x, s)$.
 \end{itemize}
-Note that $|\mathcal{I}| =  |\rec|+ s_{sam}$.  Let $X$ the random variable corresponding to the sample $x$ taken by $\mathcal{I}_t$.
-We now show that $\mathcal{I}$ predicts $Y$:
+Note that $|\mathcal{I}| =  |\rec|+ s_{sam}$.  Let $X'$ the random variable corresponding to the sample $x$ taken by $\mathcal{I}_t$.
+We now show that $\mathcal{I}$ predicts $X$:
 \begin{align*}
-2^{\tilde{m}}& = \Pr[\mathcal{I}(Z') = Y] \\
-&= \Pr[(y, z)\leftarrow (Y, Z')] \Pr[\mathcal{I}(z) = y]\\
-&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in\mathcal{M}} \Pr[X = y' ]\Pr[\mathcal{I}(z) = y | X = y']\\
-&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in\mathcal{M}} \Pr[X = y' ] P_{y', z, y}\\
-&\geq \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in\mathcal{M}} \frac{\Pr[X = y']}{\Pr[B_t(y) = y' | Y = y]}\Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
-&\geq  \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in\mathcal{M}} \frac{1/|\mathcal{M}|}{1/|B_t(\cdot)|} \Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
-&\geq \frac{|B_t(\cdot)|}{|\mathcal{M}|} \Pr[(y, z)\leftarrow (Y, Z')] \sum_{y'\in\mathcal{M}} \Pr[B_t(y) = y' | Y=y ] P_{y', z, y}\\
+2^{\tilde{m}}& = \Pr[\mathcal{I}(Y) = x] \\
+&= \Pr[(x, y)\leftarrow (X, Y)] \Pr[\mathcal{I}(y) = x]\\
+&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[X' = x' ]\Pr[\mathcal{I}(y) = x | X = x']\\
+&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[X' = x' ] P_{x', y, x}\\
+&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \frac{\Pr[X' = x']}{\Pr[B_t(x) = x' | X = x]}\Pr[B_t(x) = x' | X=x ] P_{x', y, x}\\
+&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \frac{1/|\mathcal{M}|}{1/|B_t(\cdot)|} \Pr[B_t(x) = x' | X=x ] P_{x', y, x}\\
+&\geq \frac{|B_t(\cdot)|}{|\mathcal{M}|} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[B_t(x) = x' | X=x ] P_{x', y, x}\\
 &\geq \frac{|B_t(\cdot)|}{|\mathcal{M}|}(1-\epsilon - t\delta)
 \end{align*}
 Finally converting to entropy, one has $\tilde{m}\leq \log |\mathcal{M}|-\log |B_t(\cdot)| - \log (1-\epsilon -t \delta)$.
