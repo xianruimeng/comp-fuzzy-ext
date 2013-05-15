@@ -1,0 +1,7 @@
+Fuzzy extractors derive strong keys from noisy sources.  Their security is defined information-theoretically, which limits the length of the derived key, sometimes making it too short to be useful. We ask whether it is possible to obtain longer keys by considering computational security, and show the following.
+
+Negative Result: Noise tolerance in fuzzy extractors is usually achieved using an information-reconciliation component called "secure sketch." The security of this component, which directly affects the length of the resulting key, is subject to lower bounds from coding theory.  We show that, even when defined computationally, secure sketches are still subject to the same lower bounds.
+
+Positive Result: We show that the negative result can be overcome by analyzing computational fuzzy extractors directly.  Namely, we show how to build a computational fuzzy extractor whose output key length equals the entropy of the source (this is impossible in the information-theoretic setting). Our construction is based on the hardness of the Learning with Errors (LWE) problem, and is secure when the noisy source is uniform or symbol-fixing (that is, each dimension is either uniform or fixed). As part of the security proof, we show that the decision version of LWE is secure when a small number of dimensions has no error.
+
+Joint work with Xianrui Meng and Leonid Reyzin

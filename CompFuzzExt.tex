@@ -419,7 +419,7 @@ It seems natural to construct a computational fuzzy extractor using a sketch tha
 In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational than information-theoretic entropy.  We consider two different notions for computational entropy, and for both of them show that we can do essentially as well information-theoretically as computationally.
 
 %We will not provide formal definitions for these sketches but use the notation HILL/unpredictability~$(\mathcal{M}, m, \tilde{m}, t)$-secure sketch to denote a sketch that retains $\tilde{m}$ bits of HILL~(resp. unpredictability) entropy when given a source with $m$ bits of entropy.  
-In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $\log |\mathcal{M}| - \log |B_t(\cdot)|$.  Random linear codes~(in the Hamming metric) already achieve min-entropy $\log |\mathcal{M}|(1-o(1)) - \log B_t(\cdot)$ on uniform inputs, so it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on uniform inputs.\bnote{I changed this bound to be size of metric space before it was just n which was wrong.  Do we prefer $n\log Z$?}  In \secref{ssec:avoiding bounds}, we discuss mechanisms for avoiding these bounds.
+In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $\log |\mathcal{M}| - \log |B_t(\cdot)|$.  Random linear codes~(in the Hamming metric) already achieve min-entropy $\log |\mathcal{M}|(1-o(1)) - \log B_t(\cdot)$ on uniform inputs\lnote{this point is confusing -- it's not the random linear codes, it's some construction applied to them in order to get a sketch -- we should cite appropriately and explain more clearly here and in 3.2}, so it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on uniform inputs.\bnote{I changed this bound to be size of metric space before it was just n which was wrong.  Do we prefer $n\log Z$?} \lnote{I think your change is fine}  In \secref{ssec:avoiding bounds}, we discuss mechanisms for avoiding these bounds.
 
 %These results are strongest for high entropy sources.  The results get weaker as we consider sources with lower starting entropy.  If a source contains points from a good error code, then the sketch procedure does not need to output any public value so no drop occurs in entropy.  
 
@@ -585,7 +585,7 @@ We review definitions of Shannon codes~\cite{shannon1949mathematical}:
 \label{def:shannon-code}
 Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]<\epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
 \end{definition}
-This is a slightly stronger formulation than usual, in that we require the code to correct random errors of every size $t'<t$\footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compared to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
+This is a slightly stronger formulation than usual, in that for every size  $t'<t$ we require the code to correct $t'$ random errors \footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compared to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 
 Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. 
 
@@ -608,7 +608,7 @@ Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhoo
 
 
 %It is known (see \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein) that, 
-For the Hamming metric, any Shannon code (as defined in Definition~\ref{def:shannon-code}) can be converted into an information-theoretic secure sketch~(as described in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, and convert worst-case errors to random errors by randomizing the order of the bits of $w$ first, via a randomly chosen  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement is in the following Lemma.\bnote{I feel we should cite this.}
+For the Hamming metric, any Shannon code (as defined in Definition~\ref{def:shannon-code}) can be converted into an information-theoretic secure sketch~(as described in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, and convert worst-case errors to random errors by randomizing the order of the bits of $w$ first, via a randomly chosen  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement is in the following Lemma.\bnote{I feel we should cite this.}\lnote{You mean, say Lemma~\ref{lem:shannon to sketch} instead?  No problem if you want to.}
 \begin{lemma}
 \label{lem:shannon to sketch}
 For an alphabet $Z$, let $\mathcal{C}$ over $Z^n$ be a $(t, \delta)$ Shannon code.  % with recovery procedure $\rec'$.
@@ -708,38 +708,36 @@ $4(\epsilon+t\delta)$.
 
 \subsection{Bounds on Secure Sketches using Unpredictability Entropy}
 \label{sec:imp unp sketch}
-In the previous section, we showed that any sketch that retained HILL entropy could be transformed into an information theoretic sketch.  A reasonable question to ask is whether a sketch could retain unpredictability of the source.  We begin by defining conditional unpredictability entropy:
+In the previous section, we showed that any sketch that retained HILL entropy could be transformed into an information theoretic sketch.  However, HILL entropy is a strong notion.  In this section, we therefore ask whether it is useful to consider a sketch that satisfies a minimal requirement: the value of the input is computationally hard to guess given the sketch.  We begin by recalling the definition of conditional unpredictability entropy, which captures the notion of ``hard to guess'' (we relax it similar to the way conditional HILL entropy was relaxed in the previous section).
 
 \begin{definition}~\cite[Definition 7]{DBLP:conf/eurocrypt/HsiaoLR07}
 \label{def:unp entropy}
-For a distribution $(W, S)$, we say that $W$ has \emph{unpredictability entropy} at least $k$ conditioned on $S,$ denoted by $H^{\unp}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a collection of distributions $X_s$ (giving rise to a joint distribution $(X, S)$) such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, S))\leq \epsilon$, and for all circuits $\mathcal{I}$ of size $s_{sec}$,
+Let  $(W, S)$ be a pair of random variables. We say that $W$ has \emph{unpredictability entropy} at least $k$ conditioned on $S,$ denoted by $H^{\unp}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a pair of distributions $(X, Y)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, Y))\leq \epsilon$, and for all circuits $\mathcal{I}$ of size $s_{sec}$,
 \[
-\Pr[\mathcal{I}(Z) = Y ] \leq 2^{-k}
+\Pr[\mathcal{I}(Y) = X ] \leq 2^{-k}
 .\]
 \end{definition}
-We will say a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch} with the security requirement replaced with $H^{\unp}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
-We consider this notion to be a natural notion for a computational sketch as it can be extracted from using a reconstructive extractor~(as shown by \cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}).
-%\footnote{See~\cite{barak-computational} for the definition of reconstruction extractor.}.   show that unpredictability entropy can be e.
-%\begin{lemma}~\cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}
-%\label{lem:unp extraction} 
-%\bnote{We can't use the letter $C$ its taken for a distribution of codewords.}\bnote{We also $D$ as a distinguisher elsewhere.}
-%Let $W$ be a distribution with $H^{\unp}_{\epsilon, s_{sec}}(W|S)\geq k$, and let $\rext$ be an extractor with a $(k-\log 1/\epsilon, \epsilon)$-reconstruction $(C,D)$.  Then $\delta^{\mathcal{D}_{s'}}((\rext(W, U_d), S), U_m\times U_d\times S)\leq 5\epsilon,$ where $s'=s_{sec}/(|C|+|D|)$.
-%\end{lemma}
-%Thus, if a sketch retained unpredictability entropy we could build a computational fuzzy extractor~(using the construction in \lemref{lem:fuzzy ext construction}).  
-Unfortunately, the unpredictability entropy conditioned on the sketch must decrease as $t$ increases.  
-%An adversaries ability to predict the output of the \rec algorithm increases with as $t$ grows.  %That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)) , (Y, \sketch(W))$ our ability to predict $Y$ increases as $|B_t(\cdot)|$ increases.  
-The formal statement is below:
-\bnote{Should we list the stronger statement in the appendix or keep this for clarity?}
+
+We will say that a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-
+hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\unp}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
+Note this notion is quite natural: combining such a secure sketch via  \lemref{lem:fuzzy ext construction} with a particular type of extractor (called a 
+\emph{reconstructive}~\cite{barak-computational}), would yield a computational fuzzy extractor (per \cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}).  
+
+Unfortunately, the conditional unpredictability entropy $\tilde{m}$ must decrease as $t$ increases, as the following theorem states.  (The proof of the theorem, generalized to more metric spaces, is in \secref{sec:proof of imp unp entropy}.)
+
 \begin{theorem}
 \label{thm:imp of unp entropy}
-Let $W$ be a distribution over $Z^n$ and let $(\sketch, \rec)$ be an unpredictability-entropy \\$(Z^n, \Hoo(W), \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq t(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
+Let $Z$ be an alphabet $(\sketch, \rec)$ be an unpredictability-entropy $(Z^n, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq t(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
 \end{theorem}
-This result has a weaker condition than \corref{cor:rec yields sketch} and yields a weaker conclusion.  The main difference with \thref{thm:impSketchArbitraryW} is that it is unknown if the indistinguishable distribution contains many points.  This means we cannot construct a good code out of the points of $Y$.  In \secref{sec:proof of imp unp entropy}, we prove a stronger theorem for larger class of metric spaces and for a relaxed notion of unpredictability entropy~(similar to the relaxed notion of HILL entropy in \defref{def:relaxed hill}).%Our bound is a result of the Hamming bound for the space.  
+In particular, if the input is uniform, the entropy loss is about $\log |B_t(\cdot)|$.  Essentially the same entropy loss can be achieved with information-theoretic secure sketches, by using the code-offset construction\lnote{cite here, and is it the randomized construction or the deterministic one that we should use here?} applied to the best possible codes (e.g., random codes\lnote{cite performance of codes?}).  Thus, unpredictability-entropy secure sketches cannot improve on the best possible information-theoretic entropy loss (at least for uniform inputs).  However, because the best possible codes may not have efficient decoding, it is conceivable that unpredictability entropy secure sketch could achieve lower entropy loss than is possible with efficient information-theoretic sketches.
+
+
+This result has a weaker condition than \corref{cor:rec yields sketch} and yields a weaker conclusion.  The main difference with \thref{thm:impSketchArbitraryW} is that it is unknown if the indistinguishable distribution contains many points.  This means we cannot construct a good code out of the points of $Y$.  \lnote{I find the previous three sentences more confusing than helpful; do we really need them?  should we reword or remove?} %Our bound is a result of the Hamming bound for the space.  
 
 \subsection{Avoiding sketch entropy upper bounds}
 \label{ssec:avoiding bounds}
 
-The lower bounds of \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy} are strongest for high entropy sources.  The results get weaker as we consider sources with lower starter entropy.  This is necessary, if a source contains only codewords (of an error correcting code), no sketch is necessary.  This means we cannot rule out computational sketches for other arbitrary lower entropy distributions.  This same situation occurs when considering lower bounds for information-theoretic sketches.
+The lower bounds of \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy} are strongest for high entropy sources.  The results get weaker as we consider sources with lower starter entropy.  This is necessary, if a source contains only codewords (of an error correcting code), no sketch is needed.  This means we cannot rule out computational sketches for other arbitrary lower entropy distributions.  This same situation occurs when considering lower bounds for information-theoretic sketches~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08} .
 
 Both of the lower bound results arise because the reduction can ensure that \rec functions as an error-correcting code for many points of the indistinguishable distribution.  It may be possible to avoid this problem if \rec outputs a fresh random variable\footnote{If some efficient algorithm can take the output of $\rec$ and efficiently transform it back to the source $W$, the bounds of \corref{cor:rec yields sketch} and \thref{thm:imp of unp entropy} both apply.  This means that we need to consider constructions that are hard to invert~(either information-theoretically or computationally).}.  An algorithm that outputs a fresh random variable would be a computational fuzzy conductor~(see~\cite{KanukurthiR09} for the definition of a fuzzy conductor).  Our construction~(in \secref{sec:fuzzyCompExt}) has pseudorandom output and immediately satisfies definition of a computational fuzzy extractor~(\defref{def:comp fuzzy extractor}).  It may be possible to achieve significantly better parameters with a construction that is a computational fuzzy conductor~(but not a computational fuzzy extractor) and then applying an extractor.  We leave this as an open problem.
 
