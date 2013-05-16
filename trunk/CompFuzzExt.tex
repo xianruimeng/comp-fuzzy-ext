@@ -422,10 +422,13 @@ It seems natural to construct a computational fuzzy extractor using a sketch tha
 %=============================================================
 \section{Impossibility of Computational Secure Sketches}
 \label{sec:defCompFuzzyExtractors}
-In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational than information-theoretic entropy.  We consider two different notions for computational entropy, and for both of them show that we can do essentially as well information-theoretically as computationally.
+In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational than information-theoretic entropy.  We consider two different notions for computational entropy, and for both of them show that we can do essentially as well information-theoretically as computationally. \lnote{too strong?} Thus, it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on high-entropy sources.  
 
 %We will not provide formal definitions for these sketches but use the notation HILL/unpredictability~$(\mathcal{M}, m, \tilde{m}, t)$-secure sketch to denote a sketch that retains $\tilde{m}$ bits of HILL~(resp. unpredictability) entropy when given a source with $m$ bits of entropy.  
-In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $\log |\mathcal{M}| - \log |B_t(\cdot)|$.  Section 8.2The code-offset sketch instantiated with a random linear code~(in the Hamming metric)  achieve min-entropys $\log |\mathcal{M}|(1-o(1)) - \log B_t(\cdot)$ on uniform inputs\lnote{this point is confusing -- it's not the random linear codes, it's some construction applied to them in order to get a sketch -- we should cite appropriately and explain more clearly here and in 3.2}, so it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on uniform inputs.\bnote{I changed this bound to be size of metric space before it was just n which was wrong.  Do we prefer $n\log Z$?} \lnote{I think your change is fine}  In \secref{ssec:avoiding bounds}, we discuss mechanisms for avoiding these bounds.
+In particular, for the case of the Hamming metric and inputs that have full entropy, our results are as follows.  In  \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $\log |\mathcal{M}| - \log |B_t(\cdot)|$. Dodis et al. \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}  construct sketches with essentially the same information-theoretic security\footnote{The security in  \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}  is expressed in terms of entropy of the error rate; recall that $\log B_t(\cdot)\approx H_q(t/n)$, where $n$ is the number of symbols, $q$ is the alphabet size, and $H_q$ is the $q$-ary entropy function.} . 
+
+
+In \secref{ssec:avoiding bounds}, we discuss mechanisms for avoiding these bounds.
 
 %These results are strongest for high entropy sources.  The results get weaker as we consider sources with lower starting entropy.  If a source contains points from a good error code, then the sketch procedure does not need to output any public value so no drop occurs in entropy.  
 
@@ -589,7 +592,7 @@ In this section we show that the results of \thref{thm:compSketchImpUniform} can
 We review definitions of Shannon codes~\cite{shannon1949mathematical}:
 \begin{definition}
 \label{def:shannon-code}
-Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]<\epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
+Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
 \end{definition}
 This is a slightly stronger formulation than usual, in that for every size  $t'<t$ we require the code to correct $t'$ random errors \footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compared to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 
@@ -597,7 +600,7 @@ Shannon codes work for all codewords. We can also consider a formulation that wo
 
  \begin{definition}
 Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
-$\Pr_{c\leftarrow C}[\rec(\neigh(c, t')) \neq c]<\epsilon$.
+$\Pr_{c\leftarrow C}[\rec(\neigh(c, t')) \neq c]\le \epsilon$.
 \end{definition}
 An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} (we provide a proof in \secref{sec:proof of average to maximal error}):
 \begin{lemma}
@@ -614,7 +617,7 @@ Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhoo
 
 
 %It is known (see \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein) that, 
-For the Hamming metric, any Shannon code (as defined in Definition~\ref{def:shannon-code}) can be converted into an information-theoretic secure sketch~(as described in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, and convert worst-case errors to random errors by randomizing the order of the bits of $w$ first, via a randomly chosen  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement is in the following Lemma.\bnote{I feel we should cite this.}\lnote{You mean, say Lemma~\ref{lem:shannon to sketch} instead?  No problem if you want to.}
+For the Hamming metric, any Shannon code (as defined in Definition~\ref{def:shannon-code}) can be converted into an information-theoretic secure sketch~(as described in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, and convert worst-case errors to random errors by randomizing the order of the bits of $w$ first, via a randomly chosen  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement of this result  can be expressed in the following Lemma (which is implicit in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}).
 \begin{lemma}
 \label{lem:shannon to sketch}
 For an alphabet $Z$, let $\mathcal{C}$ over $Z^n$ be a $(t, \delta)$ Shannon code.  % with recovery procedure $\rec'$.
@@ -735,7 +738,7 @@ Unfortunately, the conditional unpredictability entropy $\tilde{m}$ must decreas
 \label{thm:imp of unp entropy}
 Let $Z$ be an alphabet $(\sketch, \rec)$ be an unpredictability-entropy $(Z^n, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq t(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
 \end{theorem}
-In particular, if the input is uniform, the entropy loss is about $\log |B_t(\cdot)|$.  Essentially the same entropy loss can be achieved with information-theoretic secure sketches, by using the code-offset construction\lnote{cite here, and is it the randomized construction or the deterministic one that we should use here?} applied to the best possible codes (e.g., random codes\lnote{cite performance of codes?}).  Thus, unpredictability-entropy secure sketches cannot improve on the best possible information-theoretic entropy loss (at least for uniform inputs).  However, because the best possible codes may not have efficient decoding, it is conceivable that unpredictability entropy secure sketch could achieve lower entropy loss than is possible with efficient information-theoretic sketches.
+In particular, if the input is uniform, the entropy loss is about $\log |B_t(\cdot)|$.  As mentioned at the beginning of~\secref{sec:defCompFuzzyExtractors}, essentially the same entropy loss can be achieved with information-theoretic secure sketches, by using the randomized code-offset construction. However, it is conceivable that unpredictability entropy secure sketches could achieve lower entropy loss with greater efficiency for some parameter settings.
 
 
 %This result has a weaker condition than \corref{cor:rec yields sketch} and yields a weaker conclusion.  The main difference with \thref{thm:impSketchArbitraryW} is that it is unknown if the indistinguishable distribution contains many points.  This means we cannot construct a good code out of the points of $Y$.  \lnote{I find the previous three sentences more confusing than helpful; do we really need them?  should we reword or remove?} %Our bound is a result of the Hamming bound for the space.  
@@ -1804,7 +1807,7 @@ Let $C'$ denote the of  set all $c\in C$ where $\epsilon_c\leq 2\epsilon$.  Note
 \begin{proof}
   Let $W$ be an arbitrary distribution of min-entropy $m$.  Let $(X, Y)$ be a joint distribution such that $\Hav(X | Y)\geq k$ and
 \[ 
-\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (X, Y))<\epsilon.
+\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (X, Y))\le \epsilon\, ,
 \]  
 where  $s_{sec} \geq t(s_{neigh}+s_{rec})$.  One such $(X, Y)$ must exist by the definition of conditional HILL entropy. Let $X_y$ denote the random variable $X|Y=y$.
 %Let $X$ be arbitrarily but independently distributed over $\mathcal{M}$. Let $\delta^D((X, \sketch(X)), (W, \sketch(X)))<\epsilon$ for negligible $\epsilon$ and $D$ of size at least $s=O(s_{neigh}+s_{rec})$.  This implies that $H^{\hill}_{\epsilon, s}(X|\sketch(X))\geq k$.  
@@ -1817,11 +1820,11 @@ Define $D$ as:
 \item Output $1$.
 \end{enumerate}
  By correctness of the sketch $ \Pr[D(W, \sketch(W)) =1]\ge 1-t\delta$.  Since 
-$\delta^D((W, \sketch(W)), (X, Y))<\epsilon$, we know $\Pr[D(X, Y) = 1]>1-\epsilon-t\delta$.  By Markov's inequality,  there exists a set $S_Y$ such that $\Pr[Y\in S_Y]\ge 1/2$ and for all $y\in S_Y$, $\Pr[ D(X_y, y) =1]> 1- 2(\epsilon + t\delta)$.  
+$\delta^D((W, \sketch(W)), (X, Y))\le \epsilon$, we know $\Pr[D(X, Y) = 1]\ge 1-\epsilon-t\delta$.  By Markov's inequality,  there exists a set $S_Y$ such that $\Pr[Y\in S_Y]\ge 1/2$ and for all $y\in S_Y$, $\Pr[ D(X_y, y) =1]\ge 1- 2(\epsilon + t\delta)$.  
 
 Because $\Hav(X | Y)\geq k$, we know that $\expe_{y\leftarrow Y} \max_x \Pr[X_y=x]\leq 2^k$.  Applying Markov's inequality to the random variable $\max_x \Pr[X_y=x]$, there exists a set $S'_Y$ such that $\Pr[y\in S'_Y]> 1/2$, and for all $y\in S'_Y$, $\Hoo(X_y)\ge k-1$ (we can use the strict version of Markov's inequality here, because the random variable $\max_x \Pr[X_y=x]$ is positive).  Fix one value $y \in S_Y\cap S'_Y$ (which exists because the sum of probabilities of $S_Y$ and $S'_Y$ is greater than 1).  
 Thus, for all such that $t', 1\leq t'\leq t$, 
-\[ \Pr_{x\leftarrow X_y}[x'\leftarrow \sample(x, t') \wedge \rec(x',z) = x]> 1-2(\epsilon+t\delta).\]  
+\[ \Pr_{x\leftarrow X_y}[x'\leftarrow \sample(x, t') \wedge \rec(x',z) = x]\ge  1-2(\epsilon+t\delta).\]  
 %Thus, $\rec(\cdot, \sketch(x'))$ is a decoding procedure that succeeds on a random neighbor of a random codeword with probability all but $\epsilon$.  
 Thus,  $X_y$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,y)$ and $2^{k-1}$ points.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
 \end{proof}
@@ -1829,29 +1832,18 @@ Thus,  $X_y$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with rec
 \thref{thm:imp of unp entropy} follows by noting that $Z^n$ can be sampled in time $n\log |Z|$ and neighborhood sampled in time $n\log |Z|$.
 \subsection{Proof of \thref{thm:imp of unp entropy}}
 \label{sec:proof of imp unp entropy}
-Instead of proving \thref{thm:imp of unp entropy}, we will prove a stronger result based on a weaker form of entropy.  This relaxed definition allows both the variable and the condition to be replaced.  This is analogous to the relaxed HILL entropy~(see \defref{def:relaxed hill}).%Gentry and Wichs utilize an analogous relaxation for HILL entropy in~\cite[Lemma 3.1]{gentry2011separating}~(we provide a formulation of this notion in \defref{def:relaxed hill}).
-
-\begin{definition}
-\label{def:relaxed unp entropy}
-For a distribution $(W, S)$, we say that $W$ has \emph{relaxed unpredictability entropy} at least $k$ conditioned on $S,$ denoted by $H^{\unprlx}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a joint distribution $X, Y$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, Y))\leq \epsilon$, and for all circuits $\mathcal{I}$ of size at most $s_{sec}$,
-\[
-\Pr[\mathcal{I}(Y) = X ] \leq 2^{-k}
-.\]
-\end{definition}
-
-We will prove the result for a metric space that is both neighborhood samplable~(\defref{def:neighborhood samplable}) and where picking a random point in the space is easy.  We now define this second condition:
+Instead of proving the result just for Hamming metric over $Z^n$, we will prove the result for any metric space that is both neighborhood samplable~(\defref{def:neighborhood samplable}) and where picking a random point in the space is easy.  We now define this second condition:
 \begin{definition}
 A metric space space $(\mathcal{M}, \dis)$ is $s_{sam}$-\emph{efficiently-samplable} if there exists a randomized circuit $\sample$ of size $s_{sam}$ that outputs a uniformly random point in $\mathcal{M}$.
 \end{definition}
 
 \begin{theorem}
-Let $W$ be a distribution over a metric space $(\mathcal{M}, \dis)$ that is $s_{sam}$ samplable and $(s_{neigh}, t)$ neighborhood samplable.  Furthermore, assume that the number of points within distance $t$ in $\mathcal{M}$ is fixed~(this quantity is denoted by $B_t(\cdot)$).  Let $(\sketch, \rec)$ be a relaxed unpredictability-entropy $(\mathcal{M}, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq \max\{ t(|\rec| +s_{neigh}), |\rec| + s_{sam}\}$, then $\tilde{m}\leq \log |\mathcal{M}| - \log |B_t(\cdot)| - \log(1-\epsilon -t\delta)$.
+Let $W$ be a distribution over a metric space $(\mathcal{M}, \dis)$ that is $s_{sam}$ samplable and $(s_{neigh}, t)$ neighborhood samplable.  Furthermore, assume that the number of points within distance $t$ in $\mathcal{M}$ is at least $B_t(\cdot)$.  Let $(\sketch, \rec)$ be an unpredictability-entropy $(\mathcal{M}, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq \max\{ t(|\rec| +s_{neigh}), |\rec| + s_{sam}\}$, then $\tilde{m}\leq \log |\mathcal{M}| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
 \end{theorem}
 \begin{proof}
-Let $\mathcal{M}, \dis$ be a $s_{sam}$ samplable and $(s_{neigh}, t)$ neighborhood samplable metric space~(by procedures $\sample$ and $\neigh$ respectively).  
-Let $W$ be a distribution over $\mathcal{M}$ and let $(\sketch, \rec)$ be an relaxed unpredictability-entropy $(\mathcal{M}, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$ where $s_{sec} \geq \max\{ t(|\rec| +s_{neigh}), |\rec| + s_{sam}\}$.  Let $X, Y$ be a joint distribution such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (X, Y))\leq \epsilon$.  It suffices to show that $\exists \ \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(Y) = X]\geq 2^{\tilde{m}}$ where $\tilde{m} = \log |\mathcal{M}| - \log |B_t(\cdot)| - \log(1-\epsilon -t\delta)$.  
+Let $(X, Y)$ be two random variables such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (X, Y))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(Y) = X]\geq |\mathcal{M}| (1-\epsilon -t\delta) / |B_t(\cdot)|$.  
 
-Let $B_t(x)$ denote the random variable of a random neighbor of distance at most $t$ from $x$.  Recall, the algorithm $\neigh$ outputs neighbors at a fixed distance, the random variable $B_t(x)$ may not be efficiently computable, we use it as a random variable.
+Let $B_t(x)$ denote the random variable representing a random neighbor of distance at most $t$ from $x$ (note that $B_t$ may not be efficiently samplable, because we are assuming only that a neighbor a fixed distance is efficiently samplable).
 We begin by showing that \rec must recover points of $X$.  
 \begin{claim}
 \label{clm:y is recoverable}
@@ -1861,7 +1853,7 @@ We begin by showing that \rec must recover points of $X$.
 \end{align*}
 \end{claim}
 \begin{proof}
-Suppose that $\Pr[\rec(B_t(X), Y) = X]<1-\epsilon -t\delta$.  We construct the following $D\in\mathcal{D}_{s_{sec}}$:
+Suppose that $\Pr[\rec(B_t(X), Y) = X]<1-\epsilon -t\delta$.  We construct the following distinguisher $D\in\mathcal{D}_{s_{sec}}$ (the distinguisher design is slightly complicated by the fact that we don't know at which particular distance $t'$ the recover procedure is most likely to fail, so we have to try all distances):
 \begin{itemize}
 \item Input $w\in \mathcal{M}, s\in\zo^*$.
 \item For all $1\leq t'\leq t$: 
@@ -1869,37 +1861,31 @@ Suppose that $\Pr[\rec(B_t(X), Y) = X]<1-\epsilon -t\delta$.  We construct the f
 \subitem If $\rec(w', z) \neq  w$ output $0$.
 \item Output $1$.
 \end{itemize}
-First note that $|D| = t( |\rec|+ s_{neigh} )$.  Since $(\rec, \sketch)$ has error $\delta$ we know that $\forall w, w'\in \mathcal{M}$ where $\dis(w, w')\leq t$ \[ \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This implies that for all $1\leq t'\leq t$, $\Pr[\rec(\neigh(W, t'), \sketch(W) )= W)  ]\geq 1-\delta$ and thus $\Pr[D(W, \sketch(W)) = 1]\geq 1-t\delta$.  If $\Pr[\rec(B_t(X), Y) = X] < 1-\epsilon -t\delta$ there must exist some $1\leq t'\leq t$ where this is true.  Then 
+First note that $|D| = t( |\rec|+ s_{neigh} )$.  Since $(\sketch, \rec)$ has error $\delta$ we know that $\forall w, w'\in \mathcal{M}$ where $\dis(w, w')\leq t$ \[ \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This implies that for all $1\leq t'\leq t$, $\Pr[\rec(\neigh(W, t'), \sketch(W) )= W)  ]\geq 1-\delta$ and thus $\Pr[D(W, \sketch(W)) = 1]\geq 1-t\delta$.  If $\Pr[\rec(B_t(X), Y) = X] < 1-\epsilon -t\delta$ there must exist at least one $1\leq t'\leq t$ for which $\Pr[\rec(\neigh(X, t'), Y) = X] < 1-\epsilon -t\delta$.  Then 
 \begin{align*}
 \Pr[D(W, \sketch(W)) = 1]  - \Pr[D(X, Y)=1] &\geq\\
 (1-t\delta) - \Pr[\rec(\neigh(X, t'), Y) = X] &> (1-t\delta)-(1-t\delta - \epsilon)>\epsilon.
 \end{align*}
 This is a contradiction and the statement of the claim follows.
 \end{proof}
-We now consider the experiment $(x, y)\leftarrow (X, Y), x'\leftarrow B_t(x)$ and define the quantity $P_{x' , y,x} = \Pr[\rec(x', y) =x]$.  \clref{clm:y is recoverable} says that 
-\[
- \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in \mathcal{M}} \Pr[B_t(x) =x' | X = x] P_{x',  y,x} \geq 1-\epsilon - t\delta.
-\]
-We note that for any particular $x, x'$ such that $\dis(x, x')\leq t, \Pr[B_t(x) = x' | X=x] = 1/|B_t(\cdot)|$ and if $\dis(x, x')>t, \Pr[B_t(x) = x' | X=x] = 0$.  Thus, for all $x, x', \Pr[B_t(x) = x' | X=x] \leq 1/|B_t(\cdot)|$.
-Now define $\mathcal{I}\in\mathcal{D}_{s_{sec}}$ as follows:
+
+Now define $\mathcal{I}$ as follows:
 \begin{itemize}
 \item Input $y\in\zo^*$.
-\item Sample $x\leftarrow \sample(\cdot)$.
-\item Output $\rec(x, s)$.
+\item Sample $x'\leftarrow \sample$.
+\item Output $\rec(x', y)$.
 \end{itemize}
-Note that $|\mathcal{I}| =  |\rec|+ s_{sam}$.  Let $X'$ the random variable corresponding to the sample $x$ taken by $\decode_t$.
+Note that $|\mathcal{I}| =  |\rec|+ s_{sam}$. 
 We now show that $\mathcal{I}$ predicts $X$:
 \begin{align*}
-2^{\tilde{m}}& = \Pr[\mathcal{I}(Y) = x] \\
-&= \Pr[(x, y)\leftarrow (X, Y)] \Pr[\mathcal{I}(y) = x]\\
-&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[X' = x' ]\Pr[\mathcal{I}(y) = x | X = x']\\
-&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[X' = x' ] P_{x', y, x}\\
-&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \frac{\Pr[X' = x']}{\Pr[B_t(x) = x' | X = x]}\Pr[B_t(x) = x' | X=x ] P_{x', y, x}\\
-&\geq \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \frac{1/|\mathcal{M}|}{1/|B_t(\cdot)|} \Pr[B_t(x) = x' | X=x ] P_{x', y, x}\\
-&\geq \frac{|B_t(\cdot)|}{|\mathcal{M}|} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[B_t(x) = x' | X=x ] P_{x', y, x}\\
+\Pr[\mathcal{I}(Y) = X] & = \\
+&= \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \Pr[\mathcal{I}(y) = x]\\
+&= \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[\sample = x' ] \Pr[\rec(x', y) =x]\\
+&\ge \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x' \mathrm{ s. t. } \dis(x', x)\le t} \Pr[\sample = x']\Pr[\rec(x', y) =x]\\
+&\ge \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\mathrm{ s. t. } \dis(x', x)\le t} \frac{|B_t(\cdot)|}{|\mathcal{M}|} \Pr[B_t(x) = x'] \Pr[\rec(x', y) =x]\\
 &\geq \frac{|B_t(\cdot)|}{|\mathcal{M}|}(1-\epsilon - t\delta)
 \end{align*}
-Finally converting to entropy, one has $\tilde{m}\leq \log |\mathcal{M}|-\log |B_t(\cdot)| - \log (1-\epsilon -t \delta)$.
+(the last step follows by  \clref{clm:y is recoverable}).
 \end{proof}
 
 %\bnote{This is the proof for not relaxed unpredictability entropy}
