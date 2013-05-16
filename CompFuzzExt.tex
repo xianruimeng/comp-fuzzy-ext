@@ -1,4 +1,5 @@
 \documentclass[11pt]{article}
+%\documentclass{llncs}
 \def\shownotes{1}
 
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
@@ -6,7 +7,8 @@
 %\geometry{landscape}                % Activate for for rotated page geometry
 \usepackage[parfill]{parskip}    
 \usepackage{graphicx}
-\usepackage{amssymb, amsmath, amsthm, amsfonts}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{amsthm}
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{xspace}
@@ -280,7 +282,6 @@ Another possible relaxation is to require that the value $w$ is unpredictable co
 Both of these impossibility results arise because a secure sketch functions like a decoder of an error-correcting code.  To avoid these impossibility results, we give up on building secure sketches and focus directly on the entropy loss in fuzzy extractors.  
 
 %to focus on producing a consistent string $\recout$  each time $\rec(w', s)$ is called.  This string $\recout$ is  required to have high HILL entropy even conditioned on $s$. Because this object \emph{conducts} the entropy from $w$ to $\recout$ and tolerates noise in its input, following \cite{CRVW02,KanukurthiR09}, we call it a \emph{computational fuzzy conductor}.
-Computational extractors~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational} have the same goal in the setting without errors.  One way to achieve a computational (fuzzy) extractor is by using a computational extractor instead in place of the information theoretic extractor.  In particular, one technique is ``extract-then-expand'', where the output of a randomness extractor is stretched using a pseudorandom generator.  This construction is only possible if the entropy losses due to a secure sketch and information-theoretic extraction leave enough truly random bits.  We ask if a better solution is possible by making the entire process ``computational.''\bnote{Should add something about the Dana's result implying PRGs}
 
 By considering a computational secrecy requirement, we construct the first \emph{lossless} (computational) fuzzy extractors, where the derived key $r$ is as long as the entropy of the source $w$\footnote{As noted above, using a computational extractor, in place of a information-theoretic extractor, allows a lossless construction.  However, this approach requires the computational extractor to work on the remaining entropy after the secure sketch.  We compare the two approaches in \secref{sec:prg based comparison}}. % without conditioning on anything---i.e., before $\gen$ is run (see~\thref{thm:lossless secure conductor log})).  
 Our construction of lossless fuzzy extractors~(\consref{cons:informal construction}) is based on the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey},  which says that decoding a random linear code is computationally difficult.  
@@ -290,6 +291,11 @@ Our construction of lossless fuzzy extractors~(\consref{cons:informal constructi
 Our lossless fuzzy extractor is built via the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} used in prior work.  To apply the LWE assumption, we correct errors of a random linear code which limits our decoding algorithm to reconciling a logarithmic number of differences.  
 
 The recent result of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the hardness of LWE when the error vector comes from the uniform distribution, with each coordinate ranging over a small interval.  This allows us to directly use our source $w$ as the LWE error vector.  To utilize the result of~\cite{dottling2012}, we need to assume that the input comes from the uniform distribution. We are able to relax this limitation and allow $w$ to come from a symbol-fixing source~\cite{KZ07} (each dimension is either uniform or fixed). This relaxation requires new results about the hardness of LWE when samples have a fixed~(and adversarially known) error vector, which may be of independent interest~(\thref{thm:blockLWE}).
+
+\textbf{Alternative Approach}  Computational extractors~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational} have the same goal in the setting without errors.  One way to achieve a computational (fuzzy) extractor is by using a computational extractor instead in place of the information theoretic extractor.  In particular, one technique is ``extract-then-expand'', where the output of a randomness extractor is stretched using a pseudorandom generator.  This construction is only possible if the entropy loss due to a secure sketch leaves enough truly random bits.  
+%We ask whether it is possible to avoid this loss by making whole process ``computational.''
+We compare the two approaches in \secref{sec:prg based comparison}.
+
 
 %Authentication generally requires secrets.  Unfortunately, many useful  sources that contain sufficient entropy for a secret  are also noisy, and provide similar, but not identical secret values at each invocation (examples of such sources include biometrics~\cite{daugman2004}, human memory~\cite{zviran1993comparison}, pictorial passwords~\cite{brostoff2000passfaces}, measurements of capacitance~\cite{tuyls2006puf}, timing~\cite{suh2007physical}, motion~\cite{castelluccia2005shake},  quantum information~\cite{bennett1988privacy} etc.).  Information reconciliation protocols~\cite{bennett1988privacy} remove the noise without revealing the secrets.
 %
@@ -419,7 +425,7 @@ It seems natural to construct a computational fuzzy extractor using a sketch tha
 In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational than information-theoretic entropy.  We consider two different notions for computational entropy, and for both of them show that we can do essentially as well information-theoretically as computationally.
 
 %We will not provide formal definitions for these sketches but use the notation HILL/unpredictability~$(\mathcal{M}, m, \tilde{m}, t)$-secure sketch to denote a sketch that retains $\tilde{m}$ bits of HILL~(resp. unpredictability) entropy when given a source with $m$ bits of entropy.  
-In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $\log |\mathcal{M}| - \log |B_t(\cdot)|$.  Random linear codes~(in the Hamming metric) already achieve min-entropy $\log |\mathcal{M}|(1-o(1)) - \log B_t(\cdot)$ on uniform inputs\lnote{this point is confusing -- it's not the random linear codes, it's some construction applied to them in order to get a sketch -- we should cite appropriately and explain more clearly here and in 3.2}, so it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on uniform inputs.\bnote{I changed this bound to be size of metric space before it was just n which was wrong.  Do we prefer $n\log Z$?} \lnote{I think your change is fine}  In \secref{ssec:avoiding bounds}, we discuss mechanisms for avoiding these bounds.
+In \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $\log |\mathcal{M}| - \log |B_t(\cdot)|$.  The code-offset sketch instantiated with a random linear code~(in the Hamming metric)  achieve min-entropys $\log |\mathcal{M}|(1-o(1)) - \log B_t(\cdot)$ on uniform inputs\lnote{this point is confusing -- it's not the random linear codes, it's some construction applied to them in order to get a sketch -- we should cite appropriately and explain more clearly here and in 3.2}, so it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on uniform inputs.\bnote{I changed this bound to be size of metric space before it was just n which was wrong.  Do we prefer $n\log Z$?} \lnote{I think your change is fine}  In \secref{ssec:avoiding bounds}, we discuss mechanisms for avoiding these bounds.
 
 %These results are strongest for high entropy sources.  The results get weaker as we consider sources with lower starting entropy.  If a source contains points from a good error code, then the sketch procedure does not need to output any public value so no drop occurs in entropy.  
 
@@ -446,7 +452,7 @@ Unfortunately, we will show below that such a secure sketch implies an error cor
 
 
 The intuition for building error-correcting codes from HILL-entropy secure sketches is as follows.  In order to have  $H^{\hillrlx}_{\epsilon, s_{sec}}(W|\sketch(W))\ge \tilde{m}$, there must be a distribution $X, Y$ such that $\Hav(X | Y)\geq \tilde{m}$ and $(X, Y)$ is computationally indistinguishable from $(W, \sketch(W))$.  Sample a sketch $s\leftarrow \sketch(W)$. We know that $\sketch$ followed by $\rec$ likely succeeds on $W|s$  (i.e., $\rec (w', s) = w$ with high probability for $w\leftarrow W|s$ and $w'\leftarrow B_t(w)$).  %So, by indistinguishability, it must also succeed on $Y$. 
- Consider the following experiment: 1) sample $y\leftarrow Y$, 2) draw $x\leftarrow X|y$ and 3) $x'\leftarrow B_t(x)$. By indistinguishability $\rec (x',z) = x$ with high probability.
+ Consider the following experiment: 1) sample $y\leftarrow Y$, 2) draw $x\leftarrow X|y$ and 3) $x'\leftarrow B_t(x)$. By indistinguishability, $\rec (x',y) = x$ with high probability.
  This means we can construct a large set $\mathcal{C}$ from the support of $X|y$.  $\mathcal{C}$ will be an error correcting code and $\rec$ an efficient decoder.  We can then use standard arguments to turn this code into an information theoretic sketch.  
 
 
@@ -720,7 +726,7 @@ Let  $(W, S)$ be a pair of random variables. We say that $W$ has \emph{unpredict
 
 We will say that a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-
 hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\unp}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
-Note this notion is quite natural: combining such a secure sketch via  \lemref{lem:fuzzy ext construction} with a particular type of extractor (called a 
+Note this notion is quite natural: combining such a secure sketch via  \lemref{lem:fuzzy ext construction} with a particular type of extractor (called a extractor 
 \emph{reconstructive}~\cite{barak-computational}), would yield a computational fuzzy extractor (per \cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}).  
 
 Unfortunately, the conditional unpredictability entropy $\tilde{m}$ must decrease as $t$ increases, as the following theorem states.  (The proof of the theorem, generalized to more metric spaces, is in \secref{sec:proof of imp unp entropy}.)
@@ -995,11 +1001,21 @@ For a more detailed explanation of the various parameters and constraints see \s
 
 \subsection{Comparison with computational extractor based construction}
 \label{sec:prg based comparison}
-In this section, we constructed a computational fuzzy extractor by making the whole process ``computational.''  Alternatively, a computational fuzzy extractor could be constructed by using a computational extractor~\cite{krawczyk2010cryptographic} in place of the information-theoretic randomness extractor.  One simple example is the extract-then-expand mechanism: a pseudorandom generator is applied to the output of a information-thereotic randomness extractor. 
+In this section, we constructed a computational fuzzy extractor by making the whole process ``computational.''  Alternatively, a computational fuzzy extractor could be constructed by using a computational extractor~\cite{krawczyk2010cryptographic} in place of the information-theoretic randomness extractor.  A simple example of a computational extractor is the \emph{extract-then-expand} mechanism: a pseudorandom generator is applied to the output of a information-thereotic randomness extractor. 
 %using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  This is the extract-then-expand computational extractor suggested by Krawczyk in~\cite{krawczyk2010cryptographic}.  
-In particular, using the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. use LWE to achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  Namely, consider $\vA$ as a public value, they show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  
+Under the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  They consider $\vA$ as a public value and show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  
 
-The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log |B_t(\cdot)|)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The work of~\cite{dachman2012computational} shows that these losses in the extract-then-expand construction are in some sense necessary~(the samplable RT conjecture in~\cite{dachman2012computational} has been resolved positively by~\cite{dodis2013key}).  The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
+Thus, using the assumptions of \thref{thm:lossless secure conductor log}, we can obtain a computational extractor.  This means we could  build a computational fuzzy extractor using: 1) an information-theoretic secure sketch 2) a computational extractor.
+We call the paradigm of running a secure sketch and using a computational extractor \emph{sketch-then-cextract}.  
+
+Any improvement in computational extractors yields an improvement to the \emph{sketch-then-cextract} construction of a computational fuzzy extractor.  Similarly, a computational fuzzy extractor is also a computational extractor~(ignoring the \rep functionality).  Thus, improving computational fuzzy extractors may improvement computational extractors.  
+
+The main advantage to analyzing the construction as a whole~(instead of \emph{sketch-then-cextract}) is that security need not depend on the decoding radius $t$.  In \emph{sketch-then-cextract} paradigm, the computational extractor must be able to handle sources with $\Hoo(W| \sketch(W))$.  As shown in \secref{sec:defCompFuzzyExtractors}, this value depends on bounds from error-correcting codes.  In our construction, the decoding radius does not affect the security of the construction.  The decoding radius only impacts the running time of the decoding algorithm.  Conceivably, a computational fuzzy extractor could be built where only correctness depends on $t$~(not efficiency or security).
+%However, the construction of a computational fuzzy extractor by 
+%The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log |B_t(\cdot)|)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The work of~\cite{dachman2012computational} shows that these losses in the extract-then-expand construction are in some sense necessary~(the samplable RT conjecture in~\cite{dachman2012computational} has been resolved positively by~\cite{dodis2013key}).  
+
+To summarize, the advantage of \consref{cons:informal construction} is that the security of our construction does not depend on the decoding radius $t$.  
+The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
 
 \section{\consref{cons:informal construction} with Nonuniform Sources}
 \subsection{\consref{cons:informal construction} with Symbol Fixing Sources}
