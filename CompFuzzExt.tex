@@ -1021,10 +1021,22 @@ For a more detailed explanation of the various parameters and constraints see \s
 \thref{thm:lossless secure conductor log} shows that a computational fuzzy conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point and providing no information about either $X$ or $W$.  
 %A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
-\subsection{Comparison with computational extractor based construction}
+\subsection{Comparison with computational-extractor-based constructions}
 \label{sec:prg based comparison}
-In this section, we constructed a computational fuzzy extractor by making the whole process ``computational.''  Alternatively, a computational fuzzy extractor could be constructed by using a computational extractor~\cite{krawczyk2010cryptographic} in place of the information-theoretic randomness extractor.  A simple example of a computational extractor is the \emph{extract-then-expand} mechanism: a pseudorandom generator is applied to the output of a information-thereotic randomness extractor. 
+As we already mentioned in the introduction, an alternative approach to building a computational fuzzy extractor is to use  a computational extractor (e.g.,~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational}) in place of the information-theoretic extractor in the sketch-and-extract construction.  We will call this approach \emph{sketch-and-comp-extract}.  (A simple example of a computational extractor is a pseudorandom generator applied to the output of an information-theoretic extractor; but other approaches are also possible.)
 %using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  This is the extract-then-expand computational extractor suggested by Krawczyk in~\cite{krawczyk2010cryptographic}.  
+
+This approach (specifically, its analysis via \lemref{lem:fuzzy ext construction}) works as long as the amount of entropy $\tilde{m}$ of $w$ conditioned on the sketch $s$ remains high enough to run a computational extractor.  However, $\tilde{m}$ decreases with the error parameter $t$ due to coding bounds, and it is conceivable that, if $W$ has just barely enough entropy to begin with, it will have too little entropy left to run a computational extractor once $s$ is known.
+
+In contrast, in our approach, the entropy of $w$ conditioned on $p=(\vA, \vA X+w)$ is not relevant to security, because we do not extract from $w$. Instead, we require that $w$ is not recoverable computationally given $p$.  Note that this requirement does not imply that $w$ can be extracted from, because computational extractors may require a longer minimum input length than the computational entropy of $w$.   Our approach works in such a setting because instead of extracting from $w$, we hide secret randomness using $w$.
+
+The main advantage of our analysis (instead of sketch-and-comp-extract) is that security need not depend on the decoding radius $t$.  Our codes (namely, random linear codes) can tolerate very high $t$, in fact.  In the case of secure sketches, codes tolerating such high $t$ would leave little entropy in $w$.  In our construction, the decoding radius depends only on the best available decoding algorithm for random linear codes.  
+
+\lnote{use any of the below?}
+ utilize secret randomness to obtain the key $r$, and hide that randomness using $w$.  
+
+The code defined by $\vA$ can correct very high 
+
 Under the same hardness of approximating GAPSVP and SIVP, Applebaum et. al. achieve a pseudorandom generator with linear stretch~\cite{applebaum2006pseudorandom}.  They consider $\vA$ as a public value and show a setting of parameters where $f_\vA(x, e) = \vA x + e$ is a pseudorandom generator with linear stretch.  Likewise, by increasing the field size in \consref{cons:informal construction}, it is possible to output a linear factor of the number of input bits~(see \secref{sec:parameter settings}).  Both techniques are able to produce a linear stretch on the entropy of the source.  
 
 Thus, using the same assumptions as \thref{thm:lossless secure conductor log}, we can obtain a computational extractor.  This means we could  build a computational fuzzy extractor using: 1) an information-theoretic secure sketch 2) a computational extractor.
@@ -1662,7 +1674,7 @@ We build a distinguisher that breaks $\distLWE_{m, n, q, \chi}$.  Let $\vA'$ be 
 \end{align}
 We will make a single call to $D$ so we focus on how to prepare a random block fixing instance from the random instance we are given.  The code for $D'$ is given in \figref{fig:perfectLWEreduction}.
 
-\begin{figure}[t]
+\begin{figure}[p]
 \begin{framed}
 \begin{enumerate}
 \item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve'$.
