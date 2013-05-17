@@ -968,8 +968,8 @@ With Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, \co
 \item Randomly select rows without replacement $i_1,..., i_{2n}\leftarrow [1,m]$.  
 \item Restrict $\vA, B$ to rows $i_1,...,i_{2n}$, denote this as $\vA_{i_1,...,i_{2n}}, B_{i_1,...,i_{2n}}$.
 \item Find $n$ rows of $\vA_{i_1,..., i_{2n}}$ that are linearly independent.  
-Denote by $\vA', B'$ the restriction of $\vA_{i_1,..., i_{2n}}, B_{i_1,..., i_{2n}}$ (respectively) to these rows.  If no such rows exist go to step (2).
-\item Compute $X' = (\vA')^{-1}B'$.  If $B- AX'$ has more than $t$ nonzero coordinates, go to step (2).
+If no such rows exist go to step (2).
+\item Denote by $\vA', B'$ the restriction of $\vA_{i_1,..., i_{2n}}, B_{i_1,..., i_{2n}}$ (respectively) to these rows. Compute $X' = (\vA')^{-1}B'$.  If $B- AX'$ has more than $t$ nonzero coordinates, go to step (2).
 \item Output $X'$.
 \end{enumerate}
 \end{construction}
@@ -1068,7 +1068,7 @@ The $\distLWE$ with symbol fixing sources is implied by standard $\distLWE$.
 \label{thm:blockLWE}
 Let $n$ be a security parameter and define $q, m , \alpha = \poly(n)$.  Let $\beta  = \omega(1)$, and $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  The $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ w/ symbol fixing sources problem.
 \end{theorem}
-We believe this statement is of interest outside our setting.  \thref{thm:blockLWE} says that $\LWE$ is still secure when a small number of $\LWE$ samples have known error.  Roughly, we need the number of variables to be security parameter larger than the number of equations with known error.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, search $\LWE$ should still be hard.  We are able to show~(a stronger result) that $\distLWE$ is still hard.  In the reduction, we argue that the additional $\alpha+ \beta$ variables allow us to explain a random value for the last $\alpha$ samples without knowledge of the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
+We believe this statement is of interest outside our setting. \thref{thm:blockLWE} says that $\LWE$ is still secure when a small number of $\LWE$ samples have known errors.  Roughly, we need the number of variables larger than the number of equations with known error by letting the number of variables be the security parameter.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, search $\LWE$ should still be hard.  We are able to show~(a stronger result) that $\distLWE$ is still hard.  In the reduction, we argue that the additional $\alpha+ \beta$ variables allow us to explain a random value for the last $\alpha$ samples without knowledge of the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
 
 
 \thref{thm:blockLWE} allows us to construct a computational fuzzy extractor from block-fixing sources: 
