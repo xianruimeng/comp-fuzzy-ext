@@ -211,8 +211,9 @@
 \newcommand{\M}{\mathcal{M}}
 
 \title{\textbf{Computational Fuzzy Extractors}}
-\author{Benjamin Fuller%\footnote{The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.}
- \and Xianrui Meng \and Leonid Reyzin}
+%\author{Benjamin Fuller%\footnote{The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.}
+% \and Xianrui Meng \and Leonid Reyzin}
+\author{}
 \begin{document}
 \maketitle
 
@@ -244,7 +245,7 @@ is either uniform or fixed). As part of the security proof, we show a result of 
 that the decision version of LWE is secure even when a small number of
 dimensions has no error.
 \end{itemize}
-\textbf{Keywords} Fuzzy extractors, secure sketches, key derivation, Learning with Errors, noise tolerance, error-correcting codes, computational entropy, randomness extractors.
+\textbf{Keywords} Fuzzy extractors, secure sketches, key derivation, Learning with Errors, error-correcting codes, computational entropy, randomness extractors.
 \end{abstract}
 
 
@@ -1042,9 +1043,9 @@ Unfortunately, LWE parameter sizes require relatively long $w$. Therefore, in pr
 To summarize, the advantage of \consref{cons:informal construction} is that the security of our construction does not depend on the decoding radius $t$.  
 The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
 
-\section{Computational Fuzzy Exactor with Nonuniform Sources}
+\section{Computational Fuzzy Extractor for Nonuniform Sources}
 \label{sec:LWE block fixing sources}
-In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a computational fuzzy extractor for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
+While showing the security of~\consref{cons:informal construction} for arbitrary high-min-entropy distributions is an open problem, in this section we show it for a particular class of distributions called symbol-fixing.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
 \begin{definition}
 Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where $W_i$ takes values over $\{0,1\}^b$, we say that a distribution is a $m$-\emph{symbol fixing source} if $H_\infty(W)\geq mb$ and for all $W_i$ one of the following conditions is met:
 \begin{itemize}
@@ -1054,25 +1055,27 @@ Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where $W_i$ takes values ove
 \end{definition}
 %A block fixing source is an extension of a entropy source where each bit is independently random or fixed to larger alphabets.  
 
-We now study \consref{cons:informal construction} with a symbol fixing source.  Obviously, if $\alpha \geq n$ then the adversary knows $n$ equations and their error and $W$ can be recovered with Gaussian elimination.  We show that security degrades exponentially as symbols are fixed.
 \ignore{
+We now study \consref{cons:informal construction} with a symbol fixing source.  
+
 \begin{assumption}[LWE w/ entropic errors]
 Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-block fixing distribution over $\{0,1\}^{(m+\alpha)\ell}$. For a vector 
 Let $A\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and let $x\in\Fq^{n+\alpha}$.  No PPT algorithm given $Ax+W$ can recover $x$ with probability greater than nonnegligible.
 \end{assumption}
 }
-We now define the decisional $\LWE$ problem with symbol fixing errors is defined as follows: 
+We now define the decisional $\LWE$ problem with symbol fixing errors: 
 \begin{problem}[$\distLWE$ w/ symbol fixing errors]
 Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and outputting $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
 \end{problem}
 
-The $\distLWE$ with symbol fixing sources is implied by standard $\distLWE$.
+The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$,  with security degrading exponentially as symbols are fixed (of course, once $n$ symbols are fixed, no security remains, because there are $n$ linear equations with known error and $n$ unknowns).
 %\vspace{.1in}
 \begin{theorem}
 \label{thm:blockLWE}
 Let $n$ be a security parameter and define $q, m , \alpha = \poly(n)$.  Let $\beta  = \omega(1)$, and $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$ where $\Hoo(W) \geq mb$.  The $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ w/ symbol fixing sources problem.
 \end{theorem}
-We believe this statement is of interest outside our setting. \thref{thm:blockLWE} says that $\LWE$ is still secure when a small number of $\LWE$ samples have known errors.  Roughly, we need the number of variables larger than the number of equations with known error by letting the number of variables be the security parameter.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, search $\LWE$ should still be hard.  We are able to show~(a stronger result) that $\distLWE$ is still hard.  In the reduction, we argue that the additional $\alpha+ \beta$ variables allow us to explain a random value for the last $\alpha$ samples without knowledge of the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
+
+The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, intuitively search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
 
 
 \thref{thm:blockLWE} allows us to construct a computational fuzzy extractor from block-fixing sources: 
@@ -1095,7 +1098,7 @@ Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Le
 $\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expected recover time $O(n^{4d+3} \log n)$ with error probability $\delta = e^{-\Omega(n)}$ over the choice of $\vA$.
 \end{theorem}
 
-\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$ and extract fewer hardcore dimensions.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant in $n$.  The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for small values of $n$.
+\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$ and extract fewer hardcore dimensions.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant fraction of $n$.  The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for small values of $n$.
 
 
 \ignore{
