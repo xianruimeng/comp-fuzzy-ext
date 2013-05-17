@@ -959,7 +959,7 @@ With Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}, \co
 \subsection{Efficiency of \consref{cons:informal construction}}
 \label{sec:time main construction}
 %\subsection{Analysis of Construction~\ref{cons:LWESecureSketch}}
-\consref{cons:informal construction} is only useful if $\decode_t$ can be efficiently implemented.  We now present a particular $\decode_t$ and consider its efficiency:
+\consref{cons:informal construction} is only useful if $\decode_t$ can be efficiently implemented.  We need a decoding algorithm for a random linear code with $t$ errors that runs in polynomial time.  We present a simple $\decode_t$.  Replacing our algorithm  with a state of the art algorithm will only increase our correcting capability and improve \consref{cons:informal construction}.
 
 \begin{construction}
 \label{cons:decoding algorithm} We consider a setting of $(n, m, q, \chi)$ where $m\geq 3n$.  We describe $\decode_t$:
