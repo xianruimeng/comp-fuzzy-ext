@@ -215,33 +215,34 @@
 \begin{document}
 \maketitle
 
+
 \begin{abstract} 
-%\lnote{This is an old abstract, no longer correct}
-Fuzzy extractors derive cryptographically strong keys from noisy sources.  They are traditionally built by combining a secure sketch and a randomness extractor.  Secure sketches remove noise from the source while revealing little information about the source.  Randomness extractors convert high entropy sources to the uniform distribution.  %Secure sketches necessarily reveal some information about the noisy secret, and thus the derived key in fuzzy extractors has lower entropy than the source.  The minimal entropy loss 
-%One-message information reconciliation protocols called secure sketches remove noise
-%from secrets without revealing too much about them.  They are a crucial ingredient in
-%fuzzy extractors, which provide an information-theoretic mechanism for reliable key derivation from noisy sources.
+Fuzzy extractors derive strong keys from noisy sources.  Their
+security is defined information-theoretically, which limits the length
+of the derived key, sometimes making it too short to be useful. We ask
+whether it is possible to obtain longer keys by considering
+computational security, and show the following.
 
-Secure sketches necessarily reveal some information about the noisy secret.
-% and thus the key derived by fuzzy extractors has lower entropy than the source.  
-The minimal entropy loss is dictated by bounds on error-correcting codes.  
-Fuzzy extractors constructed using secure sketches suffer a similar entropy loss.  This entropy loss decreases the length of the derived key.  
-%suffer from similar bounds imposed by coding theory.
-
-We ask whether these bounds can be overcome by considering computational, rather than information-theoretic, secure sketches and fuzzy extractors.  %The answer we provide an answer for both secure sketches and fuzzy extractors.  
-The answer to this question is mixed, For secure sketches the answer is no, and for fuzzy extractors the answer is yes.
 \begin{itemize}
-\item \textbf{Secure Sketches:} We show that a secure sketch that retains a large amount of HILL pseudo entropy implies a secure sketch which retains a similar amount of information-theoretic entropy.  We also consider a weaker computational notion of security, the unpredictability of a source conditioned on output of the secure sketch.  We show that in order to correct $t$ errors, the unpredictability of a source must decrease with the volume of a ball of radius $t$.
-\item \textbf{Fuzzy Extractors:}  We show these impossibility results can be overcome by analyzing fuzzy extractors directly.  Namely, we show how to build a \emph{lossless} computational fuzzy extractor for uniform sources and certain other sources of high entropy~(namely, symbol-fixing sources, where each dimension is either uniform or fixed), based on the hardness of the Learning with Errors~(LWE) problem.  This construction requires us to show that the decision version of LWE is secure when a small number of dimension has no error---a result that may be of independent interest.
+\item\textbf{Negative Result:} Noise tolerance in fuzzy extractors is usually
+achieved using an information reconciliation component called ``secure
+sketch.'' The security of this component, which directly affects the
+length of the resulting key, is subject to lower bounds from coding
+theory.  We show that, even when defined computationally, secure
+sketches are still subject to the same lower bounds. Specifically, we consider
+two computational relaxations of the information-theoretic security requirement of secure sketches, using conditional HILL entropy and unpredictability entropy. For both cases we show  that computational secure sketches cannot outperform information-theoretic ones in the case of high-entropy Hamming metric sources.
+
+\item\textbf{Positive Result:} We show that the negative result can be overcome by
+analyzing computational fuzzy extractors directly.  Namely, we show
+how to build a computational fuzzy extractor whose output key length
+equals the entropy of the source (this is impossible in the
+information-theoretic setting). Our construction is based on the
+hardness of the Learning with Errors (LWE) problem, and is secure when
+the noisy source is uniform or symbol-fixing (that is, each dimension
+is either uniform or fixed). As part of the security proof, we show a result of independent interest, namely
+that the decision version of LWE is secure even when a small number of
+dimensions has no error.
 \end{itemize}
-%mixed, and building them based on the Learning with Errors (LWE) problem.  We thus obtain the first secure sketch with no loss in entropy.   More specifically, our contributions are as follows:
-%
-%\begin{itemize}
-%\item \textbf{New Definitions:} In seeking the right computational relaxation of the information-theoretic definition of a secure sketch, we rule out most natural one, which uses HILL pseudoentropy.  We do so by demonstrating that a secure sketch defined via HILL pseudoentropy is subject to the same coding-based  bounds as the information-theoretic secure sketch.  We then find a different relaxation, using unpredictability entropy, and show that it can be used to construct computational fuzzy extractors.
-%
-%
-%\item \textbf{New Construction:} We build a lossless secure sketch for uniform sources and certain other sources of high entropy (namely, symbol-fixing sources, in which each dimension is either uniform or fixed),  based on the hardness of the LWE problem.  This construction requires us to show that the decision version of LWE is secure when a small number of dimensions have no error---a result that may be of independent interest.
-%\end{itemize}
 \end{abstract}
 
 \newcommand{\M}{\mathcal{M}}
@@ -431,7 +432,7 @@ It seems natural to construct a computational fuzzy extractor using a sketch tha
 %=============================================================
 \section{Impossibility of Computational Secure Sketches}
 \label{sec:defCompFuzzyExtractors}
-In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational than information-theoretic entropy.  We consider two different notions for computational entropy, and for both of them show that we can do essentially as well information-theoretically as computationally. \lnote{too strong?} Thus, it seems that relaxing security of sketches from information-theoretic to computational does not help---at least not on high-entropy sources.  
+In this section, we consider whether it is possible in build a secure sketch that retains significantly more computational than information-theoretic entropy.  We consider two different notions for computational entropy, and for both of them show that corresponding secure sketches are subject to the same upper bounds as those for information-theoretic secure sketches. Thus, it seems that relaxing security of sketches from information-theoretic to computational does not help.
 
 %We will not provide formal definitions for these sketches but use the notation HILL/unpredictability~$(\mathcal{M}, m, \tilde{m}, t)$-secure sketch to denote a sketch that retains $\tilde{m}$ bits of HILL~(resp. unpredictability) entropy when given a source with $m$ bits of entropy.  
 In particular, for the case of the Hamming metric and inputs that have full entropy, our results are as follows.  In  \secref{sec:imp HILL sketch} we show that a sketch that retains HILL entropy implies a sketch that retains nearly the same amount of min-entropy.  In \secref{sec:imp unp sketch}, we show that the computational unpredictability of a sketch is at most $\log |\mathcal{M}| - \log |B_t(\cdot)|$. Dodis et al. \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}  construct sketches with essentially the same information-theoretic security\footnote{The security in  \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}  is expressed in terms of entropy of the error rate; recall that $\log B_t(\cdot)\approx H_q(t/n)$, where $n$ is the number of symbols, $q$ is the alphabet size, and $H_q$ is the $q$-ary entropy function.} . 
@@ -798,8 +799,7 @@ Our construction~(in \secref{sec:fuzzyCompExt}) has pseudorandom output and imme
 \section{Computational Fuzzy Extractor based on \class{LWE}}
 \label{sec:fuzzyCompExt}
 
-In this section we describe our main construction.  In this section, we consider only a uniform source $W$, we consider other distributions in \secref{sec:LWE block fixing sources}.  Our construction uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\decode_t$ be an algorithm that decodes a random linear code with at most $t$ errors.  We provide an informal description below.
-%Please refer to \consref{cons:informal construction} for the description of the construction.  
+In this section we describe our main construction.  In this section, we consider only a uniform source $W$; we consider other distributions in \secref{sec:LWE block fixing sources}.  Our construction uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\decode_t$ be an algorithm that decodes a random linear code with at most $t$ errors (we will present such an algorithm later, in \label{sec:time main construction}). 
 
 \begin{construction}
 Let $n$ be a security parameter and let $m> n$.  %Let $W = W_1,..., W_m$ and let $b$ be a constant and let $W_i \in \zo^b$ for all $i$.  
@@ -1036,6 +1036,7 @@ To summarize, the advantage of \consref{cons:informal construction} is that the 
 The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
 
 \section{\consref{cons:informal construction} with Nonuniform Sources}
+\lnote{what's up with this section/subsection thing?}
 \subsection{\consref{cons:informal construction} with Symbol Fixing Sources}
 \label{sec:LWE block fixing sources}
 In this section, we show the security of~\consref{cons:informal construction} is preserved for certain high entropy distributions.  Showing security of a computational fuzzy extractor for arbitrary high min-entropy distributions is an open problem.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
