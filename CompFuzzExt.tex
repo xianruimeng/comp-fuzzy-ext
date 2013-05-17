@@ -1491,11 +1491,8 @@ We can restate Assumption~\ref{assume:indist LWE} in terms of unpredictability e
 \section{Proof of Theorem \ref{thm:blockLWE}}
 \label{sec:proof of block theorem}
 
-%\bnote{We need to be clear about notation here.  Why are $x, e$ sometimes bold and sometimes capital?} 
 \begin{proof}
 We assume that all of the fixed blocks are located at the end and their fixed value is $0$, that is, $W_{m+1}, ..., W_{m+\alpha} =0$.  If the blocks are fixed to some other value the reduction is essentially the same.
-
-%It should be clear to the reader where the reduction differs for another block fixing source.\lnote{I don't like the phrasing; maybe we should say that if the blocks are fixed to some non-0 value, the reduction is essentially the same}
 
 Let $D$ be a distinguisher that can distinguish $(m+\alpha)$ $\LWE$ instances from uniform where $\alpha$ of the equations have no error added.  That is, let $\vA$ be the uniform distribution over $\Fq^{(m+\alpha)\times(n+\alpha)}$, let $\vx$ be uniform over $\Fq^{(n+\alpha)}$, $\ve= (e_1,..., e_{m+\alpha})$ where $e_1,..., e_m$ are generated from error distribution $\chi$ and $e_{m+i} =0$ for $i=1,..,\alpha$. Furthermore, let $\vu$ be the uniform distribution over $\Fq^{m+\alpha}$.  We assume that, 
 \[
@@ -1508,7 +1505,6 @@ It suffices to show that $\D'$ properly prepares a random instance for the disti
 \begin{enumerate}
 \item If $\vA'$ is a random matrix then $\vA$ is a random matrix.
 \item If $\vb'$ is uniformly distributed conditioned on $\vA'$ then $\vb$ is uniformly distributed conditioned on $\vA$.
-%\bnote{This should be if $\vb' | A$ is uniformly distributed, then $\vb |A $ is uniformly distributed.}
 \item If $\vb' = \vA'\vx'+\ve'$ then $\exists \vx$~(uniformly distributed) such that $\vb = \vA \vx + \ve'$ where the last $\alpha$ coordinates of $\ve'$ are $0$ and $\ve_i' = \ve_i$ for $1\leq i\leq m$.
 \end{enumerate}
 \begin{figure}
