@@ -208,6 +208,7 @@
 \newcommand{\vF}{\vect{F}}
 \newcommand{\recout}{x}
 \newcommand{\ignore}[1]{}
+\newcommand{\M}{\mathcal{M}}
 
 \title{\textbf{Computational Fuzzy Extractors}}
 \author{Benjamin Fuller%\footnote{The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.}
@@ -243,9 +244,10 @@ is either uniform or fixed). As part of the security proof, we show a result of 
 that the decision version of LWE is secure even when a small number of
 dimensions has no error.
 \end{itemize}
+\textbf{Keywords} Fuzzy extractors, secure sketches, key derivation, Learning with Errors, noise tolerance, error-correcting codes, computational entropy, randomness extractors.
 \end{abstract}
 
-\newcommand{\M}{\mathcal{M}}
+
 \section{Introduction}\label{sec:introduction}
 
 Authentication generally requires a secret drawn from some high-entropy source.  One of the primary building blocks for authentication is reliable key derivation.  Unfortunately, many sources that contain sufficient entropy to derive a key are  noisy, and provide similar, but not identical secret values at each reading (examples of such sources include biometrics~\cite{daugman2004}, human memory~\cite{zviran1993comparison}, pictorial passwords~\cite{brostoff2000passfaces}, measurements of capacitance~\cite{tuyls2006puf}, timing~\cite{suh2007physical}, motion~\cite{castelluccia2005shake},  quantum information~\cite{bennett1988privacy} etc.).  %Information reconciliation protocols~\cite{bennett1988privacy} remove the noise without revealing the secrets.
@@ -336,7 +338,7 @@ We compare the two approaches in \secref{sec:prg based comparison}.
 %On the positive side, we show that a different relaxation of the definition can in fact lead to a \emph{lossless} construction. The idea is to give up on reconstructing $w$ and, instead, to focus on producing a consistent string $\recout$  each time $\rec(w', s)$ is called.  This string $\recout$ is  required to have high HILL entropy even conditioned on $s$. Because this object \emph{conducts} the entropy from $w$ to $\recout$ and tolerates noise in its input, following \cite{CRVW02,KanukurthiR09}, we call it a \emph{computational fuzzy conductor}.
 %
 %Given this relaxation, we are able to build \emph{lossless} computational fuzzy conductors, in which the HILL entropy of $\recout$ conditioned on $s$ is the same as the entropy of $w$ without conditioning on anything---i.e., before $\sketch$ is run (see Theorem~%s~%\ref{thm:lossless secure sketch} and
-%~\ref{thm:lossless secure conductor log})).  We demonstrate how to build such lossless conductors based on the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey},  which says that decoding a random linear code is computationally difficult. 
+%~\ref{thm:lossless secure extractor log})).  We demonstrate how to build such lossless conductors based on the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey},  which says that decoding a random linear code is computationally difficult. 
 %
 %We show that this relaxation of the security requirement is  useful.  Specifically, we also define the notion of computational fuzzy extractors, in which the extracted key is required to be pseudorandom---i.e., to look random to any computationally bounded observer.
 %We show that our relaxed notion of secure sketches is sufficient to construct computational  fuzzy extractors via a simple and efficient construction, utilizing reconstructive extractors~\cite{barak-computational}.  The resulting fuzzy extractor produces a key that is as long as the entropy of $w$, minus only the loss necessary in any extractor construction.
@@ -608,7 +610,7 @@ We review definitions of Shannon codes~\cite{shannon1949mathematical}:
 \label{def:shannon-code}
 Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
 \end{definition}
-This is a slightly stronger formulation than usual, in that for every size  $t'<t$ we require the code to correct $t'$ random errors \footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compared to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
+This is a slightly stronger formulation than usual, in that for every size  $t'<t$ we require the code to correct $t'$ random errors\footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compared to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 
 Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. 
 
@@ -731,7 +733,7 @@ $4(\epsilon+t\delta)$.
 
 \subsection{Bounds on Secure Sketches using Unpredictability Entropy}
 \label{sec:imp unp sketch}
-In the previous section, we showed that any sketch that retained HILL entropy could be transformed into an information theoretic sketch.  However, HILL entropy is a strong notion.  In this section, we therefore ask whether it is useful to consider a sketch that satisfies a minimal requirement: the value of the input is computationally hard to guess given the sketch.  We begin by recalling the definition of conditional unpredictability entropy, which captures the notion of ``hard to guess'' (we relax it similar to the way conditional HILL entropy was relaxed in the previous section).
+In the previous section, we showed that any sketch that retained HILL entropy could be transformed into an information theoretic sketch.  However, HILL entropy is a strong notion.  In this section, we therefore ask whether it is useful to consider a sketch that satisfies a minimal requirement: the value of the input is computationally hard to guess given the sketch.  We begin by recalling the definition of conditional unpredictability entropy, which captures the notion of ``hard to guess'' (our relaxation is analogous to relaxed HILL entropy described in the previous section).
 
 \begin{definition}~\cite[Definition 7]{DBLP:conf/eurocrypt/HsiaoLR07}
 \label{def:unp entropy}
@@ -1004,7 +1006,7 @@ We now state a setting of parameters that yields a lossless construction.
 %\end{theorem}
 
 \begin{theorem}
-\label{thm:lossless secure conductor log}
+\label{thm:lossless secure extractor log}
 Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+2d)/d)$.  Let $W$ be uniform over $\zo^{(c+2d)nb/d}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that \consref{cons:informal construction} is a lossless fuzzy extractor.  That is, $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., n/2}|\vA, \vA X+W) = n/2\log q = H_\infty(W)$
 % for following parameters:
 %\[
@@ -1018,7 +1020,7 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 \end{proof}
 
 For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  In particular, we describe how to set $q = \poly(n)$.  
-\thref{thm:lossless secure conductor log} shows that a computational fuzzy conductor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point and providing no information about either $X$ or $W$.  
+\thref{thm:lossless secure extractor log} shows that a computational fuzzy extractor can be built without incurring any entropy loss.  This is essentially due to $\vA X+W$ looking like a uniformly random point and providing no information about either $X$ or $W$.  
 %A natural question to ask is whether security degrades gracefully when $W$ is not the uniform distribution.  We begin to provide an answer in \secref{sec:LWE block fixing sources}.  
 
 \subsection{Comparison with computational-extractor-based constructions}
@@ -1033,6 +1035,9 @@ In contrast, our approach does not require the entropy of $w$ conditioned on $p=
 The main advantage of our analysis (instead of sketch-and-comp-extract) is that security need not depend on the error-tolerance $t$.  Our codes (namely, random linear codes) can tolerate higher $t$ than can be efficiently decoded.  In the case of secure sketches, codes tolerating such high $t$ would leave little entropy in $w$.  In our construction, the error-tolerance depends only on the best available decoding algorithm for random linear codes.  
 
 Unfortunately, LWE parameter sizes require relatively long $w$. Therefore, in practice, sketch-then-comp-extract will beat our construction  if the computational extractor is instantiated efficiently based on assumptions other than LWE (for example, a cryptographic hash function for an extractor and a block cipher for a PRG). However, we believe that our conceptual framework can lead to better constructions.  Of particular interest are  other codes that are easy to decode up to $t$ errors but become computationally hard as the number of errors increases.
+
+%However, the construction of a computational fuzzy extractor by 
+%The advantage of \consref{cons:informal construction} is that losses due to error correction $O(\log |B_t(\cdot)|)$ and randomness extraction $O(\log 1/\epsilon)$ are not necessary.  In the case where $W$ is small, these losses may leave too few bits for a secure pseudorandom generator.  The work of~\cite{dachman2012computational} shows that these losses in the extract-then-expand construction are in some sense necessary~(the samplable RT conjecture in~\cite{dachman2012computational} has been resolved positively by~\cite{dodis2013key}).  
 
 To summarize, the advantage of \consref{cons:informal construction} is that the security of our construction does not depend on the decoding radius $t$.  
 The disadvantages of \consref{cons:informal construction} are that it supports a limited number of errors and only a uniformly distributed source.  We begin to address this second problem in the next section.
@@ -1096,7 +1101,7 @@ $\epsilon = \ngl(n), s_{sec} = \poly(n)$, sketch time $O(n^3\log n)$, and expect
 \ignore{
 \subsection{\consref{cons:informal construction} with slightly deficient sources}
 \label{sec:DP general error LWE}
-In this section, we discuss how to generalize \consref{cons:informal construction} to an arbitrary high min-entropy distribution.  We will show security using a result of Micciancio and Peikert~\cite{micciancio2013hardness}.  This result allows us to argue security for an arbitrary distribution that is nearly high entropy.  This result should be seen as a complement to the proceeding sections.  It allows for a more general error distribution, but with worse parameters than \thref{thm:lossless secure conductor log}.  Also \thref{thm:lossless block sketch log} allows for more deficient sources but of a more restricted form~(symbol fixing sources).
+In this section, we discuss how to generalize \consref{cons:informal construction} to an arbitrary high min-entropy distribution.  We will show security using a result of Micciancio and Peikert~\cite{micciancio2013hardness}.  This result allows us to argue security for an arbitrary distribution that is nearly high entropy.  This result should be seen as a complement to the proceeding sections.  It allows for a more general error distribution, but with worse parameters than \thref{thm:lossless secure extractor log}.  Also \thref{thm:lossless block sketch log} allows for more deficient sources but of a more restricted form~(symbol fixing sources).
 \begin{theorem}
 Let $n$ be a security parameter and let $m=cn, \ell = m-n/2$.  Let $C$ be a constant and define the parameter $\rho \geq (Cm)^{\frac{m-n/2}{n/2}} = (Cm)^{2c-1}$ and let $q$ be a prime where $\poly(n) = q\geq (4\rho)^{\frac{c}{c-1}}$.  Consider a distribution $\chi$ over the space $\{-\rho, ..., \rho \}^m$.  If $\Hoo(\chi)\geq m\log \rho$ and SIVP is hard to approximate in the worst case for quantum algorithms within an approximation factor of $\gamma=\tilde{O}(\sqrt{n} q)$~(on lattices of $n/2$ dimensions), then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
 \end{theorem}
@@ -1141,7 +1146,7 @@ Fix a function $f$.  The best way to predict $Z$ given $f(Z)$ is the average pre
 %%\end{lemma}
 %We are now ready to provide a computational analogue of \lemref{lem:fuzzy ext construction}:
 %\begin{lemma}
-%Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ hard with error $\delta$ and denote the range $\rec$ by $\chi$.  Let $\ext:\chi \times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an $(\tilde{m}, \epsilon_{ext})$ extractor.  Then the following $(\gen , \rep)$ is an $(\mathcal{M}, m, \ell, t)$-computational fuzzy extractor that is $(\epsilon + \epsilon_{ext}, s_{sec}- s_{ext})$-hard with error $\delta$.
+%Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$ hard with error $\delta$ and denote the range $\rec$ by $\chi$.  Let $\ext:\chi \times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an $(\tilde{m}, \epsilon_{ext})$ extractor.  Then the following $(\gen , \rep)$ is an $(\mathcal{M}, m, \ell, t)$-computational fuzzy extractor that is $(\epsilon + \epsilon_{ext}, s_{sec}- s_{ext})$-hard with error $\delta$.
 %\end{lemma}
 %%reconstructive extractor with $(\tilde{m}-\log 1/\epsilon, \epsilon)$-reconstruction $(C, D)$.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, s_{sec}/(|C|+|D|), s_{rec}, 5\epsilon)$-computational fuzzy extractor:
 %%\begin{itemize}
@@ -1970,7 +1975,7 @@ Thus, the expected number of iterations in step 2 at most  $2n^{4d}$.  We assume
 
 \section{Parameter Settings for \consref{cons:informal construction}}
 \label{sec:parameter settings}
-In this section, we explain the different parameters that go into our construction.  In \thref{thm:lossless secure conductor log} we give lossless conductors from a security parameter $n$ and an error $t$.  In this section, we discuss constraints imposed by 1) efficient decoding 2) maintaining security of the LWE instance and 3) ensuring no entropy loss of the construction.  We begin by reviewing the parameters that make up our construction:
+In this section, we explain the different parameters that go into our construction.  In \thref{thm:lossless secure extractor log} we give a lossless fuzzy extractor from a security parameter $n$ and an error $t$.  In this section, we discuss constraints imposed by 1) efficient decoding 2) maintaining security of the LWE instance and 3) ensuring no entropy loss of the construction.  We begin by reviewing the parameters that make up our construction:
 
 \begin{itemize}
 \item $|W|$: The length of the source.  
@@ -2025,7 +2030,7 @@ m &= \frac{(c+2d)n}{d}\\
 q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+3\gamma}m}{\log n}} = \poly(n)\\
 \rho q &= 2n^{1/2+3\gamma}m = \frac{2(c+2d)n^{3/2+3\gamma}}{d}
 \end{align*}
-Furthermore, we get decoding in time $O(n^{4d}(n^3\log n))$.  We can output a $k$ fraction of $X$ and the bits will be pseudorandom~(conditioned on $\vA, \vA X+W$).  The parameter $g$ allows is a tradeoff between the number of dimensions needed for security and the size of the field $q$.  In \thref{thm:lossless secure conductor log}, we set $g=2$ and output the first half of $X$.  This analysis proceeds similarly when we desire a linear stretch instead of $m\log \rho q = k\log q$.  %Essentially, this corresponds to multiplying $g$ by the inverse of the desired stretch factor.
+Furthermore, we get decoding in time $O(n^{4d}(n^3\log n))$.  We can output a $k$ fraction of $X$ and the bits will be pseudorandom~(conditioned on $\vA, \vA X+W$).  The parameter $g$ allows is a tradeoff between the number of dimensions needed for security and the size of the field $q$.  In \thref{thm:lossless secure extractor log}, we set $g=2$ and output the first half of $X$.  This analysis proceeds similarly when we desire a linear stretch instead of $m\log \rho q = k\log q$.  %Essentially, this corresponds to multiplying $g$ by the inverse of the desired stretch factor.
 
 \subsection{Parameter Settings for \thref{thm:lossless block sketch log}}
 \label{ssec:block params}
