@@ -1105,8 +1105,7 @@ The intuition for this result is as follows.  Providing a single sample with no 
 \begin{theorem}
 \label{thm:lossless block sketch log}
 Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+2d)/d) = O(\log n)$.  Let $\alpha \leq n/3$ and $m=(c+2d)n/d = O(n)$, and let $W$ be $m$-symbol fixing source over $\zo^{(m+\alpha)b}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/6$) using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
- there exists $\epsilon = \ngl(n)$ such that the following holds: 
-\consref{cons:informal construction} is a $(\M, bm, bm, t)$-computational fuzzy extractor for any symbol-fixing distribution symbol $W$ such that it is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$. The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
+ there exists $\epsilon = \ngl(n)$ such that \consref{cons:informal construction} is a computational fuzzy extractor for $W$~(with key length $mb = \Hoo(W)$) that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$. The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
 \end{theorem}
 
 \begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}.
