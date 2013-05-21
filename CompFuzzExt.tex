@@ -1024,7 +1024,7 @@ We now state a setting of parameters that yields a lossless construction.
 \label{thm:lossless secure extractor log}
 Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.    Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric over the alphabet of $Z$ size $2^b$, where the  block length $b = \log (2n^3 (c+2d)/d)=O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c+2d)n/d}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors (on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds.
 \consref{cons:informal construction} is a $(\M, bm, bm, t)$  fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
-Sketch takes $O(n^3)$ operations over $\Fq$, and recover takes expected time $O(n^{4d+3})$ operations over $\Fq$.
+Sketch takes $O(n^2)$ operations over $\Fq$, and recover takes expected time $O(n^{4d+3})$ operations over $\Fq$.
 % for following parameters:
 %\[
 %(\zo^{(c+d)/dn\log b}, |W|, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)
@@ -1107,15 +1107,15 @@ The intuition for this result is as follows.  Providing a single sample with no 
 \label{thm:lossless block sketch log}
 Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+2d)/d) = O(\log n)$.  Let $\alpha \leq n/3$ and $m=(c+2d)n/d = O(n)$, and let $W$ be $m$-symbol fixing source over $\zo^{(m+\alpha)b}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/6$) using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
  there exists $\epsilon = \ngl(n)$ such that the following holds: 
-\consref{cons:informal construction} is a $(\M, bm, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$. Sketch takes $O(n^3)$ operations over $\Fq$, and recover takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
+\consref{cons:informal construction} is a $(\M, bm, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$. Sketch takes $O(n^2)$ operations over $\Fq$, and recover takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
 \end{theorem}
 
 \begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}.
 \end{proof}
 
-\textbf{Comparison with \thref{thm:lossless secure extractor log}}
-%\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  
-The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$.  This would yield fewer hardcore dimensions and force us to use a larger field.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant fraction of $n$.  We consider the setting where the number of fixed errors, hardcore dimensions, and dimensions used for randomness are all $n/3$.
+%\textbf{Comparison with \thref{thm:lossless secure extractor log}}
+%%\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  
+%The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$.  This would yield fewer hardcore dimensions and force us to use a larger field.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant fraction of $n$.  We consider the setting where the number of fixed errors, hardcore dimensions, and dimensions used for randomness are all $n/3$.
 %The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for small values of $n$.
 
 \ignore{
