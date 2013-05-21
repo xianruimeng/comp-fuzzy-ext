@@ -825,7 +825,7 @@ Define $\gen, \rep$ as follows:%The following construction is a computational se
 \end{enumerate}
  \end{minipage} &
 \begin{minipage}{3in}
-\textbf{\rec}
+\textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$ (where the Hamming distance between $w'$ and $w$ is at most $t$).
 \item Parse $p$ as $(\vA, \vect{C})$; let $\vect{D}=\vect{C}-w'$.
@@ -857,7 +857,7 @@ The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} a
 \begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}Let $n$ be a security parameter.  
 Let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime. The decisional version of the $\LWE$ problem, denoted \class{dist}-$\LWE_{n, m, q, \chi}$, is to distinguish between $m$ samples chosen according to $A_{\vx, \chi}$ for a uniformly random $\vx$ from samples chosen according to the uniform distribution over $(\Fq^{m\times n}, \Fq^m)$. 
 
-We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure if no (probabilistic) distinguisher of size $s_{sec}$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.  If for any $s_{sec} = \poly(n)$, there exists   $\epsilon  = \ngl(n)$ such that  $\distLWE_{n, m, q, \chi}$ is$(\epsilon, s_{sec})$-secure, then we say  it is \emph{secure}.
+We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure if no (probabilistic) distinguisher of size $s_{sec}$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.  If for any $s_{sec} = \poly(n)$, there exists   $\epsilon  = \ngl(n)$ such that  $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure, then we say  it is \emph{secure}.
 \end{definition}
 
  Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} show that $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure when the distribution $\chi$ of errors is Gaussian, as stated in the following proposition.
@@ -1022,9 +1022,8 @@ We now state a setting of parameters that yields a lossless construction.
 
 \begin{theorem}
 \label{thm:lossless secure extractor log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.    Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric over the alphabet of $Z$ size $2^b$, where the  block length $b = \log (2n^3 (c+2d)/d)=O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c+2d)n/d}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors (on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds.
-\consref{cons:informal construction} is a $(\M, bm, bm, t)$  fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
-Sketch takes $O(n^2)$ operations over $\Fq$, and recover takes expected time $O(n^{4d+3})$ operations over $\Fq$.
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.    Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric over the alphabet of $Z$ size $2^b$, where the  block length $b = \log (2n^3 (c+2d)/d)=O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c+2d)n/d}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors (on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds: \consref{cons:informal construction} is a $(\M, bm, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
+The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3})$ operations over $\Fq$.
 % for following parameters:
 %\[
 %(\zo^{(c+d)/dn\log b}, |W|, \epsilon, s_{sec}, s_{sketch}, s_{rec}, t)
@@ -1107,7 +1106,7 @@ The intuition for this result is as follows.  Providing a single sample with no 
 \label{thm:lossless block sketch log}
 Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+2d)/d) = O(\log n)$.  Let $\alpha \leq n/3$ and $m=(c+2d)n/d = O(n)$, and let $W$ be $m$-symbol fixing source over $\zo^{(m+\alpha)b}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/6$) using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
  there exists $\epsilon = \ngl(n)$ such that the following holds: 
-\consref{cons:informal construction} is a $(\M, bm, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$. Sketch takes $O(n^2)$ operations over $\Fq$, and recover takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
+\consref{cons:informal construction} is a $(\M, bm, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$. The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
 \end{theorem}
 
 \begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}.
