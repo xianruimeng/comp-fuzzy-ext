@@ -417,15 +417,15 @@ Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch wi
 \item $\rep(w', (s, x)):$ recover $w=\rec(w',s)$ and output $r=\ext(w;x)$.
 \end{itemize}
 \end{lemma}
-The main parameter we will be concerned with is the entropy loss of the construction.  In this paper, we ask whether a smaller entropy loss can be achieved by considering a fuzzy extractor with a computational security requirement.  We relax the security requirement of \defref{def:fuzzy extractor} to require a pseudorandom output instead of a truly random output.
+The main parameter we will be concerned with is the entropy loss of the construction.  In this paper, we ask whether a smaller entropy loss can be achieved by considering a fuzzy extractor with a computational security requirement.  We therefore relax the security requirement of \defref{def:fuzzy extractor} to require a pseudorandom output instead of a truly random output.\footnote{In addition, we modify the notation so that we can specify a general class of sources for which the fuzzy extractor is designed to work (rather than limiting ourselves to the class of that consists of all sources of a given min-entropy $m$).}
 
 \begin{definition}[Computational Fuzzy Extractor]\label{def:comp fuzzy extractor}
-A pair of randomized procedures ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$ is a $(\mathcal{M}, m, \ell, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$ is a $(\mathcal{M}, \mathcal{W}, \ell, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
 \begin{itemize}
 \item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $R\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
 \item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\Pr[\rep( w', P) = R] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.  %%Furthermore \rep is computable by a circuit of size at most $s_{rec}$.  
 If $d(w, w') > t$, then no guarantee is provided about the output of \rep.
-\item The \emph{security} property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\ell, P))\leq \epsilon$.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\ell, P))\leq \epsilon$.
 \end{itemize}
 \end{definition}
 Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters.% ($s_{rec}$ is the size of the circuit that computes \rec and $s_{sec}$ is unbounded).  
@@ -888,7 +888,7 @@ Fortunately, recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} s
 %This problem can be stated in the language of indistinguishability using the Decision-to-search reduction of Regev or Peikert:
 \begin{lemma}~\protect{~\cite[Corollary 10]{dottling2012}}
 \label{lem:uniform LWE decision}
-Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime integer and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. If the approximate decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard~(on lattices of dimension $n/2$) within a factor of $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi$ the uniform distribution over $[-\rho q, \rho q]$, then $\distLWE_{n, m, q, \chi}$ is secure.
+Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime and $m = m(n) = \poly(n)$ be an integer. Let $\gamma\in (0, 1)$ be a constant and let $\rho\in (0,1)$ such that $\rho q \geq 2n^{1/2+3\gamma}m$. If the approximate decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard~(on lattices of dimension $n/2$) within a factor of $\tilde{O}(n^{1/2+3\gamma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi$ the uniform distribution over $[-\rho q, \rho q]$, then $\distLWE_{n, m, q, \chi}$ is secure.
 \end{lemma}
 
 To extract pseudorandom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting that their proof does not depend on the error distribution):
@@ -1022,7 +1022,7 @@ We now state a setting of parameters that yields a lossless construction.
 
 \begin{theorem}
 \label{thm:lossless secure extractor log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.    Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric over the alphabet of $Z$ size $2^b$, where the  block length $b = \log (2n^3 (c+2d)/d)=O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c+2d)n/d}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors (on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds: \consref{cons:informal construction} is a $(\M, bm, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.    Let $d\in \mathbb{Z}^+$ be a constant and consider the Hamming metric over the alphabet $Z$ of size $2^b$, where the  block length $b = \log (2n^3 (c+2d)/d)=O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c+2d)n/d}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors (on lattices of dimension $n/4$) using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds: \consref{cons:informal construction} is a $(\M, W, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
 The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3})$ operations over $\Fq$.
 % for following parameters:
 %\[
@@ -1058,27 +1058,27 @@ The disadvantages of \consref{cons:informal construction} are that it supports a
 
 \section{Computational Fuzzy Extractor for Nonuniform Sources}
 \label{sec:LWE block fixing sources}
-While showing the security of~\consref{cons:informal construction} for arbitrary high-min-entropy distributions is an open problem, in this section we show it for a particular class of distributions called symbol-fixing.  First we recall the notion of a symbol fixing source~(from~\cite{KZ07}): 
+While showing the security of~\consref{cons:informal construction} for arbitrary high-min-entropy distributions is an open problem, in this section we show it for a particular class of distributions called symbol-fixing.  First we recall the notion of a symbol fixing source~(from~\cite[Definition 2.3]{KZ07}): 
 \begin{definition}
-Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where $W_i$ takes values over $\{0,1\}^b$, we say that a distribution is a $m$-\emph{symbol fixing source} if $H_\infty(W)\geq mb$ and for all $W_i$ one of the following conditions is met:
-\begin{itemize}
-\item $W_i \overset{d}= U_b$
-\item There exists a value $c_i$ such that $\Pr[W_i = c_i] =1$.
-\end{itemize}
+Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where each $W_i$ takes values over an alphabet $Z$ of size  $2^b$.  We say that it is a $(m+
+\alpha, m, 2^b) $ \emph{symbol fixing source} if for $\alpha$ indices $i_1, \dots, i_\alpha$, the symbols $W_{i_\alpha}$ are fixed, and the remaining $m$  symbols are chosen uniformly at random.  Note that $H_\infty(W)=mb$.
 \end{definition}
+\lnote{do we need exactly $\alpha$ fixed, or can we do up to $\alpha$ fixed?  The KZ07 definition requires exactly. We shouldn't chagne the definition, but may restate the theorem to include all symbol fixing source of entropy $mb$ and up}
 %A block fixing source is an extension of a entropy source where each bit is independently random or fixed to larger alphabets.  
 
 \ignore{
 We now study \consref{cons:informal construction} with a symbol fixing source.  
 
 \begin{assumption}[LWE w/ entropic errors]
-Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-block fixing distribution over $\{0,1\}^{(m+\alpha)\ell}$. For a vector 
+Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be $(m+
+\alpha, m, 2^b)$ symbol-fixing source over $\{0,1\}^{(m+\alpha)\ell}$. For a vector 
 Let $A\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and let $x\in\Fq^{n+\alpha}$.  No PPT algorithm given $Ax+W$ can recover $x$ with probability greater than nonnegligible.
 \end{assumption}
 }
 We now define the decisional $\LWE$ problem with symbol fixing errors: 
 \begin{problem}[$\distLWE$ w/ symbol fixing errors]
-Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be a $m$-symbol fixing distribution over $\{0,1\}^{(m+\alpha)b}$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and outputting $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
+Let $n$ be a security parameter.  Let $q=q(n)=\poly(n)$ be a prime and  $m = m(n)=\poly(n)$ be an integer.  Let $W = W_1||...||W_{m+\alpha}$ be a$(m+
+\alpha, m, 2^b)$ symbol fixing source over an $Z^{m+\alpha}$ for an alphabet $Z$\lnote{what alphabet?  it should be integers} of size $2^b$. For a vector $X \leftarrow \Fq^n$, we denote $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and outputting $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ with symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ \lnote{why is $X$ a subscript in this notation by A is uniform? why not both?} for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
 \end{problem}
 
 The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$,  with security degrading exponentially as symbols are fixed (of course, once $n$ symbols are fixed, no security remains, because there are $n$ linear equations with known error and $n$ unknowns).
@@ -1091,7 +1091,7 @@ Let $n$ be a security parameter and define $q, m , \alpha = \poly(n)$.  Let $\be
 The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, intuitively search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
 
 
-\thref{thm:blockLWE} allows us to construct a computational fuzzy extractor from block-fixing sources: 
+\thref{thm:blockLWE} allows us to construct a lossless computational fuzzy extractor from block-fixing sources: 
 
 %\begin{theorem}
 %\label{thm:lossless block sketch}
@@ -1104,8 +1104,10 @@ The intuition for this result is as follows.  Providing a single sample with no 
 
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\mathbb{Z}^+$ be a constant and consider the Hamming metric with block length $b = \log (2n^3 (c+2d)/d) = O(\log n)$.  Let $\alpha \leq n/3$ and $m=(c+2d)n/d = O(n)$, and let $W$ be $m$-symbol fixing source over $\zo^{(m+\alpha)b}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/6$) using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
- there exists $\epsilon = \ngl(n)$ where \consref{cons:informal construction} is a computational fuzzy extractor for $W$~(with key length $mb = \Hoo(W)$, correcting $t$ errors) that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$. The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
+Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\mathbb{Z}^+$ be a constant and consider the Hamming metric over the alphabet $Z$ of size $2^b$, where the block length $b = \log (2n^3 (c+2d)/d) = O(\log n)$.  Let $\alpha \leq n/3$ and $m=(c+2d)n/d = O(n)$, and let $\mathcal{W}$ be the class of all $m$-symbol fixing sources over $\zo^{(m+\alpha)b}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors~(on lattices of dimension $n/6$) using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
+ there exists $\epsilon = \ngl(n)$ 
+such that the following holds: \consref{cons:informal construction} is a $(\M, \mathcal{W}, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
+ The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
 \end{theorem}
 
 \begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}.
