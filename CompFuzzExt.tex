@@ -191,6 +191,7 @@
 \newcommand{\vA}{\vect{A}}
 \newcommand{\vc}{\vect{c}}
 \newcommand{\vW}{\vect{W}}
+\newcommand{\vQ}{\vect{Q}}
 \newcommand{\vR}{\vect{R}}
 \newcommand{\vU}{\vect{U}}
 \newcommand{\vT}{\vect{T}}
@@ -1678,7 +1679,7 @@ We will make a single call to $D$ so we focus on how to prepare a random block f
 \begin{framed}
 \begin{enumerate}
 \item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve'$.
-\item Randomly generate $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$. Initialize $\vW \in \Fq^{n\times (\alpha+\beta)}$ to be the zero matrix.
+\item Randomly generate $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$. Initialize $\vQ \in \Fq^{n\times (\alpha+\beta)}$ to be the zero matrix.
 \item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, where $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.\label{step:b generation}
 \item Randomly generate $\vect{S} \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$.
 		\subitem If $\rank(\vect{S})<\alpha$, stop and output a random bit.
@@ -1686,9 +1687,9 @@ We will make a single call to $D$ so we focus on how to prepare a random block f
 \item For all $x_i$ where $n\leq i$ and $i\not \in T$:\label{step:fill in matrix}
 \subitem Generate $x_i\overset{\$}\leftarrow \Fq$.  
 \subitem For $j=1,..., m$:
-\subsubitem Generate $\vW_{j, i}\overset{\$}\leftarrow \Fq$
-\subsubitem Set $b_j^* = b_j^* + \vW_{j, i} x_i$.
-\item Initialize $\vA^*  = \left(\begin{array}{c | c}\vA' & \vW\\\hline \vR & \vS\end{array}\right)$.
+\subsubitem Generate $\vQ_{j, i}\overset{\$}\leftarrow \Fq$
+\subsubitem Set $b_j^* = b_j^* + \vQ_{j, i} x_i$.
+\item Initialize $\vA^*  = \left(\begin{array}{c | c}\vA' & \vQ\\\hline \vR & \vS\end{array}\right)$.
 \item \label{step:randomization}
 For {$i=1,..., m$}:
 \subitem Randomly generate $\gamma_i \leftarrow \Fq^{1 \times \alpha}$.
@@ -1734,9 +1735,9 @@ The matrix $\vA$ generated after Step \ref{step:randomization} is a random matri
 \end{claim}
 \begin{proof}
 It should be clear that $\vR, \vS$ are randomly generated~(conditioned on $\rank(\vS) =\alpha$).  The quadrant represented by $\vA'$ remains random after step~\ref{step:randomization} as we are adding uncorrelated random values.  
-The matrix $\vW_{T^c}$~(recall this is the restriction of $\vW$ to the columns not in $T$) is random as it is initialized with random values and only uncorrelated random values are added.
+The matrix $\vQ_{T^c}$~(recall this is the restriction of $\vQ$ to the columns not in $T$) is random as it is initialized with random values and only uncorrelated random values are added.
 
-Thus, we restrict attention to $\vW_T$~(the columns of $W$ included in $T$).  Consider a particular row $i$.  Then $\vW_{i, T} = \gamma_i \vS_{T}$.  Since $\vS_T$ is full rank and $\gamma_i$ is uniformly generated, $\vW_{i, T}$ is uniformly generated.
+Thus, we restrict attention to $\vQ_T$~(the columns of $W$ included in $T$).  Consider a particular row $i$.  Then $\vQ_{i, T} = \gamma_i \vS_{T}$.  Since $\vS_T$ is full rank and $\gamma_i$ is uniformly generated, $\vQ_{i, T}$ is uniformly generated.
 
 Thus, the entire matrix $\vA$ after step~\ref{step:randomization} is uniformly generated conditioned on $\rank(\vS) = \alpha$.
 % In the randomized matrix $\vect{A}$, for $1\le i \le m$ and $n+1\le j \le n+\alpha$, $A_{ij}$ is assigned the value $\gamma_{i,(j - n)}$, which is a random value.  Similarly, for $m+1\le i \le m+\alpha$ and $n+1\le j \le n+\alpha$, each entry $A_{ij}$ is random due to the original construction of the matrix $\vA^*$.  Then before step \ref{step:randomization} the matrices $\vA', \vect{R}$ are random submatrices.  Thus, it remains to show that $\vA', \vect{R}$ remain random after step 5. For $1\le i \le m+\alpha$ and $1\le j \le n$, by construction $A_{ij} = A_{ij}'+\sum_{k=1}^\alpha \gamma_{i, k} R_{kj}$, which is a truly random number. Overall, each row vector $\va_{i}$ in $\vA$ is the sum of a random vector and a random linear combination independent vectors. Therefore, the entire matrix $\vA$ is a truly random matrix.  This completes the claim.
@@ -1773,7 +1774,7 @@ This completes the proof of the claim.
 If the pair $\vb' | \vA'$ is uniformly distributed, then $\vb |\vA$ is uniformly distributed.
 \end{claim}
 \begin{proof}
-Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}.  The only correlation between $\vb^*$ and $\vA^*$ is in the matrix $\vW$, i.e. for $1\leq i\leq n$, $b_i^* = b_i + \sum_{n<j \wedge j\not\in T} \vW_{i, j} x_j$, thus conditioning on $\vW$, $b_i^*$ is uniform assuming $b_i$ is uniform.  Thus $\vb^* | \vA^*$ is uniformly distributed. We show that $\vb |( \vA, \vA^*)$ is uniformly distributed, therefore, showing that $\vb | \vA$ is uniformly distributed after step~\ref{step:randomization}.  Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  
+Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}.  The only correlation between $\vb^*$ and $\vA^*$ is in the matrix $\vQ$, i.e. for $1\leq i\leq n$, $b_i^* = b_i + \sum_{n<j \wedge j\not\in T} \vQ_{i, j} x_j$, thus conditioning on $\vQ$, $b_i^*$ is uniform assuming $b_i$ is uniform.  Thus $\vb^* | \vA^*$ is uniformly distributed. We show that $\vb |( \vA, \vA^*)$ is uniformly distributed, therefore, showing that $\vb | \vA$ is uniformly distributed after step~\ref{step:randomization}.  Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  
  
  The matrix $\vgamma$ is a deterministic function of $(\vA, \vA^*)$.  Thus, $\vb | (\vA, \vA^*) \overset{d}= \vb | (\vA, \vA^*, \vgamma)$.  The only dependence of $\vb$ on $(\vA, \vA^*, \vgamma)$ is in the matrix $\vgamma$.  Thus, $ \vb | (\vA, \vA^*, \vgamma) \overset{d}= \vb | \vgamma$. Recall that 
  \[
