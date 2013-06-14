@@ -296,7 +296,8 @@ Another possible relaxation is to require that the value $w$ is unpredictable co
 
 Both of the above negative results arise because a secure sketch functions like a decoder of an error-correcting code.  To avoid them, we give up on building computational secure sketches and focus directly on the entropy loss in fuzzy extractors.  Our goal is to decrease the entropy loss in a fuzzy extractor by allowing the key $r$ to be pseudorandom conditioned on $p$.  
 
-By considering this computational secrecy requirement, we construct the first \emph{lossless} computational fuzzy extractors (\consref{cons:informal construction}), where the derived key $r$ is as long as the entropy of the source $w$. Our construction is for the Hamming metric and uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} used in prior work, but with two crucial differences.  First, the key $r$ is not extracted from $w$ like in the sketch-and-extract approach; rather $w$ ``encrypts'' $r$ in a way that is decryptable with the knowledge of some close $w'$. Second, the code used is a random linear code, which allows us to use the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey} and derive a longer key $r$.
+By considering this computational secrecy requirement, we construct the first \emph{lossless} computational fuzzy extractors (\consref{cons:informal construction}), where the derived key $r$ is as long as the entropy of the source $w$. Our construction is for the Hamming metric and uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} used in prior work, but with two crucial differences.  First, the key $r$ is not extracted from $w$ like in the sketch-and-extract approach; rather $w$ ``encrypts'' $r$ in a way that is decryptable with the knowledge of some close $w'$ (this idea is similar to the way the code-offset construction is presented in 
+\cite{JW99} as  a ``fuzzy commitment'') . Second, the code used is a random linear code, which allows us to use the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey} and derive a longer key $r$.
 
 
 Specifically,  we use the  recent result of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012}, which shows the hardness of decoding random linear codes when the error vector comes from the uniform distribution, with each coordinate ranging over a small interval. This allows us to use $w$ as the error vector, assuming it is uniform.  We also use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009},  which says that LWE has many hardcore bits, to hide $r$.
@@ -894,9 +895,9 @@ Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime and $m = 
 To extract pseudorandom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting that their proof does not depend on the error distribution):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
- If $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ secure then \lnote{notation doesn't exactly match def 4.2}
-\[\delta^ {\mathcal{D}_{s_{sec'}}} ((X_{1,..., k}, \vA, \vA X+E) , (U, \vA, \vA X+E)) \le \epsilon\,,\]
-where $U$ denotes the uniform distribution over $\Fq^m$,  $s_{sec}' \approx s_{sec} - n^3$, and the remaining variables are as in \defref{def:dist-LWE}.
+ If $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ secure then
+\[\delta^ {\mathcal{D}_{s_{sec'}}} ((X_{1,\dots, k}, \vA, \vA X+\chi) , (U, \vA, \vA X+\chi)) \le \epsilon\,,\]
+where $U$ denotes the uniform distribution over $\Fq^k$,  $\vA$ denotes the uniform distribution over $\Fq^{m\times n}$, $X$ denotes the uniform distribution over $\Fq^n$, $X_{1,\dots, k}$ denote the first $k$ coordinates of $x$, and $s_{sec}' \approx s_{sec} - n^3$.
 \end{lemma}
 
 
@@ -1064,28 +1065,13 @@ Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where each $W_i$ takes value
 \alpha, m, |Z|) $ \emph{symbol fixing source} if for $\alpha$ indices $i_1, \dots, i_\alpha$, the symbols $W_{i_\alpha}$ are fixed, and the remaining $m$  symbols are chosen uniformly at random.  Note that $H_\infty(W)=m\log |Z|$.
 \end{definition}
 
-\ignore{
-We now study \consref{cons:informal construction} with a symbol fixing source.  
-
-\begin{assumption}[LWE w/ entropic errors]
-Let $n$ be a security parameter and define $m = \poly(n)$ and $q\geq 2$ be integers.  Let $W = W_1||...||W_{m+\alpha}$ be $(m+
-\alpha, m, 2^b)$ symbol-fixing source over $\{0,1\}^{(m+\alpha)\ell}$. For a vector 
-Let $A\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and let $x\in\Fq^{n+\alpha}$.  No PPT algorithm given $Ax+W$ can recover $x$ with probability greater than nonnegligible.
-\end{assumption}
-}
-We now define the decisional $\LWE$ problem with symbol fixing errors: 
-\begin{problem}[$\distLWE$ w/ symbol fixing errors]
-Let $n$ be a security parameter.  Let $q=q(n)=\poly(n)$ be a prime and  $m = m(n)=\poly(n)$ be an integer.  Let $W = W_1||...||W_{m+\alpha}$ be an $(m+
-\alpha, m, |Z|)$ symbol fixing source over  $Z^{m+\alpha}$ for the alphabet $Z=[-2^{b-1},2^{b-1}]$. For a vector $X \leftarrow \Fq^n$, let $A_{X, W}$ be the distribution obtained by choosing a uniform $\vA\in\Fq^{(m+\alpha)\times (n+\alpha)}$ and outputting $\vA X + W$. The decisional learning with errors problem $\distLWE_{n+\alpha, m+\alpha, q, W}$ withAt symbol fixing errors is to distinguish samples chosen according $A_{X, W}$ \lnote{why is $X$ a subscript in this notation by A is uniform? why not both?}   \lnote{notation doesn't exactly match def 4.2}
-for a uniformly random $X \in \Fq^{n+\alpha}$ from samples chosen according to the uniform distribution over $\Fq^{n+\alpha} \times \Fq$.
-\end{problem}
-
-The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$,  with security degrading exponentially as symbols are fixed (of course, once $n$ symbols are fixed, no security remains, because there are $n$ linear equations with known error and $n$ unknowns).
+The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$ (but for $n$ and $m$ reduced by the amount of fixed symbols).
 %\vspace{.1in}
 \begin{theorem}
 \label{thm:blockLWE}
- \lnote{notation doesn't exactly match def 4.2}
-Let $n$ be a security parameter and define $q, m , \alpha = \poly(n)$.  Let $\beta  = \omega(1)$, and $W$ be a $m$-symbol fixing source over $\{0,1\}^{(m+\alpha)b}$~(that is, $\Hoo(W) = mb$).  The $\distLWE_{n, m,q, W}$ assumption implies the $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ w/ symbol fixing sources problem.
+Let $n$ be a security parameter, $\alpha$ be polynomial in $n$, and $\beta=\beta(n)=\omega(1)$.
+Let $U$ denote the uniform distribution over $Z^m$ for an alphabet $Z\subset \Fq$, and let $W$ denote an $(m+\alpha, m, |Z|)$ symbol fixing source over $Z^{m+\alpha}$.
+If $\distLWE_{n, m,q, U}$ is secure, then $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ is also secure.
 \end{theorem}
 
 The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, intuitively search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
