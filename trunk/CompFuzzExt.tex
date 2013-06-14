@@ -1090,9 +1090,10 @@ The intuition for this result is as follows.  Providing a single sample with no 
 
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some constant $c$.  Let $d\in\mathbb{Z}^+$ be a constant and consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where $b \approx \log (2n^3 (c+2d)/d) = O(\log n)$ \lnote{this may need to be modified after App D.1 calculation}.  Let $\alpha \leq n/3$ and $m=(c+2d)n/d = O(n)$, and let $\mathcal{W}$ be the class of all $m$-symbol fixing sources over $Z^{m+\alpha}$.  If GAPSVP and SIVP are hard to approximate within polynomial factors \lnote{removed (on lattices of dimension $n/6$)} using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
+Let $n$ be a security parameter and let $t = c\log n$ for some positive constant $c$.  Let $d<c$ be a positive constant and consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where $b \approx \log 2(c/d+2)n^2 = O(\log n)$.  Let $\mathcal{M} = Z^{m+\alpha}$ where $m= (c/d+2)n=O(n)$ and $\alpha \leq n/3$. 
+Let $\mathcal{W}$ be the class of all $(m+\alpha, m, |Z|)$-symbol fixing sources.  If GAPSVP and SIVP are hard to approximate within polynomial factors \lnote{removed (on lattices of dimension $n/6$)} using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
  there exists $\epsilon = \ngl(n)$ 
-such that the following holds: \consref{cons:informal construction} is a $(\M, \mathcal{W}, bm, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
+such that the following holds: \consref{cons:informal construction} is a $(\M, \mathcal{W}, m\log |Z|, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
  The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
 \end{theorem}
 
@@ -2075,12 +2076,12 @@ f &= \frac{m}{k}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n} = \left(3(\frac{c}{d}+2
 
 Assuming $n/3-\log(n)> n_0$ and letting $t= c\log n$ we get the following setting:
 \begin{align*}
-m &= \frac{(c+2d)n}{d}\\
+m &= (\frac{c}{d}+2)n\\
 q & = n^f = n^{\frac{m}{n}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n}} = \poly(n)\\
-\rho q &= 2n^{1/2+\sigma}m = \frac{2(c+2d)n^{3/2+\sigma}}{d}
+\rho q &= 2n^{1/2+\sigma}m = 2(\frac{c}{d}+2)n^{3/2+\sigma}
 \end{align*}
 
-As before we arbitrarily set $\sigma = 1/2$.  Also, if $c<d$ then we get efficient decoding and $\rho = o(1)$ satisfying the condition of \lemref{lem:uniform LWE decision}.
+As before we arbitrarily set $\sigma = 1/2$, giving $\rho q = 2(\frac{c}{d}+2)n^2$.  Also, if $c<d$ then we get efficient decoding and $\rho = o(1)$ satisfying the condition of \lemref{lem:uniform LWE decision}.
 
 \ignore{
 \subsection{Old parameter setting}
