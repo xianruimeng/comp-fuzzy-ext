@@ -2008,11 +2008,11 @@ In this section, we explain the different parameters that go into our constructi
 \item $m$: The size of each number of samples in the LWE instance.  
 \item $k$: The number of hardcore bits in $X$~(from \lemref{lem:many hardcore bits}).
 \end{itemize}
-We will split the source $|W|$ into $m$ blocks each of size $\rho q$~(that is, $|W| = m\log \rho q$).  We will ignore the parameter $|W|$ and focus on $t, n, q, \rho,$ and $m$.  As stated above we have three constraints:
+We will split the source $|W|$ into $m$ blocks each of size $2\rho q+1$~(that is, $|W| = m\log (2\rho q+1)$).  We will ignore the parameter $|W|$ and focus on $t, n, q, \rho,$ and $m$.  As stated above we have three constraints:
 \begin{itemize}
 \item Maintain security of LWE.  If we assume GAPSVP and SIVP are hard to approximate within polynomial factors then \lemref{lem:uniform LWE decision} says that we get security for all $n$ greater than some minimum $n_0$ and $q = \poly(n)$ and $\rho q \geq 2 n^{1/2 + \sigma} m = \poly(n)$.  The only reason to increase $\rho q$ over this minimum amount (other than security) is if the number of errors in $W$ decreases with a slightly larger block size.  We ignore this effect and assume that $\rho q = 2n^{1/2+\sigma}m$.
 \item Maintain efficient decoding of Construction~\ref{cons:decoding algorithm}.  Using \lemref{lem:i t poly time}, this means that $t\leq d\log n(m/n-2)$.
-\item Minimize entropy loss of the construction.  We will output $X_{1,...,k}$ so the entropy loss of the construction is $|W|-|X_{1,..., k}|$.  We want the entropy loss to be zero, that is, $|W| = |X_{1,..., k}|$.  Substituting, one has $m\log \rho q = k \log q$.
+\item Minimize entropy loss of the construction.  We will output $X_{1,...,k}$ so the entropy loss of the construction is $|W|-|X_{1,..., k}|$.  We want the entropy loss to be zero, that is, $|W| = |X_{1,..., k}|$.  Substituting, one has $m\log 2\rho q+1 = k \log q$.
 \end{itemize}
 Collecting constraints we can support any setting where $t, n, q, \rho, m, k$ satisfy the following constraints~(for constants $d, f$):
 \begin{align*}
@@ -2020,13 +2020,13 @@ n_0&< n -k \\
 t&\leq d \log n\left(\frac{m}{n}-2\right)\\
 q &= n^f\\
 \rho q  &= 2n^{1/2+\sigma}m\\
-m\log \rho q &= k \log q
+m\log (2\rho q +1)&= k \log q
 \end{align*}
 Substituting $q = n^f$ and $\rho q = 2n^{1/2+\sigma}m$ yields the following system of equations:
 \begin{align*}
 n_0&< n - k\\
 t&\leq d\log n\left(\frac{m}{n}-2\right)\\
-m \log 2n^{1/2+\sigma}m &= k \log n^f
+m \log (4n^{1/2+\sigma}m +1)&= k \log n^f
 \end{align*}
 %\xnote{$ m \log 2n^{1/2+\sigma}m = n \log n^f$}
 This is the most general form of our construction, we can support any $n, t, m$ that satisfy these equations for constants $d, f$.  However, the last equation may have no solution for $f$ constant.  Putting the last equation in terms of $f$ one has:
@@ -2034,23 +2034,26 @@ This is the most general form of our construction, we can support any $n, t, m$ 
 n_0&< n -k \\
 t&\leq d\log n\left(\frac{ m }{n} -2\right)\\
 %f \log n &= \frac{m}{n}\log 2n^2m\\
-f &= \frac{m}{k}\frac{\log 2n^{1/2+\sigma} m}{\log n}
+f &= \frac{m}{k}\frac{\log 4n^{1/2+\sigma} m+1}{\log n}
 \end{align*}
 To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k = n /g$ for some constant $g> 1$.  Finally we assume that $m$ is the minimum value such that $t \leq d \log n(m/n-2)$~(that is, there are only as many dimensions as necessary for decoding using \lemref{lem:i t poly time}):
 \begin{align*}
 n_0&< n -k \\
 m &= \frac{(c+2d)n \log n}{d \log n} = \frac{(c+2d)n}{d}\\
-f &= \frac{m}{k}\frac{\log 2n^{1/2+\sigma}m}{\log n} = \frac{g(c+2d)}{d}\frac{\log \frac{2(c+2d)}{d} n^{3/2+\sigma}}{\log n}
+f &= \frac{m}{k}\frac{\log 4n^{1/2+\sigma}m+1}{\log n} = \frac{g(c+2d)}{d}\frac{\log (\frac{4(c+2d)}{d} n^{3/2+\sigma}+1)}{\log n}
 \end{align*}
 %\xnote{$f = \frac{m}{n}\frac{\log 2n^{1/2+\sigma}m }{\log n} = \frac{c+d}{d}\frac{\log 2(c+d)/d n^{3/2+\sigma}}{\log n}$}
 Note that $f$ is at a constant in $n$.
 Assuming $n-k = n(1-1/g) > n_0$ and letting $t= c\log n$ we get the following setting:
 \begin{align*}
 m &= \frac{(c+2d)n}{d}\\
-q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+\sigma}m}{\log n}} = \poly(n)\\
+q & = n^f = n^{\frac{m}{k}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n}} = \poly(n)\\
 \rho q &= 2n^{1/2+\sigma}m = \frac{2(c+2d)n^{3/2+\sigma}}{d}
 \end{align*}
-Furthermore, we get decoding using $O(n^{4d+3})$ $\Fq$ operations.  We can output a $k$ fraction of $X$ and the bits will be pseudorandom~(conditioned on $\vA, \vA X+W$).  The parameter $g$ allows is a tradeoff between the number of dimensions needed for security and the size of the field $q$.  In \thref{thm:lossless secure extractor log}, we set $g=2$ and output the first half of $X$.  This analysis proceeds similarly when we desire a linear stretch instead of $m\log \rho q = k\log q$.  %Essentially, this corresponds to multiplying $g$ by the inverse of the desired stretch factor.
+
+Note, that $f> \frac{m}{k}\geq \frac{m}{n} \geq \frac{(c/d+2)n}{n} \geq 3$ as long as $c>d$~(the condition that $m\geq 3n$ is also required for \lemref{lem:i t poly time} to hold).  Since $\rho q = 2n^{1/2+\rho }m = O(n^{5/2})$ in our setting $\rho = O(n^{-1/2})$.  Thus, for large enough settings of parameters $\rho$ is less than $1/10$ as required by \lemref{lem:uniform LWE decision}.
+
+Furthermore, we get decoding using $O(n^{4d+3})$ $\Fq$ operations.  We can output a $k$ fraction of $X$ and the bits will be pseudorandom~(conditioned on $\vA, \vA X+W$).  The parameter $g$ allows is a tradeoff between the number of dimensions needed for security and the size of the field $q$.  In \thref{thm:lossless secure extractor log}, we set $g=2$ and output the first half of $X$.  This analysis proceeds similarly when we desire a linear stretch instead of $m\log (2\rho q +1)= k\log q$.  %Essentially, this corresponds to multiplying $g$ by the inverse of the desired stretch factor.
 
 \subsection{Parameter Settings for \thref{thm:lossless block sketch log}}
 \label{ssec:block params}
@@ -2060,35 +2063,36 @@ n_0&< n -k  -\alpha -\beta\\
 t&\leq d \log n\left(\frac{m}{n}-2\right)\\
 q &= n^f\\
 \rho q  &= 2n^{1/2+\sigma}m\\
-m\log \rho q &= k \log q
+m\log (2\rho q+1)&= k \log q
 \end{align*}
 Substituting $q = n^f$ and $\rho q = 2n^{1/2+\sigma}m$ yields the following system of equations:
 \begin{align*}
 n_0&< n - k - \alpha -\beta\\
 t&\leq d\log n\left(\frac{m}{n}-2\right)\\
-m \log 2n^{1/2+\sigma}m &= k \log n^f
+m \log (4n^{1/2+\sigma}m +1)&= k \log n^f
 \end{align*}
 As before we can support any setting any $n, t, m, \alpha$ that satisfy these equations for $\beta = \omega(1)$ and constants $d, f$.  However, the last equation may have no solution for $f$ constant.  Putting the last equation in terms of $f$ one has:
 \begin{align*}
 n_0&< n -k  - \alpha - \beta \\
 t&\leq d\log n\left(\frac{ m }{n} -2\right)\\
 %f \log n &= \frac{m}{n}\log 2n^2m\\
-f &= \frac{m}{k}\frac{\log 2n^{1/2+\sigma} m}{\log n}
+f &= \frac{m}{k}\frac{\log (4n^{1/2+\sigma} m+1)}{\log n}
 \end{align*}
 To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k, \alpha = n/3$ and $\beta = \log n$.  Finally we assume that $m$ is the minimum value such that $t \leq  d \log n(m/n-2)$~(that is, there are only as many dimensions as necessary for decoding using \lemref{lem:i t poly time}):
 \begin{align*}
 n_0&< n/3 -  \log n\\
 m &= \frac{(c+2d)n \log n}{d \log n} = \frac{(c+2d)n}{d}\\
-f &= \frac{m}{k}\frac{\log 2n^{1/2+\sigma}m}{\log n} = \left(\frac{3(c+2d)}{d}\right)\frac{\log \frac{2(c+2d)}{d} n^{3/2+\sigma}}{\log n}
+f &= \frac{m}{k}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n} = \left(\frac{3(c+2d)}{d}\right)\frac{\log (\frac{4(c+2d)}{d} n^{3/2+\sigma}+1)}{\log n}
 \end{align*}
 
 Assuming $n/3-\log(n)> n_0$ and letting $t= c\log n$ we get the following setting:
 \begin{align*}
 m &= \frac{(c+2d)n}{d}\\
-q & = n^f = n^{\frac{m}{n}\frac{\log 2n^{1/2+\sigma}m}{\log n}} = \poly(n)\\
+q & = n^f = n^{\frac{m}{n}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n}} = \poly(n)\\
 \rho q &= 2n^{1/2+\sigma}m = \frac{2(c+2d)n^{3/2+\sigma}}{d}
 \end{align*}
 
+\bnote{As before explain why $\rho<1/10$ condition is satisfied}
 
 \ignore{
 \subsection{Old parameter setting}
