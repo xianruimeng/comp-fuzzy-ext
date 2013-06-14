@@ -1,3 +1,12 @@
+Leo's TODO List: (Updated Jun 14 2013):
+ Verify the proof of Lemma 4.7.
+ Explain the "simple reanalysis" mentioned at the end of section 4.2
+ Make sure that the "parameter setting" section (Appendix D) really does provide a proof and an explanation for all the parameters of Theorems 4.8 and 5.4
+ Take another pass over Section 4 -- probably my one pass was not enough.
+ Go over section 5 with the same fine-tooth comb as over Section 4, probably twice. Go over Appendix B.
+
+
+Ben's TODO List:
 Need to be consistent about what size means.  In some places we use s_{rec} for circuit size and in others we mean running time.  Need to be consistent.
 
 -Abstract:  
