@@ -1074,6 +1074,8 @@ Let $U$ denote the uniform distribution over $Z^m$ for an alphabet $Z\subset \Fq
 If $\distLWE_{n, m,q, U}$ is secure, then $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ is also secure.
 \end{theorem}
 
+\thref{thm:blockLWE} holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi$ be an arbitrary error distribution.  Define $\chi'$ as the distribution where $m$ dimensions are sampled according to $\chi$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi'}$.
+
 The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, intuitively search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
 
 
