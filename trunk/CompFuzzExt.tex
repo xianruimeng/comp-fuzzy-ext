@@ -358,7 +358,7 @@ and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) 
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. %We write $X \approx_{\epsilon} Y$ if $\Delta(X,Y) \leq \epsilon$, and when $\epsilon$ is negligible (in the appropriate parameter, as clear from the context) then we say $X$ and $Y$ are \emph{statistically close}.  
 For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
 For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t(\cdot)|$ the size of a ball of radius $t$.  For the Hamming metric over $Z^n$, $|B_t(\cdot)| = \sum_{i=0}^t {n \choose t} (|Z|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.
-We use bold letters for vectors or matrices, capitalized letters to be random variables, and lower case letters for the elements in the vector or samples from a random variable. 
+Usually, we use bold letters for vectors or matrices, capitalized letters for random variables, and lowercase letters for elements in a vector or samples from a random variable. 
 
 \subsection{Fuzzy Extractors and Secure Sketches}
 \label{sec:fuzzy extractors}
@@ -812,7 +812,7 @@ Our construction~(in \secref{sec:fuzzyCompExt}) has pseudorandom output and imme
 In this section we describe our main construction.  Security of our construction depends on the source $W$. We first consider  a uniform source $W$; we consider other distributions in \secref{sec:LWE block fixing sources}.  Our construction uses the code-offset construction~\cite{JW99}, \cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} instantiated with a random linear code over a finite field $\Fq$.   Let $\decode_t$ be an algorithm that decodes a random linear code with at most $t$ errors (we will present such an algorithm later, in \secref{sec:time main construction}). 
 
 \begin{construction}
-Let $n$ be a security parameter and let $m> n$\bnote{should we just switch to $m\ge 3n$ here?}.  Let $q$ be a prime. %Let $W = W_1,..., W_m$ and let $b$ be a constant and let $W_i \in \zo^b$ for all $i$.  
+Let $n$ be a security parameter and let $m\ge n$.  Let $q$ be a prime. %Let $W = W_1,..., W_m$ and let $b$ be a constant and let $W_i \in \zo^b$ for all $i$.  
 Define $\gen, \rep$ as follows:%The following construction is a computational secure sketch:
 %Code-offset construction of a secure sketch using a random linear code over a finite field $\Fq$. $\decode_t (\vA, \vect{D})$ denotes an algorithm that decodes up to $t$ errors, i.e., an algorithm that finds $X'\in \Fq^n$ such that $\vect{A}X'$ is of Hamming distance at most $t$ from $\vect{D}$. $m > n$ are parameters to be figured out later.
 \begin{center}
@@ -853,34 +853,29 @@ We describe one possible polynomial-time $\decode_t$ (which corrects more errors
 
 \subsection{Security of \consref{cons:informal construction}}
 \label{subsec:LWE}
-The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." For a positive integers $n, m$,  a prime $q$, a vector $\vx \in \Fq^n$, and a probability distribution $\chi$ on $\Fq$, let $A_{\vect{x}, \chi}$ \bnote{only two places we use this notation.}be the distribution obtained by choosing $\vA \overset{\$}\leftarrow \Fq^{m\times n}$ uniformly at random and a noise term $\ve \overset{\$}\leftarrow \chi^m$, and outputting $(\vA, \vA\vx+\ve)$. 
-%The Learning With Errors ($\lwe$) is defined as follows: given access to the oracle that outputs a sample from the distribution $A_{\vx, \chi}$ for a uniform $\vx$, and output $\vx$ with high probability. 
+The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." We now recall the definition of the decisional version of the problem. 
 
-\begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}Let $n$ be a security parameter.  
-Let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime (unlike in common formulations of LWE, where $q$ can be any integer, we need $q$ to be prime for decoding)\bnote{does this belong in a definition?}. The decisional version of the $\LWE$ problem, denoted \class{dist}-$\LWE_{n, m, q, \chi}$, is to distinguish between $m$ samples chosen according to $A_{\vx, \chi}$ \bnote{only two places we use this notation.} for a uniformly random $\vx$ from samples chosen according to the uniform distribution over $(\Fq^{m\times n}, \Fq^m)$. 
+
+\begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}
+Let $n$ be a security parameter.  
+Let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime\footnote{%
+Unlike in common formulations of LWE, where $q$ can be any integer, we need $q$ to be prime for decoding.}.
+%
+Let $\vA$ be the uniform distribution over  $\Fq^{m\times n}$, $\vx$ be the uniform distribution over $\Fq^n$ and $\chi$ be an arbitrary distribution on $\Fq^m$.
+ The decisional version of the $\LWE$ problem, denoted \class{dist}-$\LWE_{n, m, q, \chi}$, is to distinguish the distribution
+$(\vA, \vA\vx+\chi)$ from
+ the uniform distribution over $(\Fq^{m\times n}, \Fq^m)$.
 
 We say that $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure if no (probabilistic) distinguisher of size $s_{sec}$ can distinguish the $\lwe$ instances from uniform except with probability $\epsilon$.  If for any $s_{sec} = \poly(n)$, there exists   $\epsilon  = \ngl(n)$ such that  $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})$-secure, then we say  it is \emph{secure}.
 \end{definition}
 
- Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} show that $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure when the distribution $\chi$ of errors is Gaussian, as stated in the following proposition.
-%The matrix $\vA$ and secret $\vx$ are drawn from the uniform distribution, while the error term is drawn from a discretized Gaussian distribution $\bar{\Psi}_{\alpha}$.  
-%Furthermore, Regev \cite{regev2005LWE} shows a decision to search equivalence for $q=\poly(n)$.
-%We state the decisional version in terms of unpredictability entropy~(see \defref{def:unp entropy} for the definition of unpredictability entropy and \secref{sec:LWEoverview} for an equivalence to the standard formulation of decisional LWE):
-
-
-
-\begin{proposition} 
-\bnote{Why is this not a theorem?  For example Theorem 1 from Reg05?}
-\label{assume:entropy LWE}
-Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be a prime and let $\bar{\Psi}_\rho$ be the discretized Gaussian distribution with variance $(\rho q)^2/2\pi$.  Let $\rho \in (0,1)$ with $\rho q > 2\sqrt{n}$.  If GAPSVP and SIVP are hard to approximate~(on lattices of dimension $n$) within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \bar{\Psi}_\rho}$ is secure. 
-
-%H^{\unp}_{\epsilon, s_{sec}}(X | \vA, \vA X+E) =H^{\unp}_{\epsilon, s'_{sec}}(E| \vA, \vA X+E) \geq n\log q $ for $s'_{sec}\approx s_{sec}$.  
-\end{proposition}
+ Regev\cite{regev2005LWE} and Peikert \cite{peikert2009latticereduction} show that $\class{dist}$-$\lwe_{n, m, q, \chi}$ is secure when the distribution $\chi$ of errors is Gaussian, as follows.
+Let $\bar{\Psi}_\rho$ be the discretized Gaussian distribution with variance $(\rho q)^2/2\pi$, where $\rho \in (0,1)$ with $\rho q > 2\sqrt{n}$.  If GAPSVP and SIVP are hard to approximate~(on lattices of dimension $n$) within polynomial factors for quantum algorithms, then $\distLWE_{n, m, q, \bar{\Psi}_\rho^m}$ is secure. 
 
 The above formulation of $\LWE$ requires the error term to come from the discretized Gaussian distribution, which makes it difficult to use it for constructing fuzzy extractors (because using $w$ and $w'$ to sample Gaussian distributions will increase the distance between the error terms and/or reduce their entropy).
 %\subsection{LWE with uniform errors}
 %\label{subsec:LWE uniform error}
-Fortunately, recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$ when errors come from the uniform distribution over a small interval (assuming the security of $\LWE$ when errors come from the discretized Gaussian\bnote{Their reduction is ultimately to the same problems not to Gaussian LWE}\footnote{Micciancio and Peikert provide a similar formulation in~\cite{micciancio2013hardness}.  The result D\"{o}ttling and M\"{u}ller-Quade provides better parameters for our setting.}).  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it  into $m$ blocks.  The size of these blocks is dictated by the following result of D\"{o}ttling and M\"{u}ller-Quade:
+Fortunately, recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$, under the same assumptions, when errors come from the uniform distribution over a small interval\footnote{Micciancio and Peikert provide a similar formulation in~\cite{micciancio2013hardness}.  The result D\"{o}ttling and M\"{u}ller-Quade provides better parameters for our setting.}.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it  into $m$ blocks.  The size of these blocks is dictated by the following result of D\"{o}ttling and M\"{u}ller-Quade:
 %As stated above this has two advantages for Construction~\ref{cons:LWESecureSketch}: 1) the bits of $W$ can be used directly and \rep can output $w$ instead of $sam_w$ 2) there is a fixed number of bits required to sample each dimension.  
 %We present the formulation of D\"{o}ttling and M\"{u}ller-Quade: 
 %\begin{lemma}~\protect{~\cite[Theorem 5]{dottling2012}}
@@ -891,10 +886,10 @@ Fortunately, recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} s
 %This problem can be stated in the language of indistinguishability using the Decision-to-search reduction of Regev or Peikert:
 \begin{lemma}~\protect{~\cite[Corollary 1]{dottling2012}}
 \label{lem:uniform LWE decision}
-Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime and $m = m(n) = \poly(n)$ be an integer with $m\ge 3n$. Let $\sigma \in (0, 1)$ be an arbitrarily small  constant and let $\rho=\rho(n)\in (0,1/10)$ be such that $\rho q \geq 2n^{1/2+\sigma}m$. If the approximate decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard within a factor of $\tilde{O}(n^{1+\sigma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi$ the uniform distribution over $[-\rho q, \rho q]$,  $\distLWE_{n, m, q, \chi}$ is secure.
+Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime and $m = m(n) = \poly(n)$ be an integer with $m\ge 3n$. Let $\sigma \in (0, 1)$ be an arbitrarily small  constant and let $\rho=\rho(n)\in (0,1/10)$ be such that $\rho q \geq 2n^{1/2+\sigma}m$. If the approximate decision-version of the shortest vector problem (GAPSVP) and the shortest independent vectors problem (SIVP) are hard within a factor of $\tilde{O}(n^{1+\sigma}m/\rho)$ for quantum algorithms in the worst case, then, for $\chi$ the uniform distribution over $[-\rho q, \rho q]^m$,  $\distLWE_{n, m, q, \chi}$ is secure.
 \end{lemma}
 
-To extract pseudorandom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has many hardcore bits\bnote{Do we need to cite anything about hardcore?}.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting that their proof does not depend on the error distribution):
+To extract pseudorandom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has simultaneously many hardcore bits.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting that their proof does not depend on the error distribution):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
  If $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ secure then
@@ -1003,10 +998,10 @@ The formal statement is below~(proof in \secref{sec:proof lem i t poly time}):
 \begin{lemma}[Efficiency of $\decode_t$ when $t\leq d (m/n-2)\log n$]
 \label{lem:i t poly time}
 %Let $\vA, \vA X+W$ be a  $\distLWE_{n,m, q, \chi}$ instance where $m\geq 3n$.  Assume that $W$ is split into $m$ blocks of length $b$ and let $\dis$ be the Hamming distance over alphabet $2^b$. 
-Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq d(\frac{m}{n}-2)\log n$.  Then $\decode_t$ runs in expected time $O(n^{4d+3})$ operations in $\Fq$ (the expectation is taken over the input distribution\bnote{this needs to be more precise} $\vA, \vA X+W - W'$).  It outputs $X$ with probability $1-e^{-\Omega(n)}$ (this probability is over the choice of the random matrix  $\vA$).
+Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq d(\frac{m}{n}-2)\log n$.  Then $\decode_t$ runs in expected time $O(n^{4d+3})$ operations in $\Fq$ (the expectation is taken over the input distribution\bnote{this is probably wrong, because we have a nonzero probability of an infinite running time when $A$ has rank $<n$} $\vA, \vA X+W - W'$).  It outputs $X$ with probability $1-e^{-\Omega(n)}$ (this probability is over the choice of the random matrix  $\vA$).
 \end{lemma}
 \textbf{Note:}
-Even though we are correcting $O(\log n)$ errors, this corresponds to a super polynomial number of possible error patterns; the running time of $\decode_t$ is significantly better than exhaustive search over these error patterns. Furthermore, if we consider the setting of $t\leq m/n-2$, then $\decode_t$ will run in expected time $O(n^3)$ field operations (this does not immediately follow from \lemref{lem:i t poly time}, but requires a simple reanalysis).  Our main theorems get  better parameters when  $t\leq m/n-2$.  
+Even though we are correcting $O(\log n)$ errors, this corresponds to a super polynomial number of possible error patterns; the running time of $\decode_t$ is significantly better than exhaustive search over these error patterns. \lnote{Should we clarify this --- this is about constant errors rather than logarithmic: Furthermore, if we consider the setting of $t\leq m/n-2$, then $\decode_t$ will run in expected time $O(n^3)$ field operations (this does not immediately follow from \lemref{lem:i t poly time}, but requires a simple reanalysis).  Our main theorems get  better parameters when  $t\leq m/n-2$.  }
 
 %\textbf{Problems:} Construction~\ref{cons:LWESecureSketch} does not meet Definition~\ref{def:comp secure sketch}.  This is because the sampling algorithm may not be invertible.  Furthermore, in standard $\LWE$ the sampling algorithm is Gaussian and there is no fixed number of bits used to sample error in any dimension.  Approximating the Gaussian distribution using a fixed number of bits may be possible but there are still two error patterns which require a significantly different number of bits.  We will address both of these problems by sampling the error from a uniform distribution.
 
@@ -1025,7 +1020,7 @@ We now state a setting of parameters that yields a lossless construction.
 
 \begin{theorem}
 \label{thm:lossless secure extractor log}
-Let $n$ be a security parameter and let $t = c\log n$ for some positive constant $c$.    Let $d<c$ be a positive constant \bnote{need to describe $d$} and consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where  $b = \log 2(c/d+2) n^2 =O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c/d+2)n}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors% \lnote{removed (on lattices of dimension $n/4$)}  
+Let $n$ be a security parameter and let the number of errors $t = c\log n$ for some positive constant $c$.    Let $d$ be a positive constant (giving us a tradeoff between running time of $\rep$ and $|w|$). Consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where  $b = \log 2(c/d+2) n^2 =O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c/d+2)n}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors% \lnote{removed (on lattices of dimension $n/4$)}  
 using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds: \consref{cons:informal construction} is a $(\M, W, m\log |Z|, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
 The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3})$ operations over $\Fq$.
 % for following parameters:
@@ -1048,9 +1043,9 @@ As we already mentioned in the introduction, an alternative approach to building
 
 This approach (specifically, its analysis via \lemref{lem:fuzzy ext construction}) works as long as the amount of entropy $\tilde{m}$ of $w$ conditioned on the sketch $s$ remains high enough to run a computational extractor.  However, as discussed in \secref{sec:impossCompSecSketch}, $\tilde{m}$ decreases with the error parameter $t$ due to coding bounds, and it is conceivable that, if $W$ has  barely enough entropy to begin with, it will have too little entropy left to run a computational extractor once $s$ is known.
 
-In contrast, our approach does not require the entropy of $w$ conditioned on $p=(\vA, \vA X+w)$ to  be high enough for a computational extractor. Instead, we require that $w$ is not computationally recoverable  given $p$.  This requirement is weaker.  The key difference in our approach is that instead of extracting from $w$, we hide secret randomness using $w$. Computational extractors are not allowed to have private randomness \cite[Definition 3]{krawczyk2010cryptographic}.
+In contrast, our approach does not require the entropy of $w$ conditioned on $p=(\vA, \vA X+w)$ to  be high enough for a computational extractor. Instead, we require that $w$ is not computationally recoverable  given $p$.  This requirement is weaker---in particular, in our construction, $w$ may have no information-theoretic entropy conditioned on $p$.  The key difference in our approach is that instead of extracting from $w$, we hide secret randomness using $w$. Computational extractors are not allowed to have private randomness \cite[Definition 3]{krawczyk2010cryptographic}.
 
-The main advantage of our analysis (instead of sketch-and-comp-extract) is that security need not depend on the error-tolerance $t$.  Our codes (namely, random linear codes) can tolerate higher $t$ than can be efficiently decoded.  In the case of secure sketches, codes tolerating such high $t$ would leave little entropy in $w$\bnote{this sentence worries me a little}.  In our construction, the error-tolerance depends only on the best available decoding algorithm for random linear codes.  
+The main advantage of our analysis (instead of sketch-and-comp-extract) is that security need not depend on the error-tolerance $t$.  In our construction, the error-tolerance depends only on the best available decoding algorithm for random linear codes, because decoding algorithms will not reach the information-theoretic decoding radius.
 
 Unfortunately, LWE parameter sizes require relatively long $w$. Therefore, in practice, sketch-then-comp-extract will beat our construction  if the computational extractor is instantiated efficiently based on assumptions other than LWE (for example, a cryptographic hash function for an extractor and a block cipher for a PRG). However, we believe that our conceptual framework can lead to better constructions.  Of particular interest are  other codes that are easy to decode up to $t$ errors but become computationally hard as the number of errors increases.
 
@@ -1077,9 +1072,10 @@ Let $U$ denote the uniform distribution over $Z^m$ for an alphabet $Z\subset \Fq
 If $\distLWE_{n, m,q, U}$ is secure, then $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ is also secure.
 \end{theorem}
 
-\thref{thm:blockLWE} holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi$ be an arbitrary error distribution.  Define $\chi'$ as the distribution where $m$ dimensions are sampled according to $\chi$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi'}$.
+\thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi$ be an arbitrary error distribution.  Define $\chi'$ as the distribution where $m$ dimensions are sampled according to $\chi$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi'}$.
 
-The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error, search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
+The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error,  search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
+
 
 
 \thref{thm:blockLWE} allows us to construct a lossless computational fuzzy extractor from block-fixing sources: 
@@ -1095,9 +1091,8 @@ The intuition for this result is as follows.  Providing a single sample with no 
 
 \begin{theorem}
 \label{thm:lossless block sketch log}
-Let $n$ be a security parameter and let $t = c\log n$ for some positive constant $c$.  Let $d<c$ be a positive constant and consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where $b \approx \log 2(c/d+2)n^2 = O(\log n)$.  Let $\mathcal{M} = Z^{m+\alpha}$ where $m= (c/d+2)n=O(n)$ and $\alpha \leq n/3$. 
+Let $n$ be a security parameter and let $t = c\log n$ for some positive constant $c$.  Let $d\le c$ be a positive constant and consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where $b \approx \log 2(c/d+2)n^2 = O(\log n)$.  Let $\mathcal{M} = Z^{m+\alpha}$ where $m= (c/d+2)n=O(n)$ and $\alpha \leq n/3$. 
 Let $\mathcal{W}$ be the class of all $(m+\alpha, m, |Z|)$-symbol fixing sources.  If GAPSVP and SIVP are hard to approximate within polynomial factors 
-%\lnote{removed (on lattices of dimension $n/6$)} 
 using quantum algorithms, then  there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec} = \poly(n)$
  there exists $\epsilon = \ngl(n)$ 
 such that the following holds: \consref{cons:informal construction} is a $(\M, \mathcal{W}, m\log |Z|, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
@@ -1672,7 +1667,7 @@ Let $D$ be a distinguisher that breaks $\distLWE_{(m+\alpha), (n+\alpha+\beta), 
 \[
 |\Pr[D(\vA, \vA\vx+\ve) = 1] - \Pr[D(\vA, \vu) =1]|> \epsilon.
 \]
-We build a distinguisher that breaks $\distLWE_{m, n, q, \chi}$.  Let $\vA'$ be uniform over $\Fq^{m\times n}$, $\vx'$ be uniform over $\Fq^n$ and $\ve'$ be drawn from $\chi^m$.  It suffices to build a distinguisher~(of polynomial size) $D'$  where 
+We build a distinguisher that breaks $\distLWE_{m, n, q, \chi}$.  Let $\vA'$ be uniform over $\Fq^{m\times n}$, $\vx'$ be uniform over $\Fq^n$ and $\ve'$ be drawn from $\chi$.  It suffices to build a distinguisher~(of polynomial size) $D'$  where 
 \begin{align}
 \label{eq:block LWE dist}
 |\Pr[D'(\vA', \vA'\vx'+\ve') = 1] - \Pr[D'(\vA', \vu) =1]|> (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon.
@@ -1985,7 +1980,7 @@ An iteration of $\decode_t$ succeeds when all selected rows of $\vA_{i_1,..., i_
 &\geq  \prod_{i=0}^{2n-1}\left( 1-\frac{d\log n}{n}\left(\frac{m-2n}{m-i}\right)\right)\geq \prod_{i=0}^{2n-1}\left( 1-\frac{d\log n}{n}\right) \\
 &= \left(1-\frac{d\log n}{n}\right)^{2n}  = \left(\left(1-\frac{d\log n}{n}\right)^{\frac{n}{d\log n}}\right)^{2d\log n}\geq \frac{1}{4^{2d\log n}} = \frac{1}{n^{4d}}
 \end{align*}
-Now, we consider the probability  $\vA_{i_1,..., i_{2n}}$  rank $n$.  This probability is at least $1-e^{-\Omega(n)}$~(see \clref{cl:full rank matrix}).  Thus, the probability that a given iteration succeeds $\frac{1}{n^{4d}} - e^{-\Omega(n)}$.  
+Now, we consider the probability  $\vA_{i_1,..., i_{2n}}$  has rank at least $n$.  This probability is at least $1-e^{-\Omega(n)}$~(see \clref{cl:full rank matrix}).  Thus, the probability that a given iteration succeeds $\frac{1}{n^{4d}} - e^{-\Omega(n)}$.  
 Thus, the expected number of iterations in step 2 at most  $2n^{4d}$.  We assume all matrix operations can be completed in  $O(n^3)$ operations over $\Fq$, giving a total of expected $O(n^{4d+3})$ operations over $\Fq$.  
 \end{proof}
 
