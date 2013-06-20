@@ -1000,7 +1000,7 @@ The formal statement is below~(proof in \secref{sec:proof lem i t poly time}):
 \begin{lemma}[Efficiency of $\decode_t$ when $t\leq d (m/n-2)\log n$]
 \label{lem:i t poly time}
 %Let $\vA, \vA X+W$ be a  $\distLWE_{n,m, q, \chi}$ instance where $m\geq 3n$.  Assume that $W$ is split into $m$ blocks of length $b$ and let $\dis$ be the Hamming distance over alphabet $2^b$. 
-Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq d(\frac{m}{n}-2)\log n$.  Then $\decode_t$ runs in expected time $O(n^{4d+3})$ operations in $\Fq$.  It outputs $X$ with probability $1-e^{-\Omega(n)}$ (this probability is over the choice of the random matrix  $\vA$ and random choices made by $\decode_t$).
+Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq d(\frac{m}{n}-2)\log n$.  Then $\decode_t$ runs in expected time $O(n^{4d+3})$ operations in $\Fq$~(this probability is over the choice of random coins of \rep).  It outputs $X$ with probability $1-e^{-\Omega(n)}$ (this probability is over the choice of the random matrix  $\vA$ and random choices made by $\decode_t$).
 \end{lemma}
 
 %\textbf{Problems:} Construction~\ref{cons:LWESecureSketch} does not meet Definition~\ref{def:comp secure sketch}.  This is because the sampling algorithm may not be invertible.  Furthermore, in standard $\LWE$ the sampling algorithm is Gaussian and there is no fixed number of bits used to sample error in any dimension.  Approximating the Gaussian distribution using a fixed number of bits may be possible but there are still two error patterns which require a significantly different number of bits.  We will address both of these problems by sampling the error from a uniform distribution.
@@ -1201,37 +1201,7 @@ In the information theoretic setting, Dodis et. al.~\cite{DBLP:journals/siamcomp
 \bibliographystyle{alpha}
 \bibliography{crypto}
 \appendix
-\section{Random Linear Codes Have High Distance}
-%\subsection{Notions of Computational Entropy}
-%\label{sec:notionsEntropy}
-%In this sections we provide some further definitions of computational entropy.  HILL entropy is defined in \secref{sec:impossCompSecSketch}.  HILL entropy generalizes the notion of indistinguishability.  Yao entropy~\cite{DBLP:conf/focs/Yao82a, barak-computational} generalizes the notion of compressibility.  Here we present the computational definition due to~\cite{DBLP:conf/eurocrypt/HsiaoLR07}:
-%\begin{definition}
-%\label{def:yao entropy}
-%For a distribution $X, Z$ we say that $X$ has Yao entropy at least $k$ conditioned on $Z$, denoted $H^{\yao}_{\epsilon, s}(X|Z)\geq k$, if for every pair of circuits $c,d$ of total size at most $s$ with the outputs of $c$ having length $\ell$,
-%\[
-%\Pr_{(x,z)\leftarrow (X,Z)}[d(c(x,z),z) = x]\leq 2^{\ell-k}+\epsilon
-%\]
-%\end{definition}
-%It should be clear that HILL entropy implies Yao entropy in both the unconditional and conditional case.  In the conditional case it is possible for Yao entropy to be significantly larger than HILL entropy~\cite{DBLP:conf/eurocrypt/HsiaoLR07}.  We also use a less common notion called unpredictability entropy.  This measures an adversaries ability to recover a secret given some side information, see \defref{def:unp entropy}.
-%Unpredictability entropy is a notion between HILL and Yao entropy:
-%\begin{lemma}~\cite[Lemmas 8, 9]{DBLP:conf/eurocrypt/HsiaoLR07}\label{lem:hillimplyunpimplyyao}
-%\[ H^{\hill}_{\epsilon, s}(X|Z)\geq k \Rightarrow H^{\unp}_{\epsilon, s}(X|Z)\geq k\Rightarrow H^{\yao}_{\epsilon, s}(X|Z)\geq k.
-%\]
-%\end{lemma} 
-%\subsection{Unique Witness Relations}
-
-%We will need the ability to verify if we have a correct solution in~\consref{cons:informal construction}.  
-%
-%\begin{definition}
-%Let $R$ be a relation.  We say that $R$ is $s_{ver}$-\emph{unique witness verifiable} if $\forall y$ there exists a unique $x$ such that $R(x, y)=1$ and $R(x, y) =1$ is computable in time $s_{ver}$.
-%\end{definition}
-%We can relax this definition slightly to allow a relation that is unique witness verifiable with all but negligible probability~(when $x, y$ grow with the security parameter).
-%
-%\begin{definition}
-%\label{def:unique witness relation}
-%Let $R:\mathcal{M}_1\times \mathcal{M}_2\rightarrow \zo$.  We say that $R$ is $(\epsilon, s_{ver})$-\emph{unique witness verifiable} if over $y\in \mathcal{M}_2$, drawn uniformly, the probability that $\exists x_1, x_2, x_1\neq x_2$ such that $R(x_1, y) =1 = R(x_2, y)$ is at most $\epsilon$ and $R$ is computable in time $s_{ver}$.
-%\end{definition}
-%
+\section{Properties of Random Linear Codes}
 For efficient decoding of \consref{cons:informal construction}, we need the $\LWE$ instance to have high distance with overwhelming probability.  We will use the $q$-ary entropy function, denoted $H_q(x)$ and defined as $H_q(x) = x\log _q(q-1) - x\log_q x - (1-x)\log_q (1-x)$.  Note that $H_2(x) = -x\log x - (1-x)\log (1-x)$.  In the region $[0, \frac{1}{2}]$ for any value $q'\geq q$, $H_{q'}(x)\leq H_{q}(x)$.  The following theorem is standard in coding theory:
 
 \begin{theorem}~\cite[Theorem 8]{venkatLecture}
@@ -1250,408 +1220,21 @@ Let $c$ be some constant.  Let $\delta = \tau/m = \frac{c\log n}{n}$.  We show t
 \item $\frac{c\log n}{n}< 1/2$, so we can work with the binary entropy function $H_2$.  
 \item $\frac{c\log n}{n}< .1 < 1/2$ and thus $H_q(\frac{c\log n}{n})< H_q(.1)$. 
 \end{itemize}  Putting these statements together, for large enough $n$, $H_q(\frac{c\log n}{n})< H_q(.1) < H_2(.1)< 1/2$ as desired.  This completes the proof.
-
-% and note that there $\exists \epsilon$ where $0<\epsilon< 1-H_q(\frac{c\log n}{2n})< 1-H_q(\frac{c\log n}{m})$ and $1-H_q(c\log n/n) -\epsilon =1/2$ or equivalently $H_q(c\log n/n)+\epsilon = 1/2$.  Let $d$ be some constant such that $q< n^d$.  Consider the value of $H_q(\frac{c\log n}{n})$:
-%\begin{align*}
-%H_q(\frac{c\log n}{n})&\leq  H_{n^d}(\frac{c\log n}{n})\\
-%&=\frac{c\log n}{n} \log_{n^d}(n^d-1) - \frac{c\log n}{n} \log_{n^d} (\frac{c\log n}{n}) - (1-\frac{c\log n}{n})\log_{n^d} (1-\frac{c\log n}{n})\\
-%&\leq \frac{c\log n}{n}  - \frac{c\log n}{n} \log_{n^d} (\frac{c\log n}{n}) - (1-\frac{c\log n}{n})\log_{n^d} \left(1-\frac{c\log n}{n}\right)\\
-%&=\frac{c\log n}{n}  - \frac{c\log n}{n} \left(\log_{n^d} (\frac{c\log n}{n})-\log_{n^d} (\frac{n-c\log n}{n}) \right)- \log_{n^d} \left(1-\frac{c\log n}{n}\right)\\
-%&=\frac{c\log n}{n}  - \frac{c\log n}{n} \left(\log_{n^d} (\frac{c\log n}{n-c\log n}) \right)- \log_{n^d} \left(1-\frac{c\log n}{n}\right)\\
-%&=\frac{c\log n}{n}  + \frac{c\log n}{n} \left(\log_{n^d} (\frac{n}{c\log n}-1) \right)- \log_{n^d} \left(1-\frac{c\log n}{n}\right)\\
-%&=\frac{c\log n}{n}  + \frac{c\log n}{n} \left(\log_{n^d} n \right)- \log_{n^d} \left(\frac{1}{n}\right)\\
-%&\leq \frac{c\log n}{n}  + \frac{c\log n}{dn} - \log_{n^d} \left(\frac{1}{n}\right)\\
-%&\leq \frac{c\log n}{n}  + \frac{c\log n}{dn} + \frac{1}{d}
-%\end{align*}
-%Thus for large enough values of $n$, $H_{n^d}(\frac{c\log n}{n})\leq 1/2 + O(\frac{c\log n}{dn}) \leq 2/3$, thus $1 - H_q(\frac{c\log n}{n})> 1-H_{n^d}(\frac{c\log n}{n} )> 1/3$.  Taking $\epsilon  = 1/21/6$ the conditions of the corollary are satisfied.
 \end{proof}
 
-\ignore{
-\section{Possibility of Constructing Computational Fuzzy Extractors}\label{ssec:constructing comp fuzzy extractors}
-In the \secref{sec:imp HILL sketch}, we showed that defining a computational secure sketch using HILL entropy connects the parameters to the best constructible codes.  Thus, some entropy drop seems necessary when considering $H^\hill_{\epsilon, s}(X | SS(X))$.  However, in \propref{prop:prg comp fuzzy extractor}, we showed that a computational fuzzy extractor exists using a pseudorandom generator.  A natural question is whether this is necessary.  Do there exist clever constructions of computational fuzzy extractors that rely on the hardness of some cryptographic primitive that is easy within some distance $t$.  We begin by recalling the important parameters of a computational fuzzy extractor:
-\begin{itemize}
-\item The input entropy $m$.
-\item The length of the output string $\ell$.  This output string is required to be $(\epsilon, s_{sec})$-pseudorandom.
-\item The accepting distance $t$.
-\end{itemize}
-We consider the possibility of constructing a computational fuzzy extractor based on the remaining entropy of $W$ conditioned on the string $P$~(generated by $(R, P)\leftarrow \gen(W)$).  We first define a parameter $k_{prg}$.  Let $k_{prg}$ be the smallest integer such that there exists a pseudorandom generator from $k_{prg}$ to at least $k_{prg}+1$ bits.  More precisely, let $k_{prg}$ be the smallest integer such that there exists a deterministic function $prg:\{0,1\}^{k_{prg}}\rightarrow \{0,1 \}^{k_{prg}+1}$ such that $\forall D\in \mathcal{D}_s$: $\delta^D(prg(U_{k_{prg}}), U_{k_{prg}+1})<\epsilon$ for some negligible $\epsilon$ and super polynomial $s$.  We now classify the existence of computational fuzzy extractors based on this parameter.  Let $CODE$ be some error-correcting code with parameters, $(n, k, 2t+1)$.  We define $|CODE| = n-k$.
-
-\begin{tabular}{c | c}
-Remaining Entropy & Constructible?\\\hline
-$CODE$ is computationally computable. & Yes, use \propref{prop:prg comp fuzzy extractor} \\
-$H_\infty (W) - |CODE|\geq k_{prg}$\\\hline
-$CODE$ exists, not necessarily efficiently computable. & Seems impossible to disprove, efficient\\
-$H_\infty(W) - |CODE|\geq k_{prg}$ & construction of $CODE$ admits \propref{prop:prg comp fuzzy extractor}.\\\hline
-Let $CODE$ be the best code. & Unknown, main area of interest\\
-$H_\infty(W) - |CODE|< k_{prg}\leq H_\infty(W)$\\\hline 
-$H_\infty(W)< k_{prg}$ & Seems to imply existence \\
-&of improved $prg$ by using $\gen$.
-\end{tabular}
-
-We begin by focusing on the last case where $H_\infty(W) < k_{prg}$.  We first introduce two concepts, efficiently-generatable sources and sources that are $prg$ qualified.
-
-\begin{definition}
-A distribution $W$ over $\mathcal{M}$ is \emph{$(s_{gen}, \ell)$-efficiently-generatable} if there exists a deterministic circuit $G$ of size at most $s_{gen}$ such that $W \overset{d}= G(U_{\ell})$.
-\end{definition}
-\begin{definition}
-A distribution $W$ over $\mathcal{M}$ is \emph{$(\epsilon, s, s_{f})$ - prg-qualified} if there exists a deterministic function $f:\mathcal{M}\rightarrow \{0,1\}^d$~(computable in space $s_{f}$) such that for all $D\in\mathcal{D}_s$, $\delta^D(f(W), U)<\epsilon$ and $d\geq k_{prg}$\footnote{We can extend this definition to allow $f$ to have public-randomness.  The definition is not meaningful if $f$ has private randomness as $f$ can simply generate a fresh seed of length $d$.}.
-\end{definition}
-We use the term prg-qualified as the composition of $f$ and a $prg$ gives pseudorandom bits:
-\begin{proposition}
-Let $W$ over $\mathcal{M}$ be a $(\epsilon_{W}, s_W, s_{f})$-prg-qualified distribution with function $f$ to $d$ bits.  Furthermore let $prg:\{0,1\}^k\rightarrow \{0,1\}^{k+1}$ be a $(\epsilon_{prg}, s_{sec})$- pseudorandom-generator~(computable by a circuit of size $s_{prg}$) where $k\leq d$.  Then $\forall D\in\mathcal{D}_{\min\{s_W-s_{prg}, s_{sec}\}}$
-\[
-\delta^D(prg(f(W)_{1,..., k}), U_{k+1})< \epsilon_W + \epsilon_{prg}.
-\]
-\end{proposition}
-\begin{proof}
-Let $W$ be a $(\epsilon_{W}, s_W, s_{f})$-prg-qualified distribution to $d$ bits.  Furthermore let $prg:\{0,1\}^k\rightarrow \{0,1\}^{k+1}$ be a $(\epsilon_{prg}, s_{sec})$- pseudorandom-generator where $k\leq d$.  We proceed by contradiction.  Suppose that $\exists D$ of size at most $s= \min\{s_W -s_{prg}, s_{sec}\}$ such that $\delta^D(prg(f(W)), U_{k+1})\geq \epsilon_W+\epsilon_{prg}$.  By the triangle inequality, one has:
-\begin{align*}
-\epsilon_W+\epsilon_{prg}&\leq \delta^D(prg(f(W)_{1,...,k}), U_{k+1})\\
-&\leq \delta^D(prg(f(W)_{1,...,k}, prg(U_k)) + \delta^D(prg(U_k), U_{k+1})
-\end{align*}
-Thus, either $\delta^D(prg(f(W)_{1,...,k}, prg(U_k))\geq \epsilon_{W}$ or $\delta^D(prg(U_k), U_{k+1})\geq \epsilon_{prg}$.
-
-In the first case, we construct a distinguisher $D'$ that contradicts the $(\epsilon_W, s_W, s_{f})$-qualification of $W$.  $D'$ upon receiving input $x\in \{0,1\}^d$ computes $D(prg(x))$ and outputs $D$'s answer.  $D'$ is of size at most $s + s_{prg} \leq s_W-s_{prg}+s_{prg} = s_W$ and has advantage at least $\epsilon_W$.  This is a contradiction.
-
-In the second case, $D$ immediately contradicts the $(\epsilon_{prg}, s_{sec})$ security of $prg$.  Thus, we have a contradiction in both cases.  This completes the proof.
-\end{proof}
-
-We now return to the question of whether we can build a computational fuzzy extractor when $H_\infty(W)<k_{prg}$.
-\begin{theorem}
-
-\end{theorem}
-\begin{proof}
-\bnote{Do the proof!}
-\end{proof}
-}
-%We now provide a candidate construction of fuzzy extractor based directly on a computational problem~(the LWE problem introduced by Regev~\cite{regevLWEsurvey}).
-%\begin{definition}
-%An $(\mathcal{M}, m, \tilde{m}, t, s_{dist}, \epsilon)$-\emph{computational secure sketch} is a pair of randomized algorithms, ``sketch'' (\sketch) and ``recover'' (\rec) with the following properties:
-%\begin{enumerate}
-%\item The sketching procedure \sketch on input $w\in\mathcal{M}$ returns two strings, $(x,s)\in\{0,1\}^*$ where $x$ is drawn from a distribution $X$ and $\Hoo(X)\geq m$.
-%\item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $s\in\{0,1\}^*$.  The \emph{correctness} property of a computational secure sketches guarantees that if $d(w,w')\leq t$, then $Rec(w', SS(w)_2) = SS(w)_1$.  
-%\item The \emph{security} property guarantees that for any distribution $W$ over $\mathcal{M}$ with min-entropy $m$, observing $SS(W)_2$ does not significantly help the adversary.  That is, $H^\hill_{\epsilon, s_{dist}}(X | SS(W)_2)\geq \tilde{m}$.
-%\end{enumerate}
-%A secure sketch is \emph{efficient} if \sketch runs in expected polynomial time and \rec runs in expected polynomial time if $d(w', w) < t$.
-%\end{definition}
-%This definition has two significant changes from the definition of a secure sketch.  First, we do not require that the distribution $X$ is equal to the input distribution $W$.  This is because constructions will utilize computationally hard problems that may be difficult to invert.  However, we can consider the special case where $X=W$.  None of the power of a secure sketch is lost when $X\neq W$.
-
-%\textbf{Note: }  The entropy of $X$ is somehow limited by the entropy of $X$ we cannot completely hide some very high entropy string, using a low entropy string.  This would have to be reflected in the parameters of \hill entropy but I am not yet sure how to formalize this.
-%
-% Furthermore, note there are two conditions on the distribution $X$, $\Hoo(X)\geq m$ and $H^\hill_{\epsilon, s}(X|SS(W)_2)\geq \tilde{m}$.  This means that if an adversary does not see the helper value $s$ it has true entropy and its computational entropy is decrease by seeing $s$.  
-
-%Second, we now require that the value $X$ only has conditional \hill entropy.  Considering the special case where $m=\tilde{m}$ is interesting but constructions that improve on the $\tilde{m}$ achieved in secure sketch are interesting.  Furthermore, it seems natural to consider the case where $|\rec|<s$ however, \rec has a significantly more difficult task, \rec must recover all of $x$ while the distinguisher in the conditional \hill entropy definition only needs to distinguish $x$ from a high average min-entropy distribution.
-%
-%Thus, we can define a stronger definition where all of these desiderata are achieved.  
-%
-%\begin{definition}
-%A $(\mathcal{M}, m, \tilde{m}, t, s, \epsilon)$-computational secure sketch is strong if the following properties hold:
-%\begin{enumerate}
-%\item Seeing $s$ does not decrease the conditional $\hill$ entropy of $X$.  That is, $m=\tilde{m}$.
-%\item There exists a circuit of \rec' where the size of \rec' is polynomial, $|\rec'|<s_{dist}$ and \rec' satisfies the correctness property.
-%\end{enumerate}
-%\end{definition}
-\ignore{
-\subsection{Learning With Errors (\class{LWE})}
-\label{subsec:LWE in detail}
-The LWE problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise". For positive integers $n$ and $q \ge 2$, a vector $\vect{s} \in \Fq$, and a probability distribution $\chi$ on $\Fq$, let $A_{\vect{s}, \chi}$ be the distribution obtained by choosing a vector $\vect{a} \overset{\$}\leftarrow \Fq^n$ uniformly at random and a noise term $e \overset{\$}\leftarrow \chi$, and outputting $(\vect{a}, \langle \vect{a}, \vect{s}\rangle + e) \in (\Fq^m, \Fq)$. A formal definition follows.
-
-
-\label{sec:LWEoverview}
-\begin{problem}[\class{LWE}]\label{prob:LWE}
-Let $n$ be the security parameter. For a integer $q = q(n)$ and the error distribution $\chi = \chi(n)$ over $\Fq$, the Learning With Error problem $\class{LWE}_{n, m, q,\chi}$ is defined as follows: given access to an oracle that outputs $m$ samples from $A_{\vect{s}, \chi}$ for a uniformly random $\vect{s}$, output $\vect{s}$ with high probability.
-\end{problem}
-
-We will use the fixed form of the LWE assumption where a matrix is prepared ahead of time.  The matrix form is as follows: $\class{LWE}$ find $\vect{x}$ given $(\vect{A},\vect{Ax+e})$, where $\vect{A}\leftarrow \Fq^{m \times n}$ is chosen uniformly and the error vector $\vect{e} \leftarrow \chi$.
-Results of Regev~\cite{regev2005LWE} and Peikert~\cite{peikert2009latticereduction} connect the hardness of the LWE problem to solving worst-case lattice problems.  The matrix $\vA$ and secret $\vx$ are drawn from the uniform distribution, while the error term is drawn from a discretized Gaussian distribution $\bar{\Psi}_\alpha$~(following the notation of~\cite{regev2005LWE}).  We denote by $\bar{\Psi}_\alpha$ the discretized Gaussian distribution over $\Fq$ with variance $(\alpha q)^2/(2\pi)$.  Here we present the theorem of~\cite{regev2005LWE}.
-
-\begin{theorem}~\cite[Theorem 3.1]{regev2005LWE}
-Let $n$ be a security parameter and $q = q(n) \in\Fq^+$, let $\alpha = \alpha(n)\in (0,1)$ be such that $\alpha q > 2\sqrt{n}$.  Let $\vA\in\Fq^{m\times n}, X\in \Fq^n$ be chosen uniformly at random and $E$ be chosen according to $\bar{\Psi}_\alpha$.  If there exists a PPT-algorithm $\mathcal{I}$ such that $\Pr_{\vA, X, E}[X\leftarrow  \mathcal{I}(\vA, \vA X+E) ]>\epsilon$ for some noticeable $\epsilon$, then there exists an efficient quantum-algorithm that approximates the decision-version of the shortest vector problem~(GAPSVP) and the shortest independent vectors problem~(SIVP) to within $\Omega(n/\alpha)$ in the worst case.
-\end{theorem}
-
-We will consider a generalized assumption of \probref{prob:LWE}:
-\begin{assumption}
-\label{assume:general LWE}
-Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ and $q=q(n)\geq 2$ be integers and let $\chi$ be a distribution on $\Fq$.  If $X\in\Fq^n, \vA\in\Fq^{m\times n}$ are chosen uniformly at random and $E$ is chosen according to $\chi$, then for all $\mathcal{I}$ of size at most $s$
-\[
-\Pr_{\vA, X, E}[X\leftarrow \mathcal{I}(\vA, \vA X+E)]<\epsilon
-\]
-\end{assumption}
-Furthermore, Regev shows a decision to search equivalence for $q=\poly(n)$, so we can consider an equivalent indistinguishability formulation:
-\begin{assumption}
-\label{assume:indist LWE}
-Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be prime and let $\chi$ be a distribution on $\Fq$.  If $X\in\Fq^n, A\in\Fq^{m\times n}, B\in\Fq^m$ are chosen uniformly at random and $E$ is chosen according to $\chi$, then for all $\mathcal{D}$ of size at most $s$:
-\[
-\Pr[D(\vA, \vA X+E)=1]-\Pr[D(\vA, B)=1]<\epsilon
-\]
-\end{assumption}
-We can restate Assumption~\ref{assume:indist LWE} in terms of unpredictability entropy~(see Definition~\ref{def:unp entropy}).  
-}
-
-%\section{\lemref{lem:conversion to unpredictability}}
-%\label{sec:proof of unpred conversion}
-%In this section we show that for an indistinguishable LWE instance, the unpredictability entropy of $E$ conditioned on $\vA X+E$ remains high.  %We first note that any inverter that can recover $X$ can recover $E$ and vice versa by using simple a single addition and multiplication~(and vice versa).  Thus, we have the following claim:
-%%\begin{claim}
-%%\label{lem:unp of x and e}
-%%Let $A, X, E$ be as above, then:
-%%\begin{itemize}
-%%\item $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E)\geq k \Rightarrow H^{\unp}_{\epsilon, s'}(E| \vA, \vA X+E) \geq k$ for $s'\approx s$.
-%%\item $H^{\unp}_{\epsilon, s}(E | \vA, \vA X+E) \geq k \Rightarrow H^{\unp}_{\epsilon', s'}(X | \vA, \vA X+E) \geq k'$ for $k'\approx k, \epsilon' \approx \epsilon, s'\approx s$. 
-%%\end{itemize}
-%%\end{claim}
-%%In the body of the text we use \lemref{lem:unp of x and e} to present  \assref{assume:indist LWE} in terms of unpredictability entropy~(\assref{assume:entropy LWE}).
-%%We now restate Assumption~\ref{assume:indist LWE} in terms of unpredictability entropy:
-%%\begin{assumption}
-%%\label{assume:entropy LWE}
-%%Let $n$ be a security parameter, let $m = m(n) = \poly(n)$ be an integer and $q = q(n) = \poly(n)$ be prime and let $\chi$ be a distribution on $\Fq$.  If $X\in\Fq^n, A\in\Fq^{m\times n}$ are chosen uniformly at random and $E$ is chosen according to $\chi$, $H^{\unp}_{\epsilon, s}(X | A, AX+E) =H^{\unp}_{\epsilon, s'}(E| A, AX+E) \geq m\log q $ for $s'\approx s$.  
-%%\end{assumption}
-%%For clarity, we delay the proof of \clref{lem:unp of x and e} until the end of this section~(the proof is quite straightforward).
-%We first recall a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009}.  This says that if $\distLWE$ is hard then $X$ has many hardcore bits.  We state their result for a general error distribution~(noting their proof does not consider the error distribution anywhere):
-%\begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
-%\label{lem:many hardcore bits}
-%Let $n>0$ be an integer, $q\geq 2$, let $\chi$ be an error distribution over $\zq$ and $k\leq n$ be an integer.  Let $\vA\in \zq^{m\times n} , X\in\zq^n$ and $E$ be distributed according to $\chi^m$.  Then $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k}| \vA, \vA X+E )= k\log q$ assuming $\distLWE_{(n-k, m, q, \chi)}$.
-%\end{lemma}
-%
-%\begin{proof}[Proof of \lemref{lem:conversion to unpredictability}]
-%Assume that $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ hard and that $m\geq n$.  Let $\vA\in \zq^{m\times n}, X\in \zq^n$ and $E$ be distributed according to $\chi^m$.  Then according to \lemref{lem:many hardcore bits} we know that $H^{\hill}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA , \vA X+E)\geq k\log q$.  By \lemref{lem:hillimplyunpimplyyao}, we know that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA, \vA X+E)\geq k\log q$.  To expand to $E$ we use the following claim:
-%
-%\begin{claim}
-%Let $\vA, X, E$ be distributed as in \lemref{lem:conversion to unpredictability} and $m\geq n$ and let $k\leq n$.  Then 
-%\[
-%H^{\unp}_{\epsilon', s_{sec}'} ( E | \vA X+ E) \geq H^{\unp}_{\epsilon, s_{sec}} ( X_{1,..., k} | \vA X+E)
-%\]
-%\end{claim}
-%%\begin{claim}
-%%If $H^{\unp}_{0, s}(X_{1,..., k} | Z) \geq k$ then $H^{\unp}_{0, s}(X|Z)\geq k$.
-%%\end{claim}
-%%\begin{proof}
-%%Suppose that $H^{\unp}_{0, s}(X|Z)< k$ that is there exists a circuit $C$ of size at most $s$ such that $\Pr[C(Z) = X]> 2^{-k}$.  Then let $C'$ be a circuit that simply takes the output of $C$ and returns the first $k$ bits.  Then $\Pr[C'(Z) = X_{1,...,k}]\geq \Pr[C(Z) = X] > 2^{-k}$.  This completes the claim.
-%%\end{proof}
-%
-%%\begin{claim}
-%%If $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | Z) \geq k$ then $H^{\unp}_{\epsilon, s_{sec}'}(X|Z)\geq k$ for $s_{sec} \approx s_{sec}'$.
-%%\end{claim}
-%%\begin{proof}
-%%Assume that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,...,k}|Z)\geq k$.
-%%Suppose that $H^{\unp}_{\epsilon, s_{sec}'}(X|Z)< k$.  Let $Y$ be a distribution such that $\delta^{\mathcal{D}_{s_{sec}'}}((X, Z), (Y, Z))\leq \epsilon$.  Furthermore, let $C$ be a circuit of size at most $s_{sec}'$ where $\Pr[C(Z) = Y] > 2^{-k}$.  Define the circuit $C'$ that outputs the first $k$ bits of $C$'s output.  Thus, $\Pr[C'(Z) = Y_{1,..., k}] \geq \Pr[C(Z) = Y] > 2^{-k}$.  Note that $\delta^{\mathcal{D}_{s_{sec}}}((X_{1,...,k}, Z), (Y_{1,..., k}, Z))<\delta^{\mathcal{D}_{s_{sec}'}}((X, Z), (Y, Z))\leq \epsilon$.  Together, these two facts contradict $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k}|Z)\geq k$.
-%%This completes the claim.
-%%\bnote{This claim isn't accurate because we can't show for all $Y_{1,..., k}$.  In order to complete the proof we need to show that $\forall Y_{1,..., k}$ such that $(X_{1,..., k}, Z), (Y_{1,...k}, Z)<\epsilon$ there exists an extension which is also indistinguishable.}
-%% that is there exists a circuit $C$ of size at most $s$ such that $\Pr[C(Z) = X]> 2^{-k}$.  Then let $C'$ be a circuit that simply takes the output of $C$ and returns the first $k$ bits.  Then $\Pr[C'(Z) = X_{1,...,k}]\geq \Pr[C(Z) = X] > 2^{-k}$.  This completes the claim.
-%%\end{proof}
-%
-%%\begin{claim}
-%%If $H^{\yao}_{\epsilon, s_{sec}}(X_{1,..., k} | Z)\geq k$ then $H^{\yao}_{\epsilon , s_{sec}'}(X|Z)\geq k$ for $s_{sec}\approx s_{sec}'$.
-%%\end{claim}
-%%Suppose that $H^{\yao}_{\epsilon, s_{sec}}(X_{1,..., k} |Z ) \geq k$.  This implies $\exists c, d$ of total size $s_{sec}$ where $c$ has outputs of length $\ell$ such that $\Pr[d(c(X_{1,..., k}, Z), Z) = X_{1,..., k}] \leq 2^{\ell -k} + \epsilon$.  Furthermore, suppose $\forall c', d'$ of total size $s_{sec}$ where $c$ has output length $\ell$ and $\Pr[d(c(X), Z), Z) = X] > 2^{\ell-k} +\epsilon$.
-%%
-%%
-%%Thus, we know that $H^{\unp}_{\epsilon, s_{sec}'}(X | \vA, \vA X+E)\geq k\log q$.  By \lemref{lem:unp of x and e} we know that $H^{\unp}_{\epsilon, s_{sec}'} (E | \vA, \vA X+E)\geq k\log q$.  This completes the proof of \lemref{lem:conversion to unpredictability}.
-%%\end{proof}
-%\begin{proof}
-%Suppose that $H^{\unp}_{\epsilon', s_{sec}}( E | \vA X+E) < \ell$.  We will show that $H^{\unp}_{\epsilon, s_{sec}}(X_{1,..., k} | \vA X+E) < \ell$.  That is, $\forall Y$ such that $\delta^{\mathcal{D}_{s_{sec}'}}((E, \vA X+E), (Y, \vA+E))\leq \epsilon$, there exists $C$ of size $s_{sec}'$ such that $\Pr[C(\vA, \vA X+E) = Y]> 2^{-\ell}$.  Fix one such $Y$.  Let $\mathcal{E}$ be the event that $A_{1,..., n}^{-1}$ exists.  Note that $\mathcal{E}$ occurs with probability $1-\gamma$.
-%
-%Define the distribution $Y' =A^{-1}_{1,...,n}(\vA X+E -Y)$.  Then one has that 
-%\begin{align*}
-%\delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E))&\leq \delta^{\mathcal{D}_{s_{sec}}}((Y', \vA, \vA X+E ), (X, \vA, \vA X+E) |\mathcal{E} )+ \gamma\\
-%&\leq \delta^{\mathcal{D}_{s_{sec}}}(\vA^{-1}_{1,..., n}(\vA X+E - Y), \vA, \vA X+E), (X, \vA, \vA X+E))+\gamma\\
-%&\leq \delta^{\mathcal{D}_{s_{sec}'}}((Y, \vA, \vA X+E), (E, \vA, \vA X+E))+\gamma\leq \epsilon' + \gamma
-%\end{align*}
-%Where the second to last inequality follows by applying the transform $\vA X+E - \vA(\cdot)$ to the first argument.  Note  that $\delta^{\mathcal{D}_{s_{sec}}}((Y'_{1,...k}, \vA, \vA X+E ), (X_{1,..,k}, \vA, \vA X+E))\leq \epsilon' + \gamma$. Otherwise there would be a distinguisher for the entire distribution by just ignoring the last $n-k$ dimensions.
-%
-%We now show that $\exists C'$ such that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k}$.  Define $C'$ as follows:
-%\begin{enumerate}
-%\item Input $(\vA, \vA X+E)$.
-%\item Run $y\leftarrow C(\vA, \vA X+E)$.
-%\item Try to compute $\vA^{-1}_{1,.., n}$, if $\vA^{-1}_{1,..., n}$ does not exist output $\perp$.
-%\item Output $z = \vA^{-1}_{1,..., n}(\vA X+E -y)$
-%\end{enumerate}
-%Observer that $\Pr[C'(\vA, \vA X+E) = Y']> 2^{-k} - \gamma$.  Finally note that $\exists C''$ that simply outputs the first $k$ dimensions of the output of $C'$.  Thus, $H^{\unp}_{\epsilon, s_{sec}}( X_{1,..., n}| \vA , \vA X+E)< 2^{-k} - \gamma$.
-%\end{proof}
-%
-%The statement of \lemref{lem:conversion to unpredictability} follows by the statement of the claim.
-%%\begin{proof}[Proof of \clref{lem:unp of x and e}]
-%%First suppose that $H^{\unp}_{\epsilon, s}(X| \vA, \vA X+E) < k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((X, \vA, \vA X+E), (Y, \ A, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
-%%\begin{enumerate}
-%%\item Input $(\vA, \vA X+E)$.
-%%\item Run $y\leftarrow I(\vA, \vA X+E)$.
-%%\item Output $z = \vA y - \vA X+E$.
-%%\end{enumerate}
-%%Note that $|I'|\approx |I|$.
-%%It suffices to show that $\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, A, \vA X+E))\leq \epsilon$.  One has the following:
-%%\begin{align*}
-%%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
-%%\delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (\vA Y-\vA X+E, \vA, \vA X+E))\\
-%%&\leq \delta^{\mathcal{D}_s'}((\vA X, \vA, \vA X+E), (\vA Y, \vA, \vA X+E))\\
-%%&\leq \delta^{\mathcal{D}_s'}((X, \vA, \vA X+E), (Y, \vA, \vA X+E)) \leq \epsilon.
-%%\end{align*}
-%%Now suppose that $H^\unp_{\epsilon, s}(E | A, \vA X+E)<k$.  That is, $\exists I \in\mathcal{D}_s$ such that for exists $Y$ where $\delta^{\mathcal{D}_s}((E, \vA, \vA X+E), (Y, \vA, \vA X+E)\leq \epsilon$, $\Pr[I(\vA, \vA X+E) = Y] > 2^{-k}$.  Define $I'$ by the following:
-%%\begin{enumerate}
-%%\item Input $(A, \vA X+E)$.
-%%\item Run $y\leftarrow I(\vA, \vA X+E)$.
-%%\item Try to compute $\vA^{-1}$, if $\vA^{-1}$ does not exist output $\perp$.
-%%\item Output $z = \vA^{-1}(\vA X+E-y)$.
-%%\end{enumerate}
-%%Note that $|I'|\approx |I|$.  For sufficient parameter sizes the probability of $A^{-1}$ not existing is negligible.  Denote this probability by $\gamma$.  Then note that $\Pr[I'(\vA, \vA X+E) = Z] > 2^{-k}-\gamma = 2^{-k'}$.  Then one has the following~(conditioned on the event that $\vA^{-1}$ exists):
-%%\begin{align*}
-%%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (Z, \vA, \vA X+E))&=
-%%\delta^{\mathcal{D}_s'} ((X, \vA, \vA X+E), (\vA^{-1}(\vA X+E-Y), \vA, \vA X+E)) \\
-%%&\leq \delta^{\mathcal{D}_s'} ((\vA^{-1}E, \vA, \vA X+E), (\vA^{-1}Y, \vA, \vA X+E))\\
-%%&\leq \delta^{\mathcal{D}_s'} ((E, \vA, \vA X+E), (Y, \vA, \vA X+E))\leq \epsilon
-%%\end{align*}
-%%Since $A^{-1}$ exists with probability $1-\gamma$ we obtain total distance at most $\epsilon(1-\gamma)=\epsilon'$.
-%%\end{proof}
-%
-%\end{proof}
-
-\ignore{
-\section{Proof of Theorem \ref{thm:blockLWE}}
-\label{sec:proof of block theorem}
-
-\begin{proof}
-We assume that all of the fixed blocks are located at the end and their fixed value is $0$, that is, $W_{m+1}, ..., W_{m+\alpha} =0$.  If the blocks are fixed to some other value the reduction is essentially the same.
-
-Let $D$ be a distinguisher that can distinguish $(m+\alpha)$ $\LWE$ instances from uniform where $\alpha$ of the equations have no error added.  That is, let $\vA$ be the uniform distribution over $\Fq^{(m+\alpha)\times(n+\alpha)}$, let $\vx$ be uniform over $\Fq^{(n+\alpha)}$, $\ve= (e_1,..., e_{m+\alpha})$ where $e_1,..., e_m$ are generated from error distribution $\chi$ and $e_{m+i} =0$ for $i=1,..,\alpha$. Furthermore, let $\vu$ be the uniform distribution over $\Fq^{m+\alpha}$.  We assume that, 
-\[
-|\Pr[\D(\vA, \vA\vx+\ve) = 1] - \Pr[\D(\vA, \vu) =1]|> \epsilon.
-\]
-
-We build a distinguish $\D'$ that distinguishes standard LWE instances from uniform.  Let $\vA'$ be uniform over $\Fq^{m\times n}$, $\vx'$ be uniform over $\Fq^n$ and $\ve'$ be drawn from $\chi^m$.  Our goal is to prepare a random block fixing instance from the random instance we are given.  The code for $\D'$ is given in \figref{fig:perfectLWEreduction}.
-
-It suffices to show that $\D'$ properly prepares a random instance for the distinguisher.  We show this in three claims: 
-\begin{enumerate}
-\item If $\vA'$ is a random matrix then $\vA$ is a random matrix.
-\item If $\vb'$ is uniformly distributed conditioned on $\vA'$ then $\vb$ is uniformly distributed conditioned on $\vA$.
-\item If $\vb' = \vA'\vx'+\ve'$ then $\exists \vx$~(uniformly distributed) such that $\vb = \vA \vx + \ve'$ where the last $\alpha$ coordinates of $\ve'$ are $0$ and $\ve_i' = \ve_i$ for $1\leq i\leq m$.
-\end{enumerate}
-\begin{figure}
-\begin{enumerate}
-\item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve$.
-\item Randomly generate $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$.
-\item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, where $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.
-
-\item Initialize $\vA^*  = \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right)$.
-\item \label{step:randomization}
-For {$i=1\ldots m+\alpha$}:
-\subitem Randomly generate $(\gamma_{i,1},\ldots, \gamma_{i,\alpha}) \leftarrow \Fq^\alpha$.
- \subitem For {$j = 1 \ldots n+\alpha$}:
-\subsubitem Set $A_{ij} \leftarrow A^*_{ij}+\sum_{k=1}^\alpha \gamma_{i, k} A^*_{(m+k)j}$
-\subsubitem Set $b_i \leftarrow b^*_i +  \sum_{k=1}^\alpha\gamma_{i, k} b^*_{m+k}$
-\item Run $\D$ on input $\vA, \vb$.
-\item Output $\D$'s output.
-\end{enumerate}
-\caption{A PPT $\mathcal{D'}$ that distinguishes LWE using distinguisher for LWE w/ block fixing source}
-\label{fig:perfectLWEreduction}
-\end{figure}
-
+We also need that random matrices are full rank with high probability~(to allow us to decode).  We use the following claim~(techniques from Cooper~\cite{cooper2000rank}):
 \begin{claim}
-\label{cl:randomMatrixDist}
-The matrix $\vA$ generated after Step \ref{step:randomization} is a random matrix.
+\label{cl:full rank matrix}
+Let $q\ge 2$ be a prime.  Let $\alpha, \beta$ be integers and let 
+let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ be uniformly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \alpha q^{\beta}$.
 \end{claim}
 \begin{proof}
-In the randomized matrix $\vect{A}$, for $1\le i \le m$ and $n+1\le j \le n+\alpha$, $A_{ij}$ is assigned the value $\gamma_{i,(j - n)}$, which is a random value.  Similarly, for $m+1\le i \le m+\alpha$ and $n+1\le j \le n+\alpha$, each entry $A_{ij}$ is random due to the original construction of the matrix $\vA^*$.  Then before step \ref{step:randomization} the matrices $\vA', \vect{R}$ are random submatrices.  Thus, it remains to show that $\vA', \vect{R}$ remain random after step 5. For $1\le i \le m+\alpha$ and $1\le j \le n$, by construction $A_{ij} = A_{ij}'+\sum_{k=1}^\alpha \gamma_{i, k} R_{kj}$, which is a truly random number. Overall, each row vector $\va_{i}$ in $\vA$ is the sum of a random vector and a random linear combination independent vectors. Therefore, the entire matrix $\vA$ is a truly random matrix.  This completes the claim.
-\end{proof}
-\begin{claim}
-\label{cl:random ax+e}
-If $\D'$ is provided with input distributed as $\vA', \vA'\vx'+\ve'$ then $\vb = \vA \vx+\ve$ where $x_i = x_i'$ for $1\leq i \leq n$ and $x_{n+i} = b_{m+i}^*$ is uniformly generated otherwise and  $e_i = e_i'$ for $1\leq i\leq m$ and $e_i = 0$ for $m<i\leq m+\alpha$.
-\end{claim}
-\begin{proof}
-Before step \ref{step:randomization} the claim is satisfied.  Denote by $\vx'$ the value such that $\vA'\vx'+\ve = \vb$.  
-Then define $\vx^*$ as:
-\[
-x^*_i = \begin{cases}
-x_i', & \text{if }1\leq i\leq n \\
-b_{m-n+i}^*-\sum_{j=1}^n R_{i, j} x_j', & n+1\leq i\leq n+\alpha\,.
-\end{cases}
-\]
-Then $\vx^*$ is uniformly random and $\vb^* = \vA^*\vx^* + \ve^*$~(where $\ve^*$ is $\ve'$ with $\alpha$ 0s appended).  Thus, it remains to show that step~\ref{step:randomization} preserves a solution.
-%For convenience, denote by $\vx^*$ the vector where $x_i^* = x_i'$ for $1\leq i \leq n$ and $x_{n+i}^* = b_{m+i}^*$ otherwise.  
-For a matrix $\vA$ we will denote the $i$-th row by $\va_i$~(similarly for the matrix formed by $\gamma_{i,j}$).  Thus it suffices to show for all rows $i$, if $b_i^* = \va^*_i \vx^*+e^*_i$  then $b_i = \va_i \vx^* + e^*_i$.
-%, we have added $\alpha$ equations as well as $\alpha$ unknowns, furthermore, those $\alpha$ equations have no error.  The number of unknowns we added are $x_{n+i} = b^*_{m+i} - \sum^{n}_{j=1}R_{ij}x_j$ for $i=n+1,..., n+\alpha$.
-\bnote{We need to justify these steps better.}
-\bnote{Is it really standard to go to lower case for the rows?}
-\xnote{lower case for vectors, which is row vector in the matrix}
-
-
-\xnote{Needs to be clean up the $\gamma$, it's not correct, at least not consistent with the randomized algorithm.}
-We have the following for all $i=1,..., m+\alpha$:
+The probability that all $\alpha$ rows are linearly independent is the successive probability that each row is linearly independent of the previous rows, for the $i$th row this probability is $q^{i-1}/q^{\alpha+\beta}$.  By union bound and $\beta = \omega(1)$, the probability that $\vS$ is not full rank is:
 \begin{align*}
-\va_i \vx + e_i &= \sum_{j=1}^{n+\alpha} \vA_{ij} x_j + e_i\\
-& = \sum_{j=1}^{n+\alpha}\left(\left(\vA^*_{ij}+\sum_{k=1}^\alpha \gamma_{i, k} \vA^*_{(m+k)j}\right)x_j\right) + e_i\\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{j=1}^{n+\alpha}\sum_{k=1}^\alpha \gamma_{i, k} \vA^*_{(m+k)j}x_j \\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{k=1}^\alpha  \gamma_{i, k} \sum_{j=1}^{n+\alpha} \vA^*_{(m+k)j}x_j\\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{k=1}^\alpha \gamma_{i, k} \left(\left( \sum_{j=1}^n \vR_{i, j}x_j^* \right) + x_{n+k}^*\right)\\
-& = \sum_{j=1}^{n+\alpha}\vA^*_{ij}x_j + e_i + \sum_{k=1}^\alpha\gamma_{i, k} b_{m+k}^*\\
-&= b_i^* +\sum_{k=1}^\alpha\gamma_{i,k} b_{m+k}^*= b_i
+\Pr[\rank(\vS) < \alpha] &= \sum_{i=1}^{\alpha} \frac{q^{i-1}}{q^{\alpha+\beta}}
+\leq \alpha \frac{q^{\alpha}}{q^{\alpha+\beta} }= \alpha q^{-\beta}.
 \end{align*}
-%\begin{align*}
-%\vA_i \vx + e_i &= \sum_{j=1}^{n+\alpha} A_{ij} x_j +e_i = \sum_{j=1}^{n+\alpha}(A^*_{ij}x_j+\sum_{k=1}^\alpha \gamma_{i, k} A^*_{(m+k)j}x_j)+e_i\\
-%& = \sum_{j=1}^{n+\alpha}(A^*_{ij}x_j)+e_i +\sum_{k=1}^\alpha \gamma_{i, k} \sum_{j=1}^{n+\alpha} (A^*_{(m+k)j}x_j)\\
-%& = b^*_i +  \sum_{k=1}^\alpha\gamma_{i, k} b^*_{m+k} = (\va_i^* \vx + e_i) + \sum_{k=1}^\alpha\gamma_{i, k} (\va_{m+k}^* \vx + e_i)\\
-%& = b_i \label{reductionEq}
-%\end{align*}
 \end{proof}
-\begin{claim} 
-\label{clm:random b}
-If $\D'$ is provided with the input distributed as $\vA', \vb'$ where $\vb'$ is uniformly random, then $\vb$ is uniformly random conditioned on $\vA$.
-\end{claim}
-\begin{proof}
-Before step~\ref{step:randomization}, each $b_i^*$ is uniformly and independently random.  After step~\ref{step:randomization}, since the $b_i*$ and $\gamma_i$ are random, then each $b_i$ is a fresh random linear combination of random values:
-\[
-b_i = b_i^* + \sum_{k=1}^\alpha \gamma_i b_{m+k}^*.
-\]
-%We also need to show that $\vb$ is uniformly distributed even conditioned on $\vA$. Step~\ref{step:randomization} randomized each 
-
-$\vb$ doesn't dependent on $\vA$ simply because $\vb'$ doesn't dependent on $\vA'$ \xnote{It need show more work on this, maybe?}
-Thus, each of these values is uniformly and independently random.
-\end{proof}
-
-%Let $\tilde{\vA} = (\sum_{k=1}^\alpha \gamma_{1, k} \va^*_{m+1}, \ldots, \sum_{k=1}^\alpha \gamma_{1, k} \va^*_{m+1})$ and $\tilde{\vb} = (\sum_{k=1}^\alpha\gamma_{1, k}b^*_{m+1}, \ldots, \sum_{k=1}^\alpha\gamma_{1, k} b^*_{m+\alpha})$. 
-%
-%The equation above gives us $\vA = \vA' + \tilde{\vA}$ and $\vb = \vA'\vx + \ve + \tilde{\vb}$. Given a uniform $\vu \overset{\$}\leftarrow\Fq^m$ and a $\LWE$ instance $\vA'\cdot \vx + \ve$, the probability that the distinguisher $\D'$ can distinguish a uniform instance from a $\LWE$ instance, when given access to the distinguisher $\D$ is given below:
-%\begin{align*}
-%&\left|\Pr\left[\D'(\vA', \vu') = 1\right]- \Pr\left[\D'(\vA', \vA'\vx + \ve)=1\right]  \right|\\
-%& =\left|\Pr\left[\D(\vA'+ \tilde{\vA}, \vu' + \tilde{\vb})=1\right]- \Pr\left[\D(\vA' + \tilde{\vA}, \vA'\vx + \ve + \tilde{\vb})=1\right]  \right|\\
-%&= \left| \Pr\left[\D(\vA, \vu)=1\right]- \Pr\left[\D(\vA, \vA\vx + \ve)=1\right]  \right| \ge \epsilon
-%\end{align*}
-
-\begin{claim}
-If the pair $(\vA', \vb')$ is uniformly distributed, then the pair $(\vA, \vb)$ is uniformly distributed.
-\end{claim}
-\begin{proof}
-Assume that $(\vA', \vb')$ is uniformly distributed.  By \clref{cl:randomMatrixDist}, $\vA$ is uniformly distributed.  Thus, it suffices to show that $\vb | \vA$ is uniformly distributed.  Let $\vb^*$ be the vector generated in step~\ref{step:b generation} and note that $\vb^*$ is uniformly random.  
-We show  a stronger claim that $\vb |( \vA, \vA', \vR)$ is uniformly distributed.  Let $\vgamma$ represent the matrix formed by $\gamma_{i,j}$.  
- 
- The matrix $\vgamma$ is a deterministic function of $(\vA, \vA', \vR)$.  Thus, $\vb | (\vA, \vA', \vR) \overset{d}= \vb | (\vA, \vA', \vR, \vgamma)$.  The only dependence of $\vb$ on $(\vA, \vA', \vR, \vgamma)$ is in the matrix $\vgamma$.  Thus, $ \vb | (\vA, \vA', \vR, \vgamma) \overset{d}= \vb | \vgamma$. Recall that $\vb = \vb^* +  \left(\begin{array}{c | c}\mathbf{0} &\vgamma\end{array}\right)\vb^*$.  Let $\vT = \vect{I}+  \left(\begin{array}{c | c}\mathbf{0} & \vgamma \end{array}\right)$.  Since $\vT$ is a deterministic function of $\vgamma$, $\vb | \vgamma \overset{d} = \vb | \vT$.
- 
- \bnote{Now we want to say that $\vb$ is uniformly distributed since $\vb'$ is.  If $\vT$ exists we can just that $\vb | \vT = (\vT^{-1} \vb )| \vT = \vb' | \vT = U | \vT$.  It does with very high probability, but I don't want to add this restriction.  Is there a way to get around this problem?}
-%\[
-%\vA=  \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) + \left(\begin{array}{c | c}\mathbf{0} & \mathbf{\Gamma}\end{array}\right) \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) 
-%\]
-%\begin{align*}
-%(\vA, \vb) =  \left(\left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) + \left(\begin{array}{c | c}\mathbf{0} & \mathbf{\Gamma}\end{array}\right) \left(\begin{array}{c | c}\vA' & \mathbf{0}\\\hline \vect{R} & \vect{I}\end{array}\right) \right) , \left(\vb' + \left(\begin{array}{c | c}\mathbf{0} & \mathbf{\Gamma}\end{array}\right) \vb'\right)
-%\end{align*}
-\end{proof}
-\bnote{Remember this isn't good enough.  We need the enhanced claim above.}
-Together Claims~\ref{cl:randomMatrixDist},~\ref{cl:random ax+e}, and~\ref{clm:random b} show that $\D'$ properly prepares the instance thus, 
-\begin{align*}
-&\left|\Pr\left[\D'(\vA', \vu') = 1\right]- \Pr\left[\D'(\vA', \vb'=\vA'\vx + \ve)=1\right]  \right|\\
-& =\left|\Pr\left[\D(\vA, \vu)=1\right]- \Pr\left[\D(\vA, \vb)=1\right]  \right|\geq \epsilon
-\end{align*}
-%==========
-\ignore{
-Before randomized:
-$$\vA'\vx' + \ve = \vb'$$
-For $i = 1\ldots m$,
-$$\sum^{n+\alpha}_{j=1}A_{ij}x_j + e_i = b_i$$
-For $i = 1\ldots \alpha$,
-$$\sum^{n+\alpha}_{j=1}A_{(m+i)j}x_j = \sum^{n}_{j=1}F_{ij}x_j + x_{n+i} = b_{m+i}$$
-}
-\end{proof}
-}
-
-
-
-
 
 \section{Proof of Theorem \ref{thm:blockLWE}}
 \label{sec:proof of block theorem}
@@ -1701,18 +1284,13 @@ For {$i=1,..., m$}:
 \caption{A PPT $D'$ that distinguishes LWE using distinguisher for LWE w/ block fixing source}
 \label{fig:perfectLWEreduction}
 \end{figure}
-The distinguisher $D'$ has an advantage when $S$ is of rank $\alpha$.  This occurs with overwhelming probability~(techniques from Cooper~\cite{cooper2000rank}):
+The distinguisher $D'$ has an advantage when $S$ is of rank $\alpha$.  This occurs with overwhelming probability:
 \begin{claim}
-\label{cl:full rank matrix}
-Let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ be randomly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \ngl(n)$.\lnote{what is $n$?}
+\label{cl:full rank matrix 5.2}
+Let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ be randomly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \ngl(n)$.
 \end{claim}
 \begin{proof}
-The probability that all $\alpha$ rows are linearly independent is the successive probability that each row is linearly independent of the previous rows, for the $i$th row this probability is $q^{i-1}/q^{\alpha+\beta}$.  By union bound and $\beta = \omega(1)$, the probability that $\vS$ is not full rank is:
-\begin{align*}
-\Pr[\rank(\vS) < \alpha] &= \sum_{i=1}^{\alpha} \frac{q^{i-1}}{q^{\alpha+\beta}}
-\leq \alpha \frac{q^{\alpha}}{q^{\alpha+\beta} }=\ngl(n)\\
-\end{align*}
-Thus, $\Pr[\rank(\vS) = \alpha] \geq 1-\ngl(n)$.
+Direct application of \clref{cl:full rank matrix} when $\alpha = \poly(n)$ and $\beta = \omega(1)$ in $n$.
 \end{proof}
 \begin{corollary}
 $
@@ -1989,13 +1567,13 @@ The probability that $\decode_t$ outputs $\perp$ is bounded by
 &\le &\sum_{j=1}^\infty  \left(1-\frac{1}{n^{4d}}\right)^{j-1} \cdot e^{-\Omega(n)}\\
 & = & n^{4d} e^{-\Omega(n)} = e^{-\Omega(n)}\,.
 \end{eqnarray*}
-(the second to last line follows from \clref{cl:full rank matrix} \lnote{actually, it doesn't -- \clref{cl:full rank matrix} doesn't have an exponential bound}).  
+(the second to last line follows from \clref{cl:full rank matrix} when $\alpha, \beta = O(n)$ \bnote{need to say this is a randomly generated matrix, but there are previous iterations.  I know we abort if we find a non full rank matrix but this still bothers me.}).  
 
 We claim that if the code generated by $\vA$ 
 has distance at least $2t+1$, then $\decode_t$ will output $\perp$ or the correct $X'=X$.
 Indeed, suppose $X'\neq X$. Since $\vA (X-X')$ has at least $2t+1$ nonzero coordinates by the minimum distance of the code generated by $\vA$, and at most  $t$ of those can be zeroed out by the addition of  $W-W'$, such an $X'$ will not pass Step 6. 
 
-The probability that the code generated by $\vA$ has distance lower than $2t+1$ is at most $e^{-\Omega(n)}$ (see \corref{cor:code high distance}), and so is the probability of ouptutting $\perp$, computed above.  This gives the correctness bound for $\decode_t$.
+The probability that the code generated by $\vA$ has distance lower than $2t+1$ is at most $e^{-\Omega(n)}$ (see \corref{cor:code high distance}), the probability of outputting $\perp$ is also $e^{-\Omega(n)}$~(computed above).  This gives the correctness bound for $\decode_t$.
 \end{proof}
 
 \section{Parameter Settings for \consref{cons:informal construction}}
