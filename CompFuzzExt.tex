@@ -1270,9 +1270,9 @@ $D'$  will make a single call to $D$, so we focus on how to prepare a random blo
 \item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, for uniformly chosen $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.\label{step:b generation}
 \item Choose $\vect{S} \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ uniformly at random.
 		\subitem If $\rank(\vect{S})<\alpha$, stop and output a random bit.
-\item Find a set of $\alpha$ linearly independent columns in $\vS$.  Let $T$ be the set of indices of these columns.
+\item Find a set of $\alpha$ linearly independent columns in $\vS$.  Let $T$ be the set of indices of these columns.\label{step:find columns}
 \item For all $j\notin T$, $1\le j \le \alpha+\beta$:\lnote{swapped $i$, $j$ and shifted}\label{step:fill in matrix}
-\subitem Choose $x_{j+n}\overset{\$}\leftarrow \Fq$ uniformly at random.  
+\subitem Choose $x_{n+j}\overset{\$}\leftarrow \Fq$ uniformly at random.  
 \subitem For $i=1,..., m$:
 \subsubitem Choose $\vQ_{i,j}\overset{\$}\leftarrow \Fq$ uniformly at random.
 \subsubitem Set $b_i^* = b_i^* + \vQ_{i,j} x_{n+j}$.
@@ -1281,7 +1281,7 @@ $D'$  will make a single call to $D$, so we focus on how to prepare a random blo
 For {$i=1,..., m$}:
 \subitem Choose a row vector $\gamma_i \leftarrow \Fq^{1 \times \alpha}$ uniformly at random.
 \subitem Set $\va_{i} \leftarrow \va^*_{i}+\gamma_i (\vR||\vS)$
-\subitem Set $b_i \leftarrow b^*_i + \gamma_i (b^*_{m+1},..., b^*_{m+k})^{\mathsf{T}}$
+\subitem Set $b_i \leftarrow b^*_i + \gamma_i (b^*_{m+1},..., b^*_{m+\alpha})^{\mathsf{T}}$
 \item For $i=m+1,\dots, m+\alpha$:
 \subitem Set $\va_i \leftarrow \va^*_i$
 \subitem Set $b_i = b_i^*$.
@@ -1311,7 +1311,7 @@ We are interested in the case where $\rank(\vS) = \alpha$, and it suffices to sh
 \item If $\vA'$ is a random matrix then $\vA$ is a random matrix subject to the condition that $\rank(\vS) = \alpha$.
 %\bnote{This should be if $\vb' | A$ is uniformly distributed, then $\vb |A $ is uniformly distributed.}
 \item If $\vb' = \vA'\vx'+\ve'$ for uniform $\vA'$ and $\vx'$, then $\exists \vx$~(uniformly distributed and independent of $\vA$ and $\ve'$) such that $\vb = \vA \vx + \ve$, where $\ve_i = \ve_i'$ for $1\leq i\leq m$ and $\ve_i = 0$ otherwise.
-\item If $(\vb' , \vA')$ is uniformly distributed then $(\vb, \vA)$ is uniformly distributed.
+\item If the conditional distribution $\vb'\,|\,\vA'$ is uniform, then the conditional distribution $\vb\,|\,\vA$ is also uniform.
 \end{enumerate}
 
 \begin{claim}
@@ -1359,16 +1359,25 @@ Recall that $b_i =b_i^* + \gamma_i(b_{m+1}^*,..., b_{m+k}^*)$.  We consider the 
 This completes the proof of the claim.
 \end{proof}
 \begin{claim}\label{clm:random b}
-If the pair $(\vb', \vA')$ is uniformly distributed, then $(\vb, \vA)$ is uniformly distributed \lnote{this can't possibly be true because $\vA$ is not uniform, because $S$ is full-rank}.
+If the conditional distribution $\vb'\,|\,\vA'$ is uniform, then $\vb\,|\,\vA$ is also uniform.
 \end{claim}
 \begin{proof}
-Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}.  The only correlation between $\vb^*$ and $\vA^*$ is in the matrix $\vQ$, i.e. for $1\leq i\leq n$, $b_i^* = b_i + \sum_{n<j \wedge j\not\in T} \vQ_{i, j} x_j$, thus conditioning on $\vQ$, $b_i^*$ is uniform assuming $b_i$ is uniform.  Thus $\vb^* | \vA^*$ is uniformly distributed. We show that $\vb |( \vA, \vA^*)$ is uniformly distributed, therefore, showing that $\vb | \vA$ is uniformly distributed after step~\ref{step:randomization}.  Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  
+Since $\vR, \vS$, and $\vQ$ are chosen independently of $\vb'$, the distribution $\vb'\,|\,\vA^*$ is uniform.
+Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}. Its first $m$ coordinates are  computed by adding the uniform vector $\vb'$ to values that are independent of $\vb^*$, and its remaining $\alpha$ coordinates $b^*_{m+1},\dots,b^*_{m+\alpha}$ are   chosen uniformly.  Thus $\vb^*\,|\,\vA^*$ is uniform. 
+
+\lnote{I would delete this paragraph and the next one, and replace with the one below} We will now show that $\vb\,|\,(\vA, \vA^*)$ is uniformly distributed, therefore, showing that $\vb\,|\,\vA$ is uniform.  Indeed, let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  
  
- The matrix $\vgamma$ is a deterministic function of $(\vA, \vA^*)$.  Thus, $\vb | (\vA, \vA^*) \overset{d}= \vb | (\vA, \vA^*, \vgamma)$.  The only dependence of $\vb$ on $(\vA, \vA^*, \vgamma)$ is in the matrix $\vgamma$.  Thus, $ \vb | (\vA, \vA^*, \vgamma) \overset{d}= \vb | \vgamma$. Recall that 
+ The matrix $\vgamma$ is a deterministic function of $(\vA, \vA^*)$ \lnote{why?  And does it depend on the choice of the set $T$ in step 5 being deterministic? and do you need this? Can't you just write $\vb\,|\,\vA=\vb\,|\,(\vA^*,\Gamma)$, because $\vA$ is a function of $\vA^*, \Gamma$?}.  Thus, $\vb\,|\,(\vA, \vA^*)$ has the same distribution as $\vb\, |\,(\vA, \vA^*, \vgamma)$.  The only dependence of $\vb$ on $(\vA, \vA^*, \vgamma)$ is in the matrix $\vgamma$\lnote{not sure what the previous sentence means}.  Thus, $ \vb | (\vA, \vA^*, \vgamma) \overset{d}= \vb | \vgamma$. Recall that 
  \[
  \begin{pmatrix} b_{1}  \\ \vdots \\b_{m} \end{pmatrix}  = \begin{pmatrix} b_{1}^*  \\ \vdots \\b_{m}^* \end{pmatrix}  + \vgamma \begin{pmatrix} b_{m+1}^*  \\ \vdots \\b_{m+\alpha}^* \end{pmatrix}
 \]
 Thus, $b_1,..., b_m $ are uniformly distributed conditioned on $\vgamma, b_{m+1}^*,..., b_{m+\alpha}^*$.  This completes the claim.
+
+\lnote{I got confused by the two paragraphs above --- see comments --- so I wrote it differently.  If you agree, delete the two paragraphs above.}
+
+Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  It is independent of $\vb^*$ and $\vA^*$, so $\vb^*\,|\,(\vA^*, \vgamma)$ is uniform.    Let $\vgamma'=\left(\begin{array}{c | c}\vect{I_m} & \vgamma \\\hline \vect{0} & \vect{I_\alpha}\end{array}\right)$.
+Note that $\vb=\vgamma' \vb^*$.  Since $\vb^*\,|\,(\vA^*, \vgamma)$ is uniform, and $\vgamma'$ is invertible, $\vb\,|\,(\vA^*, \vgamma)$ must also be uniform.
+Since $\vA$ is a deterministic function of $\vA^*$ and $\vgamma$ (assuming Step~\ref{step:find columns} is deterministic---if not, we can fix the coins used), the distribution $\vb\,|\,\vA$ is the same  as $\vb\,|\,(\vA^*, \vgamma)$ and is thus also uniform.
 \end{proof}
 
 Finally, the reduction runs in polynomial time and together Claims~\ref{cl:randomMatrixDist},~\ref{cl:random ax+e}, and~\ref{clm:random b} show that when $\rank(\vS) = \alpha$ the distinguisher $D'$ properly prepares the instance thus, 
