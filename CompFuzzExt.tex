@@ -212,9 +212,9 @@
 \newcommand{\M}{\mathcal{M}}
 
 \title{\textbf{Computational Fuzzy Extractors}}
-%\author{Benjamin Fuller%\footnote{The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.}
-% \and Xianrui Meng \and Leonid Reyzin}
-\author{}
+\author{Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Work done in part while the author was at MIT Lincoln Laboratory.  The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.}
+~~~~~~~~Xianrui Meng\footnote{Email: {\tt xmeng@cs.bu.edu}.}~~~~~~~~~Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.} \\ Boston University}
+%\author{}
 \begin{document}
 \maketitle
 
@@ -1067,16 +1067,14 @@ The following theorem states the main technical result of this section, which is
 %\vspace{.1in}
 \begin{theorem}
 \label{thm:blockLWE}
-Let $n$ be a security parameter, $\alpha$ be polynomial in $n$, and $\beta=\beta(n)=\omega(1)$. \lnote{rephrase so that $q=q(n)$ and$q^{-\beta}$ is negl in $n$}
+Let $n$ be a security parameter, $m, \alpha$ be polynomial in $n$, and $q=\poly(n)$ be a prime and $\beta\in\mathbb{Z^+}$ be such that $q^{-\beta} = \ngl(n)$. 
 Let $U$ denote the uniform distribution over $Z^m$ for an alphabet $Z\subset \Fq$, and let $W$ denote an $(m+\alpha, m, |Z|)$ symbol fixing source over $Z^{m+\alpha}$.
 If $\distLWE_{n, m,q, U}$ is secure, then $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ is also secure.
 \end{theorem}
 
-\thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi$ be an arbitrary error distribution.  Define $\chi'$ as the distribution where $m$ dimensions are sampled according to $\chi$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi'}$.
+\thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi'$ be an arbitrary error distribution.  Define $\chi$ as the distribution where $m$ dimensions are sampled according to $\chi$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi'}$.  We show this stronger version of the theorem in \apref{sec:proof of block theorem}.
 
-The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error,  search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A formal proof is in \secref{sec:proof of block theorem}.
-
-
+The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error,  search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  
 
 \thref{thm:blockLWE} allows us to construct a lossless computational fuzzy extractor from block-fixing sources: 
 
@@ -1099,7 +1097,7 @@ such that the following holds: \consref{cons:informal construction} is a $(\M, \
  The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
 \end{theorem}
 
-\begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}. \lnote{to satsify \thref{thm:blockLWE} condition on $\beta$ is easy here, because $q$ is at least $n^2$, so superconstant $\beta$ is enough}
+\begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE} .  Since \lemref{lem:uniform LWE decision} requires that $q = O(n^{3/2})$, setting  $\beta = \omega(1)$ is sufficient for $q^{-\beta} = \ngl(n)$ as required in \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}. 
 \end{proof}
 
 %\textbf{Comparison with \thref{thm:lossless secure extractor log}}
@@ -1245,33 +1243,38 @@ Since $i-1$ rows can span a space of size at most $q^{i-1}$, the probability $p_
 
 %\bnote{We need to be clear about notation here.  Why are $x, e$ sometimes bold and sometimes capital?} 
 \begin{proof}
-We assume that all of the fixed blocks are located at the end and their fixed value is $0$, that is, $W_{m+1}, ..., W_{m+\alpha} =0$ \lnote{are we using $W$ or $\chi$ notation?}.  If the blocks are fixed to some other value, the reduction is essentially the same\lnote{isn't the point of a block fixing source that we don't know which values are fixed and to what? At least in the extractor literature, that would seem to be crucial---else, extraction is trivial}.  For a matrix $\vA$ we will denote the $i$-th row by $\va_i$.  For a set $T$ of column indices, we denote by $\vA_T$ the restriction of the matrix $\vA$ to the columns contained in $T$.  Similarly, for a vector $\vx$ we denote by $\vx_T$ the restriction of $\vx$ to the variables contained in $T$.  We use similar notation for the complement of $T$, denoted $T^c$.
+We assume that all of the fixed blocks are located at the end and their fixed value is $0$.  If the blocks are fixed to some other value, the reduction is essentially the same
+ In the reduction, the distinguisher is allowed to depend on the source and can know the positions of the fixed blocks and their values.  For a matrix $\vA$ we will denote the $i$-th row by $\va_i$.  For a set $T$ of column indices, we denote by $\vA_T$ the restriction of the matrix $\vA$ to the columns contained in $T$.  Similarly, for a vector $\vx$ we denote by $\vx_T$ the restriction of $\vx$ to the variables contained in $T$.  We use similar notation for the complement of $T$, denoted $T^c$.  For a matrix or vector we use $\mathsf{T}$ to denote the transpose.  We use $i$ as a index into matrix rows and the error vector and $j$ as an  index into columns and the solution vector.
 
 %It should be clear to the reader where the reduction differs for another block fixing source.\lnote{I don't like the phrasing; maybe we should say that if the blocks are fixed to some non-0 value, the reduction is essentially the same}
 
-Let $n$ be a security parameter, $m ,q , \alpha= \poly(n)$.  Let $\beta = \omega(1)$.  All operations are computed modulo $q$, and we omit $``\bmod q$'' notation.
-Let $D$ be a distinguisher that breaks $\distLWE_{(m+\alpha), (n+\alpha+\beta), q, \chi'}$ with advantage $\epsilon>1/\poly(n)$m
-where $\chi'_i = \chi_i$ for $i\leq m$ \lnote{what's $\chi_i$?} and $\chi_i \overset{d}= 0$ otherwise. \lnote{we should probably swap $\chi$ and $\chi'$ to be consistent about the use of primes} Let  $\vA$ denote the uniform distribution over $\Fq^{(m+\alpha)\times(n+\alpha+\beta)}$, $X$ denote the uniform distribution over $\Fq^{(n+\alpha+\beta)}$, and $U$ denote the uniform distribution over $\Fq^{m+\alpha}$ . Then
+Let $n$ be a security parameter, $m ,q , \alpha= \poly(n)$.  Let $\beta$ be such that $q^{-\beta} = \ngl(n)$.  All operations are computed modulo $q$, and we omit $``\bmod q$'' notation.  Let $\chi'$ be some error distribution over $\Fq^m$ and let $\chi$ over $\Fq^{m+n}$ be defined by sampling $\chi'$ to obtain values on dimensions $1,..., m$ and then appending $\alpha$ 0s.  
+
+Let $D$ be a distinguisher that breaks $\distLWE_{(m+\alpha), (n+\alpha+\beta), q, \chi}$ with advantage $\epsilon>1/\poly(n)$.
+Let  $\vA$ denote the uniform distribution over $\Fq^{(m+\alpha)\times(n+\alpha+\beta)}$, $X$ denote the uniform distribution over $\Fq^{(n+\alpha+\beta)}$, and $U$ denote the uniform distribution over $\Fq^{m+\alpha}$ . Then
 \[
-|\Pr[D(\vA, \vA X+\chi') = 1] - \Pr[D(\vA, U =1]|> \epsilon.
+|\Pr[D(\vA, \vA X+\chi) = 1] - \Pr[D(\vA, U )=1]|> \epsilon.
 \]
+
+
 We build a distinguisher that breaks $\distLWE_{m, n, q, \chi}$.  Let $\vA'$ denote the uniform distribution over $\Fq^{m\times n}$, $X'$ denote the uniform distribution over $\Fq^n$, and $U'$ denote the uniform distribution over $\Fq^{m}$ .  We will build a distinguisher $D'$ of polynomial size for which
 \begin{align}
 \label{eq:block LWE dist}
-|\Pr[D'(\vA', \vA'X'+\chi) = 1] - \Pr[D'(\vA', U') =1]|> (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon.
+|\Pr[D'(\vA', \vA'X'+\chi') = 1] - \Pr[D'(\vA', U') =1]|> (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon.
 \end{align}
 $D'$  will make a single call to $D$, so we focus on how to prepare a random block-fixing instance for $D$ from the random instance that $D'$ is given.  The code for $D'$ is given in \figref{fig:perfectLWEreduction}.
 
-%\begin{figure}[p]
-%\begin{framed}
+\begin{figure}[p]
+\begin{framed}
 \begin{enumerate}
-\item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve'$ for $\ve'\overset{\$} \leftarrow \chi$ and uniform $\vx'\  \overset{\$} \leftarrow \Fq^n$.
+\item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve'$ for $\ve'\overset{\$} \leftarrow \chi'$ and uniform $\vx'\  \overset{\$} \leftarrow \Fq^n$.
 \item Choose $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$ uniformly at random. Initialize $\vQ \in \Fq^{m\times (\alpha+\beta)}$  to be the zero matrix.
 \item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, for uniformly chosen $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.\label{step:b generation}
 \item Choose $\vect{S} \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ uniformly at random.
 		\subitem If $\rank(\vect{S})<\alpha$, stop and output a random bit.
 \item Find a set of $\alpha$ linearly independent columns in $\vS$.  Let $T$ be the set of indices of these columns.\label{step:find columns}
-\item For all $j\notin T$, $1\le j \le \alpha+\beta$:\lnote{swapped $i$, $j$ and shifted}\label{step:fill in matrix}
+\item For all $1\le j \le \alpha+\beta$, $j\notin T$:
+\label{step:fill in matrix}
 \subitem Choose $x_{n+j}\overset{\$}\leftarrow \Fq$ uniformly at random.  
 \subitem For $i=1,..., m$:
 \subsubitem Choose $\vQ_{i,j}\overset{\$}\leftarrow \Fq$ uniformly at random.
@@ -1287,26 +1290,25 @@ For {$i=1,..., m$}:
 \subitem Set $b_i = b_i^*$.
 \item Output $D(\vA, \vb)$. 
 \end{enumerate}
-%\end{framed}
-%\caption{A PPT $D'$ that distinguishes LWE using distinguisher for LWE w/ block fixing source}
-%\label{fig:perfectLWEreduction}
-%\end{figure}
+\end{framed}
+\caption{A PPT $D'$ that distinguishes LWE using distinguisher for LWE w/ block fixing source}
+\label{fig:perfectLWEreduction}
+\end{figure}
+
 The distinguisher $D'$ has an advantage when $\vS$ is of rank $\alpha$.  This occurs with overwhelming probability:
 \begin{claim}
 \label{cl:full rank matrix 5.2}
 Let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ be randomly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \ngl(n)$.
 \end{claim}
 \begin{proof}
-Direct result of \clref{cl:full rank matrix} when $\beta = \omega(1)$ in $n$. \lnote{rephrase to say that it follows from the assumption that $q^{-\beta}$ is negligible.}
+Direct result of \clref{cl:full rank matrix} because $q^{-\beta} = \ngl(n)$.
 \end{proof}
-\begin{corollary}
-$
+The probability that a random $\vS$ is not full rank is $\ngl(n)$ so the distinguisher $D$ must still have an advantage when the matrix $\vS$ is full rank.  That is,
+\[
 |\Pr[D(\vA, \vA X+\chi) = 1  | \rank(\vS) = \alpha] - \Pr[D(\vA, U) =1 | \rank(\vS) = \alpha]|> \epsilon - \ngl(n).
-$
-\end{corollary}
-\lnote{why is this a corollary?  A corollary should follow from something above it, usually}
+\]
 
-We are interested in the case where $\rank(\vS) = \alpha$, and it suffices to show that $D'$ prepares a good instance for $D$ in this case. We show this in the following three claims: 
+It suffices to show that $D'$ prepares a good instance for $D$ conditioned on $\vS$ being full rank. We show this in the following three claims: 
 \begin{enumerate}
 \item If $\vA'$ is a random matrix then $\vA$ is a random matrix subject to the condition that $\rank(\vS) = \alpha$.
 %\bnote{This should be if $\vb' | A$ is uniformly distributed, then $\vb |A $ is uniformly distributed.}
@@ -1331,21 +1333,24 @@ If $D'$ is provided with input distributed as $\vA', \vb' = \vA'\vx'+\ve'$ then 
 \begin{itemize}
 \item $e_i = e_i'$ for $1\leq i\leq m$,
 \item $e_i = 0$ for $m<i\leq m+\alpha$,
-\item $x_i = x_i'$ for $1\leq i \leq n$,
-\item and $x_i$ is uniform and independent of $\vA$ and $\ve'$ for $n<i\le n+\alpha+\beta$,
+\item $x_j = x_j'$ for $1\leq j \leq n$,
+\item and $x_j$ is uniform and independent of $\vA$ and $\ve'$ for $n<j\le n+\alpha+\beta$,
 \end{itemize}
 \end{claim}
 \begin{proof}
-Partially define $\vx$ as $x_i = x_i'$ if $1\leq i \leq n$ and $x_i$ as the value generated in step~\ref{step:fill in matrix} for $i>n $ and $i\not\in T$.  Define the remaining variables $\vx_T$ as the solution to the following system of equations.
-\[
-\vS_T  \vx_T = \begin{pmatrix} b_{m+1}^*  \\ \vdots \\b_{m+\alpha}^* \end{pmatrix}  - \vR \vx' - \vS_{T^c} \vx_{T^c}  
-\]
-A solution $\vx_T$ exists as $\vS_T$ is full rank. Moreover, it is uniform and independent of $\vA$ and $\ve'$, because $b^*_{m+1}, \dots, b^*_{m+\alpha}$ are uniform and independent of $\vA$ and $\ve'$. Note that $\vb^*=\vA^*\vx+\ve$ before step~\ref{step:randomization} \lnote{this requires careful attention to the algorithm and the definition of $\vx$, not much different from the steps below. Why do the steps below get the attention and this one doesn't? Perhaps for the above stuff say "by inspection, particularly Step 6, and for below part say "by inspection, we show it formally below"}.
+Partially define $\vx$ as $x_j = x_j'$ if $1\leq j \leq n$ and $x_j$ as the value generated in step~\ref{step:fill in matrix} for $j>n $ and $j\not\in T$.  Define the remaining variables $\vx_T$ as the solution to the following system of equations.
+\begin{eqnarray}
+\vS_T  \vx_T = \begin{pmatrix} b_{m+1}^*  \\ \vdots \\b_{m+\alpha}^* \end{pmatrix}  - \vR \vx' - \vS_{T^c} \vx_{T^c}  \label{eq:x t solution}
+\end{eqnarray}
+A solution $\vx_T$ exists as $\vS_T$ is full rank. Moreover, it is uniform and independent of $\vA$ and $\ve$, because $b^*_{m+1}, \dots, b^*_{m+\alpha}$ are uniform and independent of $\vA$ and $\ve$. 
+
+We now show that $\vb^* = \vA^* \vx+\ve$.  All entries in matrix $\vQ$ corresponding to variables in $T$ are set to zero.  Thus, the values of $\vx^T$ do not affect $b_i$ for $1\le i \le m$.  The values of $\vx_{T^c}$ are manually set, and $\vQ_{i, j} \vx_{j}$ is added to the corresponding $\vb_i$.  Thus, for $1 \leq i \le m$, we have $\vb^* = \vA^*\vx+\ve$.   For $m< i$, this constraint is also satisfied by the values of $\vx_T$ set in Equation~\ref{eq:x t solution}.  
+
 Thus, it remains to show that step~\ref{step:randomization} preserves this solution.
 %For convenience, denote by $\vx^*$ the vector where $x_i^* = x_i'$ for $1\leq i \leq n$ and $x_{n+i}^* = b_{m+i}^*$ otherwise.  
 We now show that for all rows $1\leq i\leq m$, if $b_i^* = \va^*_i \vx+e_i$  then $b_i = \va_i \vx + e_i$.
 %, we have added $\alpha$ equations as well as $\alpha$ unknowns, furthermore, those $\alpha$ equations have no error.  The number of unknowns we added are $x_{n+i} = b^*_{m+i} - \sum^{n}_{j=1}R_{ij}x_j$ for $i=n+1,..., n+\alpha$.
-We have the following for $1\leq i\leq m$:
+Recall the other rows are not modified.  We have the following for $1\leq i\leq m$:
 \begin{align*}
 \va_i \vx + e_i &= \left(\va_{i}^*+ \gamma_i(\vR || \vS)\right) \vx + e_i\\
 &=\va_i^* \vx + e_i +\gamma_i(\vR||\vS) \vx\\&= b_i^* + \gamma_i (\vR||\vS)\vx
@@ -1365,16 +1370,6 @@ If the conditional distribution $\vb'\,|\,\vA'$ is uniform, then $\vb\,|\,\vA$ i
 Since $\vR, \vS$, and $\vQ$ are chosen independently of $\vb'$, the distribution $\vb'\,|\,\vA^*$ is uniform.
 Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}. Its first $m$ coordinates are  computed by adding the uniform vector $\vb'$ to values that are independent of $\vb^*$, and its remaining $\alpha$ coordinates $b^*_{m+1},\dots,b^*_{m+\alpha}$ are   chosen uniformly.  Thus $\vb^*\,|\,\vA^*$ is uniform. 
 
-\lnote{I would delete this paragraph and the next one, and replace with the one below} We will now show that $\vb\,|\,(\vA, \vA^*)$ is uniformly distributed, therefore, showing that $\vb\,|\,\vA$ is uniform.  Indeed, let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  
- 
- The matrix $\vgamma$ is a deterministic function of $(\vA, \vA^*)$ \lnote{why?  And does it depend on the choice of the set $T$ in step 5 being deterministic? and do you need this? Can't you just write $\vb\,|\,\vA=\vb\,|\,(\vA^*,\Gamma)$, because $\vA$ is a function of $\vA^*, \Gamma$?}.  Thus, $\vb\,|\,(\vA, \vA^*)$ has the same distribution as $\vb\, |\,(\vA, \vA^*, \vgamma)$.  The only dependence of $\vb$ on $(\vA, \vA^*, \vgamma)$ is in the matrix $\vgamma$\lnote{not sure what the previous sentence means}.  Thus, $ \vb | (\vA, \vA^*, \vgamma) \overset{d}= \vb | \vgamma$. Recall that 
- \[
- \begin{pmatrix} b_{1}  \\ \vdots \\b_{m} \end{pmatrix}  = \begin{pmatrix} b_{1}^*  \\ \vdots \\b_{m}^* \end{pmatrix}  + \vgamma \begin{pmatrix} b_{m+1}^*  \\ \vdots \\b_{m+\alpha}^* \end{pmatrix}
-\]
-Thus, $b_1,..., b_m $ are uniformly distributed conditioned on $\vgamma, b_{m+1}^*,..., b_{m+\alpha}^*$.  This completes the claim.
-
-\lnote{I got confused by the two paragraphs above --- see comments --- so I wrote it differently.  If you agree, delete the two paragraphs above.}
-
 Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  It is independent of $\vb^*$ and $\vA^*$, so $\vb^*\,|\,(\vA^*, \vgamma)$ is uniform.    Let $\vgamma'=\left(\begin{array}{c | c}\vect{I_m} & \vgamma \\\hline \vect{0} & \vect{I_\alpha}\end{array}\right)$.
 Note that $\vb=\vgamma' \vb^*$.  Since $\vb^*\,|\,(\vA^*, \vgamma)$ is uniform, and $\vgamma'$ is invertible, $\vb\,|\,(\vA^*, \vgamma)$ must also be uniform.
 Since $\vA$ is a deterministic function of $\vA^*$ and $\vgamma$ (assuming Step~\ref{step:find columns} is deterministic---if not, we can fix the coins used), the distribution $\vb\,|\,\vA$ is the same  as $\vb\,|\,(\vA^*, \vgamma)$ and is thus also uniform.
@@ -1382,12 +1377,13 @@ Since $\vA$ is a deterministic function of $\vA^*$ and $\vgamma$ (assuming Step~
 
 Finally, the reduction runs in polynomial time and together Claims~\ref{cl:randomMatrixDist},~\ref{cl:random ax+e}, and~\ref{clm:random b} show that when $\rank(\vS) = \alpha$ the distinguisher $D'$ properly prepares the instance thus, 
 \begin{align*}
-&\left|\Pr\left[D'(\vA', \vu') = 1\right]- \Pr\left[D'(\vA', \vb'=\vA'\vx + \ve)=1\right]  \right|\\
+&\left|\Pr[D'(\vA, \vA X+\chi) = 1] - \Pr[D'(\vA, U) =1] \right|\\
 &\, = \left| \Pr\left[D'(\vA', \vu') = 1 | \rank(\vS) = \alpha \right]- \Pr\left[D'(\vA', \vb'=\vA'\vx + \ve)=1 | \rank(\vS) = \alpha\right]\right| \Pr[\rank(\vS) = \alpha] \\
-&\, =\left|\Pr\left[D(\vA, \vu)=1 | \rank(S) =\alpha \right]- \Pr\left[D(\vA, \vb)=1 | \rank(S) =\alpha \right]  \right| \Pr[\rank(\vS) = \alpha] \\
+&\, =\left|\Pr[D(\vA, \vA X+\chi) = 1  | \rank(\vS) = \alpha] - \Pr[D(\vA, U) =1 | \rank(\vS) = \alpha]  \right| \Pr[\rank(\vS) = \alpha] \\
 &\, \geq (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon
 \end{align*}
-\lnote{change notation above to match notation at the beginning of this section; also, note that the first line follows from teh coinflip if rank is not right} Thus, Equation~(\ref{eq:block LWE dist}) is satisfied, this completes the proof.
+Where the second line follows because we can detect when $\rank(\vS)<\alpha$ and output a random bit in this case.
+Thus, Equation~(\ref{eq:block LWE dist}) is satisfied, this completes the proof.
 \end{proof}
 \section{Additional Proofs}
 
