@@ -212,7 +212,7 @@
 \newcommand{\M}{\mathcal{M}}
 
 \title{\textbf{Computational Fuzzy Extractors}}
-\author{Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Work done in part while the author was at MIT Lincoln Laboratory.  The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.}
+\author{Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Work done in part while the author was at MIT Lincoln Laboratory.}
 ~~~~~~~~Xianrui Meng\footnote{Email: {\tt xmeng@cs.bu.edu}.}~~~~~~~~~Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.} \\ Boston University}
 %\author{}
 \begin{document}
@@ -1100,10 +1100,8 @@ such that the following holds: \consref{cons:informal construction} is a $(\M, \
 \begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE} .  Since \lemref{lem:uniform LWE decision} requires that $q = O(n^{3/2})$, setting  $\beta = \omega(1)$ is sufficient for $q^{-\beta} = \ngl(n)$ as required in \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}. 
 \end{proof}
 
-%\textbf{Comparison with \thref{thm:lossless secure extractor log}}
-%%\thref{thm:lossless block sketch log} is a direct consequence of \thref{thm:blockLWE} and parameter settings~(discussed in  \secref{ssec:block params}).  
-%The weaker entropy source means we are able to extract fewer variables~($n/3$ instead of $n/2$) and that we must work over a slightly larger field.  We could set $\alpha$ larger than $n/3$.  This would yield fewer hardcore dimensions and force us to use a larger field.  To extract enough bits and keep the field size polynomial in $n$, $n-\alpha$ must be at least a constant fraction of $n$.  We consider the setting where the number of fixed errors, hardcore dimensions, and dimensions used for randomness are all $n/3$.
-%The parameter $\beta$ does not significantly impact the asymptotic behavior but is important for small values of $n$.
+\section*{Acknowledgements}
+The authors are grateful to Ran Canetti, Yevgeniy Dodis, Nico D\"{o}ttling, Danielle Micciancio, J\"{o}rn M\"{u}ller-Quade, Christopher Peikert, Oded Regev, Adam Smith, and Daniel Wichs for helpful discussions, creative ideas, and important references.  In particular, the authors thank Nico D\"{o}ttling for describing his result on LWE with uniform errors.  The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.
 
 \ignore{
 \subsection{\consref{cons:informal construction} with slightly deficient sources}
