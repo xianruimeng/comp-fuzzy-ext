@@ -1020,8 +1020,7 @@ We now state a setting of parameters that yields a lossless construction.
 
 \begin{theorem}
 \label{thm:lossless secure extractor log}
-Let $n$ be a security parameter and let the number of errors $t = c\log n$ for some positive constant $c$.    Let $d$ be a positive constant (giving us a tradeoff between running time of $\rep$ and $|w|$). Consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where  $b = \log 2(c/d+2) n^2 =O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c/d+2)n}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors% \lnote{removed (on lattices of dimension $n/4$)}  
-using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds: \consref{cons:informal construction} is a $(\M, W, m\log |Z|, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
+Let $n$ be a security parameter and let the number of errors $t = c\log n$ for some positive constant $c$.    Let $d$ be a positive constant (giving us a tradeoff between running time of $\rep$ and $|w|$). Consider the Hamming metric over the alphabet $Z=[-2^{b-1},2^{b-1}]$, where  $b = \log 2(c/d+2) n^2 =O(\log n)$.  Let $W$ be uniform over $\mathcal{M}=Z^m$, where $m={(c/d+2)n}=O(n)$.  If GAPSVP and SIVP are hard to approximate within polynomial factors using quantum algorithms, then there is a setting of $q = \poly(n)$ such that for any polynomial $s_{sec}=\poly(n)$ there exists $\epsilon=\ngl(n)$ such that the following holds: \consref{cons:informal construction} is a $(\M, W, m\log |Z|, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$-hard with error $\delta = e^{-\Omega(n)}$.
 The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3})$ operations over $\Fq$.
 % for following parameters:
 %\[
@@ -1072,7 +1071,7 @@ Let $U$ denote the uniform distribution over $Z^m$ for an alphabet $Z\subset \Fq
 If $\distLWE_{n, m,q, U}$ is secure, then $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ is also secure.
 \end{theorem}
 
-\thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi'$ be an arbitrary error distribution.  Define $\chi$ as the distribution where $m$ dimensions are sampled according to $\chi$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi'}$.  We show this stronger version of the theorem in \apref{sec:proof of block theorem}.
+\thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi'$ be an arbitrary error distribution.  Define $\chi$ as the distribution where $m$ dimensions are sampled according to $\chi'$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi'}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi}$.  We show this stronger version of the theorem in \apref{sec:proof of block theorem}.
 
 The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error,  search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  
 
@@ -1241,7 +1240,7 @@ Since $i-1$ rows can span a space of size at most $q^{i-1}$, the probability $p_
 
 %\bnote{We need to be clear about notation here.  Why are $x, e$ sometimes bold and sometimes capital?} 
 \begin{proof}
-We assume that all of the fixed blocks are located at the end and their fixed value is $0$.  If the blocks are fixed to some other value, the reduction is essentially the same
+We assume that all of the fixed blocks are located at the end and their fixed value is $0$.  If the blocks are fixed to some other value, the reduction is essentially the same.
  In the reduction, the distinguisher is allowed to depend on the source and can know the positions of the fixed blocks and their values.  For a matrix $\vA$ we will denote the $i$-th row by $\va_i$.  For a set $T$ of column indices, we denote by $\vA_T$ the restriction of the matrix $\vA$ to the columns contained in $T$.  Similarly, for a vector $\vx$ we denote by $\vx_T$ the restriction of $\vx$ to the variables contained in $T$.  We use similar notation for the complement of $T$, denoted $T^c$.  For a matrix or vector we use $\mathsf{T}$ to denote the transpose.  We use $i$ as a index into matrix rows and the error vector and $j$ as an  index into columns and the solution vector.
 
 %It should be clear to the reader where the reduction differs for another block fixing source.\lnote{I don't like the phrasing; maybe we should say that if the blocks are fixed to some non-0 value, the reduction is essentially the same}
@@ -1342,7 +1341,7 @@ Partially define $\vx$ as $x_j = x_j'$ if $1\leq j \leq n$ and $x_j$ as the valu
 \end{eqnarray}
 A solution $\vx_T$ exists as $\vS_T$ is full rank. Moreover, it is uniform and independent of $\vA$ and $\ve$, because $b^*_{m+1}, \dots, b^*_{m+\alpha}$ are uniform and independent of $\vA$ and $\ve$. 
 
-We now show that $\vb^* = \vA^* \vx+\ve$.  All entries in matrix $\vQ$ corresponding to variables in $T$ are set to zero.  Thus, the values of $\vx^T$ do not affect $b_i$ for $1\le i \le m$.  The values of $\vx_{T^c}$ are manually set, and $\vQ_{i, j} \vx_{j}$ is added to the corresponding $\vb_i$.  Thus, for $1 \leq i \le m$, we have $\vb^* = \vA^*\vx+\ve$.   For $m< i$, this constraint is also satisfied by the values of $\vx_T$ set in Equation~\ref{eq:x t solution}.  
+We now show that $\vb^* = \vA^* \vx+\ve$.  All entries in matrix $\vQ$ corresponding to variables in $T$ are set to zero.  Thus, the values of $\vx^T$ do not affect $b_i^*$ for $1\le i \le m$.  The values of $\vx_{T^c}$ are manually set, and $\vQ_{i, j} \vx_{j}$ is added to the corresponding $b_i^*$.  Thus, for $1 \leq i \le m$, we have $\vb^* = \vA^*\vx+\ve$.   For $m< i$, this constraint is also satisfied by the values of $\vx_T$ set in Equation~\ref{eq:x t solution}.  
 
 Thus, it remains to show that step~\ref{step:randomization} preserves this solution.
 %For convenience, denote by $\vx^*$ the vector where $x_i^* = x_i'$ for $1\leq i \leq n$ and $x_{n+i}^* = b_{m+i}^*$ otherwise.  
