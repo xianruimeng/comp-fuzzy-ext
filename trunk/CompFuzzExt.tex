@@ -212,7 +212,8 @@
 \newcommand{\M}{\mathcal{M}}
 
 \title{\textbf{Computational Fuzzy Extractors}}
-\author{Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Work done in part while the author was at MIT Lincoln Laboratory.}
+\author{Benjamin Fuller 
+\footnote{Email: {\tt bfuller@cs.bu.edu}.  Work done in part while the author was at MIT Lincoln Laboratory.}
 ~~~~~~~~Xianrui Meng\footnote{Email: {\tt xmeng@cs.bu.edu}.}~~~~~~~~~Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.} \\ Boston University}
 %\author{}
 \begin{document}
@@ -298,7 +299,7 @@ Another possible relaxation is to require that the value $w$ is unpredictable co
 Both of the above negative results arise because a secure sketch functions like a decoder of an error-correcting code.  To avoid them, we give up on building computational secure sketches and focus directly on the entropy loss in fuzzy extractors.  Our goal is to decrease the entropy loss in a fuzzy extractor by allowing the key $r$ to be pseudorandom conditioned on $p$.  
 
 By considering this computational secrecy requirement, we construct the first \emph{lossless} computational fuzzy extractors (\consref{cons:informal construction}), where the derived key $r$ is as long as the entropy of the source $w$. Our construction is for the Hamming metric and uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} used in prior work, but with two crucial differences.  First, the key $r$ is not extracted from $w$ like in the sketch-and-extract approach; rather $w$ ``encrypts'' $r$ in a way that is decryptable with the knowledge of some close $w'$ (this idea is similar to the way the code-offset construction is presented in 
-\cite{JW99} as  a ``fuzzy commitment'') . Second, the code used is a random linear code, which allows us to use the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey} and derive a longer key $r$.
+\cite{JW99} as  a ``fuzzy commitment''). Our construction uses private randomness, which is allowed in the fuzzy extractor setting but not in noiseless randomness extraction.  Second, the code used is a random linear code, which allows us to use the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey} and derive a longer key $r$.
 
 
 Specifically,  we use the  recent result of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012}, which shows the hardness of decoding random linear codes when the error vector comes from the uniform distribution, with each coordinate ranging over a small interval. This allows us to use $w$ as the error vector, assuming it is uniform.  We also use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009},  which says that LWE has many hardcore bits, to hide $r$.
@@ -311,7 +312,7 @@ Because we use a random linear code,  our decoding is limited to reconciling a l
 
 In \secref{sec:LWE block fixing sources}, we are able to relax the assumption that $w$ comes from the uniform distribution, and instead allow $w$ to come from a symbol-fixing source~\cite{KZ07} (each dimension is either uniform or fixed). This relaxation follows from our results about the hardness of LWE when samples have a fixed~(and adversarially known) error vector, which may be of independent interest~(\thref{thm:blockLWE}). 
 
-\paragraph{An Alternative Approach}  Computational extractors~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational} have the same goal of obtaining a pseudorandom key $r$ from a source $w$ in the setting without errors.  They can be constructed, for example, by applying to pseudorandom generator to the output of an information-theoretic extractor.  One way to build a computational \emph{fuzzy} extractor is by using a computational extractor instead  of the information-theoretic extractor in the sketch-and-extract construction of  \cite{DBLP:journals/siamcomp/DodisORS08}.   However, this approach is possible only if conditional min-entropy of $w$ conditioned on the sketch $s$ is high enough.  
+\paragraph{An Alternative Approach}  Computational extractors~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational} have the same goal of obtaining a pseudorandom key $r$ from a source $w$ in the setting without errors.  They can be constructed, for example, by applying to pseudorandom generator to the output of an information-theoretic extractor.  One way to build a computational \emph{fuzzy} extractor is by using a computational extractor instead  of the information-theoretic extractor in the sketch-and-extract construction of  \cite{DBLP:journals/siamcomp/DodisORS08}.   However, this approach is possible only if conditional min-entropy of $w$ conditioned on the sketch $s$ is high enough.  Furthermore, a computational extractor cannot use private randomness; private randomness is a crucial ingredient in our main construction.
 %We ask whether it is possible to avoid this loss by making whole process ``computational.''
 We compare the two approaches in \secref{sec:prg based comparison}.
 
@@ -1007,7 +1008,7 @@ Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq 
 
 \subsection{Lossless Computational Fuzzy Extractor}
 \label{sec:lossless extractor}
-We now state a setting of parameters that yields a lossless construction.  
+We now state a setting of parameters that yields a lossless construction.  The intuition is that our key is $X_{1,\dots, k}$ which is of size $k \log q$ while our input $w$ is of length $m\log \rho q$.  Though we need $m>n>k$ for decoding, dimensions of $w$ are sampled using fewer bits than dimensions of $X$.  That is, $\log \rho q < \log q$.  Thus by increasing the size of $q$ we can set $k\log q = m\log \rho q$, yielding a key of the same size as our source.    
 
 %\begin{theorem}
 %\label{thm:lossless secure sketch}
@@ -1037,7 +1038,7 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 
 \subsection{Comparison with computational-extractor-based constructions}
 \label{sec:prg based comparison}
-As we already mentioned in the introduction, an alternative approach to building a computational fuzzy extractor is to use  a computational extractor (e.g.,~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational}) in place of the information-theoretic extractor in the sketch-and-extract construction.  We will call this approach \emph{sketch-and-comp-extract}.  (A simple example of a computational extractor is a pseudorandom generator applied to the output of an information-theoretic extractor; note that LWE-based pseudorandom generators exist~\cite{applebaum2006pseudorandom}.)
+As mentioned in the introduction, an alternative approach to building a computational fuzzy extractor is to use  a computational extractor (e.g.,~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational}) in place of the information-theoretic extractor in the sketch-and-extract construction.  We will call this approach \emph{sketch-and-comp-extract}.  (A simple example of a computational extractor is a pseudorandom generator applied to the output of an information-theoretic extractor; note that LWE-based pseudorandom generators exist~\cite{applebaum2006pseudorandom}.)
 %using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  This is the extract-then-expand computational extractor suggested by Krawczyk in~\cite{krawczyk2010cryptographic}.  
 
 This approach (specifically, its analysis via \lemref{lem:fuzzy ext construction}) works as long as the amount of entropy $\tilde{m}$ of $w$ conditioned on the sketch $s$ remains high enough to run a computational extractor.  However, as discussed in \secref{sec:impossCompSecSketch}, $\tilde{m}$ decreases with the error parameter $t$ due to coding bounds, and it is conceivable that, if $W$ has  barely enough entropy to begin with, it will have too little entropy left to run a computational extractor once $s$ is known.
@@ -1056,13 +1057,15 @@ The disadvantages of \consref{cons:informal construction} are that it supports a
 
 \section{Computational Fuzzy Extractor for Nonuniform Sources}
 \label{sec:LWE block fixing sources}
-While showing the security of~\consref{cons:informal construction} for arbitrary high-min-entropy distributions is an open problem, in this section we show it for a particular class of distributions called symbol-fixing.  First we recall the notion of a symbol fixing source~(from~\cite[Definition 2.3]{KZ07}): 
+While showing the security of~\consref{cons:informal construction} for arbitrary high-min-entropy distributions is an open problem, in this section we show it for a particular class of distributions called symbol-fixing.   First we recall the notion of a symbol fixing source~(from~\cite[Definition 2.3]{KZ07}): 
 \begin{definition}
 Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where each $W_i$ takes values over an alphabet $Z$.  We say that it is a $(m+
 \alpha, m, |Z|) $ \emph{symbol fixing source} if for $\alpha$ indices $i_1, \dots, i_\alpha$, the symbols $W_{i_\alpha}$ are fixed, and the remaining $m$  symbols are chosen uniformly at random.  Note that $H_\infty(W)=m\log |Z|$.
 \end{definition}
 
-The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$ (but for $n$ and $m$ reduced by the amount of fixed symbols).
+Symbol-fixing sources are a very structured class of distributions.  However, extending \consref{cons:informal construction} to such a class is not obvious.  Although symbol-fixing sources are deterministically extractor, we cannot first run a deterministic extractor before using \consref{cons:informal construction}.  This is because we need to preserve distance between $w_0$ and $w_1$ and an extractor must not preserve distance between input points.  We present an alternative approach, showing security of \LWE directly with symbol-fixing sources.
+
+The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$ (but for $n$ and $m$ reduced by the amount of fixed symbols).  
 %\vspace{.1in}
 \begin{theorem}
 \label{thm:blockLWE}
@@ -1073,7 +1076,7 @@ If $\distLWE_{n, m,q, U}$ is secure, then $\distLWE_{n+\alpha+\beta, m+\alpha, q
 
 \thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi'$ be an arbitrary error distribution.  Define $\chi$ as the distribution where $m$ dimensions are sampled according to $\chi'$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi'}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi}$.  We show this stronger version of the theorem in \apref{sec:proof of block theorem}.
 
-The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error,  search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  
+The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error,  search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A similar theorem for the case of a single fixed dimension was shown in concurrent work by Brakerski et al.~\cite[Lemma 4.3]{brakerski2013classical}.  The proof techniques of Brakerski et al. allow removal of $\beta$, improving the parameters of \thref{thm:blockLWE}.
 
 \thref{thm:blockLWE} allows us to construct a lossless computational fuzzy extractor from block-fixing sources: 
 
@@ -1100,99 +1103,8 @@ such that the following holds: \consref{cons:informal construction} is a $(\M, \
 \end{proof}
 
 \section*{Acknowledgements}
-The authors are grateful to Ran Canetti, Yevgeniy Dodis, Nico D\"{o}ttling, Danielle Micciancio, J\"{o}rn M\"{u}ller-Quade, Christopher Peikert, Oded Regev, Adam Smith, and Daniel Wichs for helpful discussions, creative ideas, and important references.  In particular, the authors thank Nico D\"{o}ttling for describing his result on LWE with uniform errors.  The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.
+The authors are grateful to Ran Canetti, Yevgeniy Dodis, Nico D\"{o}ttling, Danielle Micciancio, J\"{o}rn M\"{u}ller-Quade, Christopher Peikert, Oded Regev, Adam Smith, and Daniel Wichs for helpful discussions, creative ideas, and important references.  In particular, the authors thank Nico D\"{o}ttling for describing his result on LWE with uniform errors.  We thank Jacob Alperin-Sheriff for pointing out the connection with the work of Brakerski et al.  The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.
 
-\ignore{
-\subsection{\consref{cons:informal construction} with slightly deficient sources}
-\label{sec:DP general error LWE}
-In this section, we discuss how to generalize \consref{cons:informal construction} to an arbitrary high min-entropy distribution.  We will show security using a result of Micciancio and Peikert~\cite{micciancio2013hardness}.  This result allows us to argue security for an arbitrary distribution that is nearly high entropy.  This result should be seen as a complement to the proceeding sections.  It allows for a more general error distribution, but with worse parameters than \thref{thm:lossless secure extractor log}.  Also \thref{thm:lossless block sketch log} allows for more deficient sources but of a more restricted form~(symbol fixing sources).
-\begin{theorem}
-Let $n$ be a security parameter and let $m=cn, \ell = m-n/2$.  Let $C$ be a constant and define the parameter $\rho \geq (Cm)^{\frac{m-n/2}{n/2}} = (Cm)^{2c-1}$ and let $q$ be a prime where $\poly(n) = q\geq (4\rho)^{\frac{c}{c-1}}$.  Consider a distribution $\chi$ over the space $\{-\rho, ..., \rho \}^m$.  If $\Hoo(\chi)\geq m\log \rho$ and SIVP is hard to approximate in the worst case for quantum algorithms within an approximation factor of $\gamma=\tilde{O}(\sqrt{n} q)$~(on lattices of $n/2$ dimensions), then $\distLWE_{n, m, q, \chi}$ is $(\epsilon, s_{sec})\mbox{-}$secure, where $\epsilon = \ngl(n)$ for $s_{sec}=\poly(n)$.
-\end{theorem}
-\textbf{Note:}  The above theorem is a generalized version of~\cite[Theorem 4.6]{micciancio2013hardness}.  In particular, we note the requirement of sampling from the uniform distribution over some set $\chi \subset \{-\rho,..., \rho\}^m$ is not necessary.  The only requirement in the proof is that $|\chi|\geq m\log \rho$.  Requiring that $\Hoo(\chi) = m\log \rho$ implies that the support of $\chi$ contains at least $2^{m\log \rho}$ elements.  This theorem allows all distributions over a space of size $(2\rho)^m$ that have entropy at least $m\log \rho$.  This means we support all distributions whose entropy gap is no more than $m$ bits.
-
-\bnote{Need to continue and go through their Lemma 4.1 and 4.4 to be sure I believe this.  Everything else should go through fine.}
-
-\bnote{We need to turn this hardness result into a statement about computational fuzzy extractors.  Use the Akavia result.  Then we need to suggest parameters.  How much detail should we go into?}
-
-The main item I think needs to change is their Lemma 2.4
-\begin{lemma}~\cite[Min-Entropy Version of Lemma 2.4]{micciancio2013hardness}
-Let $\mathcal{L}$ be a family of functions on a common domain $X$ and let $Z$ be a distribution over $X$.  Then $(\mathcal{L}, Z)$ is $\epsilon$-uninvertible~(even statistically, with respect to computationally unbounded adversaries) for $\epsilon = \expe_{f\leftarrow \mathcal{L}} [|f(X)|]/ 2^{-H_\infty(Z)}$.
-\end{lemma}
-\begin{proof}
-Fix a function $f$.  The best way to predict $Z$ given $f(Z)$ is the average predictability of $Z | f(Z)$.  This predictability is $2^{-\Hav(Z | f(Z))}$.  By Lemma 2.2 of Dodis et.al.~\cite{DBLP:journals/siamcomp/DodisORS08}, 
-\[
-\tilde{H}_\infty(Z | f(Z))\geq H_\infty(Z) - \log |f(Z)| \geq \Hoo(Z) - \log |f(X)|.
-\]
-  The statement of the lemma follows by converting to predictability.
-\end{proof}
-
-}
-
-%\section{Computational Fuzzy Extractors}
-%In this section, we show that any computational secure sketch implies a computationally fuzzy extractor using the same paradigm as \lemref{lem:fuzzy ext construction}.  We begin with a formal definition of a computational fuzzy extractor:
-%\label{sec:comp fuzzy extractors}
-%
-%
-%Average-case extractors produce pseudorandom bits if the input distribution has high HILL entropy:
-%\begin{lemma}
-%Let $\ext: \chi \times \zo^d \rightarrow \zo^\ell \times \zo^d$ be a $(k, \epsilon_{ext})$-extractor computable by a circuit of size $s_{ext}$.  Let $X$ be a distribution over $\chi$ with $H^{\hill}_{\epsilon, s_{sec}}(X| Z)\geq k$.  Let, $s' = s_{sec}-s_{ext}$, then 
-%$H^{\hill}_{\epsilon+\epsilon_{ext}, s_{sec}}(\ext (X, U_d) | Z, U_d)\geq \ell$.
-%\end{lemma}
-%%  the same paradigm from 
-%%Recall, we defined computational secure sketches using unpredictability entropy~(\defref{def:comp secure sketch}).  It is not known if unpredictability entropy can be extracted from, so we cannot use the construction of \lemref{lem:fuzzy ext construction}.  However, unpredictability entropy implies Yao entropy~(\defref{def:yao entropy}) and this can be extracted from using a reconstructive extractor~(defined in~\cite{barak-computational}).  
-%%\begin{definition}
-%%An $(\ell, \epsilon)$-reconstruction for a function $\rext:\{0,1\}^n\times \{0,1\}^d\rightarrow \{0,1\}^m\times\{0,1\}^d$~(where the last $d$ outputs are equal to the last $d$ input bits) is a pair of machines $C$ and $D$, where $C:\{0,1\}^n\rightarrow \{0,1\}^\ell$ is a randomized Turing machine and $D^{(\cdot)}:\{0,1\}^\ell\rightarrow \{0,1\}^n$ is a randomized oracle Turing machine which runs in time polynomial in $n$.  Furthermore, for every $x$ and $T$, if $|\Pr[T(\rext(x, U_d)) =1] -\Pr[T(U_m\times U_d)=1]|>\epsilon$, then $\Pr[D^T(C^T(x))=x]>1/2$~(the probability is over the random choices of $C$ and $D$).
-%%\end{definition}
-%%\begin{lemma}~\cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}
-%%\label{lem:unp extraction} 
-%%Let $X$ be a distribution with $H^{\unp}_{\epsilon, s_{sec}}(X|Z)\geq k$, and let $\rext$ be an extractor with a $(k-\log 1/\epsilon, \epsilon)$-reconstruction $(C,D)$.  Then $\delta^{\mathcal{D}_{s'}}((\rext(X, U_d), Z), U_m\times U_d\times Z)\leq 5\epsilon,$ where $s'=s_{sec}/(|C|+|D|)$.
-%%\end{lemma}
-%We are now ready to provide a computational analogue of \lemref{lem:fuzzy ext construction}:
-%\begin{lemma}
-%Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-computational fuzzy extractor that is $(\epsilon, s_{sec})$ hard with error $\delta$ and denote the range $\rec$ by $\chi$.  Let $\ext:\chi \times \{0,1\}^d\rightarrow \{0,1\}^\ell \times \{0, 1\}^d$ be an $(\tilde{m}, \epsilon_{ext})$ extractor.  Then the following $(\gen , \rep)$ is an $(\mathcal{M}, m, \ell, t)$-computational fuzzy extractor that is $(\epsilon + \epsilon_{ext}, s_{sec}- s_{ext})$-hard with error $\delta$.
-%\end{lemma}
-%%reconstructive extractor with $(\tilde{m}-\log 1/\epsilon, \epsilon)$-reconstruction $(C, D)$.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, s_{sec}/(|C|+|D|), s_{rec}, 5\epsilon)$-computational fuzzy extractor:
-%%\begin{itemize}
-%%\item $\gen(w;r, x)$: set $P= (\sketch(w; r), x), R = \rext(w, x)$, and output $(R,P)$.
-%%\item $\rep(w', (s, x)):$ recover $w = \rec(w', s)$ and output $R = \rext(w;x)$.
-%%\end{itemize}
-%%\end{lemma}
-%%\begin{proof}
-%%Consequence of \defref{def:comp secure sketch} and \lemref{lem:unp extraction}.
-%%\end{proof}
-%%
-%%For completeness, we describe a computational fuzzy extractor based on Construction~\ref{cons:LWESecureSketch} in \secref{sec:fuzzy extractor phrasing}.
-
-\ignore{
-Additionally, it is simple to use a pseudorandom generator to produce a computational fuzzy extractor from a standard fuzzy extractor:
-\begin{proposition}\label{prop:prg comp fuzzy extractor}
-Let \gen, \rep be a $(\mathcal{M}, m, \ell, t, \epsilon)$-fuzzy extractor~(where \rep is computable by a  $s_{rec}$ size circuit) and let $prg: \{0,1\}^\ell\rightarrow \{0, 1\}^{\ell'}$ be a $(\epsilon_{prg}, s)$ pseudorandom generator (computable by a circuit of size $s_{peg}$) from $\ell$ bits to $\ell'$ bits.  Let \gen' and \rep' be defined as:
-\begin{itemize}
-\item \gen': $(R, P) \leftarrow \gen(w)$, output $(prg(R), P)$
-\item \rep': Output  $prg(\rep (w', P))$.
-\end{itemize}
-Then $(\rep', \gen')$ is a $(\mathcal{M}, m, \ell', t, s_{rec}+s_{prg}, s, \epsilon+\epsilon_{prg})$-computational fuzzy extractor.
-\end{proposition}
-Recall, our goal is to construct fuzzy extractors where the entropy drop due to an information theoretic construction were too high.  However, it seems difficult to definitionally exclude this type of construction.  For example, one could require that $R$ have information theoretic entropy in the absence of $P$.  This does not solve the problem:
-\begin{proposition}\label{prop:xor comp fuzzy extractor}
-Let \gen, \rep be a $(\mathcal{M}, m, \ell, t, \epsilon)$-fuzzy extractor~(where \rep is computable by a  $s_{rec}$ size circuit) and let $prg: \{0,1\}^\ell\rightarrow \{0, 1\}^{\ell'}$ be a $\epsilon_{prg}, s$ pseudorandom generator (computable by a circuit of size $s_{peg}$) from $\ell$ bits to $\ell'$ bits.  Let \gen' and \rep' be defined as:
-\begin{itemize}
-\item $\gen'(w)$
-\subitem Sample $K\leftarrow \{0,1 \}^{\ell'}$
-\subitem $(R, P) \leftarrow \gen(w)$
-\subitem $H= prg(R)\oplus K$
-\subitem Output $(K, (H, P))$
-\item $\rep'(w', (H, P))$
-\subitem Output $K' = H\oplus prg(\rep (w', P))$.
-\end{itemize}
-Then (\rep', \gen') is a $(\mathcal{M}, m, \ell', t, s_{rec}+s_{prg}, s, \epsilon+\epsilon_{prg})$-computational fuzzy extractor.  Furthermore $H_\infty(K) = \ell'$.
-\end{proposition}
-
-Both of these constructions rely on a crucial property $\ell$ was long enough to provide a seed to a pseudorandom generator.  We are interested in the case where the remaining entropy is small and may not sufficient for pseudorandom generator.  We leave Definition~\ref{def:comp fuzzy extractor} as stated and note constructing a computational fuzzy extractor is desirable when a standard fuzzy extractor cannot be used. 
-
-In the information theoretic setting, Dodis et. al.~\cite{DBLP:journals/siamcomp/DodisORS08} construct fuzzy extractors by using a secure sketch to perform (secure)~error correction and a randomness extractor to convert the distribution to close to uniform.  A similar paradigm seems desirable in the computational case: can a computational fuzzy extractor can be produced by a ``computational'' secure sketch and a randomness extractor~(which convert conditional HILL entropy to pseudorandom bits~\cite[Lemma 5]{DBLP:conf/eurocrypt/HsiaoLR07}).
-}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 \appendix
