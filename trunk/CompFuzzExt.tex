@@ -312,7 +312,7 @@ Because we use a random linear code,  our decoding is limited to reconciling a l
 
 In \secref{sec:LWE block fixing sources}, we are able to relax the assumption that $w$ comes from the uniform distribution, and instead allow $w$ to come from a symbol-fixing source~\cite{KZ07} (each dimension is either uniform or fixed). This relaxation follows from our results about the hardness of LWE when samples have a fixed~(and adversarially known) error vector, which may be of independent interest~(\thref{thm:blockLWE}). 
 
-\paragraph{An Alternative Approach}  Computational extractors~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational} have the same goal of obtaining a pseudorandom key $r$ from a source $w$ in the setting without errors.  They can be constructed, for example, by applying to pseudorandom generator to the output of an information-theoretic extractor.  One way to build a computational \emph{fuzzy} extractor is by using a computational extractor instead  of the information-theoretic extractor in the sketch-and-extract construction of  \cite{DBLP:journals/siamcomp/DodisORS08}.   However, this approach is possible only if conditional min-entropy of $w$ conditioned on the sketch $s$ is high enough.  Furthermore, a computational extractor cannot use private randomness; private randomness is a crucial ingredient in our main construction.
+\paragraph{An Alternative Approach}  Computational extractors~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational} have the same goal of obtaining a pseudorandom key $r$ from a source $w$ in the setting without errors.  They can be constructed, for example, by applying a pseudorandom generator to the output of an information-theoretic extractor.  One way to build a computational \emph{fuzzy} extractor is by using a computational extractor instead  of the information-theoretic extractor in the sketch-and-extract construction of  \cite{DBLP:journals/siamcomp/DodisORS08}.   However, this approach is possible only if conditional min-entropy of $w$ conditioned on the sketch $s$ is high enough.  
 %We ask whether it is possible to avoid this loss by making whole process ``computational.''
 We compare the two approaches in \secref{sec:prg based comparison}.
 
@@ -390,7 +390,7 @@ An $(\mathcal{M},m, \tilde{m}, t)$-\emph{secure sketch} with error $\delta$ is a
 A secure sketch is \emph{efficient} if \sketch and \rec run in expected polynomial time. 
 \end{definition}
 
-Note that in the above definition of secure sketches (resp., fuzzy extractors), the errors are chosen before $s$ (resp., $P$) is known: if the error pattern between $w$ and $w'$ depends the output of $\sketch$ (resp., $\gen$), then there is no guarantee about the probability of correctness.
+Note that in the above definition of secure sketches (resp., fuzzy extractors), the errors are chosen before $s$ (resp., $P$) is known: if the error pattern between $w$ and $w'$ depends on the output of $\sketch$ (resp., $\gen$), then there is no guarantee about the probability of correctness.
 
 
 A fuzzy extractor can be produced from a \emph{secure sketch} and an \emph{average-case randomness extractor}. An average-case extractor is a generalization of a strong randomness extractor \cite[Definition 2]{nisan1993randomness}) (in particular, Vadhan~\cite[Problem 6.8]{Vad12} showed that all strong extractors are average-case extractors with a slight loss of parameters):
@@ -893,7 +893,7 @@ Let $n$ be a security parameter.  Let $q = q(n) = \poly(n)$ be a prime and $m = 
 To extract pseudorandom bits, we use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009} to show that $X$ has simultaneously many hardcore bits.  The result says that if $\distLWE_{(n-k, m, q, \chi)}$ is secure then any $k$ variables of $X$ in a $\distLWE_{(n, m, q, \chi)}$ instance are hardcore.  We state their result for a general error distribution~(noting that their proof does not depend on the error distribution):
 \begin{lemma}\protect{\cite[Lemma 2]{akavia2009}}
 \label{lem:many hardcore bits}
- If $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ secure then
+ If $\distLWE_{(n-k, m, q, \chi)}$ is $(\epsilon, s_{sec})$ secure, then
 \[\delta^ {\mathcal{D}_{s_{sec'}}} ((X_{1,\dots, k}, \vA, \vA X+\chi) , (U, \vA, \vA X+\chi)) \le \epsilon\,,\]
 where $U$ denotes the uniform distribution over $\Fq^k$,  $\vA$ denotes the uniform distribution over $\Fq^{m\times n}$, $X$ denotes the uniform distribution over $\Fq^n$, $X_{1,\dots, k}$ denote the first $k$ coordinates of $x$, and $s_{sec}' \approx s_{sec} - n^3$.
 \end{lemma}
