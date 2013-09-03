@@ -1008,7 +1008,8 @@ Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq 
 
 \subsection{Lossless Computational Fuzzy Extractor}
 \label{sec:lossless extractor}
-We now state a setting of parameters that yields a lossless construction.  The intuition is that our key is $X_{1,\dots, k}$ which is of size $k \log q$ while our input $w$ is of length $m\log \rho q$.  Though we need $m>n>k$ for decoding, dimensions of $w$ are sampled using fewer bits than dimensions of $X$.  That is, $\log \rho q < \log q$.  Thus by increasing the size of $q$ we can set $k\log q = m\log \rho q$, yielding a key of the same size as our source.    
+We now state a setting of parameters that yields a lossless construction.  The intuition is as follows.  We are splitting our source into $m$ blocks each of size $\log \rho q$~(from \lemref{lem:uniform LWE decision}) for a total input entropy of $m\log \rho q$.  Our key is derived from hardcore bits of $X$: $X_{1,\dots, k}$ and is of size $k \log q$~(from \lemref{lem:many hardcore bits}). Thus, to achieve a lossless construction we need $k \log q = m\log \rho q$.
+In order to decode a meaningful number of errors we need $m>n>k$.  However, dimensions of $w$ are sampled with fewer bits than dimensions of $X$.  That is, $\log \rho q < \log q$.  Thus, by increasing the size of $q$ we can set $k\log q = m\log \rho q$, yielding a key of the same size as our source.    The formal statement is below. 
 
 %\begin{theorem}
 %\label{thm:lossless secure sketch}
@@ -1063,7 +1064,7 @@ Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where each $W_i$ takes value
 \alpha, m, |Z|) $ \emph{symbol fixing source} if for $\alpha$ indices $i_1, \dots, i_\alpha$, the symbols $W_{i_\alpha}$ are fixed, and the remaining $m$  symbols are chosen uniformly at random.  Note that $H_\infty(W)=m\log |Z|$.
 \end{definition}
 
-Symbol-fixing sources are a very structured class of distributions.  However, extending \consref{cons:informal construction} to such a class is not obvious.  Although symbol-fixing sources are deterministically extractor, we cannot first run a deterministic extractor before using \consref{cons:informal construction}.  This is because we need to preserve distance between $w_0$ and $w_1$ and an extractor must not preserve distance between input points.  We present an alternative approach, showing security of \LWE directly with symbol-fixing sources.
+Symbol-fixing sources are a very structured class of distributions.  However, extending \consref{cons:informal construction} to such a class is not obvious.  Although symbol-fixing sources are deterministically extractible~\cite{KZ07}, we cannot first run a deterministic extractor before using \consref{cons:informal construction}.  This is because we need to preserve distance between $w$ and $w'$ and an extractor must not preserve distance between input points.  We present an alternative approach, showing security of $\LWE$ directly with symbol-fixing sources.
 
 The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$ (but for $n$ and $m$ reduced by the amount of fixed symbols).  
 %\vspace{.1in}
