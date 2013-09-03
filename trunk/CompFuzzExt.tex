@@ -614,14 +614,14 @@ In this section we show that the results of \thref{thm:compSketchImpUniform} can
 We review definitions of Shannon codes~\cite{shannon1949mathematical}:
 \begin{definition}
 \label{def:shannon-code}
-Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is a $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
+Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
 \end{definition}
 This is a slightly stronger formulation than usual, in that for every size  $t'<t$ we require the code to correct $t'$ random errors\footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compared to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 
 Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. 
 
  \begin{definition}
-Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is a $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
+Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
 $\Pr_{c\leftarrow C}[\rec(\neigh(c, t')) \neq c]\le \epsilon$.
 \end{definition}
 An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} (we provide a proof in \secref{sec:proof of average to maximal error}):
@@ -749,15 +749,15 @@ Let  $(W, S)$ be a pair of random variables. We say that $W$ has \emph{relaxed u
 .\]
 \end{definition}
 
-We will say that a pair of procedures $(\sketch, \rec)$ is an \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\unprlx}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
-Note that this notion is quite natural: combining such a secure sketch in a sketch-and-extract construction of  \lemref{lem:fuzzy ext construction} with a particular type of extractor (called a extractor 
+We will say that a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\unprlx}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
+Note this notion is quite natural: combining such a secure sketch in a sketch-and-extract construction of  \lemref{lem:fuzzy ext construction} with a particular type of extractor (called a extractor 
 \emph{reconstructive}~\cite{barak-computational}), would yield a computational fuzzy extractor (per \cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}).  
 
 Unfortunately, the conditional unpredictability entropy $\tilde{m}$ must decrease as $t$ increases, as the following theorem states.  (The proof of the theorem, generalized to more metric spaces, is in \secref{sec:proof of imp unp entropy}.)
 
 \begin{theorem}
 \label{thm:imp of unp entropy}
-Let $Z$ be an alphabet and $(\sketch, \rec)$ be an unpredictability-entropy $(Z^n, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq t(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
+Let $Z$ be an alphabet $(\sketch, \rec)$ be an unpredictability-entropy $(Z^n, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq t(|\rec|+n\log |Z|)$, then $\tilde{m}\leq n\log |Z| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
 \end{theorem}
 In particular, if the input is uniform, the entropy loss is about $\log |B_t(\cdot)|$.  As mentioned at the beginning of~\secref{sec:impossCompSecSketch}, essentially the same entropy loss can be achieved with information-theoretic secure sketches, by using the randomized code-offset construction. However, it is conceivable that unpredictability entropy secure sketches could achieve lower entropy loss with greater efficiency for some parameter settings.
 
@@ -854,7 +854,7 @@ We describe one possible polynomial-time $\decode_t$ (which corrects more errors
 
 \subsection{Security of \consref{cons:informal construction}}
 \label{subsec:LWE}
-The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." We now recall the definition of the decisional version of the problem. 
+The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." For a complete description of the $\LWE$ problem and related lattices problems~(which we do not define here) see~\cite{regev2005LWE}.  We now recall the definition of the decisional version of the problem. 
 
 
 \begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}
@@ -876,7 +876,7 @@ Let $\bar{\Psi}_\rho$ be the discretized Gaussian distribution with variance $(\
 The above formulation of $\LWE$ requires the error term to come from the discretized Gaussian distribution, which makes it difficult to use it for constructing fuzzy extractors (because using $w$ and $w'$ to sample Gaussian distributions will increase the distance between the error terms and/or reduce their entropy).
 %\subsection{LWE with uniform errors}
 %\label{subsec:LWE uniform error}
-Fortunately, recent work of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$, under the same assumptions, when errors come from the uniform distribution over a small interval\footnote{Micciancio and Peikert provide a similar formulation in~\cite{micciancio2013hardness}.  The result D\"{o}ttling and M\"{u}ller-Quade provides better parameters for our setting.}.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it  into $m$ blocks.  The size of these blocks is dictated by the following result of D\"{o}ttling and M\"{u}ller-Quade:
+Fortunately, recent work D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012} shows the security of $\LWE$, under the same assumptions, when errors come from the uniform distribution over a small interval\footnote{Micciancio and Peikert provide a similar formulation in~\cite{micciancio2013hardness}.  The result D\"{o}ttling and M\"{u}ller-Quade provides better parameters for our setting.}.  This allows us to directly encode $w$ as the error term in an $\LWE$ problem by splitting it  into $m$ blocks.  The size of these blocks is dictated by the following result of D\"{o}ttling and M\"{u}ller-Quade:
 %As stated above this has two advantages for Construction~\ref{cons:LWESecureSketch}: 1) the bits of $W$ can be used directly and \rep can output $w$ instead of $sam_w$ 2) there is a fixed number of bits required to sample each dimension.  
 %We present the formulation of D\"{o}ttling and M\"{u}ller-Quade: 
 %\begin{lemma}~\protect{~\cite[Theorem 5]{dottling2012}}
@@ -1008,7 +1008,8 @@ Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq 
 
 \subsection{Lossless Computational Fuzzy Extractor}
 \label{sec:lossless extractor}
-We now state a setting of parameters that yields a lossless construction.  The intuition is that our key is $X_{1,\dots, k}$ which is of size $k \log q$ while our input $w$ is of length $m\log \rho q$.  Though we need $m>n>k$ for decoding, dimensions of $w$ are sampled using fewer bits than dimensions of $X$.  That is, $\log \rho q < \log q$.  Thus by increasing the size of $q$ we can set $k\log q = m\log \rho q$, yielding a key of the same size as our source.    
+We now state a setting of parameters that yields a lossless construction.  The intuition is as follows.  We are splitting our source into $m$ blocks each of size $\log \rho q$~(from \lemref{lem:uniform LWE decision}) for a total input entropy of $m\log \rho q$.  Our key is derived from hardcore bits of $X$: $X_{1,\dots, k}$ and is of size $k \log q$~(from \lemref{lem:many hardcore bits}). Thus, to achieve a lossless construction we need $k \log q = m\log \rho q$.
+In order to decode a meaningful number of errors we need $m>n>k$.  However, dimensions of $w$ are sampled with fewer bits than dimensions of $X$.  That is, $\log \rho q < \log q$.  Thus, by increasing the size of $q$ we can set $k\log q = m\log \rho q$, yielding a key of the same size as our source.    The formal statement is below. 
 
 %\begin{theorem}
 %\label{thm:lossless secure sketch}
@@ -1041,7 +1042,7 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 As mentioned in the introduction, an alternative approach to building a computational fuzzy extractor is to use  a computational extractor (e.g.,~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational}) in place of the information-theoretic extractor in the sketch-and-extract construction.  We will call this approach \emph{sketch-and-comp-extract}.  (A simple example of a computational extractor is a pseudorandom generator applied to the output of an information-theoretic extractor; note that LWE-based pseudorandom generators exist~\cite{applebaum2006pseudorandom}.)
 %using an information theoretic fuzzy extractor and then applying a pseudorandom generator to the output of the fuzzy extractor.  This is the extract-then-expand computational extractor suggested by Krawczyk in~\cite{krawczyk2010cryptographic}.  
 
-This approach (specifically, its analysis via \lemref{lem:fuzzy ext construction}) works as long as the amount of entropy $\tilde{m}$ of $w$ conditioned on the sketch $s$ remains high enough to run a computational extractor.  However, as discussed in \secref{sec:impossCompSecSketch}, $\tilde{m}$ decreases with the error parameter $t$ due to coding bounds and it is conceivable that, if $W$ has  barely enough entropy to begin with, it will have too little entropy left to run a computational extractor once $s$ is known.
+This approach (specifically, its analysis via \lemref{lem:fuzzy ext construction}) works as long as the amount of entropy $\tilde{m}$ of $w$ conditioned on the sketch $s$ remains high enough to run a computational extractor.  However, as discussed in \secref{sec:impossCompSecSketch}, $\tilde{m}$ decreases with the error parameter $t$ due to coding bounds, and it is conceivable that, if $W$ has  barely enough entropy to begin with, it will have too little entropy left to run a computational extractor once $s$ is known.
 
 In contrast, our approach does not require the entropy of $w$ conditioned on $p=(\vA, \vA X+w)$ to  be high enough for a computational extractor. Instead, we require that $w$ is not computationally recoverable  given $p$.  This requirement is weaker---in particular, in our construction, $w$ may have no information-theoretic entropy conditioned on $p$.  The key difference in our approach is that instead of extracting from $w$, we hide secret randomness using $w$. Computational extractors are not allowed to have private randomness \cite[Definition 3]{krawczyk2010cryptographic}.
 
@@ -1063,7 +1064,7 @@ Let $W = (W_1,..., W_{m+\alpha})$ be a distribution where each $W_i$ takes value
 \alpha, m, |Z|) $ \emph{symbol fixing source} if for $\alpha$ indices $i_1, \dots, i_\alpha$, the symbols $W_{i_\alpha}$ are fixed, and the remaining $m$  symbols are chosen uniformly at random.  Note that $H_\infty(W)=m\log |Z|$.
 \end{definition}
 
-Symbol-fixing sources are a very structured class of distributions.  However, extending \consref{cons:informal construction} to such a class is not obvious.  Although symbol-fixing sources are deterministically extractor, we cannot first run a deterministic extractor before using \consref{cons:informal construction}.  This is because we need to preserve distance between $w_0$ and $w_1$ and an extractor must not preserve distance between input points.  We present an alternative approach, showing security of \LWE directly with symbol-fixing sources.
+Symbol-fixing sources are a very structured class of distributions.  However, extending \consref{cons:informal construction} to such a class is not obvious.  Although symbol-fixing sources are deterministically extractible~\cite{KZ07}, we cannot first run a deterministic extractor before using \consref{cons:informal construction}.  This is because we need to preserve distance between $w$ and $w'$ and an extractor must not preserve distance between input points.  We present an alternative approach, showing security of $\LWE$ directly with symbol-fixing sources.
 
 The following theorem states the main technical result of this section, which is of potential interest outside our specific setting. The result is that $\distLWE$ with symbol-fixing sources is implied by standard $\distLWE$ (but for $n$ and $m$ reduced by the amount of fixed symbols).  
 %\vspace{.1in}
@@ -1099,12 +1100,14 @@ such that the following holds: \consref{cons:informal construction} is a $(\M, \
  The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3} \log n)$ operations over $\Fq$.
 \end{theorem}
 
-\begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE} .  Since \lemref{lem:uniform LWE decision} requires that $q = O(n^{3/2})$, setting  $\beta = \omega(1)$ is sufficient for $q^{-\beta} = \ngl(n)$ as required in \thref{thm:blockLWE}.  Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}. 
+\begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE} .  %Recall that \thref{thm:blockLWE} requires that $q^{-\beta} = \ngl(n)$.  Since, \lemref{lem:uniform LWE decision} requires that $q = O(n^{3/2})$, the condition of \thref{thm:blockLWE} are satisfied by any  $\beta = \omega(1)$.  
+Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}. 
 \end{proof}
 
 \section*{Acknowledgements}
 The authors are grateful to Ran Canetti, Yevgeniy Dodis, Nico D\"{o}ttling, Danielle Micciancio, J\"{o}rn M\"{u}ller-Quade, Christopher Peikert, Oded Regev, Adam Smith, and Daniel Wichs for helpful discussions, creative ideas, and important references.  In particular, the authors thank Nico D\"{o}ttling for describing his result on LWE with uniform errors.  We thank Jacob Alperin-Sheriff for pointing out the connection with the work of Brakerski et al.  The work of Benjamin Fuller is sponsored by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.
 
+\bnote{Need grants for Leo and Xianrui}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 \appendix
