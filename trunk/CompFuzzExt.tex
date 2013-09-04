@@ -283,7 +283,7 @@ By considering this computational secrecy requirement, we construct the first \e
 
 Specifically,  we use the  recent result of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012}, which shows the hardness of decoding random linear codes when the error vector comes from the uniform distribution, with each coordinate ranging over a small interval. This allows us to use $w$ as the error vector, assuming it is uniform.  We also use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009},  which says that LWE has many hardcore bits, to hide $r$.
 
-Because we use a random linear code,  our decoding is limited to reconciling a logarithmic number of differences.  Unfortunately, we  cannot utilize the results that improve the decoding radius through the use of trapdoors (such as \cite{regev2005LWE}), because in a fuzzy extractor, there is no secret storage place for the trapdoor. If improved decoding algorithms are obtained for random linear codes, they will improve error-tolerance of our construction.  Given the hardness of decoding random linear codes~\cite{berlekamp1978}, we do not expect significant improvement in error-tolerance of our construction.
+Because we use a random linear code,  our decoding is limited to reconciling a logarithmic number of differences.  Unfortunately, we  cannot utilize the results that improve the decoding radius through the use of trapdoors (such as \cite{regev2005LWE}), because in a fuzzy extractor, there is no secret storage place for the trapdoor. If improved decoding algorithms are obtained for random linear codes, they will improve error-tolerance of our construction.  Given the hardness of decoding random linear codes~\cite{berlekamp1978}, we do not expect significant improvement in the error-tolerance of our construction.
 
 In \secref{sec:LWE block fixing sources}, we are able to relax the assumption that $w$ comes from the uniform distribution, and instead allow $w$ to come from a symbol-fixing source~\cite{KZ07} (each dimension is either uniform or fixed). This relaxation follows from our results about the hardness of LWE when samples have a fixed~(and adversarially known) error vector, which may be of independent interest~(\thref{thm:blockLWE}). 
 
@@ -395,10 +395,10 @@ To make this intuition precise, we need an additional technical condition:  samp
 We say a metric space $(\mathcal{M}, \dis)$ is $(s_{neigh}, t)$-\emph{neighborhood samplable} if there exists a randomized circuit $\neigh$ of size $s_{neigh}$ that for all $t'\leq t$, $\neigh (w, t')$ outputs a random point at distance $t'$ of $w$.  
 \end{definition}
 
-We review definitions of Shannon codes~\cite{shannon1949mathematical}:
+We review the definition of a Shannon code~\cite{shannon1949mathematical}:
 \begin{definition}
 \label{def:shannon-code}
-Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
+Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in \mathcal{C}$, $\Pr[\rec(\neigh(c, t')) \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it a \emph{maximal-error} Shannon code.
 \end{definition}
 This is a slightly stronger formulation than usual, in that for every size  $t'<t$ we require the code to correct $t'$ random errors\footnote{In the standard formulation, the code must correct a random error of size up to $t$, which may not imply that it can correct a random error of a much smaller size $t'$, because the volume of the ball of size $t'$ may be negligible compared to the volume of the ball of size $t$.  For codes that are monotone~(if decoding succeeds on a set of errors, it succeeds on all subsets), these formulations are equivalent.  However, we work with an arbitrary recover functionality that is not necessarily monotone.}.  
 Shannon codes work for all codewords. We can also consider a formulation that works for an ``average'' codeword. 
@@ -418,7 +418,7 @@ We can now formalize the intuition above and show that a sketch that retains $\t
 Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Let $s_{rec}$ denote the size of the circuit that computes $\rec$.  If $s_{sec}\geq (t(s_{neigh}+s_{rec}))$,  then there exists a value $s$ and a set $\mathcal{C}$ with $|\mathcal{C}|\geq 2^{\tilde{m}-2}$  that is a $(t, 4(\epsilon+t\delta))$-Shannon code with recovery procedure $\rec(\cdot, s)$.
 \end{theorem}
 
-For the Hamming metric, any Shannon code (as defined in Definition~\ref{def:shannon-code}) can be converted into an information-theoretic secure sketch~(as described in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, and convert worst-case errors to random errors by randomizing the order of the bits of $w$ first, via a randomly chosen  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement of this result  can be expressed in the following Lemma (which is implicit in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}).
+For the Hamming metric, any Shannon code (as defined in Definition~\ref{def:shannon-code}) can be converted into an information-theoretic secure sketch~(as described in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, and convert worst-case errors to random errors by randomizing the order of the symbols of $w$ first, via a randomly chosen  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement of this result  can be expressed in the following Lemma (which is implicit in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}).
 \begin{lemma}
 \label{lem:shannon to sketch}
 For an alphabet $\mathcal{Z}$, let $\mathcal{C}$ over $\mathcal{Z}^n$ be a $(t, \delta)$ Shannon code.  Then there exists a $(\mathcal{Z}^n, m, m-(n\log|\mathcal{Z}|-\log |\mathcal{C}|), t)$ secure sketch with error $\delta$ for the Hamming metric over $\mathcal{Z}^n$. 
@@ -511,7 +511,7 @@ We describe one possible polynomial-time $\decode_t$ (which corrects more errors
 
 \subsection{Security of \consref{cons:informal construction}}
 \label{subsec:LWE}
-The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." For a complete description of the $\LWE$ problem and related lattices problems~(which we do not define here) see~\cite{regev2005LWE}.  We now recall the definition of the decisional version of the problem. 
+The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." For a complete description of the $\LWE$ problem and related lattices problems~(which we do not define here) see~\cite{regev2005LWE}.  We now recall the decisional version of the problem. 
 
 
 \begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}
@@ -544,13 +544,13 @@ To extract pseudorandom bits, we use a result of Akavia, Goldwasser, and Vaikunt
 \[\delta^ {\mathcal{D}_{s_{sec'}}} ((X_{1,\dots, k}, \vA, \vA X+\chi) , (U, \vA, \vA X+\chi)) \le \epsilon\,,\]
 where $U$ denotes the uniform distribution over $\Fq^k$,  $\vA$ denotes the uniform distribution over $\Fq^{m\times n}$, $X$ denotes the uniform distribution over $\Fq^n$, $X_{1,\dots, k}$ denote the first $k$ coordinates of $x$, and $s_{sec}' \approx s_{sec} - n^3$.
 \end{lemma}
-The security of  \consref{cons:informal construction} follows from Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} if all parameters are set appropriately (see \thref{thm:lossless secure extractor log}),  because we use the hardcore bits of $X$ as our key.  
+The security of  \consref{cons:informal construction} follows from Lemmas \ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} when parameters are set appropriately (see \thref{thm:lossless secure extractor log}),  because we use the hardcore bits of $X$ as our key.  
 
 \subsection{Efficiency of \consref{cons:informal construction}}
 \label{sec:time main construction}
 \consref{cons:informal construction} is useful only if $\decode_t$ can be efficiently implemented.  We need a decoding algorithm for a random linear code with $t$ errors that runs in polynomial time.  We present a simple $\decode_t$ that runs in polynomial time and can correct
 correcting $O(\log n)$ errors (note that this corresponds to a superpolynomial number of possible error patterns).
-This algorithm is only a proof of concept, and neither the algorithm nor its analysis have been optimized for constants. An improved decoding algorithm can replace our algorithm, which will increase our correcting capability and improve \consref{cons:informal construction}.
+This algorithm is a proof of concept, and neither the algorithm nor its analysis have been optimized for constants. An improved decoding algorithm can replace our algorithm, which will increase our correcting capability and improve \consref{cons:informal construction}.
 
 \begin{construction}
 \label{cons:decoding algorithm} We consider a setting of $(n, m, q, \chi)$ where $m\geq 3n$.  We describe $\decode_t$:
@@ -647,7 +647,7 @@ Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanati
 \end{proof}
 
 \section*{Acknowledgements}
-The authors are grateful to Ran Canetti, Yevgeniy Dodis, Nico D\"{o}ttling, Danielle Micciancio, J\"{o}rn M\"{u}ller-Quade, Christopher Peikert, Oded Regev, Adam Smith, and Daniel Wichs for helpful discussions, creative ideas, and important references.  In particular, the authors thank Nico D\"{o}ttling for describing his result on LWE with uniform errors.  We thank Jacob Alperin-Sheriff for pointing out the connection with the work of Brakerski et al. 
+The authors are grateful to Jacob Alperin-Sheriff, Ran Canetti, Yevgeniy Dodis, Nico D\"{o}ttling, Danielle Micciancio, J\"{o}rn M\"{u}ller-Quade, Christopher Peikert, Oded Regev, Adam Smith, and Daniel Wichs for helpful discussions, creative ideas, and important references.  In particular, the authors thank Nico D\"{o}ttling for describing his result on LWE with uniform errors.  
 
 This work is supported in part by National Science Foundation grants 0831281, 1012910, and 1012798. The work of Benjamin Fuller is sponsored in part by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.  
 
