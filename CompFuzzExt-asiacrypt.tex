@@ -1,14 +1,14 @@
-\documentclass[11pt]{article}
-%\documentclass{llncs}
+%\documentclass[11pt]{article}
+\documentclass{llncs}
 \def\shownotes{1}
 
-\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
-\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+%\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
 %\geometry{landscape}                % Activate for for rotated page geometry
 %\usepackage[parfill]{parskip}    
 \usepackage{graphicx}
 \usepackage{amssymb, amsmath, amsfonts}
-\usepackage{amsthm}
+%\usepackage{amsthm}
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{xspace}
@@ -97,82 +97,83 @@
 \newcommand{\LWE}{\class{LWE}}
 \newcommand{\distLWE}{\ensuremath{\class{dist\mbox{-}LWE}}}
 
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{assumption}[theorem]{Assumption}
-\newtheorem{claim}[theorem]{Claim}
-\newtheorem{problem}[theorem]{Problem}
-\newtheorem{construction}[theorem]{Construction}
+%\newtheorem{theorem}{Theorem}[section]
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{definition}[theorem]{Definition}
+%\newtheorem{assumption}[theorem]{Assumption}
+%\newtheorem{claim}[theorem]{Claim}
+%\newtheorem{problem}[theorem]{Problem}
+\newtheorem{construction}{Construction}
+%\spn@wtheorem{lemma}{Lemma}{\bfseries}{\itshape}
 
 \newcounter{ctr}
 \newcounter{savectr}
 \newcounter{ectr}
-
-\newenvironment{newitemize}{%
-\begin{list}{\mbox{}\hspace{5pt}$\bullet$\hfill}{\labelwidth=15pt%
-\labelsep=5pt \leftmargin=20pt \topsep=3pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{3pt} }}{\end{list}}
-
-
-\newenvironment{newenum}{%
-\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=17pt%
-\labelsep=5pt \leftmargin=22pt \topsep=3pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{2pt} }}{\end{list}}
-
-\newenvironment{tiret}{%
-\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
-\labelsep=3pt \leftmargin=22pt \topsep=3pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{2pt}}}{\end{list}}
-
-
-\newenvironment{blocklist}{\begin{list}{}{\labelwidth=0pt%
-\labelsep=0pt \leftmargin=0pt \topsep=10pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{20pt}}}{\end{list}}
-
-\newenvironment{blocklistindented}{\begin{list}{}{\labelwidth=0pt%
-\labelsep=30pt \leftmargin=30pt\topsep=5pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{10pt}}}{\end{list}}
-
-\newenvironment{onelist}{%
-\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=18pt%
-\labelsep=7pt \leftmargin=25pt \topsep=2pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{2pt} }}{\end{list}}
-
-\newenvironment{twolist}{%
-\begin{list}{{\rm (\arabic{ctr}.\arabic{ectr})}%
-\hfill}{\usecounter{ectr} \labelwidth=26pt%
-\labelsep=7pt \leftmargin=33pt \topsep=2pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{2pt} }}{\end{list}}
-
-\newenvironment{centerlist}{%
-\begin{list}{\mbox{}}{\labelwidth=0pt%
-\labelsep=0pt \leftmargin=0pt \topsep=10pt%
-\setlength{\listparindent}{\saveparindent}%
-\setlength{\parsep}{\saveparskip}%
-\setlength{\itemsep}{10pt} }}{\end{list}}
-
-\newenvironment{newcenter}[1]{\begin{centerlist}\centering%
-\item #1}{\end{centerlist}}
-
-\newenvironment{codecenter}[1]{\begin{small}\begin{centerlist}\centering%
-\item #1}{\end{centerlist}\end{small}}
+%
+%\newenvironment{newitemize}{%
+%\begin{list}{\mbox{}\hspace{5pt}$\bullet$\hfill}{\labelwidth=15pt%
+%\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{3pt} }}{\end{list}}
+%
+%
+%\newenvironment{newenum}{%
+%\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=17pt%
+%\labelsep=5pt \leftmargin=22pt \topsep=3pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{2pt} }}{\end{list}}
+%
+%\newenvironment{tiret}{%
+%\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+%\labelsep=3pt \leftmargin=22pt \topsep=3pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{2pt}}}{\end{list}}
+%
+%
+%\newenvironment{blocklist}{\begin{list}{}{\labelwidth=0pt%
+%\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{20pt}}}{\end{list}}
+%
+%\newenvironment{blocklistindented}{\begin{list}{}{\labelwidth=0pt%
+%\labelsep=30pt \leftmargin=30pt\topsep=5pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{10pt}}}{\end{list}}
+%
+%\newenvironment{onelist}{%
+%\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=18pt%
+%\labelsep=7pt \leftmargin=25pt \topsep=2pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{2pt} }}{\end{list}}
+%
+%\newenvironment{twolist}{%
+%\begin{list}{{\rm (\arabic{ctr}.\arabic{ectr})}%
+%\hfill}{\usecounter{ectr} \labelwidth=26pt%
+%\labelsep=7pt \leftmargin=33pt \topsep=2pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{2pt} }}{\end{list}}
+%
+%\newenvironment{centerlist}{%
+%\begin{list}{\mbox{}}{\labelwidth=0pt%
+%\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+%\setlength{\listparindent}{\saveparindent}%
+%\setlength{\parsep}{\saveparskip}%
+%\setlength{\itemsep}{10pt} }}{\end{list}}
+%
+%\newenvironment{newcenter}[1]{\begin{centerlist}\centering%
+%\item #1}{\end{centerlist}}
+%
+%\newenvironment{codecenter}[1]{\begin{small}\begin{centerlist}\centering%
+%\item #1}{\end{centerlist}\end{small}}
 
 \ifnum\shownotes=1
 \newcommand{\authnote}[2]{{\textcolor{red}{\textsf{#1 notes: }\textcolor{blue}{ #2}}\marginpar{\textcolor{red}{\textbf{!!!!!}}}}}
@@ -212,10 +213,11 @@
 \newcommand{\M}{\mathcal{M}}
 
 \title{\textbf{Computational Fuzzy Extractors}}
-\author{Benjamin Fuller 
-\footnote{Email: {\tt bfuller@cs.bu.edu}.  Work done in part while the author was at MIT Lincoln Laboratory.}
-~~~~~~~~Xianrui Meng\footnote{Email: {\tt xmeng@cs.bu.edu}.}~~~~~~~~~Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.} \\ Boston University}
-%\author{}
+\author{Benjamin Fuller\inst{1} \and Xianrui Meng\inst{2} \and Leonid Reyzin\inst{2}}
+\authorrunning{B. Fuller \and X. Meng \and L. Reyzin}
+\institute{Boston University and MIT Lincoln Laboratory \and Boston University} 
+\tocauthor{Benjamin Fuller, Xianrui Meng, and Leonid Reyzin (Boston University)}
+
 \begin{document}
 \maketitle
 
@@ -278,7 +280,7 @@ Another possible relaxation is to require that the value $w$ is unpredictable co
 Both of the above negative results arise because a secure sketch functions like a decoder of an error-correcting code.  To avoid them, we give up on building computational secure sketches and focus directly on the entropy loss in fuzzy extractors.  Our goal is to decrease the entropy loss in a fuzzy extractor by allowing the key $r$ to be pseudorandom conditioned on $p$.  
 
 By considering this computational secrecy requirement, we construct the first \emph{lossless} computational fuzzy extractors (\consref{cons:informal construction}), where the derived key $r$ is as long as the entropy of the source $w$. Our construction is for the Hamming metric and uses the code-offset construction~\cite{JW99},\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08} used in prior work, but with two crucial differences.  First, the key $r$ is not extracted from $w$ like in the sketch-and-extract approach; rather $w$ ``encrypts'' $r$ in a way that is decryptable with the knowledge of some close $w'$ (this idea is similar to the way the code-offset construction is presented in 
-\cite{JW99} as  a ``fuzzy commitment''). Our construction uses private randomness, which is allowed in the fuzzy extractor setting but not in noiseless randomness extraction.  Second, the code used is a random linear code, which allows us to use the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE, regevLWEsurvey} and derive a longer key $r$.
+\cite{JW99} as  a ``fuzzy commitment''). Our construction uses private randomness, which is allowed in the fuzzy extractor setting but not in noiseless randomness extraction.  Second, the code used is a random linear code, which allows us to use the Learning with Errors~(LWE) assumption due to Regev~\cite{regev2005LWE,regevLWEsurvey} and derive a longer key $r$.
 
 
 Specifically,  we use the  recent result of D\"{o}ttling and M\"{u}ller-Quade~\cite{dottling2012}, which shows the hardness of decoding random linear codes when the error vector comes from the uniform distribution, with each coordinate ranging over a small interval. This allows us to use $w$ as the error vector, assuming it is uniform.  We also use a result of Akavia, Goldwasser, and Vaikuntanathan~\cite{akavia2009},  which says that LWE has many hardcore bits, to hide $r$.
@@ -287,7 +289,7 @@ Because we use a random linear code,  our decoding is limited to reconciling a l
 
 In \secref{sec:LWE block fixing sources}, we are able to relax the assumption that $w$ comes from the uniform distribution, and instead allow $w$ to come from a symbol-fixing source~\cite{KZ07} (each dimension is either uniform or fixed). This relaxation follows from our results about the hardness of LWE when samples have a fixed~(and adversarially known) error vector, which may be of independent interest~(\thref{thm:blockLWE}). 
 
-\paragraph{An Alternative Approach}  Computational extractors~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational} have the same goal of obtaining a pseudorandom key $r$ from a source $w$ in the setting without errors.  They can be constructed, for example, by applying a pseudorandom generator to the output of an information-theoretic extractor.  One way to build a computational \emph{fuzzy} extractor is by using a computational extractor instead  of the information-theoretic extractor in the sketch-and-extract construction of  \cite{DBLP:journals/siamcomp/DodisORS08}.   However, this approach is possible only if conditional min-entropy of $w$ conditioned on the sketch $s$ is high enough.  Furthermore, this approach does not allow the use of private randomness; private randomness is a crucial ingredient in our construction.
+\paragraph{An Alternative Approach}  Computational extractors~\cite{krawczyk2010cryptographic,barak2011leftover,dachman2012computational} have the same goal of obtaining a pseudorandom key $r$ from a source $w$ in the setting without errors.  They can be constructed, for example, by applying a pseudorandom generator to the output of an information-theoretic extractor.  One way to build a computational \emph{fuzzy} extractor is by using a computational extractor instead  of the information-theoretic extractor in the sketch-and-extract construction of  \cite{DBLP:journals/siamcomp/DodisORS08}.   However, this approach is possible only if conditional min-entropy of $w$ conditioned on the sketch $s$ is high enough.  Furthermore, this approach does not allow the use of private randomness; private randomness is a crucial ingredient in our construction.
 We compare the two approaches in \secref{sec:prg based comparison}.
 
 \section{Preliminaries}
@@ -353,7 +355,7 @@ The main parameter we will be concerned with is the entropy loss of the construc
 Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$ is a $(\mathcal{M}, \mathcal{W}, \ell, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
 \begin{itemize}
 \item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $R\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
-\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\Pr[\rep( w', P) = R] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.  
+\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that for all $w, w'$ where $\dis(w, w')\leq t$, if $(R, P)\leftarrow \gen(w)$ then $\Pr[\rep( w', P) = R] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.  
 If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\ell, P))\leq \epsilon$.
 \end{itemize}
@@ -380,7 +382,7 @@ Let $(W, S)$ be a pair of random variables.  $W$ has
 denoted $H^{\hillrlx}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, Y)$, such that $\tilde{H}_\infty(X|Y)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,Y))\leq \epsilon$.
 \end{definition}
 
-Intuitively, HILL entropy is as good as average min-entropy for all computationally-bounded observers.  Thus, redefining secure sketches using HILL entropy is a  natural relaxation of the original information-theoretic definition; in particular, the sketch-and-extract construction in \lemref{lem:fuzzy ext construction} would yield pseudorandom outputs if the secure sketch ensured high HILL entropy.  
+Intuitively, HILL entropy is as good as average min-entropy for all computationally bounded observers.  Thus, redefining secure sketches using HILL entropy is a  natural relaxation of the original information-theoretic definition; in particular, the sketch-and-extract construction in \lemref{lem:fuzzy ext construction} would yield pseudorandom outputs if the secure sketch ensured high HILL entropy.  
 We will consider secure sketches that retain relaxed HILL entropy: that is, we say that $(\sketch, \rec)$ is a  \emph{HILL-entropy~$(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon,s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\hillrlx}_{\epsilon, s_{sec}}(W|\sketch(W))\geq \tilde{m}$. 
 
 Unfortunately, we will show below that such a secure sketch implies an error correcting code with approximately $2^{\tilde{m}}$ points that can correct $t$ random errors (see  \cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08} for a similar bound on information-theoretic secure sketches). For the Hamming metric, our result essentially matches the bound on information-theoretic secure sketches of \cite[Proposition 8.2]{DBLP:journals/siamcomp/DodisORS08}.  In fact, we show that, for the Hamming metric, HILL-entropy secure sketches imply information-theoretic ones with similar parameters, and, therefore, the HILL relaxation gives no advantage. 
@@ -407,15 +409,15 @@ Shannon codes work for all codewords. We can also consider a formulation that wo
 Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
 $\Pr_{c\leftarrow C}[\rec(\neigh(c, t')) \neq c]\le \epsilon$.
 \end{definition}
-An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} (we provide a proof in \secref{sec:proof of average to maximal error}):
+An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} (we provide a proof in the full version~\cite{fullerMengReyzin2013}):
 \begin{lemma}
 \label{lem:averageToMaximalError}
 Let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$ such that $\Hoo(C)\geq k$.  There is a set $\mathcal{C}'$ with $|\mathcal{C}'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
 \end{lemma}
 
-We can now formalize the intuition above and show that a sketch that retains $\tilde{m}$-bits of relaxed HILL entropy implies a good error correcting code with nearly $2^{\tilde{m}}$ points~(proof in \secref{sec:proof of thm sketch implies code}).
+We can now formalize the intuition above and show that a sketch that retains $\tilde{m}$-bits of relaxed HILL entropy implies a good error correcting code with nearly $2^{\tilde{m}}$ points~(proof in full version~\cite{fullerMengReyzin2013}).
 \begin{theorem}\label{thm:impSketchArbitraryW}
-Let $(\mathcal{M}, \dis)$ be a metric space that is $(s_{neigh}, t)$-neighborhood samplable.  Let $(\sketch, \rec)$ be an HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Let $s_{rec}$ denote the size of the circuit that computes $\rec$.  If $s_{sec}\geq (t(s_{neigh}+s_{rec}))$,  then there exists a value $s$ and a set $\mathcal{C}$ with $|\mathcal{C}|\geq 2^{\tilde{m}-2}$  that is a $(t, 4(\epsilon+t\delta))$-Shannon code with recovery procedure $\rec(\cdot, s)$.
+Let $(\mathcal{M}, \dis)$ be a $(s_{neigh}, t)$-neighborhood samplable metric space.  Let $(\sketch, \rec)$ be a HILL-entropy $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  Let $s_{rec}$ denote the size of the circuit that computes $\rec$.  If $s_{sec}\geq (t(s_{neigh}+s_{rec}))$,  then there exists a value $s$ and a set $\mathcal{C}$ with $|\mathcal{C}|\geq 2^{\tilde{m}-2}$  that is a $(t, 4(\epsilon+t\delta))$-Shannon code with recovery procedure $\rec(\cdot, s)$.
 \end{theorem}
 
 For the Hamming metric, any Shannon code (as defined in Definition~\ref{def:shannon-code}) can be converted into an information-theoretic secure sketch~(as described in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} and references therein).  The idea is to use the code offset construction, and convert worst-case errors to random errors by randomizing the order of the bits of $w$ first, via a randomly chosen  permutation $\pi$  (which  becomes part of the sketch and is applied to $w'$ during $\rec$). The formal statement of this result  can be expressed in the following Lemma (which is implicit in \cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08}).
@@ -440,20 +442,20 @@ In the previous section, we showed that any sketch that retained HILL entropy co
 
 \begin{definition}
 \label{def:unp entropy}
-Let  $(W, S)$ be a pair of random variables. We say that $W$ has \emph{relaxed unpredictability entropy} at least $k$ conditioned on $S,$ denoted by $H^{\unprlx}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a pair of distributions $(X, Y)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, Y))\leq \epsilon$, and for all circuits $\mathcal{I}$ of size $s_{sec}$,
+Let  $(W, S)$ be a pair of random variables. $W$ has \emph{relaxed unpredictability entropy} at least $k$ conditioned on $S$, denoted by $H^{\unprlx}_{\epsilon, s_{sec}} (W|S) \geq k$, if there exists a pair of distributions $(X, Y)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((W, S),(X, Y))\leq \epsilon$, and for all circuits $\mathcal{I}$ of size $s_{sec}$,
 \[
 \Pr[\mathcal{I}(Y) = X ] \leq 2^{-k}
 .\]
 \end{definition}
 
-We will say that a pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\unprlx}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
+A pair of procedures $(\sketch, \rec)$ is a \emph{unpredictability-entropy $(\mathcal{M}, m, \tilde{m}, t)$ secure sketch} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if it satisfies \defref{def:secure sketch}, with the security requirement replaced by $H^{\unprlx}_{\epsilon, s_{sec}}(W| \sketch(W))\geq \tilde{m}$.  
 Note this notion is quite natural: combining such a secure sketch in a sketch-and-extract construction of  \lemref{lem:fuzzy ext construction} with a particular type of extractor (called a \emph{reconstructive} extractor~\cite{barak-computational}), would yield a computational fuzzy extractor (per \cite[Lemma 6]{DBLP:conf/eurocrypt/HsiaoLR07}).  
 
-Unfortunately, the conditional unpredictability entropy $\tilde{m}$ must decrease as $t$ increases, as the following theorem states.  (The proof of the theorem, generalized to more metric spaces, is in \secref{sec:proof of imp unp entropy}.)
+Unfortunately, the conditional unpredictability entropy $\tilde{m}$ must decrease as $t$ increases, as the following theorem states.  (The proof of the theorem, generalized to more metric spaces, is in the full version~\cite{fullerMengReyzin2013}.)
 
 \begin{theorem}
 \label{thm:imp of unp entropy}
-Let $\mathcal{Z}$ be an alphabet $(\sketch, \rec)$ be an unpredictability-entropy $(\mathcal{Z}^n, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq t(|\rec|+n\log |\mathcal{Z}|)$, then $\tilde{m}\leq n\log |\mathcal{Z}| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
+Let $\mathcal{Z}$ be an alphabet. Let $(\sketch, \rec)$ ben an unpredictability-entropy $(\mathcal{Z}^n, m, \tilde{m}, t)$-secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$, if $s_{sec} \geq t(|\rec|+n\log |\mathcal{Z}|)$, then $\tilde{m}\leq n\log |\mathcal{Z}| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
 \end{theorem}
 In particular, if the input is uniform, the entropy loss is about $\log |B_t(\cdot)|$.  As mentioned at the beginning of~\secref{sec:impossCompSecSketch}, essentially the same entropy loss can be achieved with information-theoretic secure sketches, by using the randomized code-offset construction. However, it is conceivable that unpredictability entropy secure sketches could achieve lower entropy loss with greater efficiency for some parameter settings.
 
@@ -478,7 +480,7 @@ Let $n$ be a security parameter and let $m\ge n$.  Let $q$ be a prime.
 Define $\gen, \rep$ as follows:
 \begin{center}
 \begin{tabular}{c|c}
-\begin{minipage}{3in}
+\begin{minipage}{2.3in}
 \textbf{\gen}
 \begin{enumerate}
 \item \underline{Input}: $w\leftarrow W$ (where $W$ is some distribution over $\Fq^m$).
@@ -487,7 +489,7 @@ Define $\gen, \rep$ as follows:
 \item Output $(r, p)$.
 \end{enumerate}
  \end{minipage} &
-\begin{minipage}{3in}
+\begin{minipage}{2.3in}
 \textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$ (where the Hamming distance between $w'$ and $w$ is at most $t$).
@@ -503,7 +505,7 @@ Define $\gen, \rep$ as follows:
 
 
 Intuitively, security comes from the computational hardness of decoding random linear codes with a high number of errors (introduced by $w$).  
-In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp1978}; however, this statement is not sufficient for our security goal, which is to show  $\delta^{\mathcal{D}_{s_{sec}}}((X_{1,..., n/2},P), (U_{n/2 \log q}, P))\leq \epsilon$.  Furthermore, this construction is only useful if $\decode_t$ can be efficiently implemented. 
+In fact, we know that decoding a random linear code is NP-hard~\cite{berlekamp1978}; however, this statement is not sufficient for our security goal, which is to show  \[\delta^{\mathcal{D}_{s_{sec}}}((X_{1,..., n/2},P), (U_{n/2 \log q}, P))\leq \epsilon.\]  Furthermore, this construction is only useful if $\decode_t$ can be efficiently implemented. 
 
 The rest of this section is devoted to making these intuitive statements precise.
  We describe the \class{LWE} problem and the security of our construction in \secref{subsec:LWE}.
@@ -511,7 +513,7 @@ We describe one possible polynomial-time $\decode_t$ (which corrects more errors
 
 \subsection{Security of \consref{cons:informal construction}}
 \label{subsec:LWE}
-The $\LWE$ problem was introduced by Regev \cite{regev2005LWE, regevLWEsurvey} as a generalization of ``learning parity with noise." For a complete description of the $\LWE$ problem and related lattices problems~(which we do not define here) see~\cite{regev2005LWE}.  We now recall the definition of the decisional version of the problem. 
+The $\LWE$ problem was introduced by Regev \cite{regev2005LWE,regevLWEsurvey} as a generalization of ``learning parity with noise." For a complete description of the $\LWE$ problem and related lattices problems~(which we do not define here) see~\cite{regev2005LWE}.  We now recall the definition of the decisional version of the problem. 
 
 
 \begin{definition}[Decisional $\lwe$]\label{def:dist-LWE}
@@ -570,7 +572,7 @@ Each step is computable in time $O(n^3)$.
 For $\decode_t$ to be efficient, we need $t$ to be small enough so that  with probability at least $\frac{1}{\poly(n)}$, none of the $2n$ rows  selected  in step 2 have errors (i.e., so that $w$ and $w'$ agree on those rows).  If this happens, and $\vA_{i_1,...,i_{2n}}$ has rank  $n$ (which is highly likely), then $\vx'=\vx$, and the algorithm terminates.  However, we also need to ensure correctness: we need to make sure that if $\vx'\neq \vx$, we detect it in step 6.  This detection will happen if $\vb-\vA \vx' = \vA (\vx-\vx')+(w-w')$ has more than $t$ nonzero coordinates.  It suffices to ensure that $\vA (\vx-\vx')$ has at least $2t+1$ nonzero coordinates (because at most $t$ of those can be zeroed out by $w-w'$), which happens whenever the code generated by $\vA$ has distance $2t+1$.
 
 Setting $t = O(\frac{m}{n}\log n)$ is sufficient to ensure efficiency.    Random linear codes have distance at least $O(\frac{m}{n}\log n)$ with probability $1-e^{-\Omega(n)}$ (the exact statement is in \corref{cor:code high distance}), so this also ensures correctness.
-The formal statement is below~(proof in \secref{sec:proof lem i t poly time}):
+The formal statement is below~(proof in the full version of this work~\cite{fullerMengReyzin2013}):
 \begin{lemma}[Efficiency of $\decode_t$ when $t\leq d (m/n-2)\log n$]
 \label{lem:i t poly time}
 Let $d$ be a positive constant and assume that $\dis(W, W')\leq t$ where $t\leq d(\frac{m}{n}-2)\log n$.  Then $\decode_t$ runs in expected time $O(n^{4d+3})$ operations in $\Fq$~(this expectation is over the choice of random coins of $\decode_t$, regardless of the input, as long as $\dis(w, w')\le t$).  It outputs $X$ with probability $1-e^{-\Omega(n)}$ (this probability is over the choice of the random matrix  $\vA$ and random choices made by $\decode_t$).
@@ -587,7 +589,7 @@ Let $n$ be a security parameter and let the number of errors $t = c\log n$ for s
 The generate procedure $\gen$ takes $O(n^2)$ operations over $\Fq$, and the reproduce procedure $\rep$ takes expected time $O(n^{4d+3})$ operations over $\Fq$.
 \end{theorem}
 \begin{proof}
-Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}; efficiency follows by \lemref{lem:i t poly time}. For a more detailed explanation of the various parameters and constraints see \secref{sec:parameter settings}.  
+Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits}; efficiency follows by \lemref{lem:i t poly time}. For a detailed explanation of the various parameters and constraints see the full version of this work\cite{fullerMengReyzin2013}.  
 \end{proof}
 
 
@@ -595,7 +597,7 @@ Security follows by combining Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem
 
 \subsection{Comparison with computational-extractor-based constructions}
 \label{sec:prg based comparison}
-As mentioned in the introduction, an alternative approach to building a computational fuzzy extractor is to use  a computational extractor (e.g.,~\cite{krawczyk2010cryptographic, barak2011leftover, dachman2012computational}) in place of the information-theoretic extractor in the sketch-and-extract construction.  We will call this approach \emph{sketch-and-comp-extract}.  (A simple example of a computational extractor is a pseudorandom generator applied to the output of an information-theoretic extractor; note that LWE-based pseudorandom generators exist~\cite{applebaum2006pseudorandom}.)
+As mentioned in the introduction, an alternative approach to building a computational fuzzy extractor is to use  a computational extractor (e.g.,~\cite{krawczyk2010cryptographic,barak2011leftover,dachman2012computational}) in place of the information-theoretic extractor in the sketch-and-extract construction.  We will call this approach \emph{sketch-and-comp-extract}.  (A simple example of a computational extractor is a pseudorandom generator applied to the output of an information-theoretic extractor; note that LWE-based pseudorandom generators exist~\cite{applebaum2006pseudorandom}.)
 
 This approach (specifically, its analysis via \lemref{lem:fuzzy ext construction}) works as long as the amount of entropy $\tilde{m}$ of $w$ conditioned on the sketch $s$ remains high enough to run a computational extractor.  However, as discussed in \secref{sec:impossCompSecSketch}, $\tilde{m}$ decreases with the error parameter $t$ due to coding bounds, and it is conceivable that, if $W$ has  barely enough entropy to begin with, it will have too little entropy left to run a computational extractor once $s$ is known.
 
@@ -626,7 +628,7 @@ Let $U$ denote the uniform distribution over $\mathcal{Z}^m$ for an alphabet $\m
 If $\distLWE_{n, m,q, U}$ is secure, then $\distLWE_{n+\alpha+\beta, m+\alpha, q, W}$ is also secure.
 \end{theorem}
 
-\thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi'$ be an arbitrary error distribution.  Define $\chi$ as the distribution where $m$ dimensions are sampled according to $\chi'$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi'}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi}$.  We show this stronger version of the theorem in \apref{sec:proof of block theorem}.
+\thref{thm:blockLWE} also holds for an arbitrary error distribution~(not just uniform error) in the following sense.  Let $\chi'$ be an arbitrary error distribution.  Define $\chi$ as the distribution where $m$ dimensions are sampled according to $\chi'$ and the remaining dimensions have some fixed error.  Then, security of $\distLWE_{n, m, q, \chi'}$ implies security of $\distLWE_{n+\alpha+ \beta, m+\alpha, q, \chi}$.  We prove this stronger version of the theorem in the full version of this work~\cite{fullerMengReyzin2013}.
 
 The intuition for this result is as follows.  Providing a single sample with no error ``fixes'' at most a single variable.  Thus, if there are significantly more variables than samples with no error,  search $\LWE$ should still be hard.  We are able to show a stronger result that $\distLWE$ is still hard.  The nontrivial part of the reduction is using the additional $\alpha+ \beta$ variables  to ``explain'' a random value for the last $\alpha$ samples, without knowing the other variables.  The $\beta$ parameter is the slack needed to ensure that the ``free'' variables have influence on the last $\alpha$ samples.  A similar theorem for the case of a single fixed dimension was shown in concurrent work by Brakerski et al.~\cite[Lemma 4.3]{brakerski2013classical}.  The proof techniques of Brakerski et al. can be extended to our setting with multiple fixed dimensions, improving the parameters of \thref{thm:blockLWE}~(specifically, removing the need for $\beta$).
 
@@ -643,15 +645,14 @@ such that the following holds: \consref{cons:informal construction} is a $(\M, \
 \end{theorem}
 
 \begin{proof} Security follows by Lemmas~\ref{lem:uniform LWE decision} and~\ref{lem:many hardcore bits} and  \thref{thm:blockLWE} .  
-Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see \secref{ssec:block params}. 
+Efficiency follows by \lemref{lem:i t poly time}.  For a more detailed explanation of parameters see the full version of this work~\cite{fullerMengReyzin2013}.
 \end{proof}
 
 \section*{Acknowledgements}
 The authors are grateful to Ran Canetti, Yevgeniy Dodis, Nico D\"{o}ttling, Danielle Micciancio, J\"{o}rn M\"{u}ller-Quade, Christopher Peikert, Oded Regev, Adam Smith, and Daniel Wichs for helpful discussions, creative ideas, and important references.  In particular, the authors thank Nico D\"{o}ttling for describing his result on LWE with uniform errors.  We thank Jacob Alperin-Sheriff for pointing out the connection with the work of Brakerski et al. 
 
-This work is supported in part by National Science Foundation grants 0831281, 1012910, and 1012798. The work of Benjamin Fuller is sponsored in part by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.  
-
-\bibliographystyle{alpha}
+This work supported in part by National Science Foundation grants 0831281, 1012910, and 1012798. The work of Benjamin Fuller is sponsored in part by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.  
+\bibliographystyle{splncs03}
 \bibliography{crypto}
 \appendix
 \section{Properties of Random Linear Codes}
@@ -674,392 +675,6 @@ Let $c$ be some constant.  Let $\delta = \tau/m = \frac{c\log n}{n}$.  We show t
 \item $\frac{c\log n}{n}< .1 < 1/2$ and thus $H_q(\frac{c\log n}{n})< H_q(.1)$. 
 \end{itemize}  Putting these statements together, for large enough $n$, $H_q(\frac{c\log n}{n})< H_q(.1) < H_2(.1)< 1/2$ as desired.  This completes the proof.
 \end{proof}
-
-We also need that random matrices are full rank with high probability~(to allow us to decode).  We use the following claim~(techniques from Cooper~\cite{cooper2000rank}):
-\begin{claim}
-\label{cl:full rank matrix}
-Let $q\ge 2$ be a prime.  Let $\alpha, \beta$ be integers and let 
-let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ be uniformly generated.  Then $\Pr[\rank(\vS)=\alpha] >  1- q^{-\beta}$.
-\end{claim}
-\begin{proof}
-Let $p_i$ be the probability that the $i$th
-row is linearly dependent on the previous $i-1$ rows. 
-By the union bound, the probability that $\alpha$ rows are linearly dependent is bounded by 
-$\sum_{i=1}^\alpha p_i$.
-Since $i-1$ rows can span a space of size at most $q^{i-1}$, the probability $p_i$ that a randomly chosen $i$th row is in that space is at most $q^{i-1}/q^{\alpha+\beta}$. So
-\begin{align*}
-\Pr[\rank(\vS) < \alpha] &=\sum_{i=1}^{\alpha} \frac{q^{i-1}}{q^{\alpha+\beta}}
-= \frac{q^{\alpha}-1}{q-1}\frac{1}{q^{\alpha+\beta} }< q^{-\beta}.
-\end{align*}
-\end{proof}
-
-\section{Proof of Theorem \ref{thm:blockLWE}}
-\label{sec:proof of block theorem}
-
-\begin{proof}
-We assume that all of the fixed blocks are located at the end and their fixed value is $0$.  If the blocks are fixed to some other value, the reduction is essentially the same.
- In the reduction, the distinguisher is allowed to depend on the source and can know the positions of the fixed blocks and their values.  For a matrix $\vA$ we will denote the $i$-th row by $\va_i$.  For a set $T$ of column indices, we denote by $\vA_T$ the restriction of the matrix $\vA$ to the columns contained in $T$.  Similarly, for a vector $\vx$ we denote by $\vx_T$ the restriction of $\vx$ to the variables contained in $T$.  We use similar notation for the complement of $T$, denoted $T^c$.  For a matrix or vector we use $\mathsf{T}$ to denote the transpose.  We use $i$ as a index into matrix rows and the error vector and $j$ as an  index into columns and the solution vector.
-
-Let $n$ be a security parameter, $m ,q , \alpha= \poly(n)$.  Let $\beta$ be such that $q^{-\beta} = \ngl(n)$.  All operations are computed modulo $q$, and we omit $``\bmod q$'' notation.  Let $\chi'$ be some error distribution over $\Fq^m$ and let $\chi$ over $\Fq^{m+n}$ be defined by sampling $\chi'$ to obtain values on dimensions $1,..., m$ and then appending $\alpha$ 0s.  
-
-Let $D$ be a distinguisher that breaks $\distLWE_{(m+\alpha), (n+\alpha+\beta), q, \chi}$ with advantage $\epsilon>1/\poly(n)$.
-Let  $\vA$ denote the uniform distribution over $\Fq^{(m+\alpha)\times(n+\alpha+\beta)}$, $X$ denote the uniform distribution over $\Fq^{(n+\alpha+\beta)}$, and $U$ denote the uniform distribution over $\Fq^{m+\alpha}$ . Then
-\[
-|\Pr[D(\vA, \vA X+\chi) = 1] - \Pr[D(\vA, U )=1]|> \epsilon.
-\]
-
-We build a distinguisher that breaks $\distLWE_{m, n, q, \chi}$.  Let $\vA'$ denote the uniform distribution over $\Fq^{m\times n}$, $X'$ denote the uniform distribution over $\Fq^n$, and $U'$ denote the uniform distribution over $\Fq^{m}$ .  We will build a distinguisher $D'$ of polynomial size for which
-\begin{align}
-\label{eq:block LWE dist}
-|\Pr[D'(\vA', \vA'X'+\chi') = 1] - \Pr[D'(\vA', U') =1]|> (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon.
-\end{align}
-$D'$  will make a single call to $D$, so we focus on how to prepare a random block-fixing instance for $D$ from the random instance that $D'$ is given.  The code for $D'$ is given in \figref{fig:perfectLWEreduction}.
-
-\begin{figure}[p]
-\begin{framed}
-\begin{enumerate}
-\item Input $\vA', \vb'$, where $\vA' \overset{\$} \leftarrow \Fq^{m\times n}$ and $\vb'$ is either uniform over $\Fq^m$ or $\vb' = \vA'\vx' +\ve'$ for $\ve'\overset{\$} \leftarrow \chi'$ and uniform $\vx'\  \overset{\$} \leftarrow \Fq^n$.
-\item Choose $\vect{R} \overset{\$}\leftarrow \Fq^{\alpha \times n}$ uniformly at random. Initialize $\vQ \in \Fq^{m\times (\alpha+\beta)}$  to be the zero matrix.
-\item Let $\vb^* = (\vb', b^*_{m+1}, \ldots,b^*_{m+\alpha})$, for uniformly chosen $(b^*_{m+1}, \ldots, b^*_{m+\alpha} )\overset{\$} \leftarrow \Fq^\alpha$.\label{step:b generation}
-\item Choose $\vect{S} \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ uniformly at random.
-		\subitem If $\rank(\vect{S})<\alpha$, stop and output a random bit.
-\item Find a set of $\alpha$ linearly independent columns in $\vS$.  Let $T$ be the set of indices of these columns.\label{step:find columns}
-\item For all $1\le j \le \alpha+\beta$, $j\notin T$:
-\label{step:fill in matrix}
-\subitem Choose $x_{n+j}\overset{\$}\leftarrow \Fq$ uniformly at random.  
-\subitem For $i=1,..., m$:
-\subsubitem Choose $\vQ_{i,j}\overset{\$}\leftarrow \Fq$ uniformly at random.
-\subsubitem Set $b_i^* = b_i^* + \vQ_{i,j} x_{n+j}$.
-\item Initialize $\vA^*  = \left(\begin{array}{c | c}\vA' & \vQ\\\hline \vR & \vS\end{array}\right)$.
-\item \label{step:randomization}
-For {$i=1,..., m$}:
-\subitem Choose a row vector $\gamma_i \leftarrow \Fq^{1 \times \alpha}$ uniformly at random.
-\subitem Set $\va_{i} \leftarrow \va^*_{i}+\gamma_i (\vR||\vS)$
-\subitem Set $b_i \leftarrow b^*_i + \gamma_i (b^*_{m+1},..., b^*_{m+\alpha})^{\mathsf{T}}$
-\item For $i=m+1,\dots, m+\alpha$:
-\subitem Set $\va_i \leftarrow \va^*_i$
-\subitem Set $b_i = b_i^*$.
-\item Output $D(\vA, \vb)$. 
-\end{enumerate}
-\end{framed}
-\caption{A PPT $D'$ that distinguishes LWE using distinguisher for LWE w/ block fixing source}
-\label{fig:perfectLWEreduction}
-\end{figure}
-
-The distinguisher $D'$ has an advantage when $\vS$ is of rank $\alpha$.  This occurs with overwhelming probability:
-\begin{claim}
-\label{cl:full rank matrix 5.2}
-Let $\vS \overset{\$}\leftarrow \Fq^{\alpha \times (\alpha+\beta)}$ be randomly generated.  Then $\Pr[\rank(\vS)=\alpha]\geq  1- \ngl(n)$.
-\end{claim}
-\begin{proof}
-Direct result of \clref{cl:full rank matrix} because $q^{-\beta} = \ngl(n)$.
-\end{proof}
-The probability that a random $\vS$ is not full rank is $\ngl(n)$ so the distinguisher $D$ must still have an advantage when the matrix $\vS$ is full rank.  That is,
-\[
-|\Pr[D(\vA, \vA X+\chi) = 1  | \rank(\vS) = \alpha] - \Pr[D(\vA, U) =1 | \rank(\vS) = \alpha]|> \epsilon - \ngl(n).
-\]
-
-It suffices to show that $D'$ prepares a good instance for $D$ conditioned on $\vS$ being full rank. We show this in the following three claims: 
-\begin{enumerate}
-\item If $\vA'$ is a random matrix then $\vA$ is a random matrix subject to the condition that $\rank(\vS) = \alpha$.
-\item If $\vb' = \vA'\vx'+\ve'$ for uniform $\vA'$ and $\vx'$, then $\exists \vx$~(uniformly distributed and independent of $\vA$ and $\ve'$) such that $\vb = \vA \vx + \ve$, where $\ve_i = \ve_i'$ for $1\leq i\leq m$ and $\ve_i = 0$ otherwise.
-\item If the conditional distribution $\vb'\,|\,\vA'$ is uniform, then the conditional distribution $\vb\,|\,\vA$ is also uniform.
-\end{enumerate}
-
-\begin{claim}
-\label{cl:randomMatrixDist}
-The matrix $\vA$ is distributed as a uniformly random choice from the set of all matrices whose bottom-right $\alpha\times (\alpha+\beta)$ submatrix $\vS$ satisfies $\rank(\vS) = \alpha$.
-\end{claim}
-\begin{proof}
-The bottom $\alpha$ rows of $\vA$ (namely, $\vR|\vS$) are randomly generated~(conditioned on $\rank(\vS) =\alpha$).  The top left $m\times n$ quadrant of $\vA$ is also random, because it is produced as a sum of a uniformly random $\vA'$ with some values that are uncorrelated with $\vA'$.
-The submatrix of the top-right $m\times (\alpha+\beta)$ quadrant corresponding to $\vQ_{T^c}$~(recall this is the restriction of $\vQ$ to the columns not in $T$) is also random, because it is initialized with random values to which some uncorrelated values are then added. It is important to note that all these values are independent of $\gamma_i$ values.
-
-Thus, we restrict attention to the $m\times \alpha$ submatrix of $\vA$ that corresponds to $\vQ_T$ in $\vA^*$ (note that these values are $0$ in $\vA^*$).  Consider a particular row $i$. That row is computed as $\gamma_i \vS_{T}$.  Since $\vS_T$ is a full rank square matrix and $\gamma_i$ is uniformly and independently generated, that row is also uniform and independent of other entries in $\vA$.
-\end{proof}
-\begin{claim}
-\label{cl:random ax+e}
-If $D'$ is provided with input distributed as $\vA', \vb' = \vA'\vx'+\ve'$ then $\vb = \vA \vx+\ve$, where
-\begin{itemize}
-\item $e_i = e_i'$ for $1\leq i\leq m$,
-\item $e_i = 0$ for $m<i\leq m+\alpha$,
-\item $x_j = x_j'$ for $1\leq j \leq n$,
-\item and $x_j$ is uniform and independent of $\vA$ and $\ve'$ for $n<j\le n+\alpha+\beta$,
-\end{itemize}
-\end{claim}
-\begin{proof}
-Partially define $\vx$ as $x_j = x_j'$ if $1\leq j \leq n$ and $x_j$ as the value generated in step~\ref{step:fill in matrix} for $j>n $ and $j\not\in T$.  Define the remaining variables $\vx_T$ as the solution to the following system of equations.
-\begin{eqnarray}
-\vS_T  \vx_T = \begin{pmatrix} b_{m+1}^*  \\ \vdots \\b_{m+\alpha}^* \end{pmatrix}  - \vR \vx' - \vS_{T^c} \vx_{T^c}  \label{eq:x t solution}
-\end{eqnarray}
-A solution $\vx_T$ exists as $\vS_T$ is full rank. Moreover, it is uniform and independent of $\vA$ and $\ve$, because $b^*_{m+1}, \dots, b^*_{m+\alpha}$ are uniform and independent of $\vA$ and $\ve$. 
-
-We now show that $\vb^* = \vA^* \vx+\ve$.  All entries in matrix $\vQ$ corresponding to variables in $T$ are set to zero.  Thus, the values of $\vx^T$ do not affect $b_i^*$ for $1\le i \le m$.  The values of $\vx_{T^c}$ are manually set, and $\vQ_{i, j} \vx_{j}$ is added to the corresponding $b_i^*$.  Thus, for $1 \leq i \le m$, we have $\vb^* = \vA^*\vx+\ve$.   For $m< i$, this constraint is also satisfied by the values of $\vx_T$ set in Equation~\ref{eq:x t solution}.  
-
-Thus, it remains to show that step~\ref{step:randomization} preserves this solution.
-We now show that for all rows $1\leq i\leq m$, if $b_i^* = \va^*_i \vx+e_i$  then $b_i = \va_i \vx + e_i$.
-Recall the other rows are not modified.  We have the following for $1\leq i\leq m$:
-\begin{align*}
-\va_i \vx + e_i &= \left(\va_{i}^*+ \gamma_i(\vR || \vS)\right) \vx + e_i\\
-&=\va_i^* \vx + e_i +\gamma_i(\vR||\vS) \vx\\&= b_i^* + \gamma_i (\vR||\vS)\vx
-\end{align*}
-Recall that $b_i =b_i^* + \gamma_i(b_{m+1}^*,..., b_{m+k}^*)$.  We consider the product $(\vR|| \vS) \vx$.  It suffices to show that $(\vR|| \vS) \vx = (b_{m+1}^*,..., b_{m+\alpha}^*)$,
-\begin{align*}
-(\vR|| \vS) \vx &= \vR \begin{pmatrix} \vx_1  \\ \vdots \\\vx_n \end{pmatrix}+  \vS_{T^c} \vx_{T^c}  + \vS_T \vx_T \\
-&=\vR \begin{pmatrix} \vx_1  \\ \vdots \\\vx_n \end{pmatrix}+  \vS_{T^c} \vx_{T^c}   + \begin{pmatrix} b_{m+1}^*  \\ \vdots \\b_{m+\alpha}^* \end{pmatrix}  - \vR \begin{pmatrix} \vx_1  \\ \vdots \\\vx_n \end{pmatrix}- \vS_{T^c} \vx_{T^c}  
-\\&=  \begin{pmatrix} b_{m+1}^*  \\ \vdots \\b_{m+\alpha}^* \end{pmatrix}
-\end{align*}
-This completes the proof of the claim.
-\end{proof}
-\begin{claim}\label{clm:random b}
-If the conditional distribution $\vb'\,|\,\vA'$ is uniform, then $\vb\,|\,\vA$ is also uniform.
-\end{claim}
-\begin{proof}
-Since $\vR, \vS$, and $\vQ$ are chosen independently of $\vb'$, the distribution $\vb'\,|\,\vA^*$ is uniform.
-Let $\vb^*$ be the vector generated after step~\ref{step:fill in matrix}. Its first $m$ coordinates are  computed by adding the uniform vector $\vb'$ to values that are independent of $\vb^*$, and its remaining $\alpha$ coordinates $b^*_{m+1},\dots,b^*_{m+\alpha}$ are   chosen uniformly.  Thus $\vb^*\,|\,\vA^*$ is uniform. 
-
-Let $\vgamma$ represent the matrix formed by $\gamma_{i}$.  It is independent of $\vb^*$ and $\vA^*$, so $\vb^*\,|\,(\vA^*, \vgamma)$ is uniform.    Let $\vgamma'=\left(\begin{array}{c | c}\vect{I_m} & \vgamma \\\hline \vect{0} & \vect{I_\alpha}\end{array}\right)$.
-Note that $\vb=\vgamma' \vb^*$.  Since $\vb^*\,|\,(\vA^*, \vgamma)$ is uniform, and $\vgamma'$ is invertible, $\vb\,|\,(\vA^*, \vgamma)$ must also be uniform.
-Since $\vA$ is a deterministic function of $\vA^*$ and $\vgamma$ (assuming Step~\ref{step:find columns} is deterministic---if not, we can fix the coins used), the distribution $\vb\,|\,\vA$ is the same  as $\vb\,|\,(\vA^*, \vgamma)$ and is thus also uniform.
-\end{proof}
-
-Finally, the reduction runs in polynomial time and together Claims~\ref{cl:randomMatrixDist},~\ref{cl:random ax+e}, and~\ref{clm:random b} show that when $\rank(\vS) = \alpha$ the distinguisher $D'$ properly prepares the instance thus, 
-\begin{align*}
-&\left|\Pr[D'(\vA, \vA X+\chi) = 1] - \Pr[D'(\vA, U) =1] \right|\\
-&\, = \left| \Pr\left[D'(\vA', \vu') = 1 | \rank(\vS) = \alpha \right]- \Pr\left[D'(\vA', \vb'=\vA'\vx + \ve)=1 | \rank(\vS) = \alpha\right]\right| \Pr[\rank(\vS) = \alpha] \\
-&\, =\left|\Pr[D(\vA, \vA X+\chi) = 1  | \rank(\vS) = \alpha] - \Pr[D(\vA, U) =1 | \rank(\vS) = \alpha]  \right| \Pr[\rank(\vS) = \alpha] \\
-&\, \geq (\epsilon - \ngl(n))(1-\ngl(n)) \approx \epsilon
-\end{align*}
-Where the second line follows because we can detect when $\rank(\vS)<\alpha$ and output a random bit in this case.
-Thus, Equation~(\ref{eq:block LWE dist}) is satisfied, this completes the proof.
-\end{proof}
-\section{Additional Proofs}
-
-\subsection{Proof of \lemref{lem:averageToMaximalError}}
-\label{sec:proof of average to maximal error}
-\begin{proof}
-Let $C$ be the  $(t,\epsilon)$-average error Shannon code with recovery procedure $\rec$ such that  $\Hoo(C)\geq k$.  Then for all $t'\le t$
-\[
-\sum_{c\in C} \Pr[C=c]\Pr[ c'\leftarrow \neigh (c, t') \wedge \rec(c') \neq c]\leq \epsilon.
-\]
-For $c$ denote by $\epsilon_c = \Pr[c'\leftarrow \neigh(c, t') \wedge \rec(c') \neq c]$.  
-Then by Markov's inequality:
-\[
-\Pr_{c\in C}[ \epsilon_c \leq 2\expe_{c\leftarrow C} [\epsilon_c ] ] = \Pr_{c\in C} [\epsilon_c \le 2\epsilon ] \geq \frac{1}{2}
-\]
-Let $C'$ denote the of  set all $c\in C$ where $\epsilon_c\leq 2\epsilon$.  Note that $\Pr_{c\leftarrow C}[c\in C']\geq 1/2$.  Since $H_\infty(C)\geq k$, we know $|C'|\geq 2^{k-1}$~(otherwise $\Pr_{c\leftarrow C}[c\in C']=\sum_{c\in C'}\Pr[C=c]$ would be less than $2^{k-1}\frac{1}{2^k} = 1/2$).  This completes the proof of the~\lemref{lem:averageToMaximalError}.
-\end{proof}
-
-\subsection{Proof of \thref{thm:impSketchArbitraryW}}
-\label{sec:proof of thm sketch implies code}
-\begin{proof}
-  Let $W$ be an arbitrary distribution of min-entropy $m$.  Let $(X, Y)$ be a joint distribution such that $\Hav(X | Y)\geq k$ and
-\[ 
-\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (X, Y))\le \epsilon\, ,
-\]  
-where  $s_{sec} \geq t(s_{neigh}+s_{rec})$.  One such $(X, Y)$ must exist by the definition of conditional HILL entropy. 
-Define $D$ as:
-\begin{enumerate}
-\item Input $w\in\mathcal{M}, z \in\{0, 1\}^*, t$.
-\item For all $1\leq t'\leq t$: 
-\subitem  $w'\leftarrow \neigh(w, t')$.
-\subitem If $\rec(w', z) \neq  w$ output $0$.
-\item Output $1$.
-\end{enumerate}
- By correctness of the sketch $ \Pr[D(W, \sketch(W)) =1]\ge 1-t\delta$.  Since 
-$\delta^D((W, \sketch(W)), (X, Y))\le \epsilon$, we know $\Pr[D(X, Y) = 1]\ge 1-\epsilon-t\delta$.  Let $X_y$ denote the random variable $X|Y=y$.  By Markov's inequality,  there exists a set $S_Y$ such that $\Pr[Y\in S_Y]\ge 1/2$ and for all $y\in S_Y$, $\Pr[ D(X_y, y) =1]\ge 1- 2(\epsilon + t\delta)$.  
-
-Because $\Hav(X | Y)\geq k$, we know that $\expe_{y\leftarrow Y} \max_x \Pr[X_y=x]\leq 2^k$.  Applying Markov's inequality to the random variable $\max_x \Pr[X_y=x]$, there exists a set $S'_Y$ such that $\Pr[y\in S'_Y]> 1/2$, and for all $y\in S'_Y$, $\Hoo(X_y)\ge k-1$ (we can use the strict version of Markov's inequality here, because the random variable $\max_x \Pr[X_y=x]$ is positive).  Fix one value $y \in S_Y\cap S'_Y$ (which exists because the sum of probabilities of $S_Y$ and $S'_Y$ is greater than 1).  
-Thus, for all such that $t', 1\leq t'\leq t$, 
-\[ \Pr_{x\leftarrow X_y}[x'\leftarrow \neigh(x, t') \wedge \rec(x',z) = x]\ge  1-2(\epsilon+t\delta).\]  
-Thus,  $X_y$ is a $(t, 2(\epsilon+t\delta))$-average error Shannon code with recovery $\rec(\cdot,y)$ and $2^{k-1}$ points.  The statement of the theorem follows by application of \lemref{lem:averageToMaximalError}.  
-\end{proof}
-
-\subsection{Proof of \thref{thm:imp of unp entropy}}
-\label{sec:proof of imp unp entropy}
-Instead of proving the result just for Hamming metric over $\mathcal{Z}^n$, we will prove the result for any metric space that is both neighborhood samplable~(\defref{def:neighborhood samplable}) and where picking a random point in the space is easy.  We now define this second condition:
-\begin{definition}
-A metric space space $(\mathcal{M}, \dis)$ is $s_{sam}$-\emph{efficiently-samplable} if there exists a randomized circuit $\sample$ of size $s_{sam}$ that outputs a uniformly random point in $\mathcal{M}$.
-\end{definition}
-
-\begin{theorem}
-Let $W$ be a distribution over a metric space $(\mathcal{M}, \dis)$ that is $s_{sam}$ samplable and $(s_{neigh}, t)$ neighborhood samplable.  Furthermore, assume that the number of points within distance $t$ in $\mathcal{M}$ is at least some fixed value $B_t(\cdot)$.  Let $(\sketch, \rec)$ be an unpredictability-entropy $(\mathcal{M}, \Hoo(W), \tilde{m}, t)$ secure sketch that is $(\epsilon, s_{sec})$-secure with error $\delta$.  If $s_{sec} \geq \max\{ t(|\rec| +s_{neigh}), |\rec| + s_{sam}\}$, then $\tilde{m}\leq \log |\mathcal{M}| - \log |B_t(\cdot)| + \log(1-\epsilon -t\delta)$.
-\end{theorem}
-\begin{proof}
-Let $(X, Y)$ be two random variables such that $\delta^{\mathcal{D}_{s_{sec}}}((W, \sketch(W)), (X, Y))\leq \epsilon$.  It suffices to show that $\exists \mathcal{I}$ of size $s_{sec}$ such that $\Pr[\mathcal{I}(Y) = X]\geq |\mathcal{M}| (1-\epsilon -t\delta) / |B_t(\cdot)|$.  
-
-Let $B_t(x)$ denote the random variable representing a random neighbor of distance at most $t$ from $x$ (note that $B_t$ may not be efficiently samplable, because we are assuming only that a neighbor a fixed distance is efficiently samplable).
-We begin by showing that \rec must recover points of $X$.  
-\begin{claim}
-\label{clm:y is recoverable}
-\begin{align*}
-\Pr[\rec(B_t(X), Y) = X]&=\\
-\Pr[(x, y)\leftarrow (X, Y) \wedge x'\leftarrow B_t(x) \wedge \rec(x', y) = x] &\geq 1-\epsilon -t\delta.
-\end{align*}
-\end{claim}
-\begin{proof}
-Suppose that $\Pr[\rec(B_t(X), Y) = X]<1-\epsilon -t\delta$.  We construct the following distinguisher $D\in\mathcal{D}_{s_{sec}}$ (the distinguisher design is slightly complicated by the fact that we don't know at which particular distance $t'$ the recover procedure is most likely to fail, so we have to try all distances):
-\begin{itemize}
-\item Input $w\in \mathcal{M}, s\in\zo^*$.
-\item For all $1\leq t'\leq t$: 
-\subitem  $w'\leftarrow \neigh(w, t')$.
-\subitem If $\rec(w', z) \neq  w$ output $0$.
-\item Output $1$.
-\end{itemize}
-First note that $|D| = t( |\rec|+ s_{neigh} )$.  Since $(\sketch, \rec)$ has error $\delta$ we know that $\forall w, w'\in \mathcal{M}$ where $\dis(w, w')\leq t$ \[ \Pr[s\leftarrow \sketch(w) \wedge \rec(w', s) =  w] \geq 1-\delta.\]  This implies that for all $1\leq t'\leq t$, $\Pr[\rec(\neigh(W, t'), \sketch(W) )= W)  ]\geq 1-\delta$ and thus $\Pr[D(W, \sketch(W)) = 1]\geq 1-t\delta$.  If $\Pr[\rec(B_t(X), Y) = X] < 1-\epsilon -t\delta$ there must exist at least one $1\leq t'\leq t$ for which $\Pr[\rec(\neigh(X, t'), Y) = X] < 1-\epsilon -t\delta$.  Then 
-\begin{align*}
-\Pr[D(W, \sketch(W)) = 1]  - \Pr[D(X, Y)=1] &\geq\\
-(1-t\delta) - \Pr[\rec(\neigh(X, t'), Y) = X] &> (1-t\delta)-(1-t\delta - \epsilon)>\epsilon.
-\end{align*}
-This is a contradiction and the statement of the claim follows.
-\end{proof}
-
-Now define $\mathcal{I}$ as follows:
-\begin{itemize}
-\item Input $y\in\zo^*$.
-\item Sample $x'\leftarrow \sample$.
-\item Output $\rec(x', y)$.
-\end{itemize}
-Note that $|\mathcal{I}| =  |\rec|+ s_{sam}$. 
-We now show that $\mathcal{I}$ predicts $X$:
-\begin{align*}
-\Pr[\mathcal{I}(Y) = X] & = \\
-&= \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \Pr[\mathcal{I}(y) = x]\\
-&= \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\in\mathcal{M}} \Pr[\sample = x' ] \Pr[\rec(x', y) =x]\\
-&\ge \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x' \mathrm{ s. t. } \dis(x', x)\le t} \Pr[\sample = x']\Pr[\rec(x', y) =x]\\
-&\ge \sum_{x, y\in \mathcal{M}} \Pr[(x, y)\leftarrow (X, Y)] \sum_{x'\mathrm{ s. t. } \dis(x', x)\le t} \frac{|B_t(\cdot)|}{|\mathcal{M}|} \Pr[B_t(x) = x'] \Pr[\rec(x', y) =x]\\
-&\geq \frac{|B_t(\cdot)|}{|\mathcal{M}|}(1-\epsilon - t\delta)
-\end{align*}
-(the last step follows by  \clref{clm:y is recoverable}).
-
-\thref{thm:imp of unp entropy} follows by noting that $\mathcal{Z}^n$ can be sampled in time $n\log |\mathcal{Z}|$ and neighborhood sampled in time $n\log |\mathcal{Z}|$.
-\end{proof}
-
-\subsection{Proof of \lemref{lem:i t poly time}}
-\label{sec:proof lem i t poly time}
-\begin{proof}
-Note that $\decode_t$ will stop if $w$ and $w'$ agree on all the rows selected in Step 2 (it may also stop for other reasons---namely, in step 4; but we do not use this fact to bound the expected running time).
-The probability of each selected row having an error is at most $\frac{t}{m - i}$ where $i$ is the number of rows already selected.  That is,
-\begin{align*}
-\Pr[i_1,..., i_{2n}\text{ have no errors}]&\geq \prod_{i=0}^{2n-1}\left(1 - \frac{t}{m-i}\right)\geq \prod_{i=0}^{2n-1}\left( 1-\frac{d\left(\frac{m}{n}-2\right)\log n}{m-i}\right)\\
-&\geq  \prod_{i=0}^{2n-1}\left( 1-\frac{d\log n}{n}\left(\frac{m-2n}{m-i}\right)\right)\geq \prod_{i=0}^{2n-1}\left( 1-\frac{d\log n}{n}\right) \\
-&= \left(1-\frac{d\log n}{n}\right)^{2n}  = \left(\left(1-\frac{d\log n}{n}\right)^{\frac{n}{d\log n}}\right)^{2d\log n}\geq \frac{1}{4^{2d\log n}} = \frac{1}{n^{4d}}\,.
-\end{align*}
-(The second-to-last step holds as long as $n\ge 2d\log n$.) Because at each iteration, we select $2n$ rows independently at random, the expected number of iterations is at most $n^{4d}$; each iteration takes $O(n^3)$ operations in $\Fq$, which gives us the expected running time bound.
-
-The probability that $\decode_t$ outputs $\perp$ is bounded by 
-\begin{eqnarray*}
-\Pr[\decode_t\rightarrow \perp]& \le & \sum_{j=1}^\infty \Pr[\decode_t\rightarrow \perp \text{ in $j$th iteration of step 4}]\\
-&= &\sum_{j=1}^\infty  \Pr[\decode_t \text{ has not stopped after $j-1$ iterations} \wedge \rank(\vA_{i_1,\dots, i_{2n}})<n]\\
-&\le &\sum_{j=1}^\infty  \Pr[i_1,..., i_{2n}\text{ had errors $j-1$ times} \wedge \rank(\vA_{i_1,\dots, i_{2n}})<n]\\
-&= &\sum_{j=1}^\infty  \Pr[i_1,..., i_{2n}\text{ had errors $j-1$ times}]\cdot \Pr[\rank(\vA_{i_1,\dots, i_{2n}})<n]\\
-&\le &\sum_{j=1}^\infty  \left(1-\frac{1}{n^{4d}}\right)^{j-1} \cdot q^{-n}\\
-& = & n^{4d} e^{-\Omega(n)} = e^{-\Omega(n)}\,.
-\end{eqnarray*}
-The third line from the bottom follows from the fact that the locations of the errors are assumed to be independent of the sketch, and therefore independent of the matrix $\vA$.
-The second line from the bottom follows from \clref{cl:full rank matrix} when $\beta = n$; note that, because we use the union bound and evaluate the probability separately for each value of $j$,  we can treat $\vA_{i_1,\dots, i_{2n}}$ as a randomly chosen $2n\times n$ matrix, ignoring the fact that these matrices are correlated.
-
-We claim that if the code generated by $\vA$ 
-has distance at least $2t+1$, then $\decode_t$ will output $\perp$ or the correct $\vx'=\vx$.
-Indeed, suppose $\vx'\neq \vx$. Since $\vA (\vx-\vx')$ has at least $2t+1$ nonzero coordinates by the minimum distance of the code generated by $\vA$, and at most  $t$ of those can be zeroed out by the addition of  $w-w'$, such an $\vx'$ will not pass Step 6. 
-
-The probability that the code generated by $\vA$ has distance lower than $2t+1$ is at most $e^{-\Omega(n)}$ (see \corref{cor:code high distance}), the probability of outputting $\perp$ is also $e^{-\Omega(n)}$~(computed above).  This gives the correctness bound for $\decode_t$.
-\end{proof}
-
-\section{Parameter Settings for \consref{cons:informal construction}}
-\label{sec:parameter settings}
-In this section, we explain the different parameters that go into our construction.  In \thref{thm:lossless secure extractor log} we give a lossless fuzzy extractor from a security parameter $n$ and an error $t$.  In this section, we discuss constraints imposed by 1) efficient decoding 2) maintaining security of the LWE instance and 3) ensuring no entropy loss of the construction.  We begin by reviewing the parameters that make up our construction:
-
-\begin{itemize}
-\item $|W|$: The length of the source.  
-\item $t$: Number of errors that can be supported.  
-\item $n$: LWE security parameter (i.e., number of field elements in $X$), which must be greater than some minimum value $n_0$ for security.
-\item $q$: The size of the field.  
-\item $\rho$: The fraction of the field needed for error sampling.  
-\item $m$: The size of each number of samples in the LWE instance.  
-\item $k$: The number of hardcore bits in $X$~(from \lemref{lem:many hardcore bits}).
-\end{itemize}
-We will split the source $|W|$ into $m$ blocks each of size $2\rho q+1$~(that is, $|W| = m\log (2\rho q+1)$).  We will ignore the parameter $|W|$ and focus on $t, n, q, \rho,$ and $m$.  As stated above we have three constraints:
-\begin{itemize}
-\item Maintain security of LWE.  If we assume GAPSVP and SIVP are hard to approximate within polynomial factors then \lemref{lem:uniform LWE decision} says that we get security for all $n$ greater than some minimum $n_0$ and $q = \poly(n)$ and $\rho q \geq 2 n^{1/2 + \sigma} m = \poly(n)$.  The only reason to increase $\rho q$ over this minimum amount (other than security) is if the number of errors in $W$ decreases with a slightly larger block size.  We ignore this effect and assume that $\rho q = 2n^{1/2+\sigma}m$.
-\item Maintain efficient decoding of Construction~\ref{cons:decoding algorithm}.  Using \lemref{lem:i t poly time}, this means that $t\leq d\log n(m/n-2)$.
-\item Minimize entropy loss of the construction.  We will output $X_{1,...,k}$ so the entropy loss of the construction is $|W|-|X_{1,..., k}|$.  We want the entropy loss to be zero, that is, $|W| = |X_{1,..., k}|$.  Substituting, one has $m\log 2\rho q+1 = k \log q$.
-\end{itemize}
-Collecting constraints we can support any setting where $t, n, q, \rho, m, k$ satisfy the following constraints~(for constants $d, f$):
-\begin{align*}
-n_0&< n -k \\
-t&\leq d \log n\left(\frac{m}{n}-2\right)\\
-q &= n^f\\
-\rho q  &= 2n^{1/2+\sigma}m\\
-m\log (2\rho q +1)&= k \log q
-\end{align*}
-Substituting $q = n^f$ and $\rho q = 2n^{1/2+\sigma}m$ yields the following system of equations:
-\begin{align*}
-n_0&< n - k\\
-t&\leq d\log n\left(\frac{m}{n}-2\right)\\
-m \log (4n^{1/2+\sigma}m +1)&= k \log n^f
-\end{align*}
-This is the most general form of our construction, we can support any $n, t, m$ that satisfy these equations for constants $d, f$.  However, the last equation may have no solution for $f$ constant.  Putting the last equation in terms of $f$ one has:
-\begin{align*}
-n_0&< n -k \\
-t&\leq d\log n\left(\frac{ m }{n} -2\right)\\
-f &= \frac{m}{k}\frac{\log 4n^{1/2+\sigma} m+1}{\log n}
-\end{align*}
-To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k = n /g$ for some constant $g> 1$.  Finally we assume that $m$ is the minimum value such that $t \leq d \log n(m/n-2)$~(that is, there are only as many dimensions as necessary for decoding using \lemref{lem:i t poly time}):
-\begin{align*}
-n_0&< n -k \\
-m &= \frac{(c/d+2)n \log n}{\log n} = (\frac{c}{d}+2)n\\
-f &= \frac{m}{k}\frac{\log 4n^{1/2+\sigma}m+1}{\log n} = \frac{g(c+2d)}{d}\frac{\log (\frac{4(c+2d)}{d} n^{3/2+\sigma}+1)}{\log n}
-\end{align*}
-Note that $f$ is at a constant in $n$.
-Assuming $n-k = n(1-1/g) > n_0$ and letting $t= c\log n$ we get the following setting:
-\begin{align*}
-m &= (\frac{c}{d}+2)n\\
-q & = n^f = n^{\frac{m}{k}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n}} = \poly(n)\\
-\rho q &= 2n^{1/2+\sigma}m = 2(\frac{c}{d}+2)n^{3/2+\sigma}
-\end{align*}
-
-Note, that $f> \frac{m}{k}\geq \frac{m}{n} \geq \frac{(c/d+2)n}{n} \geq 3$ as long as $d<c$~(this also ensures that $m\geq 3n$, as required for \lemref{lem:i t poly time} to hold).  Since $\rho q = 2n^{1/2+\rho }m = O(n^{5/2})$ in our setting $\rho = O(n^{-1/2})$.  Thus, for large enough settings of parameters $\rho$ is less than $1/10$ as required by \lemref{lem:uniform LWE decision}.
-
-Furthermore, we get decoding using $O(n^{4d+3})$ $\Fq$ operations.  We can output a $k$ fraction of $X$ and the bits will be pseudorandom~(conditioned on $\vA, \vA X+W$).  The parameter $g$ allows is a tradeoff between the number of dimensions needed for security and the size of the field $q$.  In \thref{thm:lossless secure extractor log}, we set $g=2$ and output the first half of $X$.  Setting $1<g<2$ achieves an increase in output length~(over the input length of $W$).   We also (arbitrarily) set $\sigma=1/2$ to simplify the statement of \thref{thm:lossless secure extractor log}, making $\rho q = 2(c/d+2) n^2$.
-
-\subsection{Parameter Settings for \thref{thm:lossless block sketch log}}
-\label{ssec:block params}
-We repeat parameter settings for block fixing sources.  We now have $m+\alpha$ as the number of samples, while $n + \alpha+\omega(1)$ is the number of variables.  We can support any setting where $t, n, q, \rho, m, k, \alpha$ satisfy the following constraints~(for $\beta = \omega(1)$ and constants $d, f$):
-\begin{align*}
-n_0&< n -k  -\alpha -\beta\\
-t&\leq d \log n\left(\frac{m}{n}-2\right)\\
-q &= n^f\\
-\rho q  &= 2n^{1/2+\sigma}m\\
-m\log (2\rho q+1)&= k \log q
-\end{align*}
-Substituting $q = n^f$ and $\rho q = 2n^{1/2+\sigma}m$ yields the following system of equations:
-\begin{align*}
-n_0&< n - k - \alpha -\beta\\
-t&\leq d\log n\left(\frac{m}{n}-2\right)\\
-m \log (4n^{1/2+\sigma}m +1)&= k \log n^f
-\end{align*}
-As before we can support any setting any $n, t, m, \alpha$ that satisfy these equations for $\beta = \omega(1)$ and constants $d, f$.  However, the last equation may have no solution for $f$ constant.  Putting the last equation in terms of $f$ one has:
-\begin{align*}
-n_0&< n -k  - \alpha - \beta \\
-t&\leq d\log n\left(\frac{ m }{n} -2\right)\\
-%f \log n &= \frac{m}{n}\log 2n^2m\\
-f &= \frac{m}{k}\frac{\log (4n^{1/2+\sigma} m+1)}{\log n}
-\end{align*}
-To ensure $f$ is a constant, we set $t = c \log n$ for some constant $c$ and that $k, \alpha = n/3$ and $\beta = \log n$.  Finally we assume that $m$ is the minimum value such that $t \leq  d \log n(m/n-2)$~(that is, there are only as many dimensions as necessary for decoding using \lemref{lem:i t poly time}):
-\begin{align*}
-n_0&< n/3 -  \log n\\
-m &= \frac{(c/d+2)n \log n}{ \log n} = (\frac{c}{d}+2)n\\
-f &= \frac{m}{k}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n} = \left(3(\frac{c}{d}+2)\right)\frac{\log (4(\frac{c}{d}+2) n^{3/2+\sigma}+1)}{\log n} = O(1)
-\end{align*}
-
-Assuming $n/3-\log(n)> n_0$ and letting $t= c\log n$ we get the following setting:
-\begin{align*}
-m &= (\frac{c}{d}+2)n\\
-q & = n^f = n^{\frac{m}{n}\frac{\log (4n^{1/2+\sigma}m+1)}{\log n}} = \poly(n)\\
-\rho q &= 2n^{1/2+\sigma}m = 2(\frac{c}{d}+2)n^{3/2+\sigma}
-\end{align*}
-
-As before we arbitrarily set $\sigma = 1/2$, giving $\rho q = 2(\frac{c}{d}+2)n^2$.  Also, if $c<d$ then we get efficient decoding and $\rho = o(1)$ satisfying the condition of \lemref{lem:uniform LWE decision}.
 \end{document}
 
 
