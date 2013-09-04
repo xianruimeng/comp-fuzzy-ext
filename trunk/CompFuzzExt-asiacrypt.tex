@@ -1,5 +1,5 @@
 %\documentclass[11pt]{article}
-\documentclass{llncs}
+\documentclass[runningheads]{llncs}
 \def\shownotes{0}
 
 %\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
@@ -139,6 +139,7 @@
 
 \title{Computational Fuzzy Extractors}
 \author{Benjamin Fuller\inst{1} \and Xianrui Meng\inst{2} \and Leonid Reyzin\inst{2}}
+\titlerunning{Computational Fuzzy Extractors}
 \authorrunning{B. Fuller \and X. Meng \and L. Reyzin}
 \institute{Boston University and MIT Lincoln Laboratory \and Boston University} 
 \tocauthor{Benjamin Fuller, Xianrui Meng, and Leonid Reyzin (Boston University)}
@@ -415,7 +416,7 @@ Define $\gen, \rep$ as follows:
 \end{enumerate}
  \end{minipage} &
 \begin{minipage}{2.3in}
-\textbf{\rep}
+\ \ \textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$ (where the Hamming distance between $w'$ and $w$ is at most $t$).
 \item Parse $p$ as $(\vA, \vect{c})$; let $\vb=\vect{c}-w'$.
