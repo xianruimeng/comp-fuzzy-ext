@@ -296,7 +296,7 @@ For a random variable $X = X_1||...|| X_n$ where each $X_i$ is over some alphabe
 and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.  
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. 
 For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
-For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t(\cdot)|$ the size of a ball of radius $t$.  For the Hamming metric over $\mathcal{Z}^n$, $|B_t(\cdot)| = \sum_{i=0}^t {n \choose t} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t(\cdot)|$ the size of a ball of radius $t$.  For the Hamming metric over $\mathcal{Z}^n$, $|B_t(\cdot)| = \sum_{i=0}^t {n \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.
 Usually, we use bold letters for vectors or matrices, capitalized letters for random variables, and lowercase letters for elements in a vector or samples from a random variable. 
 
 \subsection{Fuzzy Extractors and Secure Sketches}
@@ -548,8 +548,7 @@ The security of  \consref{cons:informal construction} follows from Lemmas \ref{l
 
 \subsection{Efficiency of \consref{cons:informal construction}}
 \label{sec:time main construction}
-\consref{cons:informal construction} is useful only if $\decode_t$ can be efficiently implemented.  We need a decoding algorithm for a random linear code with $t$ errors that runs in polynomial time.  We present a simple $\decode_t$ that runs in polynomial time and can correct
-correcting $O(\log n)$ errors (note that this corresponds to a superpolynomial number of possible error patterns).
+\consref{cons:informal construction} is useful only if $\decode_t$ can be efficiently implemented.  We need a decoding algorithm for a random linear code with $t$ errors that runs in polynomial time.  We present a simple $\decode_t$ that runs in polynomial time and can correct $O(\log n)$ errors (note that this corresponds to a superpolynomial number of possible error patterns).
 This algorithm is a proof of concept, and neither the algorithm nor its analysis have been optimized for constants. An improved decoding algorithm can replace our algorithm, which will increase our correcting capability and improve \consref{cons:informal construction}.
 
 \begin{construction}
