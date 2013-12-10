@@ -1,0 +1,380 @@
+\documentclass[11pt]{article}
+%\documentclass{llncs}
+\def\shownotes{1}
+
+\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{algpseudocode} 
+
+\mathchardef\mhyphen="2D
+
+\newcommand{\secref}[1]{\mbox{Section~\ref{#1}}}
+\newcommand{\subsecref}[1]{\mbox{Subsection~\ref{#1}}}
+\newcommand{\apref}[1]{\mbox{Appendix~\ref{#1}}}
+\newcommand{\thref}[1]{\mbox{Theorem~\ref{#1}}}
+\newcommand{\exref}[1]{\mbox{Example~\ref{#1}}}
+\newcommand{\defref}[1]{\mbox{Definition~\ref{#1}}}
+\newcommand{\corref}[1]{\mbox{Corollary~\ref{#1}}}
+\newcommand{\lemref}[1]{\mbox{Lemma~\ref{#1}}}
+\newcommand{\assref}[1]{\mbox{Assumption~\ref{#1}}}
+\newcommand{\probref}[1]{\mbox{Problem~\ref{#1}}}
+\newcommand{\clref}[1]{\mbox{Claim~\ref{#1}}}
+\newcommand{\propref}[1]{\mbox{Proposition~\ref{#1}}}
+\newcommand{\remref}[1]{\mbox{Remark~\ref{#1}}}
+\newcommand{\consref}[1]{\mbox{Construction~\ref{#1}}}
+\newcommand{\figref}[1]{\mbox{Figure~\ref{#1}}}
+\DeclareMathOperator*{\expe}{\mathbb{E}}
+
+
+\newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
+\newcommand{\gen}{\ensuremath{\class{Gen}}\xspace}
+\newcommand{\rep}{\ensuremath{\class{Rep}}\xspace}
+\newcommand{\sketch}{\ensuremath{\class{SS}}\xspace}
+\newcommand{\rec}{\ensuremath{\class{Rec}}\xspace}
+\newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
+\newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
+\newcommand{\prg}{\ensuremath{\class{prg}}\xspace}
+\newcommand{\zo}{\ensuremath{\{0, 1\}}}
+\newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\zq}{\ensuremath{\mathbb{Z}_q}}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}}
+\newcommand{\sample}{\ensuremath{\class{Sample}}\xspace}
+\newcommand{\neigh}{\ensuremath{\class{Neigh}}\xspace}
+\newcommand{\dis}{\ensuremath{\mathsf{dis}}}
+\newcommand{\decode}{\ensuremath{\mathsf{Decode}}}
+
+\newcommand{\A}{\mathcal{A}}
+
+
+\newcommand{\metric}{\ensuremath{\mathtt{Metric}}\xspace}
+\newcommand{\hill}{\ensuremath{\mathtt{HILL}}\xspace}
+\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL\mhyphen rlx}}\xspace}
+\newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
+\newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
+\newcommand{\unprlx}{\ensuremath{\mathtt{unp\mhyphen rlx}}\xspace}
+\newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
+\newcommand{\metricd}{\ensuremath{\mathtt{Metric}^*\mathtt{-d}}\xspace}
+\newcommand{\hillstar}{\ensuremath{\mathtt{HILL}^*}\xspace}
+\newcommand{\hillprime}{\ensuremath{\mathtt{HILL'}}\xspace}
+\newcommand{\metricprime}{\ensuremath{\mathtt{Metric'}}\xspace}
+\newcommand{\metricprimestar}{\ensuremath{\mathtt{Metric'}^*}\xspace}
+\newcommand{\hillprimestar}{\ensuremath{\mathtt{HILL'}^*}\xspace}
+\newcommand{\poly}{\ensuremath{\mathtt{poly}}\xspace}
+\newcommand{\rank}{\ensuremath{\mathtt{rank}}\xspace}
+\newcommand{\ngl}{\ensuremath{\mathtt{ngl}}\xspace}
+\newcommand{\Hoo}{\mathrm{H}_\infty}
+\newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
+\newcommand{\Dom}{\mathsl{Dom}}
+\newcommand{\Range}{\mathsl{Rng}}
+\newcommand{\Keys}{\mathsl{Keys}}
+\def\col{\mathrm{Col}}
+
+\newcommand{\ddetbin}{\ensuremath{\mathcal{D}^{det,\{0,1\}}}}
+\newcommand{\drandbin}{\ensuremath{\mathcal{D}^{rand,\{0,1\}}}}
+\newcommand{\ddetrange}{\ensuremath{\mathcal{D}^{det,[0,1]}}}
+\newcommand{\drandrange}{\ensuremath{\mathcal{D}^{rand,[0,1]}}}
+
+\newcommand{\expinfo}{\ensuremath{\mathcal{E}}}
+\newcommand{\ext}{\ensuremath{\mathtt{ext}}}
+\newcommand{\rext}{\ensuremath{\mathtt{rext}}}
+\newcommand{\cons}{\ensuremath{\mathtt{cons}}}
+\newcommand{\decons}{\ensuremath{\mathtt{decons}}}
+
+
+\newcommand{\lwe}{\class{LWE}}
+\newcommand{\LWE}{\class{LWE}}
+\newcommand{\distLWE}{\ensuremath{\class{dist\mbox{-}LWE}}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{construction}[theorem]{Construction}
+
+\newcounter{ctr}
+\newcounter{savectr}
+\newcounter{ectr}
+
+\newenvironment{newitemize}{%
+\begin{list}{\mbox{}\hspace{5pt}$\bullet$\hfill}{\labelwidth=15pt%
+\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{3pt} }}{\end{list}}
+
+
+\newenvironment{newenum}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=17pt%
+\labelsep=5pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{tiret}{%
+\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+\labelsep=3pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt}}}{\end{list}}
+
+
+\newenvironment{blocklist}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{20pt}}}{\end{list}}
+
+\newenvironment{blocklistindented}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=30pt \leftmargin=30pt\topsep=5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt}}}{\end{list}}
+
+\newenvironment{onelist}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=18pt%
+\labelsep=7pt \leftmargin=25pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{twolist}{%
+\begin{list}{{\rm (\arabic{ctr}.\arabic{ectr})}%
+\hfill}{\usecounter{ectr} \labelwidth=26pt%
+\labelsep=7pt \leftmargin=33pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{centerlist}{%
+\begin{list}{\mbox{}}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt} }}{\end{list}}
+
+\newenvironment{newcenter}[1]{\begin{centerlist}\centering%
+\item #1}{\end{centerlist}}
+
+\newenvironment{codecenter}[1]{\begin{small}\begin{centerlist}\centering%
+\item #1}{\end{centerlist}\end{small}}
+
+\ifnum\shownotes=1
+\newcommand{\authnote}[2]{{\textcolor{red}{\textsf{#1 notes: }\textcolor{blue}{ #2}}\marginpar{\textcolor{red}{\textbf{!!!!!}}}}}
+\else
+\newcommand{\authnote}[2]{}
+\fi
+\newcommand{\bnote}[1]{{\authnote{Ben}{#1}}}
+\newcommand{\lnote}[1]{{\authnote{Leo}{#1}}}
+
+\newcommand{\ve}{\vect{e}}
+\newcommand{\vm}{\vect{m}}
+\newcommand{\vy}{\vect{y}}
+\newcommand{\vE}{\vect{E}}
+\newcommand{\vS}{\vect{S}}
+\newcommand{\vA}{\vect{A}}
+\newcommand{\vc}{\vect{c}}
+\newcommand{\vW}{\vect{W}}
+\newcommand{\vQ}{\vect{Q}}
+\newcommand{\vR}{\vect{R}}
+\newcommand{\vU}{\vect{U}}
+\newcommand{\vT}{\vect{T}}
+\newcommand{\vX}{\vect{X}}
+\newcommand{\vB}{\vect{B}}
+\newcommand{\vz}{\vect{z}}
+\newcommand{\vd}{\vect{d}}
+\newcommand{\vs}{\vect{s}}
+\newcommand{\vx}{\vect{x}}
+\newcommand{\va}{\vect{a}}
+\newcommand{\vb}{\vect{b}}
+\newcommand{\vgamma}{\mathbf{\Gamma}}
+\newcommand{\vt}{\vect{t}}
+\newcommand{\vu}{\vect{u}}
+\newcommand{\vF}{\vect{F}}
+\newcommand{\recout}{x}
+\newcommand{\ignore}[1]{}
+\newcommand{\M}{\mathcal{M}}
+
+\title{Constant Rate Computational Fuzzy Extractors}
+\author{Some people}
+\begin{document}
+\maketitle
+
+
+%\begin{abstract} 
+%We make computational fuzzy extractors better.
+%\end{abstract}
+
+
+\section{Introduction}\label{sec:introduction}
+Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} derive stable keys from noisy data.  They are composed of two algorithms: \gen takes a source value $w_0$, and produces a key $r$ and a public value $p$, and \rep which takes a nearby value $w_1$ and $p$ producing the original key $r$.  Intuitively, they are two functions: error correction~(to provide the same value with \emph{noisy} readings) and key derivation~(to transform an entropic source into a uniform key).  Traditionally, these two functions were performed by two separate primitives: a secure sketch~\cite{DBLP:journals/siamcomp/DodisORS08} and a randomness extractor~\cite{nisan1993randomness}.
+
+For a fixed length key, there are two main parameters: the desired error tolerance and the required entropy of the source.  In the information-theoretic setting these two parameter are at odds.  Any increase error-tolerance requires a similar increase to the entropy of the source.  However, this does not need to be the case in the computational setting.  The notion of computational fuzzy extractors was introduced by Fuller, Meng, and Reyzin~\cite{fuller2013computational}.\footnote{The main difference isa computational fuzzy extractor outputs a pseudorandom key instead of a truly random key.  Both definitions appear in \secref{sec:preliminaries}.}  In this setting an error tolerance \emph{larger} than the starting entropy may be possible.  We provide the first construction of a fuzzy extractor where the entropy of the source distribution is smaller than the desired error-tolerance. \footnote{Security is impossible if all points of the source distribution are close together.  In the fuzzy extractor setting, a necessary condition for security is that a negligible portion of the source distribution lies in within the error-tolerance.   This is both a necessary and sufficient condition for security in the interactive setting using two-party computation.}
+
+Our construction is based on obfuscation.  While black-box obfuscation of polynomial time functions is known to be impossible~\cite{barak2001possibility}, we only use the obfuscation of point functions.  This class is known to be achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and generically from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  Ideally, our construction would be a noisy point obfuscation~(which is a strictly stronger object than a computational fuzzy extractor).  Dodis and Smith constructed noisy point obfuscation when the source entropy is significantly higher than the error-tolerance.  Unfortunately, our construction is not a noisy point obfuscation and leaks partial information about particular blocks of the source.
+
+\section{Preliminaries}
+\label{sec:preliminaries}
+For a random variable $X = X_1||...|| X_n$ where each $X_i$ is over some alphabet $\mathcal{Z}$, we denote by $X_{1,..., k} = X_1||...|| X_k$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$, 
+and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.  
+The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. 
+For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t(\cdot)|$ the size of a ball of radius $t$.  We primarily consider the Hamming metric, for two vectors $x, y$ over $\mathcal{Z}^n$ the Hamming distance between $x,y$ is $d(x,y) = \{i | x_i \neq y_i\}$.  For the Hamming metric, $|B_t(\cdot)| = \sum_{i=0}^t {n \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.
+Usually, we use bold letters for vectors or matrices, capitalized letters for random variables, and lowercase letters for elements in a vector or samples from a random variable. 
+
+\subsection{Fuzzy Extractors and Secure Sketches}
+\label{sec:fuzzy extractors}
+
+We now recall definitions and lemmas from the work of Dodis et. al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08}, adapted to allow for a small probability of error, as discussed in \cite[Sections 8]{DBLP:journals/siamcomp/DodisORS08}.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.
+
+\begin{definition}
+\label{def:fuzzy extractor}
+An $(\mathcal{M}, m, \ell, t, \epsilon)$-\emph{fuzzy extractor} with error $\delta$ is a pair of randomized procedures, ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$, with the following properties: 
+\begin{enumerate}
+\item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $r\in\{0,1\}^\ell$ and a helper string $p\in\{0,1\}^*$.
+\item The reproduction procedure \rep takes an element $w'\in \mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.  The \emph{correctness} property of fuzzy extractors guarantees that for $w$ and $w'$ such that $\dis(w,w')\leq t$, if $R,P$ were generated by $(R,P)\leftarrow\gen(w)$, then $\rep(w',P)=R$ with probability~(over the coins of $\gen, \rep$) at least $1-\delta$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rep.
+\item The \emph{security} property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $R$ is nearly uniform even for those who observe $P$:  if $(R,P)\leftarrow\gen (W)$, then $\mathbf{SD}((R,P),(U_\ell,P))\leq \epsilon$.
+\end{enumerate}
+A fuzzy extractor is efficient if $\gen$ and $\rep$ run in expected polynomial time.
+\end{definition}
+
+Secure sketches are the main technical tool in the construction of fuzzy extractors.  Secure sketches produce a string $s$ that does not decrease the entropy of $w$ too much, while allowing recovery of $w$ from a  close $w'$:
+\begin{definition}
+\label{def:secure sketch}
+An $(\mathcal{M},m, \tilde{m}, t)$-\emph{secure sketch} with error $\delta$ is a pair of randomized procedures, ``sketch'' $(\sketch)$ and ``recover'' $(\rec)$, with the following properties:
+\begin{enumerate}
+\item The sketching procedure \sketch on input $w\in\mathcal{M}$ returns a bit string $s\in\{0,1\}^*$.
+\item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $s\in\{0,1\}^*$.  The \emph{correctness} property of secure sketches guarantees that if $\dis(w,w')\leq t$, then $\Pr[\rec(w',\sketch(w))=w]\geq 1-\delta$ where the probability is taken over the coins of $\sketch$ and $\rec$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rec.
+\item The \emph{security} property guarantees that for any distribution $W$ over $\mathcal{M}$ with min-entropy $m$, the value of $W$ can be recovered by the adversary who observes $w$ with probability no greater than $2^{-\tilde{m}}$.  That is, $\Hav(W|\sketch(W))\geq \tilde{m}$.
+\end{enumerate}
+A secure sketch is \emph{efficient} if \sketch and \rec run in expected polynomial time. 
+\end{definition}
+
+Note that in the above definition of secure sketches (resp., fuzzy extractors), the errors are chosen before $s$ (resp., $P$) is known: if the error pattern between $w$ and $w'$ depends on the output of $\sketch$ (resp., $\gen$), then there is no guarantee about the probability of correctness.
+
+
+A fuzzy extractor can be produced from a \emph{secure sketch} and an \emph{average-case randomness extractor}. An average-case extractor is a generalization of a strong randomness extractor \cite[Definition 2]{nisan1993randomness}) (in particular, Vadhan~\cite[Problem 6.8]{Vad12} showed that all strong extractors are average-case extractors with a slight loss of parameters):
+\begin{definition}
+Let $\chi_1$, $\chi_2$ be finite sets.
+A function $\ext: \chi_1\times \{0,1\}^d \rightarrow \{0,1\}^\ell$ a \emph{$(m, \epsilon)$-average-case extractor} if for all pairs
+of random variables $X, Y$ over $\chi_1, \chi_2$ such that
+$\tilde{H}_\infty(X|Y) \ge m$, we have $\Delta((\ext(X, U_d), U_d, Y), U_\ell\times
+U_d \times Y) \le \epsilon$.
+\end{definition}
+
+\begin{lemma}
+\label{lem:fuzzy ext construction}
+Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$, and let $\ext:\mathcal{M}\times \zo^d \rightarrow \zo^\ell$ be a $(\tilde{m}, \epsilon)$-average-case extractor.  Then the following $(\gen, \rep)$ is an $(\mathcal{M}, m, \ell, t, \epsilon)$-fuzzy extractor with error $\delta$:
+\begin{itemize}
+\item $\gen(w):$ generate $x\leftarrow \zo^d$, set $p=(\sketch(w), x), r=\ext(w;x)$, and output $(r,p)$.
+\item $\rep(w', (s, x)):$ recover $w=\rec(w',s)$ and output $r=\ext(w;x)$.
+\end{itemize}
+\end{lemma}
+The main parameter we will be concerned with is the entropy loss of the construction.  In this paper, we ask whether a smaller entropy loss can be achieved by considering a fuzzy extractor with a computational security requirement.  We therefore relax the security requirement of \defref{def:fuzzy extractor} to require a pseudorandom output instead of a truly random output.  Also, for notational convenience, we modify the definition so that we can specify a general class of sources for which the fuzzy extractor is designed to work, rather than limiting ourselves to the class of sources that consists of all sources of a given min-entropy $m$, as in definitions above (of course, this modification can also be applied to prior definitions of information-theoretic secure sketches and fuzzy extractors).
+
+\begin{definition}[Computational Fuzzy Extractor]\label{def:comp fuzzy extractor}
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$ is a $(\mathcal{M}, \mathcal{W}, \ell, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
+\begin{itemize}
+\item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $R\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
+\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\Pr[\rep( w', P) = R] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.  
+If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\ell, P))\leq \epsilon$.
+\end{itemize}
+\end{definition}
+Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters.
+
+\subsection{Obfuscation}
+The standard notion of obfuscation is virtual black-box obfuscation~(introduced by Barak et al.~\cite{barak2001possibility}).  This notion is known to be impossible in a black-box way for all polynomial time programs.  Several variants~(best possible obfuscation~\cite{goldwasser2007best}, indistinguishability obfuscation~\cite{barak2001possibility}, differing inputs indistinguishability obfuscation~\cite{barak2001possibility}) have been presented~(see Varia~\cite{varia2010studies} for implications between various definitions).  Indistinguishability obfuscation has recently been shown to be constructible~\cite{garg2013candidate} using multilinear maps~\cite{garg2013multilinear}.
+
+We present the notion of virtual black-box obfuscation with the weakening that the simulator produces an arbitrarily small $1/\poly$ as all known point obfuscations satisfy this definition.
+
+\begin{definition}~\cite{barak2001possibility, goldwasser2005impossibility}  Let $\mathcal{C}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is an obfuscator for $\mathcal{C}$ with dependent auxiliary input if the following conditions are met:
+\begin{enumerate}
+\item \emph{Approximate Functionality:}  There exists a negligible function $\epsilon$ such that for every $n\in \mathbb{N}$, every circuit $C\in \mathcal{C}_n$, and every $x\in\zo^n$, 
+\[
+\Pr[\mathcal{O}(C; r)(x) = C(x)] > 1-\epsilon(n),
+\]
+where the probability is taken over the randomness $r$.  \emph{Almost exact functionality} is a stronger condition that requires $\mathcal{O}(C;r)\equiv C$ with overwhelming probability ver the random coin tosses $r$.  Finally, if this probability always equals $1$, then $\mathcal{O}$ has \emph{exact functionality}.
+\item \emph{Polynomial Slowdown:}  There exists a polynomial $\psi$ such that for every $n$, every circuit $C\in \mathcal{C}_n$, and every possible $r$, the circuit $\mathcal{O}(C; r)$ run-in time at most $\psi(n)$.
+\item \emph{Virtual Black-box:}  For every PPT adversary $A$ and polynomial $\rho$, there exists a PPT simulator $S$ such that for all sufficiently large $n$, for all $C\in \mathcal{C}_n$, for all auxiliary inputs $z\in \zo^*$, 
+and for all binary predicates $\pi$, 
+\[
+|\Pr[A(\mathcal{O}(C), z) = \pi(C, z)] - \Pr[S^C(1^n, z) = \pi(C, z)] | < \frac{1}{\rho(n)}
+\]
+where the first probability is taken over the coin tosses of $A$ and $\mathcal{O}$, and the second probability is taken over the coin tosses of $S$.  Furthermore, the.runtime of $A$ and $S$ must be polynomial in the length of their first input.
+\end{enumerate}
+\end{definition}
+
+In this work, we will use obfuscation of point-programs, 
+\[
+I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}
+\]
+
+We provide the construction of Canetti~\cite{canetti1997towards}, as an illustration of how point functions can be obfuscated.  Let $G$ be a group:
+\begin{enumerate}  
+\item Input: string $w\in \zo^n$.
+\item Choose a generator $g\overset{\$}\leftarrow G$
+\item Compute $h\leftarrow g^w$, where $w$ is viewed as an element of $G$ is some canonical way.
+\item Output: circuit that has $g, h$ hardwired, and on input $x$, accepts iff $g^x=h$.
+\end{enumerate}
+\begin{assumption}[Strong DDH assumption]\label{ass:strong ddh}.  Let $n$ be a security parameter and let $p = 2q+1$ be a randomly chosen $n$-bit safe prime.  Consider the group $Q$ of quadratic residues in $\mathbb{F}_p^*$.  For any $W$ with $\Hoo(W)= \omega(\log n)$ where the domain of $W$ is $\mathbb{F}_q$, for $g\overset{\$}\leftarrow Q, a\leftarrow W, b,c \overset{\$}\leftarrow \mathbb{F}_q$, the ensembles $\langle g, g^a, g^b, g^{ab}\rangle$ and $\langle g, g^a, g^b, g^c\angle$ are computationally indistinguishable.
+\end{assumption}
+\begin{theorem}~\cite{canetti1997towards}
+The construction above, when instantiated with the group $G = Q$ is a virtual black-box obfuscator for the family of point functions under \assref{ass:strong ddh}.
+\end{theorem}
+
+As described above there exist other constructions of point function obfuscates under various assumptions~\cite{lynn2004positive, wee2005obfuscating}.
+
+Lastly, we will need the notion of composable obfuscation.
+
+\begin{definition}[Composable obfuscation~\cite{bitansky2010strong, canetti2008obfuscating,lynn2004positive}].  A PPT algorithm $\mathcal{O}$ is a $t$-\emph{com posable obfuscator} for the family $\mathcal{C}$ with dependent auxiliary input if functionality and polynomial slowdown hold as before, and the virtual black black-box property holds whenever the adversary and simulator are given up to $t$ circuits in $\mathcal{C}$.  That is, for every PPT $A$ and polynomial $\rho$, there exists a PPT $S$ such that for all sufficiently large $n$, and for all $C_1,..., C_t\in \mathcal{C}_n$, and for all auxiliary inputs $z\in \zo^*$, 
+\[
+|\Pr[A(\mathcal{O}(C_1), ..., \mathcal{O}(C_t), z) = 1] - \Pr[S^{C_1,..., C_t}(1^n, z) = 1]| < \frac{1}{\rho(n)},
+\]
+where the probabilities are taken over the random coins tosses of $A, S$ and $\mathcal{O}$.  The runtimes of $A$ and $S$ must be polynomial in the length of their first input.
+\end{definition}
+
+
+
+
+\section{Supported Sources}
+We now describe a set of high entropy sources appropriate for our construction.  After giving the description of the distribution, we give examples of distributions that fit in this class and provide additional characterizations.
+
+\begin{definition}
+Let $\mathcal{O}_{w_1,..., w_k}$ be an oracle that return $\mathcal{O}_{w_1,..., w_k}(i, w_i')=\left( w_i\overset{?}=w_i'\right)$.
+A source $W = W_1||...|W_k$ is a $(q, \alpha, \ell)$-\emph{guessable block distribution} if for any adversary $A$~(not bounded in time or space) with oracle access to $\mathcal{O}$ making at most $q$ queries there exists a set $S$ of size at least $\ell$ such that 
+\[
+\forall i\in S, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
+\]
+\end{definition}
+This type of source seems to be inherently adaptive and is difficult to formulate in a clean information-theoretic notion.  However, we can show necessary and sufficient types of sources for a guessable block distribution.  We begin by defining the entropy jump of a block source which will appear in our characterization.
+
+\begin{definition}
+Let $W = W_1,..., W_k$ be a source under ordering $i_1,..., i_k$.  The \emph{entropy jump} of a block $i_j$ is $J(i_j) = \Hav(W_{i_j} | W_{i_1},..., W_{i_{j-1}})$.
+\end{definition}
+
+\begin{claim}
+Let $W$ be a $(q, \alpha, \ell)$-guessable block distribution.  Then for all orderings $i_1, ...., i_k$ there is some $j\leq k-\ell$ such that $J(i_j)> \log q + \alpha$.
+\end{claim}
+\begin{proof}
+Suppose not, for convenience assume the ordering that violates this condition is $1,..., k$.  We describe a distribution $W$ where $\forall 1\leq j\leq k-\ell$, $J(j)\leq \log q +\alpha$. Define $W$ as follows $W_1 = c_1,...., W_{j-1} = c_{j-1}$ are constants.
+\end{proof}
+\bibliographystyle{alpha}
+\bibliography{crypto}
+
+\end{document}
