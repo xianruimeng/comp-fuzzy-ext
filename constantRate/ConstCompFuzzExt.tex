@@ -353,9 +353,9 @@ where the probabilities are taken over the random coins tosses of $A, S$ and $\m
 
 Before describing our construction, we recall the problem we are trying address.  The goal is to derive strong keys from noisy sources.  As discussed in the introduction, the important parameter is the difference between the total entropy and the number of errors being corrected.  We call this value the entropy gap or $gap= \Hoo(W) - \log|B_t(\cdot)|$.  The results of Dodis et al.~\cite[Lemmas C.1 and C.2]{DBLP:journals/siamcomp/DodisORS08} show that gap is an upper bounded for the length of the derived key. 
 
-If $gap> \omega(\log n)$~(ignoring losses due to randomness extraction), then a key of any length can be formed by using an information-theoretic fuzzy extractor~(which yields nearly this many bits using an optimal code) and expanding the output with a pseudorandom generator~(or using a secure sketch with a computational extractor).  Using an information-theoretic analysis of a fuzzy extractor this seems to be the best construction possible.  As described in Fuller, Meng, and Reyzin~\cite{fuller2013computational}, use of a computational fuzzy extractor may allow a construction when $gap = O(\log n)$.  Their construction is only applicable for high entropy input and yield a result when $gap$ is small.  We will provide the first construction where $gap$ is negative.  We first focus on deriving a single key bit in this setting as this is already nontrivial.
+If $gap> \omega(\log n)$~(ignoring losses due to randomness extraction), then a key of any length can be formed by using an information-theoretic fuzzy extractor~(which yields nearly this many bits using an optimal code) and expanding the output with a pseudorandom generator~(or using a secure sketch with a computational extractor).  Using an information-theoretic analysis of a fuzzy extractor this seems to be the best construction possible.  As described in Fuller, Meng, and Reyzin~\cite{fuller2013computational}, use of a computational fuzzy extractor may allow a construction when $gap = O(\log n)$.  Their construction is only applicable for high entropy input and yield a result when $gap$ is small.  We will provide the first construction where $gap$ is negative.  We first introduce the notion of a balanced code:
 
-\subsection{Single-Bit Construction}
+\subsection{First $gap<0$ construction}
 \begin{construction}
 
 Let $n$ be a security parameter and let $W = W_1,..., W_\ell$ be a distribution over $\zo^{\ell n}$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^n$.  Let $t$ be the desired error-tolerance and let $C$ be a binary $(\ell, k, t)$-error-correcting code.  Let $\ext : \zo^n\times \zo^* \rightarrow \zo$ be a $(x, x, x, x)$-extractor. \bnote{fill this in}
@@ -396,7 +396,7 @@ Let $p_i = \mathcal{O}(C(r_i))$.
 
 \textbf{Notes:}  We make several observations about the above construction:
 \begin{itemize}
-\item Assuming a roughly balanced code $C$~(where on average, half of the bits of a codeword are 0 and half are 1), in expectation, half of $w$ is information-theoretically unknown conditioned on $p$.  As described in~\cite[Section 3.3]{fuller2013computational} some type of lossiness is necessary to avoid coding bounds.
+\item Assuming a balanced code $C$~(where on average, half of the bits of a codeword are 0 and half are 1), in expectation, half of $w$ is information-theoretically unknown conditioned on $p$.  As described in~\cite[Section 3.3]{fuller2013computational} some type of lossiness is necessary to avoid coding bounds.
 \item There are two possible reasons for a bit of $c_i'$ to be $0$.  Because the true value was $0$~(there is little chance of $0$ being incorrectly decoded as $1$ assuming $w_i'$ is formed independently of the sketch) and because $w_i \neq w_i'$.  However if a bit of $c_i'$ is $1$ this likely means that $w_i=w_i'$ because collisions when the $c_i=0$ are unlikely~(occurring with probability roughly $2^{-n}$).  Thus, instead of using a code suited for a binary symmetric channel, a code for the $Z$ channel may be used.
 \item The extractor can be removed from the construction leaving a computational fuzzy conductor~(see~\cite[Section 3.3]{fuller2013computational} for discussion).
 \end{itemize}
@@ -430,9 +430,51 @@ This argument holds for all $i$.  This completes the proof.
 %Now consider the distribution $W' = W | W\neq w$, by the same argument asking a single query of $W'$ reduces it min-entropy by at most one bit~(we need only consider the case where previous responses were all zeros as the entropy is already $0$ if a previous response is $1$).  Thus, for some polynomial number of queries $n_q$ we have that $\Hav(W | Q_1,..., Q_{n_q}) = k - n_q$.  Thus for $k = \omega(\log n)$ and $n_q = \poly(n)$\bnote{this is too big a loss} %we have that $k-n_q = \omega(\log n)$.  This completes the proof of the lemma. 
 \end{proof}
 \begin{lemma}
-For each $c_j$ the adversary knowledge is negligible conditioned on their view.
+Let $W$ and $U$ be two distributions of super-logarithmic entropy.  Then for all adversaries $A$, $q = poly(n)$ queries, $\Delta(View(A^{\mathcal{O}_W(\cdot)}), View(A^{\mathcal{O}_U(\cdot)}))\leq \ngl(n)$.
 \end{lemma}
+\begin{proof}
+It suffices to show that with the probability of all responses being $0$ is overwhelming.  Clearly, in the case when all responses are $0$ the views are identical, and thus the statistical distance is $0$.  \bnote{Finish this proof}
+\end{proof}
 
+\begin{lemma}
+Let $X_i = W_i$ if $c_i = 1$, otherwise let $X_i = U$.  Then, for every $i$, $\Delta(View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)})| c_i = 1, View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)} | c_i =0) \leq \ngl(n)$.
+\end{lemma}
+\begin{proof}
+\bnote{Do this}
+\end{proof}
+We can extend this lemma to the entire codeword $C$:
+\begin{lemma}
+For all $c_1, c_2 \in C$ we have the following: 
+\[
+\Delta(View(A^{\mathcal{O}_{(X_{c_{1_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)})| C = c_1, View(A^{\mathcal{O}_{(X_{c_{2_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)} | C = c_2) \leq \ngl(n).
+\]
+\end{lemma}
+\begin{lemma}
+If $C$ is a balanced code then, for all $i$, $\Hoo(C_i |View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)}))\geq 1 - \omega(1)(\log n)$.
+\end{lemma}
+\begin{proof}
+From Lemma 3.4\bnote{change to reference}, we have that in expectation each for each $i$, $\Pr[C_i =1 ] = 1/2$. Let $w$ be the exponent of the particular negligible value above~(note $w = \omega(1)$).  Then we have for $b\in\{0,1\}$
+\begin{align*}
+\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C_i =b | view ] &\leq 1/2 + \ngl(n)\\
+\end{align*}
+Taking the negative log of each side one has:
+\begin{align*}
+\Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
+ &=\\-\log \left(\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\max_{b\in\{0,1\}}\Pr[C_i =b | view ]  \right) &\geq -\log (1/2 + \ngl(n))\\
+&\geq -\log(\frac{1}{2} + \frac{1}{n^{w}} )= -\log \left(\frac{n^{w}+2}{2n^{w}}\right)\\
+&=-\left(\log (n^w+2) -\log 2 -\log n^w \right)\\
+&=1-\left(\log (n^w + 2) - \log n^w\right)\\
+&\geq 1- \left(\log (n+1)^w - \log n^w\right)  \\
+&= 1- w\left( \log (n+1) - \log n\right)\\
+&\geq 1 - w*1
+\end{align*}
+\end{proof}
+\begin{lemma}
+$\Hoo(C | View (A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)})) \geq \log |C| - o(\ell \log n)$.
+\end{lemma}
+\begin{corollary}
+$\Delta(\ext(C, seed) , U | seed, View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)}))\leq \ngl(n)$.
+\end{corollary}
 \section{Supported Sources}
 We now describe a set of high entropy sources appropriate for our construction.  After giving the description of the distribution, we give examples of distributions that fit in this class and provide additional characterizations.
 
