@@ -296,7 +296,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\ell, P))\leq \epsilon$.
 \end{itemize}
 \end{definition}
-Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters.
+Any efficient fuzzy extractor is also a computational fuzzy extractor with the same parameters.  
 
 \subsection{Obfuscation}
 The standard notion of obfuscation is virtual black-box obfuscation~(introduced by Barak et al.~\cite{barak2001possibility}).  This notion is known to be impossible in a black-box way for all polynomial time programs.  Several variants~(best possible obfuscation~\cite{goldwasser2007best}, indistinguishability obfuscation~\cite{barak2001possibility}, differing inputs indistinguishability obfuscation~\cite{barak2001possibility}) have been presented~(see Varia~\cite{varia2010studies} for implications between various definitions).  Indistinguishability obfuscation has recently been shown to be constructible~\cite{garg2013candidate} using multilinear maps~\cite{garg2013multilinear}.
@@ -349,7 +349,7 @@ Lastly, we will need the notion of composable obfuscation.
 where the probabilities are taken over the random coins tosses of $A, S$ and $\mathcal{O}$.  The runtimes of $A$ and $S$ must be polynomial in the length of their first input.
 \end{definition}
 
-\section{Our Construction}
+\section{A Constant Rate Computational Fuzzy Extractor}
 
 Before describing our construction, we recall the problem we are trying address.  The goal is to derive strong keys from noisy sources.  As discussed in the introduction, the important parameter is the difference between the total entropy and the number of errors being corrected.  We call this value the entropy gap or $gap= \Hoo(W) - \log|B_t(\cdot)|$.  The results of Dodis et al.~\cite[Lemmas C.1 and C.2]{DBLP:journals/siamcomp/DodisORS08} show that gap is an upper bounded for the length of the derived key. 
 
@@ -358,7 +358,7 @@ If $gap> \omega(\log n)$~(ignoring losses due to randomness extraction), then a 
 \subsection{Single-Bit Construction}
 \begin{construction}
 
-Let $n$ be a security parameter and let $W = W_1,..., W_\ell$ be a distribution over $\zo^{\ell n}$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^n$.  Let $t$ be the desired error-tolerance and let $C$ be a binary $(\ell, k, t)$-error-correcting code.  Let $\ext : \zo^n\times \zo^* \rightarrow \zo$ be a $(x, x, x, x)$-extractor. 
+Let $n$ be a security parameter and let $W = W_1,..., W_\ell$ be a distribution over $\zo^{\ell n}$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^n$.  Let $t$ be the desired error-tolerance and let $C$ be a binary $(\ell, k, t)$-error-correcting code.  Let $\ext : \zo^n\times \zo^* \rightarrow \zo$ be a $(x, x, x, x)$-extractor. \bnote{fill this in}
 We describe $\gen, \rep$ as follows:
 
 \begin{center}
@@ -366,7 +366,7 @@ We describe $\gen, \rep$ as follows:
 \begin{minipage}{3in}
 \textbf{\gen}
 \begin{enumerate}
-\item \underline{Input}: $w = w_1,..., w_t$
+\item \underline{Input}: $w = w_1,..., w_\ell$
 \item Sample $c\leftarrow C, seed\leftarrow \zo^*$.
 \item For $i=1,..., \ell$:
 \subitem If $c_i = 1$: $p_i = \mathcal{O}(C(w_i))$.
@@ -401,7 +401,37 @@ Let $p_i = \mathcal{O}(C(r_i))$.
 \item The extractor can be removed from the construction leaving a computational fuzzy conductor~(see~\cite[Section 3.3]{fuller2013computational} for discussion).
 \end{itemize}
 
+Assuming virtual black-box obfuscation, we can argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversaries inability to learn the values using only \emph{adaptive} equality queries.  We begin with the setting where each block is independent and then move to the setting of correlated blocks.
 
+\begin{lemma}
+Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_t$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = \omega(\log n)$.  Let $t$ be a desired error-tolerance.  Then let $\mathcal{A}$ be an adversary making a polynomial number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
+Then $\forall i, \Hav(W_i | View(A))  = \omega(\log n)$.
+\end{lemma}
+\begin{proof}
+Consider a particular block $i$, we measure how an adversaries queries affect the entropy of this block~(we can ignore the other blocks as they are independent).  
+Let $q_w$ be a query asking if the stored value is $a_w$ and its corresponding response.  
+Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  (There is dependency between $W_i$ and the queries but it is all contained in $A_{w_1},..., A_{w_q}$.)  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$.  Thus, we have the following,
+\begin{align*}
+\Hav(W_i | View(A)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
+&=\Hav(W_i | A_{w_1},..., A_{w_q})\\
+&=\Hav(W_i |A') \\
+&=\Hoo(W_i) - \log |A'|\\
+&= \omega(\log n) - \log |A'|\\
+&= \omega(\log n) - \log (q+1) = \omega(\log n) - O(\log(n)) = \omega(\log n)
+\end{align*}
+Where the fourth line follows from the third by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
+This argument holds for all $i$.  This completes the proof.
+%There are two possible outcomes to an equality query $1$ in which case $\Hoo(W|Q = q_w) = 0$ and $0$ in which case $\Hoo(W| Q =q_w ) \geq -\log 2^{-\Hoo(W)}(1 - 2^{-\Hoo(W)})$~(every remaining outcome is scaled by the $w$ not being a possible outcome).  Thus,
+%\begin{align*}
+%\Hav(W | Q_w) &= -\log \left(\Pr[W=w]2^{-0} + \Pr[W\neq w] 2^{-\Hoo(W)}(1 - 2^{-\Hoo(W)})\right)\\
+%&\geq -\log \left(2^{-k} + (1-2^{-k})2^{-k}(1-2^{-k})\right)\\
+%&\geq -\log \left(2^{-(k)}(1+(1-2^{-k})^2)\right)\geq k-1
+%\end{align*}
+%Now consider the distribution $W' = W | W\neq w$, by the same argument asking a single query of $W'$ reduces it min-entropy by at most one bit~(we need only consider the case where previous responses were all zeros as the entropy is already $0$ if a previous response is $1$).  Thus, for some polynomial number of queries $n_q$ we have that $\Hav(W | Q_1,..., Q_{n_q}) = k - n_q$.  Thus for $k = \omega(\log n)$ and $n_q = \poly(n)$\bnote{this is too big a loss} %we have that $k-n_q = \omega(\log n)$.  This completes the proof of the lemma. 
+\end{proof}
+\begin{lemma}
+For each $c_j$ the adversary knowledge is negligible conditioned on their view.
+\end{lemma}
 
 \section{Supported Sources}
 We now describe a set of high entropy sources appropriate for our construction.  After giving the description of the distribution, we give examples of distributions that fit in this class and provide additional characterizations.
