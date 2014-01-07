@@ -181,6 +181,8 @@
 \fi
 \newcommand{\bnote}[1]{{\authnote{Ben}{#1}}}
 \newcommand{\lnote}[1]{{\authnote{Leo}{#1}}}
+\newcommand{\rnote}[1]{{\authnote{Ran}{#1}}}
+\newcommand{\onote}[1]{{\authnote{Omer}{#1}}}
 
 \newcommand{\ve}{\vect{e}}
 \newcommand{\vm}{\vect{m}}
@@ -315,7 +317,7 @@ For notational convenience, we the definition of computational fuzzy extractors 
 The question is we ask is for what type of sources can we build fuzzy extractors?  Of particular interest are sources where information-theoretic bounds do not allow meaningful constructions~\cite[Lemmas C.1 and C.2]{DBLP:journals/siamcomp/DodisORS08}.  The main limiting factor is the difference between the starting entropy and the size of the ball to be corrected or $gap = \Hoo(W) - \log |B_t(\cdot)$.  When $gap$ is large, information-theoretic fuzzy extractors provide a good solution.  We ask whether security is possible when $gap$ is small or negative.
 %In this paper, we ask whether a smaller entropy loss can be achieved by considering a computational fuzzy extractor with a computational security requirement.  %We therefore relax the security requirement of \defref{def:fuzzy extractor} to require a pseudorandom output instead of a truly random output.  
 
-As in the information-theoretic realm~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}, a computational fuzzy extractor can be constructed by combining a correction component and an privacy-amplication component.  As shown in Fuller, Meng, and Reyzin~\cite[Corollary 3.8 and Theorem 3.10]{fuller2013computational}, the ``right'' correction component is probably not a computational version of a secure sketch.  Instead, we will use a computational fuzzy extractor~(this is a computational analogue of the notion introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}): 
+As in the information-theoretic realm~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}, a computational fuzzy extractor can be constructed by combining a correction component and an privacy-amplication component.  As shown in Fuller, Meng, and Reyzin~\cite[Corollary 3.8 and Theorem 3.10]{fuller2013computational}, the ``right'' correction component is probably not a computational version of a secure sketch.  Instead, we will use a computational fuzzy extractor~(this is a computational analogue of the notion introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).  We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} extended to the conditional case~(see \defref{def:hill ent}): 
 
 \begin{definition}
 Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' (\gen) and ``reproduce'' (\rep) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy the following properties:
@@ -323,7 +325,7 @@ Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  
 \item The generate procedure \gen on input $w\in \mathcal{M}$ outputs a string $Y\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
 \item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(Y, P)\leftarrow \gen(w)$, then $\Pr[\rep( w', P) = Y] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.  
 If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
-\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $Y$ has high HILL entropy conditioned on $P$, that is $H^{\hill}_{\epsilon, s_{sec}}(Y |P)\geq \tilde{m}$.\bnote{need to define conditional HILL entropy}
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $Y$ has high HILL entropy conditioned on $P$, that is $H^{\hill}_{\epsilon, s_{sec}}(Y |P)\geq \tilde{m}$.
 \end{itemize}
 \end{definition}
 
@@ -478,7 +480,7 @@ Let $p_i = \mathcal{O}(C(r_i))$.
 Assuming virtual black-box obfuscation, we can argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversaries inability to learn the values using only \emph{adaptive} equality queries.  We begin with the setting where each block is independent and then move to the setting of correlated blocks.
 
 \begin{lemma}
-Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_t$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = \omega(\log n)$.  Let $t$ be a desired error-tolerance.  Then let $\mathcal{A}$ be an adversary making a polynomial number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
+Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_t$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = \omega(\log n)$.  Then let $\mathcal{A}$ be an adversary making a polynomial number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
 Then $\forall i, \Hav(W_i | View(A))  = \omega(\log n)$.
 \end{lemma}
 \begin{proof}
@@ -584,5 +586,17 @@ Suppose not, for convenience assume the ordering that violates this condition is
 \end{proof}
 \bibliographystyle{alpha}
 \bibliography{crypto}
+
+\appendix
+\section{Computational Entropy}
+HILL entropy is a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}.  It was extended to the conditional case by Hsiao, Lu, Reyzin~\cite{DBLP:conf/eurocrypt/HsiaoLR07}. 
+
+\begin{definition}
+\label{def:hill ent}
+Let $(W, S)$ be a pair of random variables.  $W$ has 
+\emph{HILL entropy} at least $k$ conditioned on $S$,
+denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon$.
+\end{definition}
+
 
 \end{document}
