@@ -36,6 +36,7 @@
 \newcommand{\consref}[1]{\mbox{Construction~\ref{#1}}}
 \newcommand{\figref}[1]{\mbox{Figure~\ref{#1}}}
 \DeclareMathOperator*{\expe}{\mathbb{E}}
+\DeclareMathOperator*{\var}{\text{Var}}
 
 
 \newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
@@ -538,7 +539,7 @@ For all $c_1, c_2 \in C$ we have the following:
 If $C$ is output then, for all $i$, $\Hav(C_i |View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)}))\geq 1 - \ngl(n)$.
 \end{lemma}
 \begin{proof}
-Since $C$ is output equiprobable we know that for each $i$, $\Pr[C_i =1 ] = 1/2$.  Let $w$ be the exponent of the particular negligible value above~(note $w = \omega(1)$).  For $b\in\{0,1\}$, by \lemref{lem:code bits statistically indist}, we have that in expectation each for each $i$, $\Pr[C_i =1 ] = 1/2$. 
+Since $C$ is output equiprobable we know that for each $i$, $\Pr[C_i =1 ] = 1/2$.  Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$).  For $b\in\{0,1\}$, by \lemref{lem:code bits statistically indist}, we have that in expectation each for each $i$, $\Pr[C_i =1 ] = 1/2$. 
 \begin{align*}
 \expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C_i =b | view ] &\leq 1/2 + \ngl(n)\\
 \end{align*}
@@ -549,10 +550,10 @@ Taking the negative log of each side one has:
  &=\\-\log \left(\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\max_{b\in\{0,1\}}\Pr[C_i =b | view ]  \right) &\geq -\log (1/2 + \ngl(n))\\
 &\geq -\log(\frac{1}{2} + \frac{1}{n^{w}} )= -\log \left(\frac{n^{w}+2}{2n^{w}}\right)\\
 %&=-\left(\log (n^w+2) -\log 2 -\log n^w \right)\\
-&=1-\left(\log (1+\frac{2}{n^w}) \right)\\
-&=1-\frac{1}{\ln 2}\left(\ln (1+\frac{2}{n^w}) \right)\\
-&= 1- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{2}{n^w})^i\right) \\
-&\geq 1 - \frac{1}{\ln 2} \frac{2}{n^w} = 1-\ngl(n)
+&=1-\left(\log (1+\frac{2}{n^e}) \right)\\
+&=1-\frac{1}{\ln 2}\left(\ln (1+\frac{2}{n^e}) \right)\\
+&= 1- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{2}{n^e})^i\right) \\
+&\geq 1 - \frac{1}{\ln 2} \frac{2}{n^e} = 1-\ngl(n)
 \end{align*}
 Here the second to last line is derived using the Taylor expansion for $\ln(1+x)$ and the last line is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive.
 \end{proof}
@@ -570,7 +571,32 @@ If $C$ is output equiprobable then, $\Hav(C | View(A^{\mathcal{O}_{(X_{c_{2_1}},
 Result of security of point obfuscation and \lemref{lem:cond and ext}.
 \end{proof}
 
-\subsection{Correctness of Construction}
+\subsection{Correctness of \consref{cons:first construction}}
+Most of the effort in showing the correctness of \consref{cons:first construction} is showing that $\dis(w, w')\leq t$ implies $\dis(c, c')\leq t$.  However, we start by justifying our use of unidirectional codes.
+\begin{lemma}
+\label{lem:no 1 to 0 flips}
+The probability of a single $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $\ngl(n) \leq \ell/2^n$.
+\end{lemma}
+\begin{proof}
+\bnote{we need to come back to this if we use obfuscation with error}
+Recall that $c$ contains at most $\ell$ $1$s.  Since $w'$ is chosen independently of the points $r_i$, this probability is the size of each block, that is $\Pr[r_i =w_i']  = 1/2^n$. Since the $r_i$ are chosen independently, one has,
+\begin{align*}
+\Pr[\text{no $1\rightarrow 0$ flips}] &\geq 1-\Pr[\text{some }r_i = w_i']\\
+&\geq 1-\ell \frac{1}{2^n} = 1-\frac{\poly(n)}{2^n} = \ngl(n)
+\end{align*}
+\end{proof}
+\bnote{even if all $t$ are inserted into the bad block its okay right now.  My goal is to decrease the error tolerance of the code below $t$.}
+We now turn to the question of how many $0\rightarrow 1$ bits flips occur between $c, c'$.  Recall that $\dis(w, w')\leq t$ furthermore recall that $w, w'$ are selected independently of the fuzzy extractor, in particular, independently of $c$.  We break the indices of $c = c_1,..., c_\ell$ into two components those where $c_i=1$ and those $c_i = 0$.  Denote these two components by $c_{I_1}$ and $c_{I_0}$.  Our goal is to bound how many of the places where $w, w'$ are inserted into $c_{I_0}$.  Indices $i$,  where $w_i \neq w_i'$ and $c_i = 1$ will be ``corrected'' as $w_i'$ yield $c_i' = 1$ with overwhelming probably~(see \lemref{lem:no 1 to 0 flips}).  Since $w_{err}$ be set of indices where $w, w'$ differ then for all $j\in w_{err}, \Pr[j\in c_{I_0}] = 1/2$.  This is a binomial distribution with $p=1/2$ and $n=t$.  Denote by $X =|\{j | w_j \neq w_j' \wedge j\in c_{I_1}|$. Thus, $\expe[X] = t/2$.  Using Hoeffding's inequality~\cite{hoeffding1963probability}, one has that 
+\begin{align*}
+\Pr[X\leq t(1/2+\alpha)] \leq 1-e^{-2\alpha^2 t}
+\end{align*}
+This leads us to the following lemma:
+\begin{lemma}
+\label{lem:correctness holds}
+If $t = \omega(\log n)$ and that $\dis(w, w')\leq t$ then for any constant $\alpha>0$, then $\Pr[\dis(c, c')\geq t(1/2+\alpha)] \leq 1-e^{-2\alpha t} = 1-\ngl(n)$.
+\end{lemma}
+\textbf{Note:} If $t = O(\log n)$ the only error tolerance for $C$ that results in decoding with overwhelming probability is $t$.  However, in most use cases, we expect $t=\omega(\log n)$.  
+
 \section{Supported Sources}
 We now describe a set of high entropy sources appropriate for our construction.  After giving the description of the distribution, we give examples of distributions that fit in this class and provide additional characterizations.
 
