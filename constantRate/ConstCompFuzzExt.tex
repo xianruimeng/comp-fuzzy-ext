@@ -213,7 +213,7 @@
 \newcommand{\ignore}[1]{}
 \newcommand{\M}{\mathcal{M}}
 
-\title{Constant Rate Computational Fuzzy Extractors}
+\title{Constant Error Rate Computational Fuzzy Extractors}
 \author{Some people}
 \begin{document}
 \maketitle
@@ -575,7 +575,7 @@ Result of security of point obfuscation and \lemref{lem:cond and ext}.
 Most of the effort in showing the correctness of \consref{cons:first construction} is showing that $\dis(w, w')\leq t$ implies $\dis(c, c')\leq t$.  However, we start by justifying our use of unidirectional codes.
 \begin{lemma}
 \label{lem:no 1 to 0 flips}
-The probability of a single $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $\ngl(n) \leq \ell/2^n$.
+The probability of at least one $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $ \ell/2^n = \ngl(n)$.
 \end{lemma}
 \begin{proof}
 \bnote{we need to come back to this if we use obfuscation with error}
@@ -595,12 +595,18 @@ This leads us to the following lemma:
 \label{lem:correctness holds}
 If $t = \omega(\log n)$ and that $\dis(w, w')\leq t$ then for any constant $\alpha>0$, then $\Pr[\dis(c, c')\geq t(1/2+\alpha)] \leq 1-e^{-2\alpha t} = 1-\ngl(n)$.
 \end{lemma}
+\bnote{This analysis is done assuming that the two sets are the same size.  Need to worry about variation in the number of $1$s and $0$s in $c$.  Need to show that for most codes (linear?) the variance in Hamming weight is small.}
 \textbf{Note:} If $t = O(\log n)$ the only error tolerance for $C$ that results in decoding with overwhelming probability is $t$.  However, in most use cases, we expect $t=\omega(\log n)$.  
 
-\section{Supported Sources}
+
+
+\subsection{Supported Sources}
+\label{sec:supported sources}
+\bnote{need to complete this section and redo the proof in 3.2 with this type of source.}
 We now describe a set of high entropy sources appropriate for our construction.  After giving the description of the distribution, we give examples of distributions that fit in this class and provide additional characterizations.
 
 \begin{definition}
+\label{def:block guessable}
 Let $\mathcal{O}_{w_1,..., w_k}$ be an oracle that return $\mathcal{O}_{w_1,..., w_k}(i, w_i')=\left( w_i\overset{?}=w_i'\right)$.
 A source $W = W_1||...|W_k$ is a $(q, \alpha, \ell)$-\emph{guessable block distribution} if for any adversary $A$~(not bounded in time or space) with oracle access to $\mathcal{O}$ making at most $q$ queries there exists a set $S$ of size at least $\ell$ such that 
 \[
@@ -619,6 +625,27 @@ Let $W$ be a $(q, \alpha, \ell)$-guessable block distribution.  Then for all ord
 \begin{proof}
 Suppose not, for convenience assume the ordering that violates this condition is $1,..., k$.  We describe a distribution $W$ where $\forall 1\leq j\leq k-\ell$, $J(j)\leq \log q +\alpha$. Define $W$ as follows $W_1 = c_1,...., W_{j-1} = c_{j-1}$ are constants.
 \end{proof}
+
+\subsection{Discussion}
+Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs in a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:supported sources}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
+
+To show that $gap$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet of size $2^n$.  This means that
+\begin{align*}
+\log |B_t(\cdot)| &= \log \sum_{i=0}^t {\ell \choose i} (2^n-1)^i\\
+&> \log {\ell \choose t} (2^n-1)^t\\
+&=\Omega(tn) + \log {\ell\choose t}
+% \log (2^n)^{H_{2^n}(t/\ell)\ell - o(\ell)} =n( H_{2^n}(t/\ell)\ell -o(\ell) )
+\end{align*}
+We now ask how much entropy is necessary for security?  The first presented type of source was where each block was independent and had super-logarithmic min-entropy.  This means that $\Hoo(W) \approx \ell \omega(\log n)$.  Thus in the setting where $t = \omega(\ell)$ we obtain that 
+\[
+gap = \Hoo(W) - \log |B_t(\cdot)| < \ell \omega(\log n) -\left( \omega(\ell n) + \log {\ell \choose t}\right)< 0. 
+\]
+This \consref{cons:first construction} is the first fuzzy extractor with a negative $gap$.\footnote{We can make gap smaller by recalling that note every block must contribute fresh entropy.  If each block is derived from a single source with super-logarithmic entropy then the starting entropy need only be $\omega(\log n)$.}
+
+\textbf{Note:} If $t = o(\ell)$ then the value of $gap$ is not clear, there are some $\ell$ for which it will be negative.  However in the setting where $n>>\ell$ and a constant number of errors are being corrected $gap$ may be positive.  However, we extract from at most $\ell$ bits and thus need $\ell$ to be large enough for reasonable application security.  Setting $ \ell , t, n$ all of roughly the same size provides a natural balance of parameters.
+
+\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.  The first is that Hamming distance is over an alphabet of exponential size, which precludes use is several major settings.  The second is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Lastly, we obtain only a single bit from each block of $W_i$, in settings where entropy is at a premium this seems wasteful.
+\section{Second construction}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
