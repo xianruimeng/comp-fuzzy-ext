@@ -485,7 +485,15 @@ We describe $\gen, \rep$ as follows:
 \end{itemize}
 
 \subsection{Security of Construction}
-Assuming virtual black-box obfuscation, we can argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversaries inability to learn the values using only \emph{adaptive} equality queries.  For illustrative purposes, we begin with the setting where blocks are independent and each have super-logarithmic entropy and then move to the setting of correlated blocks with some entropy deficient blocks.
+Assuming virtual black-box obfuscation, we can argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversaries inability to learn the values using only \emph{adaptive} equality queries.  For illustrative purposes, we begin with the setting where blocks are independent and each have super-logarithmic entropy and then move to the setting of correlated blocks with some entropy deficient blocks.  Our proof for independent and high entropy blocks is more complicated than necessary, but the structure will hold for the more complicated setting.  The outline of the proof follows:
+
+\begin{itemize}
+\item Show that conditioned on the adversaries view there is a large set of blocks, $\mathcal{I}$, that still have a super logarithmic entropy.
+\item Show that conditioned on the values of all indices $c_i, i\not \in \mathcal{I}$ there are many possible values of $c\in C$.
+\item For all indices in $\mathcal{I}$, it is impossible to tell if you presented with an obfuscation of $W_i$ or a uniform random variable.
+\item Any two codewords, $c_1, c_2$ differing in only these positions are statistically close given the adversaries view.
+\item The set of codewords differing in these positions form a distribution with conditional entropy.  This is sufficient to show
+\end{itemize}
 
 \begin{lemma}
 Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_t$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = \omega(\log n)$.  Then let $\mathcal{A}$ be an adversary making a polynomial number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
