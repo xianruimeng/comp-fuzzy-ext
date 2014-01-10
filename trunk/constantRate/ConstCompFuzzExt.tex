@@ -89,6 +89,7 @@
 
 \newcommand{\expinfo}{\ensuremath{\mathcal{E}}}
 \newcommand{\ext}{\ensuremath{\mathtt{ext}}}
+\newcommand{\cext}{\ensuremath{\mathtt{cext}}}
 \newcommand{\rext}{\ensuremath{\mathtt{rext}}}
 \newcommand{\cons}{\ensuremath{\mathtt{cons}}}
 \newcommand{\decons}{\ensuremath{\mathtt{decons}}}
@@ -213,36 +214,59 @@
 \newcommand{\ignore}[1]{}
 \newcommand{\M}{\mathcal{M}}
 
-\title{Constant Error Rate Computational Fuzzy Extractors}
-\author{Some people}
+\title{Constant Error Rate Computational Fuzzy Extractors\thanks{The work of B. Fuller is sponsored by Assistant Secretary of Defense for Research \& Engineering under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.}}
+\author{Ran Canetti \and Benjamin Fuller \and Omer Paneth \and Leonid Reyzin}
+
 \begin{document}
 \maketitle
 
 
-%\begin{abstract} 
-%We make computational fuzzy extractors better.
-%\end{abstract}
+\begin{abstract} 
+Fuzzy extractors derive strong keys from noisy sources.  Traditionally, their security is defined information-theoretically.  Fuzzy extractors have strong bounds on the length of the derived key.  In particular, the starting entropy of the source must be significantly higher than the logarithm of number of error patterns corrected.  For many practical noisy sources, like biometrics, this condition is not fulfilled, leaving reliable key derivation unachievable.  
+
+The work of Fuller, Meng, and Reyzin (Asiacrypt 2013), posited these bounds could be overcome by only providing security against computationally-bounded adversaries.  %They provide a construction of a computational fuzzy extractor that corrects a small number of errors without any loss in key length.  
+They show the feasibility of constructing a computational fuzzy extractor that does not suffer from the information-theoretic bounds.
+%Unfortunately, their construction is limited to very high entropy distributions and does not significantly beat information-theoretic bounds.    In addition, we significantly improve on the allowable error rate and the required entropy rate of each block.  In particular we construct the following:
+In this work, we provide the first construction of a fuzzy extractor for a large class of distributions where the starting entropy is smaller than the logarithm of the number of correctable error patterns.
+
+\textbf{Construction:} We construct a computational fuzzy extractor based on obfuscation of point functions.  Let $W = W_1, ..., W_\ell$ be a source composed of blocks over a large alphabet. We flip a coin $c_i$ for each block and either obfuscate the block or a random point.  When a close value $w'$ is input, we can recover most of the coins $c_i$.  Error-tolerance is achieved by choosing $c = c_1,..., c_\ell$ from an error-correcting code.  Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~(Eurocrypt 2008).  Our construction is secure as long as a large number of dimensions are unpredictable given equality queries on individual blocks.  Our construction provides the following novel features:
+\begin{itemize}
+\item The source entropy is smaller than the log of the number of correctable error patterns.  
+\item Constant error tolerance rate.  Previous constructions of computational fuzzy extractors corrected a logarithmic fraction of errors.  (Information-theoretic constructions support a constant fraction of errors but are subject to bounds described above.)
+\item Security for a large class of distributions.  The main requirement for security is that most blocks have a super-logarithmic amount of entropy.  Previous computational fuzzy extractors required the source to be essentially uniform. 
+\end{itemize}
+\end{abstract}
 
 
 \section{Introduction}\label{sec:introduction}
+Authentication is a crucial component of system security.  Reliable key derivation significantly simplifies authentication.  However many sources with entropy are noisy, providing close values upon subsequent readings~(examples include biometrics~\cite{daugman2004} and physically unclonable functions~\cite{pappu2002physical}).
+
 Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} derive stable keys from noisy data.  They are composed of two algorithms: \gen takes a source value $w_0$, and produces a key $r$ and a public value $p$, and \rep which takes a nearby value $w_1$ and $p$ producing the original key $r$.  Intuitively, they are two functions: information reconciliation~(to provide the same value with \emph{noisy} readings) and key derivation or privacy amplification~(to transform an entropic source into a uniform key).  Traditionally, these two functions were performed by two separate primitives: a secure sketch~\cite{DBLP:journals/siamcomp/DodisORS08} and a randomness extractor~\cite{nisan1993randomness}.
 
-For a fixed length key, there are two main parameters: the desired error tolerance and the required entropy of the source.  In the information-theoretic setting these two parameter are at odds.  Any increase error-tolerance requires a similar increase to the entropy of the source.  However, this does not need to be the case in the computational setting.  The notion of computational fuzzy extractors was introduced by Fuller, Meng, and Reyzin~\cite{fuller2013computational}.\footnote{The only difference between a computational fuzzy extractor and a fuzzy extractor is the key is pseudorandom instead of statistically random. }  With computational security, an error tolerance \emph{larger} than the starting entropy may be possible.  We provide the first construction of a fuzzy extractor where the entropy of the source distribution is smaller than the desired error-tolerance.\footnote{Security is impossible if all points of the source distribution are close together.  In the fuzzy extractor setting, a necessary condition for security is that a negligible portion of the source distribution lies in within any error-tolerance region.   This is both a necessary and sufficient condition for security in the interactive setting using two-party computation.}
+In fuzzy extractors, there are two competing parameters, security and error-tolerance.  The key should be uniform to an observer but a close  $w_1$ should map to the same key.  In the information-theoretic realm these two parameters are indeed at odds.  Let $t$ be the desired error-tolerance and let $|B_t(\cdot)|$ be the size of a Hamming ball of radius $t$.  Roughly, the length of the key $|r| < \Hoo(W) - \log |B_t(\cdot)|$~(see~\cite[Section 8.2]{DBLP:journals/siamcomp/DodisORS08} for the precise conditions, here we use the sphere packing bound as one bound for the best constructible code).  For the remainder of this paper, we denote this quantity by $gap = \Hoo(W) - \log |B_t(\cdot)|$.
 
-Our construction is based on obfuscation.  While black-box obfuscation of polynomial time functions is known to be impossible~\cite{barak2001possibility}, we use the obfuscation of point functions.  This class is known to be achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and generically from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  
+However, this does not need to be the case in the computational setting.  Fuller, Meng, and Reyzin defined computational fuzzy extractors which produce pseudorandom instead of truly random keys~\cite{fuller2013computational}.  They posit it may be possible to build a computational fuzzy extractor when $gap$ is small or negative.  We resolve this question and construct a computational fuzzy extractor when $gap<0$.  This is impossible for an arbitrary min-entropy distribution as every point could be within distance $t$.  A necessary condition for security is that a negligible portion of the probability distribution lies within any Hamming ball of radius $t$.  We require a stronger condition that many blocks are unpredictable~(\defref{def:block guessable}).  
 
-\textbf{Overview of Construction:}  Consider a source $w = w_1,..., w_\ell$ that is split into blocks.  We would like to construct tolerate Hamming errors for individual blocks.  The main idea is for each block, $i$: either the $w_i$ is obfuscated or a random point $r_i$ is obfuscated~(this idea is similar to the construction of digital lockers from point obfuscation).  Then with a close value $w'$ the recovery value knows where random values were obfuscated and where $w_i$ was obfuscated.  To tolerate errors, the choice of obfuscating $w_i$ or a random point is made using bits of an error correcting code.
+In the information-theoretic setting the goal of a fuzzy extractor is to build a key as long as possible.  
+In the computational setting, a key may be expanded once it is long enough to run a pseudorandom generator.  Thus, our focus is building a reasonable length key for a class of distributions where nothing is possible information-theoretically.
 
-\textbf{Connection with Noisy Point Obfuscation: } Ideally, our construction would be a noisy point obfuscation~(which is a strictly stronger object than a computational fuzzy extractor).  Unfortunately, this is not the case.  Since each block is individual obfuscated, equality of individual blocks is learned~(for sources where not all blocks have high entropy).  This precludes virtual black-box~(VBB) security where no partial information about the input may be learned.  Dodis and Smith~\cite{DBLP:conf/stoc/DodisS05} constructed noisy point obfuscation when the source entropy is significantly higher than the error-tolerance.  Constructing VBB obfuscation for sources where the error tolerance is smaller than the starting entropy is an important open question.
+\textbf{Overview of Construction:} The negative results of Fuller, Meng, and Reyzin~\cite{fuller2013computational} show that building a computational fuzzy extractor using a computational secure sketch and a privacy amplification element is unlikely to be fruitful.  They present two alternatives combining the information-reconciliation and privacy amplification components~(their approach) and using a computational version of a fuzzy conductor~(fuzzy conductors are defined by Kanukurthi and Reyzin~\cite{KanukurthiR09}).  We follow the second approach.
 
-\textbf{Our Results:} Specifically this paper presents the following:
+Our construction~(\consref{cons:first construction}) is based on obfuscation.  While black-box obfuscation of polynomial time functions is known to be impossible~\cite{barak2001possibility}, we use the obfuscation of point functions.  This class is known to be achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and generically from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  
+
+Consider a source $w = w_1,..., w_\ell$ that is split into blocks~(over some large alphabet).  We would like to tolerate Hamming errors for individual blocks.  The main idea is for each block $i$ we flip a coin $c_i$ and either obfuscate $w_i$ or a random point $r_i$~(this is similar to the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}).  With a close value $w'$ the \rec can determine where random values were obfuscated and where $w_i$ was obfuscated~(with some errors).  Most of the bits $c_i$ are recoverable. To tolerate errors we choose the coins $c$ from an appropriate error-correcting code.  Then, $c$ forms a distribution of high entropy that can be extracted~(either information-theoretically~\cite{nisan1993randomness} or computationally~\cite{DBLP:conf/crypto/Krawczyk10}).  Note it is hard to recover $w$ from the value $c$.  As discussed in~\cite[Section 3.3]{fuller2013computational} this is necessary to overcome the information-theoretic lower bounds.  
+
+Our construction provides several advantages over previous constructions of computational fuzzy extractors:
 \begin{itemize}
-\item The first computational fuzzy extractor that supports a constant fraction of errors.
-\item The first fuzzy extractor where the number of errors corrected is larger than the entropy of the starting distribution.
+\item The first computational fuzzy extractor where $gap$ may be negative for a large class of distributions\footnote{There are artificial examples where no loss in necessary in a fuzzy extractor.  If $W$ consists of points from an error-correcting code of distance $2t+1$, then no public information is necessary and $gap$ may be negative.  This violates the spirit of a fuzzy extractor as the distribution is already ``error-corrected.''  For arbitrary min-entropy sources, analysis of information-theoretic fuzzy extractors usually proceeds saying the residual entropy is at least $\Hoo(W)$ less the number of bits needed for error correcting.   For an arbitrary distribution, this is at least $\log |B_t(\cdot)|$.  The distributions supported by our construction are not error-correcting codes, we only require they are unpredictable in many dimensions.}.
+\item The first computational fuzzy extractor that allows for a constant fraction of errors.  Previous constructions could correct only  a logarithmic fraction of errors~($O(\log \ell/ \ell)$)
+\item The first computational fuzzy extractor where block are not required to be uniformly distributed.  Our construction simply requires a large number of blocks that are unguessable given equality queries.  This subsumes the distributions supported by~\cite[Construction 4.1]{fuller2013computational}.
 \end{itemize}
-\bnote{More details here}
 
-\bnote{Provide an outline of the rest of the paper}
+\textbf{Connection with Noisy Point Obfuscation: } Ideally, our construction would be a noisy point obfuscation~(which is a strictly stronger object than a computational fuzzy extractor).  Unfortunately, this is not the case.  Each block is individual obfuscated, an adversary may ask equality on individual blocks.  If not all blocks have high entropy this may allow an adversary to learn significant information about the source.  Thus, our construction is not a virtual black box~(VBB) obfuscation~(where anything learnable by the circuit is simulatable using input/output behavior).  Dodis and Smith~\cite{DBLP:conf/stoc/DodisS05} construct noisy point obfuscation when $gap>>0$.  Constructing VBB obfuscation for sources where the error tolerance is smaller than the starting entropy is an important open question.
+
+\textbf{Limitations: } The main limitation of our construction is that each block is individually obfuscated.  This means that each block much be drawn from a distribution with super-logarithmic entropy.  This also means that our distance is computed over a large alphabet~(exponential) in the security parameter.  Our construction is primarily applicable for burst error-models~\cite{gilbert1960capacity}.  Constructing a computational fuzzy extractor with the above parameters and a small alphabet is an important open problem.
+
 
 \section{Preliminaries}
 \label{sec:preliminaries}
@@ -251,7 +275,7 @@ and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) 
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. 
 For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
 
-For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t(\cdot)|$ the size of a ball of radius $t$.  For our sources, we consider the Hamming metric, for two vectors $x, y$ over $\mathcal{Z}^n$ the Hamming distance between $x,y$ is $d(x,y) = \{i | x_i \neq y_i\}$.  For the Hamming metric, $|B_t(\cdot)| = \sum_{i=0}^t {n \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  However, we will use codes that only correct one-sided errors~(see \secref{sec:coding theory}).
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t(\cdot)|$ the size of a ball of radius $t$.  For our sources, we consider the Hamming metric, for two vectors $x, y$ over $\mathcal{Z}^n$ the Hamming distance between $x,y$ is $d(x,y) = \{i | x_i \neq y_i\}$.  For the Hamming metric, $|B_t(\cdot)| = \sum_{i=0}^t {n \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  \bnote{this is weird here and doesn't fit}  However, we will use codes that only correct one-sided errors~(see \secref{sec:coding theory}).
 
 
 Usually, we use bold letters for vectors or matrices, capitalized letters for random variables, and lowercase letters for elements in a vector or samples from a random variable. 
@@ -259,14 +283,7 @@ Usually, we use bold letters for vectors or matrices, capitalized letters for ra
 \subsection{Randomness Extractors and Computational Fuzzy Extractors}
 \label{sec:fuzzy extractors}
 
-Here we present relevant extractor definitions.  We start with the standard notion of an average-case extractor. An average-case extractor is a generalization of a strong randomness extractor \cite[Definition 2]{nisan1993randomness}) (in particular, Vadhan~\cite[Problem 6.8]{Vad12} showed that all strong extractors are average-case extractors with a slight loss of parameters):
-\begin{definition}
-Let $\chi_1$, $\chi_2$ be finite sets.
-A function $\ext: \chi_1\times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon)$-average-case extractor} if for all pairs
-of random variables $X, Y$ over $\chi_1, \chi_2$ such that
-$\tilde{H}_\infty(X|Y) \ge m$, we have $\Delta((\ext(X, U_d), U_d, Y), U_\kappa\times
-U_d \times Y) \le \epsilon$.
-\end{definition}
+Here we present relevant extractor definitions.  
 
 We focus on computational fuzzy extractors introduced by Fuller, Meng, and Reyzin~\cite{fuller2013computational}.  Definitions for information-theoretic fuzzy extractors and secure sketches can be found in the work of Dodis et. al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08}.  The definition of computational fuzzy extractors allows for a small probability of error, as described in~\cite[Sections 8]{DBLP:journals/siamcomp/DodisORS08}.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.  
 
@@ -320,12 +337,20 @@ Any efficient fuzzy extractor is also a computational fuzzy extractor with the s
 Note that in the above definition of fuzzy extractors, the errors are chosen before $P$ is known: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness.
 For notational convenience, we the definition of computational fuzzy extractors specifies a general class of sources for which the fuzzy extractor is designed to work, rather than the class of sources that consists of all sources of a given min-entropy $m$~(of course, this modification can also be applied to prior definitions of information-theoretic secure sketches and fuzzy extractors).
 
-
-Our main question is: for what type of sources can we build fuzzy extractors?  Of particular interest are sources where information-theoretic bounds do not allow meaningful constructions~\cite[Lemmas C.1 and C.2]{DBLP:journals/siamcomp/DodisORS08}.  The main limiting factor is the difference between the starting entropy and the size of the ball to be corrected or $gap = \Hoo(W) - \log |B_t(\cdot)$.  When $gap$ is large, information-theoretic fuzzy extractors provide a good solution.  We ask whether security is possible when $gap$ is small or negative.
+The work of Fuller, Meng, and Reyzin~\cite{fuller2013computational} presents two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.  
+%Our main question is: for what type of sources can we build fuzzy extractors?  Of particular interest are sources where information-theoretic bounds do not allow meaningful constructions~\cite[Lemmas C.1 and C.2]{DBLP:journals/siamcomp/DodisORS08}.  The main limiting factor is the difference between the starting entropy and the size of the ball to be corrected or $gap = \Hoo(W) - \log |B_t(\cdot)$.  When $gap$ is large, information-theoretic fuzzy extractors provide a good solution.  We ask whether security is possible when $gap$ is small or negative.
 %In this paper, we ask whether a smaller entropy loss can be achieved by considering a computational fuzzy extractor with a computational security requirement.  %We therefore relax the security requirement of \defref{def:fuzzy extractor} to require a pseudorandom output instead of a truly random output.  
 
-As in the information-theoretic realm~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}, a computational fuzzy extractor can be constructed by combining a correction component and an privacy-amplication component.  As shown in Fuller, Meng, and Reyzin~\cite[Corollary 3.8 and Theorem 3.10]{fuller2013computational}, the ``right'' correction component is probably not a computational version of a secure sketch~\cite[Definition 3]{DBLP:journals/siamcomp/DodisORS08}.  Instead, we will use a computational fuzzy conductor~(this is a computational analogue of the notion introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).  We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} extended to the conditional case~(see \defref{def:hill ent}): 
+%As in the information-theoretic realm~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}, a computational fuzzy extractor can be constructed by combining a correction component and an privacy-amplication component.  As shown in Fuller, Meng, and Reyzin~\cite[Corollary 3.8 and Theorem 3.10]{fuller2013computational}, the ``right'' correction component is probably not a computational version of a secure sketch~\cite[Definition 3]{DBLP:journals/siamcomp/DodisORS08}.  Instead, we will use a computational fuzzy conductor~(this is a computational analogue of the notion introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).  
+We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} extended to the conditional case:
+\begin{definition}\protect{~\cite[Definition 3]{DBLP:conf/eurocrypt/HsiaoLR07}}
+\label{def:hill ent}
+Let $(W, S)$ be a pair of random variables.  $W$ has 
+\emph{HILL entropy} at least $k$ conditioned on $S$,
+denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon$.
+\end{definition}
 
+We now define the two primitives in this approach: a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.
 \begin{definition}
 \label{def:comp fuzzy cond}
 Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' (\gen') and ``reproduce'' (\rep') is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
@@ -337,19 +362,45 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep'$.
 \end{itemize}
 \end{definition}
 
+A computational extractor is the natural adaption of a randomness extractor to the computational setting.  We use the average case version of the notion introduced by Krawczyk~\cite{krawczyk2010cryptographic}:
+%start with the standard notion of an average-case extractor. An average-case extractor is a generalization of a strong randomness extractor \cite[Definition 2]{nisan1993randomness}) (in particular, Vadhan~\cite[Problem 6.8]{Vad12} showed that all strong extractors are average-case extractors with a slight loss of parameters):
+\begin{definition}
+Let $\chi_1$, $\chi_2$ be finite sets.
+A function $\cext: \chi_1\times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, s_{sec}, \epsilon)$-average-case extractor} if for all pairs
+of random variables $X, Y$ over $\chi_1, \chi_2$ such that
+$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{sec}}}((\cext(X, U_d), U_d, Y), U_\kappa\times
+U_d \times Y) \le \epsilon$.
+\end{definition}
+
 Combining a computational fuzzy conductor and an appropriate randomness extractor yields a computational fuzzy extractor:
 
 \begin{lemma}
 \label{lem:cond and ext}
-Let $\epsilon_{ent} >0$ be a parameter.  Let $\gen'$, $\rep'$ be a $(\mathcal{M}_1, \mathcal{W}, \tilde{m}, t)$-computational fuzzy extractor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ and outputs in $\mathcal{M}_2$.  Let $\ext:\mathcal{M}_2\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m} - \log 1/\epsilon_{ent}, \epsilon_{ext})$-average case extractor.  Define the $\gen, \rep$:
+Let $\gen'$, $\rep'$ be a $(\mathcal{M}_1, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\mathcal{M}_2$.  Let $\cext:\mathcal{M}_2\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, s_{ext}, \epsilon_{ext})$-average case computational extractor.  Define $\gen, \rep$ as:
 \begin{itemize}
-\item $\gen(w; r, x):$ run $(y, p')= \gen'(w; r)$ and set $p = (p', x)$ and $r = \ext(y; x)$,  and output $(r, p)$.
-\item $\rep(w, (p', x)):$ recover $y = \rec'(w'; p')$ and output $r = \ext(y; x)$. 
+\item $\gen(w; r, x):$ run $(y, p')= \gen'(w; r)$ and set $p = (p', x)$ and $r = \cext(y; x)$,  and output $(r, p)$.
+\item $\rep(w, (p', x)):$ recover $y = \rec'(w'; p')$ and output $r = \cext(y; x)$. 
 \end{itemize}
-Then $\gen, \rep$ is a $(\mathcal{M}_1, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{sec}+\epsilon_{ext}+\epsilon_{ent}, s_{sec} - |\ext|)$-hard with error $\delta$.
+Then $\gen, \rep$ is a $(\mathcal{M}_1, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{cond}+\epsilon_{ext}, s')$-hard with error $\delta$ where $s' = \max\{s_{cond} - |\cext|, s_{ext}\}$.
 \end{lemma}
 \begin{proof}
-Result of extractibility of conditional HILL entropy~\cite[Lemma 5]{DBLP:conf/eurocrypt/HsiaoLR07}.\bnote{I don't think you need this $\epsilon_{ent}$ should be able to just use average case extractor directly}
+It suffices to show if there is some distinguisher $D$ of size $s'$ where 
+\[\delta^D((\cext(W; X), U_d, P), (U_\kappa, U_d, P))>\epsilon_{cond}+ \epsilon_{ext}\]
+ then there is an distinguisher $D'$ of size $s_{cond}$ where for all $Z$ where $\Hav(Z|P)\geq \tilde{m}$ such that
+ \[
+ \delta^{D'}((Y, P), (Z, P))\geq \epsilon_{cond}.
+ \]
+Let $D$ be such a distinguisher.  That is,
+\[
+\delta^D(\ext(X, U_d)\times U_d \times P, U_\kappa\times U_d\times P)> \epsilon_{ext}+\epsilon_{cond}.
+\]
+Then define $D'$ as follows.  On input $y, p$ sample $x\leftarrow U_d$, compute $r\leftarrow \cext(y, x)$ and output $D(r, x, p)$.  Note that $|D'| \approx s' + |\cext| = s_{cond}$.  Then we have the following:
+\begin{align*}
+\delta^{D'}((Y, P), (Z, P))&= \delta^D((\cext(Y, U_d), U_d, P), \cext(Z, U_d), U_d, P)\\
+&\geq \delta^D((\cext(Y, U_d), U_d, P), (U_\kappa\times U_d \times P)) - \delta^D((\cext(Z, U_d), U_d, P), (U_\kappa\times U_d \times P))\\
+&>\epsilon_{cond}+\epsilon_{ext}- \epsilon_{ext} = \epsilon_{cond}.
+\end{align*}
+Thus $D'$ distinguishes $Y$ from all $Z$ with sufficient conditional min-entropy.  This is a contradiction.
 \end{proof}
 
 \subsection{Coding Theory}
@@ -657,16 +708,10 @@ This \consref{cons:first construction} is the first fuzzy extractor with a negat
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
-\appendix
-\section{Computational Entropy}
-HILL entropy is a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}.  It was extended to the conditional case by Hsiao, Lu, Reyzin~\cite{DBLP:conf/eurocrypt/HsiaoLR07}. 
+%\appendix
+%\section{Computational Entropy}
+%HILL entropy is a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}.  It was extended to the conditional case by Hsiao, Lu, Reyzin~\cite{DBLP:conf/eurocrypt/HsiaoLR07}. 
 
-\begin{definition}
-\label{def:hill ent}
-Let $(W, S)$ be a pair of random variables.  $W$ has 
-\emph{HILL entropy} at least $k$ conditioned on $S$,
-denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon$.
-\end{definition}
 
 
 \end{document}
