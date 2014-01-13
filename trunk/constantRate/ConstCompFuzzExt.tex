@@ -277,7 +277,7 @@ Our construction provides several advantages over previous constructions of comp
 
 \textbf{Connection with Noisy Point Obfuscation: } Ideally, our construction would be a noisy point obfuscation~(which is a stronger object than a computational fuzzy extractor).  Unfortunately, this is not the case.  Each block is individually obfuscated, so an adversary may ask equality queries on individual blocks.  If not all blocks have high entropy an adversary may learn significant information about the source.  Thus, our construction is not a virtual black box~(VBB) obfuscation~(where anything learnable by the circuit is simulatable using input/output behavior).  Dodis and Smith~\cite{DBLP:conf/stoc/DodisS05} construct noisy point obfuscation for $gap>>0$ using a information-reconciliation component that hides partial information.  Constructing VBB obfuscation for sources where $gap <0$ is an open problem.
 
-
+The remainder is organized as follows: we cover notation and background on obfuscation and error correcting codes in \secref{sec:preliminaries} , describe computational fuzzy extractors in \secref{sec:fuzzy extractors}, present our construction in \secref{sec:construction} and discuss parameters and tradeoffs in \secref{sec:discussion}.
 
 \section{Preliminaries}
 \label{sec:preliminaries}
@@ -458,6 +458,7 @@ Then $\gen, \rep$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuz
 
 
 \section{A Constant Rate Computational Fuzzy Extractor}
+\label{sec:construction}
 
 Before describing our construction, we recall the problem we are trying address.  The goal is to derive strong keys from noisy sources.  As discussed in the introduction, our goal is to provide security when $gap = \Hoo(W) - \log|B_t|$ is small or even negative.
 In the computational setting once a ``long enough'' key may be expanded using a pseudorandom generator.  Thus, we focus on providing enough security when $gap<0$.  We build a computational fuzzy conductor, noting that it can be converted to a computational fuzzy extractor using \lemref{lem:cond and cext}.%If $gap> \omega(\log n)$~(ignoring losses due to randomness extraction), then a key of any length can be formed by using an information-theoretic fuzzy extractor~(which yields nearly this many bits using an optimal code) and expanding the output with a pseudorandom generator~(or using a secure sketch with a computational extractor).  Using an information-theoretic analysis of a fuzzy extractor this seems to be the best construction possible.  As described in Fuller, Meng, and Reyzin~\cite{fuller2013computational}, use of a computational fuzzy extractor may allow a construction when $gap = O(\log n)$.  Their construction is only applicable for high entropy input and yield a result when $gap$ is small.  We will provide the first construction where $gap$ is negative.  
@@ -729,24 +730,25 @@ Suppose not, for convenience assume the ordering that violates this condition is
 \end{proof}
 \bnote{keep working}
 
-\subsection{Parameter Discussion}
+\section{Discussion}
+\label{sec:discussion}
 Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:supported sources}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
 
 To show that $gap$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet of size $2^n$.  This means that
 \begin{align*}
 \log |B_t| &= \log \sum_{i=0}^t {\ell \choose i} (2^n-1)^i\\
 &> \log {\ell \choose t} (2^n-1)^t\\
-&=\Omega(tn) + \log {\ell\choose t}
+&=\Theta(tn) + \log {\ell\choose t}
 % \log (2^n)^{H_{2^n}(t/\ell)\ell - o(\ell)} =n( H_{2^n}(t/\ell)\ell -o(\ell) )
 \end{align*}
 \bnote{Need a good bound on ${\ell \choose t}$.}
-We now ask how much entropy is necessary for security.  The first presented type of source was where each block was independent and had super-logarithmic min-entropy.  This means that $\Hoo(W) \approx \ell \omega(\log n)$.  Thus in the setting where $t = \omega(\ell)$ we obtain that 
+We now ask how much entropy is necessary for security.  The type of source we considered was independent blocks each with super-logarithmic min-entropy.  This yields 
 \[
-gap = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \omega(\ell n) + \log {\ell \choose t}\right)< 0. 
+gap = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t n) + \log {\ell \choose t}\right). 
 \]
-This \consref{cons:first construction} is the first fuzzy extractor with a negative $gap$.\footnote{We can make gap smaller by recalling that note every block must contribute fresh entropy.  If each block is derived from a single source with super-logarithmic entropy then the starting entropy need only be $\omega(\log n)$.}
-
-\textbf{Note:} If $t = o(\ell)$ then the value of $gap$ is not clear, there are some $\ell$ for which it will be negative.  However in the setting where $n>>\ell$ and a constant number of errors are being corrected $gap$ may be positive.  However, we extract from at most $\ell$ bits and thus need $\ell$ to be large enough for reasonable application security.  Setting $ \ell , t, n$ all of roughly the same size provides a natural balance of parameters.
+When $t =\Theta(\ell)$, then $gap<0$ and the output entropy is $|C| - \ngl(n)$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
+Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta(\ell)$.  Furthermore, not every block must contribute entropy, so security is possible when the total starting entropy is $\omega(\log n)$.  For example, \consref{cons:first construction} is secure when each block is equal and drawn from a distribution of super-logarithmic min-entropy.  So there are supported sources with negative $gap$ for any value of $t$.  We achieve $gap<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
+%When $ \ell , t, n$ to be the same order provides a natural balance of parameters. 
 
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.  The first is that Hamming distance is over an alphabet of exponential size, which precludes use in some applications.  The second is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Lastly, we obtain only a single bit from each block of $W_i$ which seems sub optimum.
 \bibliographystyle{alpha}
