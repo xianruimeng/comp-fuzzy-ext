@@ -616,19 +616,18 @@ Let $e$ be the exponent of the particular negligible value above~(note $e = \ome
 Taking the negative log of the above lemma one has:
 \begin{align}
 \Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
- &=\\-\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (P_c + \ngl(n))\\
-&\geq -\log(P_c+ \frac{1}{n^{e}} )= -\log \left(\frac{n^{e}+P_c}{P_c n^{e}}\right)\\
+ &=\nonumber \\
+ -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (P_c + \ngl(n))\nonumber \\
+&\geq -\log(P_c+ \frac{1}{n^{e}} )= -\log \left(\frac{n^{e}+P_c}{P_c n^{e}}\right) \nonumber \\
 %&=-\left(\log (n^w+2) -\log 2 -\log n^w \right)\\
-&=-\log P_c-\left(\log (1+\frac{P_c}{n^e}) \right)\\
-&\geq \Hav(C | C_{\mathcal{I}^c})-\frac{1}{\ln 2}\left(\ln (1+\frac{1}{n^e}) \right) \\
+&=-\log P_c-\left(\log (1+\frac{P_c}{n^e}) \right)\nonumber \\
+&\geq \Hav(C | C_{\mathcal{I}^c})-\frac{1}{\ln 2}\left(\ln (1+\frac{1}{n^e}) \right) \nonumber \\
 &= \Hav(C | C_{\mathcal{I}^c})- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{1}{n^e})^i\right) \label{eq:taylor approx} \\
 &\geq \Hav(C | C_{\mathcal{I}^c}) - \frac{1}{\ln 2} \frac{1}{n^e} = \Hav(C | C_{\mathcal{I}^c})-\ngl(n) \label{eq:taylor trunc}\\
-&= |C| - |\mathcal{I}^c| -\ngl(n)\label{eq:min ent}
+&= |C| - |\mathcal{I}^c| -\ngl(n) \label{eq:min ent}
 \end{align}
-\bnote{I think the right thing to say here is that the entropy is $\geq \max\{ |C|, O(1)\}$ since the $\ngl$ term probably dominates the above.}
-Here the Equation~\ref{eq:taylor approx} is derived using the Taylor expansion for $\ln(1+x)$, Equation~\ref{eq:taylor trunc} is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive, and Equation~\ref{eq:min ent} is derived using \clref{cl:many locations ent}.
+\bnote{I think the right thing to say here is that the entropy is $\geq \max\{ |C|, O(1)\}$ since the $\ngl$ term probably dominates the above.}Equation~\ref{eq:taylor approx} is derived using the Taylor expansion for $\ln(1+x)$, Equation~\ref{eq:taylor trunc} is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive, and Equation~\ref{eq:min ent} is derived using \clref{cl:many locations ent}.
 \end{proof}
-
 %\begin{lemma}
 %\label{lem:obf has hill ent}
 %For every $s_{sec} = \poly(n)$, there exists some $\epsilon = \ngl(n)$ such that $H^{\hillrlx}_{\epsilon, s_{sec}}(C | P) \geq |C| - \ngl(n)$.
