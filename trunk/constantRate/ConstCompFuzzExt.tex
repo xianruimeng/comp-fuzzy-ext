@@ -514,17 +514,19 @@ Assuming virtual black-box obfuscation, we can argue security in the presence of
 
 \begin{itemize}
 \item Show that conditioned on the adversary's view there is a large set of blocks, $\mathcal{I}$, that have a super logarithmic entropy~(\lemref{lem:blocks unguessable after queries}).
-\item Show that conditioned on the values of all other indices, $C$ still has many possible values.  That is, $\Hav(C | C_{\mathcal{I}^c})$ is still large~(\clref{cl:many locations ent}).
+\item Show that conditioned on the values of all other indices, $C$ still has many possible values.  That is, $\Hav(C | C_{\mathcal{I}^c})$ is large~(\clref{cl:many locations ent}).
 \item Assume that the adversary has perfect knowledge of $C_{\mathcal{I}^c}$.
-\item For all codewords $c, c' \in C| C_{\mathcal{I}^c}$, the codewords $c, c'$ are indistinguishable given the adversary's view.
-\item The distribution $ C| C_{\mathcal{I}^c} \wedge View(A)$ is close to $C| C_{\mathcal{I}^c}$.  
+\item For all codewords $c, c' \in C| C_{\mathcal{I}^c}$, the codewords $c, c'$ are indistinguishable given the adversary's view~(\lemref{lem:codewords in I close}).
+%\item The distribution $ C| C_{\mathcal{I}^c} \wedge View(A)$ is close to $C| C_{\mathcal{I}^c}$.  
 %\item For all indices in $\mathcal{I}$, the adversary's guess for $c_i, i\in \mathcal{I}$ is close to the prior distribution $C_i | C_{\mathcal{I}^c}$.  
 %\item Without seeing a $1$ on a particular block, it is impossible to the distinguish between $c_i=1$ and $c_i=0$.  
 %tell if a $1$ or $0$ On all blocks where the probability of a query having returned a $1$ is negligible, it is impossible to tell if you presented with an obfuscation of $W_i$ or a uniform random variable.
 % $c_i, i\not \in \mathcal{I}$ there are many possible values of $c\in C$~(\clref{cl:many locations ent}).
 %\item Any two codewords, $c_1, c_2\in C | C_{\mathcal{I}^c}$ are statistically close given the adversary's view.
-\item The set of codewords $C| View(A) \wedge C_{\mathcal{I}^c}$ has conditional min-entropy~(and thus $C|View(A)$ has conditional min-entropy).  
+\item The set of codewords $C| View(A) \wedge C_{\mathcal{I}^c}$ has conditional min-entropy~(and thus $C|View(A)$ has conditional min-entropy)~(\corref{cor:avg min after view}).  
+\item By the security of obfuscation for every adversary $A$, there exists a simulator $S$ such that $C | A^{P_1,..., P_\ell}$ is computationally indistinguishable from $C | S^{\mathcal{O}}$%~(\lemref{lem:obf has hill ent}).
 \end{itemize}
+
 
 \begin{lemma}
 \label{lem:blocks unguessable after queries}
@@ -555,64 +557,86 @@ This argument holds for all $i$.  This completes the proof.
 \end{proof}
 Let $\mathcal{I}$ be the set of all indices $\{1,..., n\}$.  Then $\Hav(C | C_{\mathcal{I}^c}) = \Hoo(C) = \ell$.  We know show that all codewords different in only positions of $\mathcal{I}$ are indistinguishable.
 \begin{lemma}
-Let $c_1, c_2$ be two codewords that agree on all indices $\mathcal{I}^c$.  Then let $D$ be an unbounded distinguisher 
+\label{lem:codewords in I close}
+Let $c_1, c_2$ be two codewords that agree on all indices $\mathcal{I}^c$.  Then, 
 \[
-\Pr[D( View(A), C_{\mathcal{I}^c}) =1 | C = c_1] - \Pr[D(View(A), C_{\mathcal{I}^c}) = 1 | C= c_2] < \ngl(n).
+\Delta( ((View(A), C_{\mathcal{I}^c} )| C = c_1),( (View(A), C_{\mathcal{I}^c})  | C= c_2)) < \ngl(n).
 \]
 \end{lemma}
-
-\begin{lemma}
-\bnote{what goes here?}
-Let $\mathcal{I}$ be a set of indices such that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))$
-\end{lemma}
-\begin{lemma}
-\label{lem:super log indist by equal queries}
-Let $W$ and $U$ be two distributions of super-logarithmic entropy.  Then for all adversaries $A$, $q = poly(n)$ queries, $\Delta(View(A^{\mathcal{O}_W(\cdot)}), View(A^{\mathcal{O}_U(\cdot)}))\leq \ngl(n)$.
-\end{lemma}
 \begin{proof}
-It suffices to show that with the probability of all responses being $0$ is overwhelming.  Clearly, in the case when all responses are $0$ the views are identical, and thus the statistical distance is $0$.  \bnote{Finish this proof}
+Recall by assumption that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq \omega(\log n)$.  The only information about $C_i$ is contained in the query responses.  Thus, it suffices to show that whether $c_i= 1$ or $c_i=0$, with overwhelming probability all responses to $c_i$ are $0$.  Suppose not, that is suppose, the probability of a nonzero response on an $i$ query is $1/\poly(n)$.  Since $w, w'$ are independent of $p$, the probability of this happening when $c_i = 1$ is negligible~(occurs with probability at most $q/2^n$).  Thus, it must occur with $1/\poly(n)$ probability when $c_i=0$.  When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with $1/\poly(n)$ probability this violates the super-logarithmic conditional min-entropy condition.  Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ all distinguishers are negligibly close.
 \end{proof}
 
+%\begin{lemma}
+%\bnote{what goes here?}
+%Let $\mathcal{I}$ be a set of indices such that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))$
+%\end{lemma}
+%\begin{lemma}
+%\label{lem:super log indist by equal queries}
+%Let $W$ and $U$ be two distributions of super-logarithmic entropy.  Then for all adversaries $A$, $q = poly(n)$ queries, $\Delta(View(A^{\mathcal{O}_W(\cdot)}), View(A^{\mathcal{O}_U(\cdot)}))\leq \ngl(n)$.
+%\end{lemma}
+%\begin{proof}
+%It suffices to show that with the probability of all responses being $0$ is overwhelming.  Clearly, in the case when all responses are $0$ the views are identical, and thus the statistical distance is $0$.  \bnote{Finish this proof}
+%\end{proof}
+
+%\begin{lemma}
+%\label{lem:code bits statistically indist}
+%Let $X_i = W_i$ if $c_i = 1$, otherwise let $X_i = U$.  Then, for every $i$, $\Delta(View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)})| c_i = 1, View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)} | c_i =0) \leq \ngl(n)$.
+%\end{lemma}
+%\begin{proof}
+%\bnote{Do this}
+%\end{proof}
+%We can extend this lemma to the entire codeword $C$:
+%\begin{lemma}
+%For all $c_1, c_2 \in C$ we have the following: 
+%\[
+%\Delta(View(A^{\mathcal{O}_{(X_{c_{1_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)})| C = c_1, View(A^{\mathcal{O}_{(X_{c_{2_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)} | C = c_2)) \leq \ngl(n).
+%\]
+%\end{lemma}
+The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
 \begin{lemma}
-\label{lem:code bits statistically indist}
-Let $X_i = W_i$ if $c_i = 1$, otherwise let $X_i = U$.  Then, for every $i$, $\Delta(View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)})| c_i = 1, View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)} | c_i =0) \leq \ngl(n)$.
+Let $c\in C|C_{\mathcal{I}^c}$, then $\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+\ngl(n)$
 \end{lemma}
 \begin{proof}
-\bnote{Do this}
-\end{proof}
-We can extend this lemma to the entire codeword $C$:
-\begin{lemma}
-For all $c_1, c_2 \in C$ we have the following: 
-\[
-\Delta(View(A^{\mathcal{O}_{(X_{c_{1_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)})| C = c_1, View(A^{\mathcal{O}_{(X_{c_{2_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)} | C = c_2)) \leq \ngl(n).
-\]
-\end{lemma}
-\begin{lemma}
-If $C$ is output then, for all $i$, $\Hav(C_i |View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)}))\geq 1 - \ngl(n)$.
-\end{lemma}
-\begin{proof}
-Since $C$ is output equiprobable we know that for each $i$, $\Pr[C_i =1 ] = 1/2$.  Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$).  For $b\in\{0,1\}$, by \lemref{lem:code bits statistically indist}, we have that in expectation each for each $i$, $\Pr[C_i =1 ] = 1/2$. 
+Let $c\in C|C_{\mathcal{I}^c}$.  Let $P_c =\Pr[C=c | C_{\mathcal{I}^c}]$.  
+%Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$).  For $b\in\{0,1\}$, by \lemref{lem:code bits statistically indist}, we have that in expectation each for each $i$, $\Pr[C_i =1 ] = 1/2$. 
 \begin{align*}
-\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C_i =b | view ] &\leq 1/2 + \ngl(n)\\
+\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c | C_{\mathcal{I}^c} \wedge view ] &\leq \Pr[C=c | C_{\mathcal{I}^c} ]+ \ngl(n) = P_c+\ngl(n)\\
 \end{align*}
-If this was not true~(that is in expectation, there was some $b$ that was likely with probability greater than $1/2+1/\poly(n)$), there there would exist an unbounded adversary outputting that $b$, contradicting \lemref{lem:code bits statistically indist}).  
-Taking the negative log of each side one has:
-\begin{align*}
+If this was not true~(that is in expectation, the probability of $c$ increased by a polynomial factor, then the statistical distance between $c$ and some other codeword $c'$ would be $1/\poly(n)$ violating \lemref{lem:codewords in I close}.
+\end{proof}
+\begin{corollary}
+\label{cor:avg min after view}
+$\Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq  \Hav(C | C_{\mathcal{I}^c}) - \ngl(n) = |C| - |\mathcal{I}^c| - \ngl(n)$.
+\end{corollary}
+\begin{proof}
+Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$). 
+Taking the negative log of the above lemma one has:
+\begin{align}
 \Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
- &=\\-\log \left(\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\max_{b\in\{0,1\}}\Pr[C_i =b | view ]  \right) &\geq -\log (1/2 + \ngl(n))\\
-&\geq -\log(\frac{1}{2} + \frac{1}{n^{w}} )= -\log \left(\frac{n^{w}+2}{2n^{w}}\right)\\
+ &=\\-\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (P_c + \ngl(n))\\
+&\geq -\log(P_c+ \frac{1}{n^{w}} )= -\log \left(\frac{n^{w}+P_c}{P_c n^{w}}\right)\\
 %&=-\left(\log (n^w+2) -\log 2 -\log n^w \right)\\
-&=1-\left(\log (1+\frac{2}{n^e}) \right)\\
-&=1-\frac{1}{\ln 2}\left(\ln (1+\frac{2}{n^e}) \right)\\
-&= 1- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{2}{n^e})^i\right) \\
-&\geq 1 - \frac{1}{\ln 2} \frac{2}{n^e} = 1-\ngl(n)
-\end{align*}
-Here the second to last line is derived using the Taylor expansion for $\ln(1+x)$ and the last line is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive.
+&=-\log P_c-\left(\log (1+\frac{P_c}{n^e}) \right)\\
+&\geq \Hav(C | C_{\mathcal{I}^c})-\frac{1}{\ln 2}\left(\ln (1+\frac{1}{n^e}) \right) \\
+&= \Hav(C | C_{\mathcal{I}^c})- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{1}{n^e})^i\right) \label{eq:taylor approx} \\
+&\geq \Hav(C | C_{\mathcal{I}^c}) - \frac{1}{\ln 2} \frac{1}{n^e} = \Hav(C | C_{\mathcal{I}^c})-\ngl(n) \label{eq:taylor trunc}\\
+&= |C| - |\mathcal{I}^c| -\ngl(n)\label{eq:min ent}
+\end{align}
+Here the Equation~\ref{eq:taylor approx} is derived using the Taylor expansion for $\ln(1+x)$, Equation~\ref{eq:taylor trunc} is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive, and Equation~\ref{eq:min ent} is derived using \clref{cl:many locations ent}.
 \end{proof}
-By similar reasoning we can extend this lemma to the entire codeword:
-\begin{lemma}
-If $C$ is output equiprobable then, $\Hav(C | View(A^{\mathcal{O}_{(X_{c_{2_1}},..., X_{c_{2_\ell}})}})) \geq |C| - \ngl(n)$.
-\end{lemma}
+
+%\begin{lemma}
+%\label{lem:obf has hill ent}
+%For every $s_{sec} = \poly(n)$, there exists some $\epsilon = \ngl(n)$ such that $H^{\hillrlx}_{\epsilon, s_{sec}}(C | P) \geq |C| - \ngl(n)$.
+%\end{lemma}
+%\begin{proof}
+%Suppose not, that is for all $\Hav( X | Y) \geq |C| - \ngl(n)$ there exists some $D$ of size $s_{sec} = \poly(n)$ and $\epsilon = 1/\poly(n)$ such that $\Pr[D(C, P) = 1] - \Pr[D(X, Y)  = 1] = \epsilon$.  Let $ (X, Y)  = (C, 
+%\end{proof}
+%By similar reasoning we can extend this lemma to the entire codeword:
+%\begin{lemma}
+%If $C$ is output equiprobable then, $\Hav(C | View(A^{\mathcal{O}_{(X_{c_{2_1}},..., X_{c_{2_\ell}})}})) \geq |C| - \ngl(n)$.
+%\end{lemma}
 %\begin{lemma}
 %$\Hoo(C | View (A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)})) \geq \log |C| - o(\ell \log n)$.
 %\end{lemma}
@@ -681,7 +705,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 \forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
 \end{definition}
-As long as $\beta$ is small enough, we can show security of \consref{cons:first construction}.
+As long as $\beta$ is small enough, we can show security of \consref{cons:first construction}~(replace \lemref{lem:blocks unguessable after queries} with an unguessable source, the rest of the arguments follow the same way).
 
 \begin{theorem}
 Let $\mathcal{W}$ be a family of $(q, \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \log |C| - \beta - o(n)$.
