@@ -216,7 +216,13 @@
 \newcommand{\M}{\mathcal{M}}
 
 \title{Constant Error Tolerance Computational Fuzzy Extractors}
-\author{Ran Canetti \and Benjamin Fuller\footnote{The work of B. Fuller is sponsored by Assistant Secretary of Defense for Research \& Engineering under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.} \and Omer Paneth \and Leonid Reyzin}
+\author{Ran Canetti \and Benjamin Fuller\footnote{The Lincoln Laboratory portion of this
+work was sponsored by the Department of the Air Force under Air Force
+Contract
+\#FA8721-05-C-0002.  Opinions,
+interpretations, conclusions and recommendations are those of the author
+and
+are not necessarily endorsed by the United States Government.} \and Omer Paneth \and Leonid Reyzin}
 
 \begin{document}
 \maketitle
@@ -487,14 +493,14 @@ We describe $\gen, \rep$ as follows:
 \begin{minipage}{3in}
 \textbf{\rep}
 \begin{enumerate}
-\item \underline{Input}: $(w', p, seed)$ 
+\item \underline{Input}: $(w', p)$ 
 \item For $i=1,..., \ell$:
 \subitem If $p_i(w_i') = 1$ set $c_i' = 0$.
 \subitem Else set $c_i' = 1$.
-\item Set $c = \decode$.
+\item Set $c = \decode(c')$.
 \item Output $c$.
 \end{enumerate}
-\vspace{0.45in}
+\vspace{0.15in}
 \end{minipage} 
 \end{tabular}
 \end{center}
