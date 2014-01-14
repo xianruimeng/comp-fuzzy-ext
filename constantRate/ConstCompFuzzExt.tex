@@ -530,7 +530,6 @@ Assuming virtual black-box obfuscation, we argue security in the presence of equ
 % $c_i, i\not \in \mathcal{I}$ there are many possible values of $c\in C$~(\clref{cl:many locations ent}).
 %\item Any two codewords, $c_1, c_2\in C | C_{\mathcal{I}^c}$ are statistically close given the adversary's view.
 \item The set of codewords $C| View(A) \wedge C_{\mathcal{I}^c}$ has conditional min-entropy~(and thus $C|View(A)$ has conditional min-entropy)~(\corref{cor:avg min after view}).  
-\bnote{I think this is wrong as currently written.  We transition from indistinguishability of all pairs to high entropy for the distribution.  This should be true but I think the argument is wrong.}
 \item By the security of obfuscation for every adversary $A$, there exists a simulator $S$ such that $C | A^{P_1,..., P_\ell}$ is computationally indistinguishable from $C | S^{\mathcal{O}}$%~(\lemref{lem:obf has hill ent}).
 \bnote{I am having a little trouble formalizing this.  Was hoping for HILL entropy but I don't think that's true.  Will we get relaxed HILL entropy?}
 \end{itemize}
@@ -602,17 +601,23 @@ Recall by assumption that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq \
 %\]
 %\end{lemma}
 The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
-\bnote{As stated above I don't think this proof is right?}
 \begin{lemma}
-Let $c\in C|C_{\mathcal{I}^c}$, then $\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+\ngl(n)$
+For all $c\in C|C_{\mathcal{I}^c}$, 
+\[
+\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+\ngl(n).
+\]
 \end{lemma}
 \begin{proof}
-Let $c\in C|C_{\mathcal{I}^c}$.  Let $P_c =\Pr[C=c | C_{\mathcal{I}^c}]$.  
-%Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$).  For $b\in\{0,1\}$, by \lemref{lem:code bits statistically indist}, we have that in expectation each for each $i$, $\Pr[C_i =1 ] = 1/2$. 
+We begin by noting there must exist some $c\in C|C_{\mathcal{I}^c}$ such that 
+\[
+\expe_{view\leftarrow View}\Pr[C = c | C_{\mathcal{I}^c}] \le \frac{1}{| C| C_{\mathcal{I}^c}|}.
+\]
+Otherwise the sum of the probabilities of $c\in C | C_{\mathcal{I}^c}$ will be greater than $1$.  Let $c_{min}$ be one such value.
+Let $c^*$ be an arbitrary $c^*$ in the support of $C|C_{\mathcal{I}^c}$.  Suppose that there exists some polynomial $1/\poly(n)$ such that 
 \begin{align*}
-\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c | C_{\mathcal{I}^c} \wedge view ] &\leq \Pr[C=c | C_{\mathcal{I}^c} ]+ \ngl(n) = P_c+\ngl(n)\\
+\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ \frac{1}{\poly(n)} \\
 \end{align*}
-If this was not true~(that is in expectation, the probability of $c$ increased by a polynomial factor, then the statistical distance between $c$ and some other codeword $c'$ would be $1/\poly(n)$ violating \lemref{lem:codewords in I close}.
+This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $1/\poly(n)$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
 \end{proof}
 \begin{corollary}
 \label{cor:avg min after view}
@@ -633,7 +638,7 @@ Taking the negative log of the above lemma one has:
 &\geq \Hav(C | C_{\mathcal{I}^c}) - \frac{1}{\ln 2} \frac{1}{n^e} = \Hav(C | C_{\mathcal{I}^c})-\ngl(n) \label{eq:taylor trunc}\\
 &= |C| - |\mathcal{I}^c| -\ngl(n) \label{eq:min ent}
 \end{align}
-\bnote{I think the right thing to say here is that the entropy is $\geq \max\{ |C|, O(1)\}$ since the $\ngl$ term probably dominates the above.}Equation~\ref{eq:taylor approx} is derived using the Taylor expansion for $\ln(1+x)$, Equation~\ref{eq:taylor trunc} is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive, and Equation~\ref{eq:min ent} is derived using \clref{cl:many locations ent}.
+\bnote{I think the right thing to say here is that the entropy is $\geq \max\{ |C|, \omega(1)\}$ since the $\ngl$ term probably dominates the above.  If we are more precise with the analysis above we can probably make this $\ngl$ more precise and get better bounds.}Equation~\ref{eq:taylor approx} is derived using the Taylor expansion for $\ln(1+x)$, Equation~\ref{eq:taylor trunc} is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive, and Equation~\ref{eq:min ent} is derived using \clref{cl:many locations ent}.
 \end{proof}
 %\begin{lemma}
 %\label{lem:obf has hill ent}
