@@ -621,24 +621,26 @@ This means that the difference between the expected probability of $c_{min}$ and
 \end{proof}
 \begin{corollary}
 \label{cor:avg min after view}
-$\Hav(C| View(A))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq  \Hav(C | C_{\mathcal{I}^c}) - \ngl(n) = |C| - |\mathcal{I}^c| - \ngl(n)$.
+$\Hav(C| View(A))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), \omega(1) \log n\}= \min\{ |C| - |\mathcal{I}^c|,  \omega(1) \log n\}$.
 \end{corollary}
 \begin{proof}
-Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$). 
+%Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$). 
 Taking the negative log of the above lemma one has:
 \begin{align}
 \Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
  &=\nonumber \\
  -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (P_c + \ngl(n))\nonumber \\
-&\geq -\log(P_c+ \frac{1}{n^{e}} )= -\log \left(\frac{n^{e}+P_c}{P_c n^{e}}\right) \nonumber \\
-%&=-\left(\log (n^w+2) -\log 2 -\log n^w \right)\\
-&=-\log P_c-\left(\log (1+\frac{P_c}{n^e}) \right)\nonumber \\
-&\geq \Hav(C | C_{\mathcal{I}^c})-\frac{1}{\ln 2}\left(\ln (1+\frac{1}{n^e}) \right) \nonumber \\
-&= \Hav(C | C_{\mathcal{I}^c})- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{1}{n^e})^i\right) \label{eq:taylor approx} \\
-&\geq \Hav(C | C_{\mathcal{I}^c}) - \frac{1}{\ln 2} \frac{1}{n^e} = \Hav(C | C_{\mathcal{I}^c})-\ngl(n) \label{eq:taylor trunc}\\
-&= |C| - |\mathcal{I}^c| -\ngl(n) \label{eq:min ent}
+ &\approx \min \{-\log P_c, -\log \ngl(n)\} \\
+ &= \min \{ \Hav(C | C_{\mathcal{I}^c}), \omega(1) \log n\}
+%&\geq -\log(P_c+ \frac{1}{n^{e}} )= -\log \left(\frac{n^{e}+P_c}{P_c n^{e}}\right) \nonumber \\
+%%&=-\left(\log (n^w+2) -\log 2 -\log n^w \right)\\
+%&=-\log P_c-\left(\log (1+\frac{P_c}{n^e}) \right)\nonumber \\
+%&\geq \Hav(C | C_{\mathcal{I}^c})-\frac{1}{\ln 2}\left(\ln (1+\frac{1}{n^e}) \right) \nonumber \\
+%&= \Hav(C | C_{\mathcal{I}^c})- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{1}{n^e})^i\right) \label{eq:taylor approx} \\
+%&\geq \Hav(C | C_{\mathcal{I}^c}) - \frac{1}{\ln 2} \frac{1}{n^e} = \Hav(C | C_{\mathcal{I}^c})-\ngl(n) \label{eq:taylor trunc}\\
+%&= |C| - |\mathcal{I}^c| -\ngl(n) \label{eq:min ent}
 \end{align}
-\bnote{I think the right thing to say here is that the entropy is $\geq \max\{ |C|, \omega(1)\}$ since the $\ngl$ term probably dominates the above.  If we are more precise with the analysis above we can probably make this $\ngl$ more precise and get better bounds.}Equation~\ref{eq:taylor approx} is derived using the Taylor expansion for $\ln(1+x)$, Equation~\ref{eq:taylor trunc} is derived by noting it is a geometric series and thus all terms $i=3,....$ are contained in the second term $i=2$ which is positive, and Equation~\ref{eq:min ent} is derived using \clref{cl:many locations ent}.
+\bnote{If we are more precise with the analysis above we can probably make this $\ngl$ more precise and get better bounds. For example if each block has linear entropy this should be quite good.  Also we are doing point wise analysis, can we do better by considering each part of the code?}
 \end{proof}
 %\begin{lemma}
 %\label{lem:obf has hill ent}
@@ -698,7 +700,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 
 Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correctness for independent sources~(where each block has a super-logarithmic amount of entropy):
 \begin{corollary}
-Let $\mathcal{W}$ be the family of block distributions where $W_i$ are independent and $\Hoo(W_i) \geq \omega(\log n)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = |C| - o(n)$.\bnote{Why the transition from $\ngl(n)$ to $o(n)$?  Shouldn't this be $\ngl(n)$?}
+Let $\mathcal{W}$ be the family of block distributions where $W_i$ are independent and $\Hoo(W_i) \geq \omega(\log n)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\min\{ |C|, \omega(1)\log n\}$.
 \end{corollary}
 \begin{proof}
 Security is result of arguments in \secref{sec:sec of construction}.  Correctness follows from the arguments above and the fact that $C$ is a $(\neigh_t, \epsilon_{code})$-code.
@@ -722,7 +724,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 As long as $\beta$ is small enough, we can show security of \consref{cons:first construction}~(replace \lemref{lem:blocks unguessable after queries} with an unguessable source, the remaining arguments follow).
 
 \begin{theorem}
-Let $\mathcal{W}$ be a family of $(q, \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \log |C| - \beta - o(n)$.
+Let $\mathcal{W}$ be a family of $(q, \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \min\{\log |C| - \beta, \omega(1)\log n\}$.
 \end{theorem}
 
 \subsection{Characterizing unguessable block distributions}
