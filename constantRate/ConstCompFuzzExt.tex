@@ -288,7 +288,7 @@ The remainder is organized as follows: we cover notation and background on obfus
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote $X = X_1,..., X_\ell$ as the concatenation of $X_1$ to $X_\ell$.  For a set of indices $\mathcal{I}$,  $X_{\mathcal{I}}$ is the restriction of $X$ to the indices in $\mathcal{I}$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$, 
+For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote $X = X_1,..., X_\ell$ as the concatenation of $X_1$ to $X_\ell$.  For a set of indices $\mathcal{I}$,  $X_{\mathcal{I}}$ is the restriction of $X$ to the indices in $\mathcal{I}$.  The set of $\mathcal{I}^c$ is the set of all indices not contained in $\mathcal{I}$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$, 
 and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   Let $|W|$ be the size of the support of $W$ that is $|W| = \{w | \Pr[W=w]>0\}$.
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. 
 For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
@@ -415,9 +415,9 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$ is known: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness.
-The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor is designed to work rather than the family of all sources of a given min-entropy $m$.  With $gap<0$ there are distributions contained in a single Hamming ball, so restricting the family of sources is necessary.
+The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $gap<0$ there are distributions contained in a single Hamming ball, so restricting the family of sources is necessary.
 
-The work of Fuller, Meng, and Reyzin~\cite{fuller2013computational} presents two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.  
+Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.  
 
 In \apref{sec:conductors}, we show that fuzzy conductors are subject to the same lower bounds on entropy loss as fuzzy extractors.  Instead of using a fuzzy conductor, we define a computational version.  
 We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} extended to the conditional case:
@@ -537,41 +537,48 @@ Assuming virtual black-box obfuscation, we argue security in the presence of equ
 
 \begin{lemma}
 \label{lem:blocks unguessable after queries}
-Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_\ell$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = \omega(\log n)$.  Then let $\mathcal{A}$ be an adversary making a polynomial number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
-Then $\forall i, \Hav(W_i | View(A))  = \omega(\log n)$.  Furthermore, since $W_i$ are independent $\Hav(W | View(A))= \omega(\ell \log n)$.
+Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_\ell$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = k = \omega(\log n)$.  Then let $\mathcal{A}$ be an adversary making a polynomial, $q = \poly(n)$, number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
+Then $\forall i, \Hav(W_i | View(A))  = k- \log (q+1)$.  Furthermore, since $W_i$ are independent $\Hav(W | View(A))= \ell (k-\log (q+1))$.
 \end{lemma}
 \begin{proof}
 Consider a particular block $i$, we measure how an adversary's queries affect the entropy of this block~(we can ignore the other blocks as they are independent).  
 Let $q_w$ be a query asking if the stored value is $a_w$ and its corresponding response.  
-Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  (There is dependency between $W_i$ and the queries but it is all contained in $A_{w_1},..., A_{w_q}$.)  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$.  Thus, we have the following,
+Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  (All the dependence between $W_i$ and the queries is contained in $A_{w_1},..., A_{w_q}$.)  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$.  Thus, we have the following,
 \begin{align*}
 \Hav(W_i | View(A)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
 &=\Hav(W_i | A_{w_1},..., A_{w_q})\\
 &=\Hav(W_i |A') \\
 &=\Hoo(W_i) - \log |A'|\\
-&= \omega(\log n) - \log |A'|\\
-&= \omega(\log n) - \log (q+1) = \omega(\log n) - O(\log(n)) = \omega(\log n)
+&=k - \log |A'|\\
+&=k - \log (q+1)
 \end{align*}
 Where the fourth line follows from the third by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
 This argument holds for all $i$.  This completes the proof.
-%There are two possible outcomes to an equality query $1$ in which case $\Hoo(W|Q = q_w) = 0$ and $0$ in which case $\Hoo(W| Q =q_w ) \geq -\log 2^{-\Hoo(W)}(1 - 2^{-\Hoo(W)})$~(every remaining outcome is scaled by the $w$ not being a possible outcome).  Thus,
-%\begin{align*}
-%\Hav(W | Q_w) &= -\log \left(\Pr[W=w]2^{-0} + \Pr[W\neq w] 2^{-\Hoo(W)}(1 - 2^{-\Hoo(W)})\right)\\
-%&\geq -\log \left(2^{-k} + (1-2^{-k})2^{-k}(1-2^{-k})\right)\\
-%&\geq -\log \left(2^{-(k)}(1+(1-2^{-k})^2)\right)\geq k-1
-%\end{align*}
-%Now consider the distribution $W' = W | W\neq w$, by the same argument asking a single query of $W'$ reduces it min-entropy by at most one bit~(we need only consider the case where previous responses were all zeros as the entropy is already $0$ if a previous response is $1$).  Thus, for some polynomial number of queries $n_q$ we have that $\Hav(W | Q_1,..., Q_{n_q}) = k - n_q$.  Thus for $k = \omega(\log n)$ and $n_q = \poly(n)$\bnote{this is too big a loss} %we have that $k-n_q = \omega(\log n)$.  This completes the proof of the lemma. 
 \end{proof}
-Let $\mathcal{I}$ be the set of all indices $\{1,..., n\}$.  Then $\Hav(C | C_{\mathcal{I}^c}) = \Hoo(C) = \ell$.  We know show that all codewords different in only positions of $\mathcal{I}$ are indistinguishable.
+
+Denote by $k' = k - \log (q+1)$.
+Let $\mathcal{I}$ be the set of all indices $\{1,..., n\}$.  Then $\Hav(C | C_{\mathcal{I}^c}) = \Hoo(C) = \ell$.  We now show that codewords that differ only positions of $\mathcal{I}$ are indistinguishable.
 \begin{lemma}
 \label{lem:codewords in I close}
 Let $c_1, c_2$ be two codewords that agree on all indices $\mathcal{I}^c$.  Then, 
 \[
-\Delta( ((View(A), C_{\mathcal{I}^c} )| C = c_1),( (View(A), C_{\mathcal{I}^c})  | C= c_2)) < \ngl(n).
+\Delta( ((View(A), C_{\mathcal{I}^c} )| C = c_1),( (View(A), C_{\mathcal{I}^c})  | C= c_2)) < 2^{k'+1}.
 \]
 \end{lemma}
 \begin{proof}
-Recall by assumption that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq \omega(\log n)$.  The only information about $C_i$ is contained in the query responses.  Thus, it suffices to show that whether $c_i= 1$ or $c_i=0$, with overwhelming probability all responses to $c_i$ are $0$.  Suppose not, that is suppose, the probability of a nonzero response on an $i$ query is $1/\poly(n)$.  Since $w, w'$ are independent of $p$, the probability of this happening when $c_i = 1$ is negligible~(occurs with probability at most $q/2^n$).  Thus, it must occur with $1/\poly(n)$ probability when $c_i=0$.  When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with $1/\poly(n)$ probability this violates the super-logarithmic conditional min-entropy condition.  Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ all distinguishers are negligibly close.
+Recall that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq k'$.  The only information about $C_i$ is contained in the query responses.  Thus, it suffices to show that whether $c_i= 1$ or $c_i=0$, with probability $1-2^{-k'+1}$ all responses to $c_i$ are $0$.  Suppose not, that is suppose, the probability of a nonzero response on an $i$ query is $>2^{-k'+1}$.  Since $w, w'$ are independent of $p$, the probability of this happening when $c_i = 1$ is at most $q/2^n$.  Thus, it must occur with probability:
+\begin{align*}
+2^{-k'+1}&>\Pr[\text{non zero response location }i]\\
+\Pr[\text{non zero response location }i] &= \Pr[c_i =1]\Pr[\text{non zero response location }i\wedge c_i=1] \\&+ \Pr[c_i=0] \Pr[\text{non zero response location }i \wedge c_i=0]\\
+&=1/2 \times 2^{-n+\log q} + 1/2 \Pr[\text{non zero response location }i \wedge c_i=0]
+\end{align*}
+Since $n\geq k$ this yields that 
+\begin{align*}
+ \Pr[\text{non zero response location }i \wedge c_i=0] &> 2^{-k+1+\log (q+1)} - 2^{-(n+1) +\log q} \\
+ &\geq 2^{-k+1+\log (q+1)} - 2^{-k +\log (q+1)} \\
+ &\geq 2^{-(k+1) -1+ \log q} = 2^{-k'}.
+ \end{align*}
+ When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-k'}$ probability this violates the super-logarithmic conditional min-entropy condition.  Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $2^{-k'+1}$.
 \end{proof}
 
 %\begin{lemma}
@@ -602,9 +609,10 @@ Recall by assumption that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq \
 %\end{lemma}
 The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
 \begin{lemma}
+\label{lem:no codeword high prob}
 For all $c\in C|C_{\mathcal{I}^c}$, 
 \[
-\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+\ngl(n).
+\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+2^{-k'+1}.
 \]
 \end{lemma}
 \begin{proof}
@@ -613,34 +621,27 @@ We begin by noting there must exist some $c\in C|C_{\mathcal{I}^c}$ such that
 \expe_{view\leftarrow View}\Pr[C = c | C_{\mathcal{I}^c}] \le \frac{1}{| C| C_{\mathcal{I}^c}|}.
 \]
 Otherwise the sum of the probabilities of $c\in C | C_{\mathcal{I}^c}$ will be greater than $1$.  Let $c_{min}$ be one such value.
-Let $c^*$ be an arbitrary $c^*$ in the support of $C|C_{\mathcal{I}^c}$.  Suppose that there exists some polynomial $1/\poly(n)$ such that 
+Let $c^*$ be an arbitrary $c^*$ in the support of $C|C_{\mathcal{I}^c}$.  Suppose that  
 \begin{align*}
-\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ \frac{1}{\poly(n)} \\
+\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-k'+1} \\
 \end{align*}
-This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $1/\poly(n)$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
+This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $2^{-k'+1}$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
 \end{proof}
 \begin{corollary}
 \label{cor:avg min after view}
-$\Hav(C| View(A))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), \omega(1) \log n\}= \min\{ |C| - |\mathcal{I}^c|,  \omega(1) \log n\}$.
+$\Hav(C| View(A))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), k'-1\} -1= \min\{ |C| - |\mathcal{I}^c|, k'-1\} -1$.
 \end{corollary}
 \begin{proof}
 %Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$). 
-Taking the negative log of the above lemma one has:
-\begin{align}
+Taking the negative log of \lemref{lem:no codeword high prob} one has:
+\begin{align*}
 \Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
- &=\nonumber \\
- -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (P_c + \ngl(n))\nonumber \\
- &\approx \min \{-\log P_c, -\log \ngl(n)\} \\
- &= \min \{ \Hav(C | C_{\mathcal{I}^c}), \omega(1) \log n\}
-%&\geq -\log(P_c+ \frac{1}{n^{e}} )= -\log \left(\frac{n^{e}+P_c}{P_c n^{e}}\right) \nonumber \\
-%%&=-\left(\log (n^w+2) -\log 2 -\log n^w \right)\\
-%&=-\log P_c-\left(\log (1+\frac{P_c}{n^e}) \right)\nonumber \\
-%&\geq \Hav(C | C_{\mathcal{I}^c})-\frac{1}{\ln 2}\left(\ln (1+\frac{1}{n^e}) \right) \nonumber \\
-%&= \Hav(C | C_{\mathcal{I}^c})- \frac{1}{\ln 2}\left(\sum_{i=1}^\infty \frac{(-1)^{i+1}}{i} (\frac{1}{n^e})^i\right) \label{eq:taylor approx} \\
-%&\geq \Hav(C | C_{\mathcal{I}^c}) - \frac{1}{\ln 2} \frac{1}{n^e} = \Hav(C | C_{\mathcal{I}^c})-\ngl(n) \label{eq:taylor trunc}\\
-%&= |C| - |\mathcal{I}^c| -\ngl(n) \label{eq:min ent}
-\end{align}
-\bnote{If we are more precise with the analysis above we can probably make this $\ngl$ more precise and get better bounds. For example if each block has linear entropy this should be quite good.  Also we are doing point wise analysis, can we do better by considering each part of the code?}
+ &= \\
+ -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (\Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-k'+1}) \\
+ &\geq \min \{-\log P_c, -\log 2^{-k'+1}\} -1\\
+ &= \min \{ \Hav(C | C_{\mathcal{I}^c}), k'-1\}-1 \\
+ & \min \{ \Hav(C | C_{\mathcal{I}^c}), k-\log(q+1)-1\}-1 
+\end{align*}
 \end{proof}
 %\begin{lemma}
 %\label{lem:obf has hill ent}
@@ -700,7 +701,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 
 Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correctness for independent sources~(where each block has a super-logarithmic amount of entropy):
 \begin{corollary}
-Let $\mathcal{W}$ be the family of block distributions where $W_i$ are independent and $\Hoo(W_i) \geq \omega(\log n)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\min\{ |C|, \omega(1)\log n\}$.
+Let $\mathcal{W}$ be the family of block distributions where $W_i$ are independent and $\Hoo(W_i) \geq k= \omega(\log n)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\min\{ |C|, k - \log s_{sec} -1\}$.
 \end{corollary}
 \begin{proof}
 Security is result of arguments in \secref{sec:sec of construction}.  Correctness follows from the arguments above and the fact that $C$ is a $(\neigh_t, \epsilon_{code})$-code.
@@ -724,7 +725,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 As long as $\beta$ is small enough, we can show security of \consref{cons:first construction}~(replace \lemref{lem:blocks unguessable after queries} with an unguessable source, the remaining arguments follow).
 
 \begin{theorem}
-Let $\mathcal{W}$ be a family of $(q, \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \min\{\log |C| - \beta, \omega(1)\log n\}$.
+Let $\mathcal{W}$ be a family of $(q, k= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \min\{\log |C| - \beta, k-\log s_{sec} -1\}$.
 \end{theorem}
 
 \subsection{Characterizing unguessable block distributions}
@@ -844,28 +845,29 @@ where the probabilities are taken over the random coins tosses of $A, S$ and $\m
 \section{Fuzzy Conductors}
 
 \label{sec:conductors}
-In this section, we show that fuzzy conductors are subject to the same lower bounds as fuzzy extractors.  We first review the definition of a fuzzy conductor from~\cite{KanukurthiR09}:
+Fuzzy extractors are known to have strong upper bounds on remaining entropy based on the best error correcting codes.  Fuller, Meng, and Reyzin show that computational information-reconciliation techniques are subject to similar bounds~\cite{fuller2013computational}.  They suggest these bounds may be avoided by outputting a fresh random variable.  This is known as a fuzzy conductor~\cite{KanukurthiR09}.
 \begin{definition}
-A $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-\emph{fuzzy conductor} with error $\delta$ is a pair of randomized procedures, ``generate''~(\gen) and ``reproduce''~(\rep), with the following properties:
+A $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-\emph{fuzzy conductor} with error $\delta$ is a pair of randomized procedures, ``generate''~(\gen') and ``reproduce''~(\rep'), with the following properties:
 \begin{enumerate}
-\item The generate procedure $\gen$ on input $w\in \mathcal{M}$ outputs a string $y\in\zo^*$ and a helper string $p\in\zo^*$.
-\item The reproduction procedure $\rep$ takes an element $w'\in\mathcal{M}$ and a bit string $p\in\zo^*$ as inputs.  The \emph{correctness} property of fuzzy extractors guarantees that for $w$ and $w'$ such that $\dis(w, w')\leq t$, if $Y, P$ were generated by $(Y, P)\leftarrow \gen(w)$, then $\rep(w', P) = Y$ with probability~(over the coins of $\gen, \rep$) at least $1-\delta$.  If $\dis(w, w')>t$, then no guarantee is provided about the output of $\rep$.
+\item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $y\in\zo^*$ and a helper string $p\in\zo^*$.
+\item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $p\in\zo^*$ as inputs.  The \emph{correctness} property of fuzzy extractors guarantees that for $w$ and $w'$ such that $\dis(w, w')\leq t$, if $Y, P$ were generated by $(Y, P)\leftarrow \gen'(w)$, then $\rep(w', P) = Y$ with probability~(over the coins of $\gen', \rep'$) at least $1-\epsilon$.  If $\dis(w, w')>t$, then no guarantee is provided about the output of $\rep'$.
 \item The security property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $Y$ is close to a high entropy distribution $Z$.  That is, $\exists Z$ with $\Hav(Z | P ) \geq \tilde{m}$ such that $\mathbf{SD}((Y, P), (Z, P))\leq \epsilon$.
 \end{enumerate}
 \end{definition}
 
-We borrow from~\cite{DBLP:journals/siamcomp/DodisORS08} the following notation:
+\noindent In this section, we show that fuzzy conductors are subject to the same lower bounds as fuzzy extractors.  This motivates our use of a computational fuzzy conductor in \secref{sec:fuzzy extractors}. 
+We borrow the following notation from the work of Dodis et al.~\cite{DBLP:journals/siamcomp/DodisORS08}:
 \begin{itemize}
-\item A $\mathcal{M}, K, t)$ code is a subset of $\mathcal{M}$ where there is a procedure that corrects $t$ errors.
-\item $K(\mathcal{M}, t)$ is the largest $K$ for which there exists an $(\mathcal{M}, K, t)$-code.
+\item A $(\mathcal{M}, K, t)$ code is a subset of $\mathcal{M}$ of size $K$ where a procedure exists that corrects $t$ errors.
+%\item $K(\mathcal{M}, t)$ is the largest $K$ for which there exists an $(\mathcal{M}, K, t)$-code.
 \item $K(\mathcal{M}, t, S)$ is the largest $K$ such that there exists an $(\mathcal{M}, K, t)$ code all of whose $K$ points belong to $S$.
-\item $L(\mathcal{M}, t, m) = \log (\min_{|S| = 2^m} K(\mathcal{M}, t, S))$.  This is finding the best $S$ for encoding $2^m$ points.
+\item $L(\mathcal{M}, t, m) = \log (\min_{|S| = 2^m} K(\mathcal{M}, t, S))$.  This is the performance of worst error-correcting code for an arbitrary subset of size $2^m$.
 \end{itemize}
 
 \begin{lemma}
-The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor implies that $\tilde{m}-1\leq L(\mathcal{M}, t, m) -\log (1-2\epsilon)$.
+The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor implies that $\tilde{m}\leq L(\mathcal{M}, t, m) +1 -\log (1-2\epsilon)$.
 \end{lemma}
-\begin{proof}  Assume $(\gen, \rep)$ is a fuzzy conductor with the parameters stated.  Let $S$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $S$.  Define $(Y, P) \leftarrow \gen(W)$.  Then there must exist a distribution $Z$ with $\Hav(Z|P) \geq \tilde{m}$ such that $\mathbf{SD}((Y, P), (Z, P))\leq \epsilon$.  By Markov's inequality, there exists some set $S_P$ such that $\Pr[P\in S_p] \geq 1/2$ and $\forall p\in S_P$ one has $\mathbf{SD}(Y | P = p, p ), (Z | P = p, p)<2\epsilon$.  Now applying Markov's inequality of $\max_{z} \Pr[Z=z | P=p]$, there exists a set $S_P'$ such that $\Pr[P\in S_P']>1/2$, and for all $p\in S_P'$, $\Hoo(Z| P =p ) \geq \tilde{m}-1$.  Denote by $p^*$ a value in $S_P\cap S_P'$~(on value must exist).  Then $\mathbf{SD}((Y | P =p^* , p^*), (Z| P = p^*, p^*))\leq 2\epsilon$ and $\Hoo(Z|P=p^*)\geq \tilde{m}-1$.  Denote by the set $T$ the possible values of $Y$ when $P=p^*$.  For the statistical distance property to hold, $|T| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $y\in T$ some $w\in S$ which could have produced $y$ with nonzero probability given $P=p^*$, and call this map $C$.  $C$ defines an error correcting code.
+\begin{proof}  Assume $(\gen', \rep')$ is a fuzzy conductor with the parameters stated.  Let $S$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $S$.  Define $(Y, P) \leftarrow \gen'(W)$.  Then there must exist a distribution $Z$ with $\Hav(Z|P) \geq \tilde{m}$ such that $\mathbf{SD}((Y, P), (Z, P))\leq \epsilon$.  By Markov's inequality, there exists some set $S_P$ such that $\Pr[P\in S_p] \geq 1/2$ and $\forall p\in S_P$ one has $\mathbf{SD}(Y | P = p, p ), (Z | P = p, p)<2\epsilon$.  Now applying Markov's inequality of $\max_{z} \Pr[Z=z | P=p]$, there exists a set $S_P'$ such that $\Pr[P\in S_P']>1/2$, and for all $p\in S_P'$, $\Hoo(Z| P =p ) \geq \tilde{m}-1$.  Denote by $p^*$ a value in $S_P\cap S_P'$~(one value must exist).  Then $\mathbf{SD}((Y | P =p^* , p^*), (Z| P = p^*, p^*))\leq 2\epsilon$ and $\Hoo(Z|P=p^*)\geq \tilde{m}-1$.  Denote by the set $T$ the possible values of $Y$ when $P=p^*$.  For the statistical distance property to hold, $|T| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $y\in T$ some $w\in S$ which could have produced $y$ with nonzero probability given $P=p^*$, and call this map $C$.  $C$ defines an error correcting code with the required parameters.
 
 \end{proof}
 
