@@ -544,7 +544,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 \bnote{I am having a little trouble formalizing this.  Was hoping for HILL entropy but I don't think that's true.  Will we get relaxed HILL entropy?}
 \end{itemize}
 
-Let $\mathcal{I}$ be the set of all indices in \defref{def:block guessable}.  Then $\Hav(C | C_{\mathcal{I}^c}) \geq |C| - \beta$.  We now show that codewords that differ only positions of $\mathcal{I}$ are indistinguishable.
+Let $\mathcal{I}$ be the set of all indices in \defref{def:block guessable}.  Then $\Hav(C | C_{\mathcal{I}^c}) \geq |C| - \beta$~(by \clref{cl:many locations ent}).  We now show that codewords differing in positions of $\mathcal{I}$ are indistinguishable.
 \begin{lemma}
 \label{lem:codewords in I close}
 Let $c_1, c_2$ be two codewords that agree on all indices $\mathcal{I}^c$.  Then, 
@@ -721,39 +721,25 @@ Security is result of arguments in \secref{sec:sec of construction}.  Correctnes
 
 The majority of the difficulty in characterizing the definition is that different blocks may be dependent so a equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.
 
-
-
-\begin{lemma}
-\label{lem:blocks unguessable after queries}
-Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_\ell$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = k = \omega(\log n)$.  Then let $\mathcal{A}$ be an adversary making a polynomial, $q = \poly(n)$, number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
-Then $\forall i, \Hav(W_i | View(A))  = k- \log (q+1)$.  Furthermore, since $W_i$ are independent $\Hav(W | View(A))= \ell (k-\log (q+1))$.
-\end{lemma}
+\begin{claim}
+\label{cl:independent high ent}
+Let $W = W_1,..., W_\ell$ be a source where blocks are independent.  Let $\alpha$ be a parameter.  Let $\mathcal{I}$ be the set of blocks such that $\Hoo(W_i ) =\alpha $.  Then $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-block unguessable distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-block unguessable distribution.
+\end{claim}
 \begin{proof}
+We ignore the blocks outside of $\mathcal{I}$ as queries on these blocks do not change the distribution of $W_i$ where $i\in \mathcal{I}$.  It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i) = \alpha -\log q$.  
 Consider a particular block $i$, we measure how an adversary's queries affect the entropy of this block~(we can ignore the other blocks as they are independent).  
 Let $q_w$ be a query asking if the stored value is $a_w$ and its corresponding response.  
-Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  (All the dependence between $W_i$ and the queries is contained in $A_{w_1},..., A_{w_q}$.)  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$.  Thus, we have the following,
+Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$~(including the duplicates does not change the number of possible responses).  Thus, we have the following,
 \begin{align*}
 \Hav(W_i | View(A)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
 &=\Hav(W_i | A_{w_1},..., A_{w_q})\\
 &=\Hav(W_i |A') \\
 &=\Hoo(W_i) - \log |A'|\\
-&=k - \log |A'|\\
-&=k - \log (q+1)
+&=\alpha - \log |A'|\\
+&=\alpha - \log (q+1)
 \end{align*}
 Where the fourth line follows from the third by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
 This argument holds for all $i$.  This completes the proof.
-\end{proof}
-
-
-\begin{claim}
-\label{cl:independent high ent}
-Let $W = W_1,..., W_\ell$ be a source where blocks are independent.  Let $\mathcal{I}$ be the set of blocks such that $\Hoo(W_i ) =\alpha $.  Then $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-block unguessable distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-block unguessable distribution.
-\end{claim}
-\begin{proof}
-We ignore the blocks outside of $\mathcal{I}$ as queries on these blocks do not change the distribution of $W_i$ where $i\in \mathcal{I}$.  It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i) = \alpha -\log q$.  As argued in the proof of \lemref{lem:blocks unguessable after queries}, we can consider the sequence of queries without duplicates~(as duplicate queries provide no additional information and do not increase the number of possible response strings).  Then there are at most $q+1$ possible response strings~(all strings of Hamming weight at most $1$).  Then by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have that 
-\[
-\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) \geq \Hav(W_i | View(A^{\mathcal{O}_{W}(i, \cdot)})) \geq \Hoo(W_i) -\log (q+1).
-\]
 \end{proof}
 In their work on computational fuzzy extractors, Fuller, Meng, and Reyzin~\cite{fuller2013computational} consider block-fixing sources, where each block is either uniform or a fixed symbol~(block fixing sources were introduced by Kamp and Zuckerman~\cite{KZ07}).  This is a subset of the distributions in \clref{cl:independent high ent}.  
 
@@ -796,7 +782,7 @@ For convenience relabel the ordering that violates the condition as $1,..., \ell
 
 \section{Discussion}
 \label{sec:discussion}
-Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:supported sources}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
+Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:sec of construction}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
 
 To show that $gap$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet of size $2^n$.  This means that
 \begin{align*}
