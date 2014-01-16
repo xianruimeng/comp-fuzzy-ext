@@ -516,11 +516,21 @@ In locations where $c_i=0$ it is hard to find $w_i$ given the point obfuscation.
 
 \subsection{Security of Construction}
 \label{sec:sec of construction}
-Assuming virtual black-box obfuscation, we argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversary's inability to tell whether they are working with obfuscations of $w_i$ or random points using \emph{adaptive} equality queries.  For illustrative purposes, we begin with the setting where blocks are independent and each have super-logarithmic entropy and then move to the setting of correlated blocks with some entropy deficient blocks.  Our proof for independent and high entropy blocks is more complicated than necessary, but the proof structure holds for the family of sources described in \secref{sec:supported sources}.  The outline of the proof is to:
+Assuming virtual black-box obfuscation, we argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversary's inability to tell whether they are working with obfuscations of $w_i$ or random points using \emph{adaptive} equality queries.  Our construction is secure as long as enough blocks are unpredictable after adaptive queries:
+
+\begin{definition}
+\label{def:block guessable}
+Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that return $\mathcal{O}_{w_1,..., w_\ell}(i, w_i')=\left( w_i\overset{?}=w_i'\right)$.
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if for any adversary $A$~(not bounded in time or space) with oracle access to $\mathcal{O}$ making at most $q$ queries there exists a set $\mathcal{I}$ of size at least $\ell -\beta$ such that 
+\[
+\forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
+\]
+\end{definition}
+
+\noindent We argue security assuming that the adversary knows the value of all blocks outside of $\mathcal{I}$.  The outline of the proof is to:
 
 \begin{itemize}
-\item Show that conditioned on the adversary's view there is a large set of blocks, $\mathcal{I}$, that have a super logarithmic entropy~(\lemref{lem:blocks unguessable after queries}).
-\item Show that conditioned on the values of all other indices, $C$ still has many possible values.  That is, $\Hav(C | C_{\mathcal{I}^c})$ is large~(\clref{cl:many locations ent}).
+\item Show that conditioned on the values of all other indices, $\mathcal{I}^c$, $C$ still has many possible values.  That is, $\Hav(C | C_{\mathcal{I}^c})$ is large~(\clref{cl:many locations ent}).
 \item Assume that the adversary has perfect knowledge of $C_{\mathcal{I}^c}$.
 \item For all codewords $c, c' \in C| C_{\mathcal{I}^c}$, the codewords $c, c'$ are indistinguishable given the adversary's view~(\lemref{lem:codewords in I close}).
 %\item The distribution $ C| C_{\mathcal{I}^c} \wedge View(A)$ is close to $C| C_{\mathcal{I}^c}$.  
@@ -534,51 +544,40 @@ Assuming virtual black-box obfuscation, we argue security in the presence of equ
 \bnote{I am having a little trouble formalizing this.  Was hoping for HILL entropy but I don't think that's true.  Will we get relaxed HILL entropy?}
 \end{itemize}
 
-
-\begin{lemma}
-\label{lem:blocks unguessable after queries}
-Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_\ell$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = k = \omega(\log n)$.  Then let $\mathcal{A}$ be an adversary making a polynomial, $q = \poly(n)$, number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
-Then $\forall i, \Hav(W_i | View(A))  = k- \log (q+1)$.  Furthermore, since $W_i$ are independent $\Hav(W | View(A))= \ell (k-\log (q+1))$.
-\end{lemma}
-\begin{proof}
-Consider a particular block $i$, we measure how an adversary's queries affect the entropy of this block~(we can ignore the other blocks as they are independent).  
-Let $q_w$ be a query asking if the stored value is $a_w$ and its corresponding response.  
-Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  (All the dependence between $W_i$ and the queries is contained in $A_{w_1},..., A_{w_q}$.)  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$.  Thus, we have the following,
-\begin{align*}
-\Hav(W_i | View(A)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
-&=\Hav(W_i | A_{w_1},..., A_{w_q})\\
-&=\Hav(W_i |A') \\
-&=\Hoo(W_i) - \log |A'|\\
-&=k - \log |A'|\\
-&=k - \log (q+1)
-\end{align*}
-Where the fourth line follows from the third by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
-This argument holds for all $i$.  This completes the proof.
-\end{proof}
-
-Denote by $k' = k - \log (q+1)$.
-Let $\mathcal{I}$ be the set of all indices $\{1,..., n\}$.  Then $\Hav(C | C_{\mathcal{I}^c}) = \Hoo(C) = \ell$.  We now show that codewords that differ only positions of $\mathcal{I}$ are indistinguishable.
+Let $\mathcal{I}$ be the set of all indices in \defref{def:block guessable}.  Then $\Hav(C | C_{\mathcal{I}^c}) \geq |C| - \beta$.  We now show that codewords that differ only positions of $\mathcal{I}$ are indistinguishable.
 \begin{lemma}
 \label{lem:codewords in I close}
 Let $c_1, c_2$ be two codewords that agree on all indices $\mathcal{I}^c$.  Then, 
 \[
-\Delta( ((View(A), C_{\mathcal{I}^c} )| C = c_1),( (View(A), C_{\mathcal{I}^c})  | C= c_2)) < 2^{k'+1}.
+\Delta( ((View(A), C_{\mathcal{I}^c} )| C = c_1),( (View(A), C_{\mathcal{I}^c})  | C= c_2)) < 2^{\alpha+1}.
 \]
 \end{lemma}
 \begin{proof}
-Recall that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq k'$.  The only information about $C_i$ is contained in the query responses.  Thus, it suffices to show that whether $c_i= 1$ or $c_i=0$, with probability $1-2^{-k'+1}$ all responses to $c_i$ are $0$.  Suppose not, that is suppose, the probability of a nonzero response on an $i$ query is $>2^{-k'+1}$.  Since $w, w'$ are independent of $p$, the probability of this happening when $c_i = 1$ is at most $q/2^n$.  Thus, it must occur with probability:
+Recall that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq \alpha$.  The only information about $C_i$ is contained in the query responses.  Thus, it suffices to show that whether $c_i= 1$ or $c_i=0$, with probability $1-2^{-\alpha+1}$ all responses to $c_i$ are $0$.  Suppose not, that is suppose, the probability of a nonzero response on an $i$ query is $>2^{-\alpha+1}$.  Since $w, w'$ are independent of $p$, the probability of this happening when $c_i = 1$ is at most $q/2^n$.  Thus, it must occur with probability:
 \begin{align*}
-2^{-k'+1}&>\Pr[\text{non zero response location }i]\\
+2^{-\alpha+1}&>\Pr[\text{non zero response location }i]\\
 \Pr[\text{non zero response location }i] &= \Pr[c_i =1]\Pr[\text{non zero response location }i\wedge c_i=1] \\&+ \Pr[c_i=0] \Pr[\text{non zero response location }i \wedge c_i=0]\\
 &=1/2 \times 2^{-n+\log q} + 1/2 \Pr[\text{non zero response location }i \wedge c_i=0]
 \end{align*}
-Since $n\geq k$ this yields that 
+We now show that $n-\log q \geq \alpha$:
+\begin{claim}
+$n-\log q \geq \alpha$
+\end{claim}
+\begin{proof}
+Consider one particular $i \in \mathcal{I}$.  It suffices to show that there exists an adversary $A$ making $q$ queries such that the remaining entropy in that block is at most $n-\log (q+1)$.  Let $W_i$ be a distribution, consider $A$ that asks the $q$ most likely outcomes, the total probability of this block must be at least $2^{-n+\log q}$.  After these queries, Then, the remaining min-entropy is at most:
 \begin{align*}
- \Pr[\text{non zero response location }i \wedge c_i=0] &> 2^{-k+1+\log (q+1)} - 2^{-(n+1) +\log q} \\
- &\geq 2^{-k+1+\log (q+1)} - 2^{-k +\log (q+1)} \\
- &\geq 2^{-(k+1) -1+ \log q} = 2^{-k'}.
+\Hav(W_i | View(A)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
+&\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1\right)\\
+&=-\log\left( 2^{-n+\log q} \right) = n-\log q
+\end{align*}
+\end{proof}
+
+We then have that:
+\begin{align*}
+ \Pr[\text{non zero response location }i \wedge c_i=0] &> 2(2^{-\alpha} - 2^{-(n+1) +\log q} )\\
+ &\geq 2\times 2^{-\alpha-1}  = 2^{-\alpha}
  \end{align*}
- When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-k'}$ probability this violates the super-logarithmic conditional min-entropy condition.  Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $2^{-k'+1}$.
+ When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the super-logarithmic conditional min-entropy condition.  Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $2^{-\alpha+1}$.
 \end{proof}
 
 %\begin{lemma}
@@ -612,7 +611,7 @@ The prior lemma implies that the $View$ does not increase the probability of any
 \label{lem:no codeword high prob}
 For all $c\in C|C_{\mathcal{I}^c}$, 
 \[
-\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+2^{-k'+1}.
+\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+2^{-(\alpha-1)}.
 \]
 \end{lemma}
 \begin{proof}
@@ -623,13 +622,13 @@ We begin by noting there must exist some $c\in C|C_{\mathcal{I}^c}$ such that
 Otherwise the sum of the probabilities of $c\in C | C_{\mathcal{I}^c}$ will be greater than $1$.  Let $c_{min}$ be one such value.
 Let $c^*$ be an arbitrary $c^*$ in the support of $C|C_{\mathcal{I}^c}$.  Suppose that  
 \begin{align*}
-\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-k'+1} \\
+\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-(\alpha-1)} \\
 \end{align*}
-This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $2^{-k'+1}$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
+This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $2^{-\alpha+1}$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
 \end{proof}
 \begin{corollary}
 \label{cor:avg min after view}
-$\Hav(C| View(A))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), k'-1\} -1= \min\{ |C| - |\mathcal{I}^c|, k'-1\} -1$.
+$\Hav(C| View(A))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\} -1= \min\{ |C| - |\mathcal{I}^c|, \alpha-1\} -1$.
 \end{corollary}
 \begin{proof}
 %Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$). 
@@ -637,10 +636,9 @@ Taking the negative log of \lemref{lem:no codeword high prob} one has:
 \begin{align*}
 \Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
  &= \\
- -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (\Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-k'+1}) \\
- &\geq \min \{-\log P_c, -\log 2^{-k'+1}\} -1\\
- &= \min \{ \Hav(C | C_{\mathcal{I}^c}), k'-1\}-1 \\
- & \min \{ \Hav(C | C_{\mathcal{I}^c}), k-\log(q+1)-1\}-1 
+ -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (\Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-\alpha+1}) \\
+ &\geq \min \{-\log P_c, -\log 2^{-\alpha+1}\} -1\\
+ &= \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\}-1 
 \end{align*}
 \end{proof}
 %\begin{lemma}
@@ -700,39 +698,52 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 %\textbf{Note:} If $t = O(\log n)$ the only error tolerance for $C$ that results in decoding with overwhelming probability is $t$.  However, in most use cases, we expect $t=\omega(\log n)$.  
 
 Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correctness for independent sources~(where each block has a super-logarithmic amount of entropy):
-\begin{corollary}
-Let $\mathcal{W}$ be the family of block distributions where $W_i$ are independent and $\Hoo(W_i) \geq k= \omega(\log n)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\min\{ |C|, k - \log s_{sec} -1\}$.
-\end{corollary}
+\begin{theorem}
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \min\{\log |C| - \beta, \alpha-\log s_{sec} -1\}-1$.
+\end{theorem}
 \begin{proof}
 Security is result of arguments in \secref{sec:sec of construction}.  Correctness follows from the arguments above and the fact that $C$ is a $(\neigh_t, \epsilon_{code})$-code.
 \end{proof}
 
 
-\subsection{Supported Sources}
-\label{sec:supported sources}
-\bnote{need to complete this section and redo the proof in  \secref{sec:sec of construction} with this type of source.}
+%\subsection{Supported Sources}
+%\label{sec:supported sources}
+%\bnote{need to complete this section and redo the proof in  \secref{sec:sec of construction} with this type of source.}
+%
+%We now describe a set of high entropy sources appropriate for which the proof outline given in \secref{sec:sec of construction} holds.  We need a distribution where after $q$-equality queries, a large number of blocks still have super-logarithmic entropy.
+%
+%As long as $\beta$ is small enough, we can show security of \consref{cons:first construction}~(replace \lemref{lem:blocks unguessable after queries} with an unguessable source, the remaining arguments follow).
 
-We now describe a set of high entropy sources appropriate for which the proof outline given in \secref{sec:sec of construction} holds.  We need a distribution where after $q$-equality queries, a large number of blocks still have super-logarithmic entropy.
-
-\begin{definition}
-\label{def:block guessable}
-Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that return $\mathcal{O}_{w_1,..., w_\ell}(i, w_i')=\left( w_i\overset{?}=w_i'\right)$.
-A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if for any adversary $A$~(not bounded in time or space) with oracle access to $\mathcal{O}$ making at most $q$ queries there exists a set $\mathcal{I}$ of size at least $\ell -\beta$ such that 
-\[
-\forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
-\]
-\end{definition}
-As long as $\beta$ is small enough, we can show security of \consref{cons:first construction}~(replace \lemref{lem:blocks unguessable after queries} with an unguessable source, the remaining arguments follow).
-
-\begin{theorem}
-Let $\mathcal{W}$ be a family of $(q, k= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \min\{\log |C| - \beta, k-\log s_{sec} -1\}$.
-\end{theorem}
 
 \subsection{Characterizing unguessable block distributions}
 
 \defref{def:block guessable} is an inherently adaptive definition and thus a little unwieldy for a distribution.  In this section, we provide a limited characterization of sources satisfy \defref{def:block guessable} and distributions that are learnable by equality queries.  
 
 The majority of the difficulty in characterizing the definition is that different blocks may be dependent so a equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.
+
+
+
+\begin{lemma}
+\label{lem:blocks unguessable after queries}
+Let $n$ be a security parameter.  Let $W(n) = W = W_1,..., W_\ell$ be a distribution where each $W_i$ is independent of all $W_j$ and $\forall i, \Hoo(W_i) = k = \omega(\log n)$.  Then let $\mathcal{A}$ be an adversary making a polynomial, $q = \poly(n)$, number of oracle equality queries for blocks $i$.  %Let $C = c_1,.., c_\ell$ be as in \consref{cons:informal construction}. 
+Then $\forall i, \Hav(W_i | View(A))  = k- \log (q+1)$.  Furthermore, since $W_i$ are independent $\Hav(W | View(A))= \ell (k-\log (q+1))$.
+\end{lemma}
+\begin{proof}
+Consider a particular block $i$, we measure how an adversary's queries affect the entropy of this block~(we can ignore the other blocks as they are independent).  
+Let $q_w$ be a query asking if the stored value is $a_w$ and its corresponding response.  
+Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  (All the dependence between $W_i$ and the queries is contained in $A_{w_1},..., A_{w_q}$.)  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$.  Thus, we have the following,
+\begin{align*}
+\Hav(W_i | View(A)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
+&=\Hav(W_i | A_{w_1},..., A_{w_q})\\
+&=\Hav(W_i |A') \\
+&=\Hoo(W_i) - \log |A'|\\
+&=k - \log |A'|\\
+&=k - \log (q+1)
+\end{align*}
+Where the fourth line follows from the third by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
+This argument holds for all $i$.  This completes the proof.
+\end{proof}
+
 
 \begin{claim}
 \label{cl:independent high ent}
@@ -747,6 +758,8 @@ We ignore the blocks outside of $\mathcal{I}$ as queries on these blocks do not 
 In their work on computational fuzzy extractors, Fuller, Meng, and Reyzin~\cite{fuller2013computational} consider block-fixing sources, where each block is either uniform or a fixed symbol~(block fixing sources were introduced by Kamp and Zuckerman~\cite{KZ07}).  This is a subset of the distributions in \clref{cl:independent high ent}.  
 
 We now consider more complicated~(realistic) distributions where blocks are not independent.  We begin with distributions that are block unguessable.
+
+
 
 \begin{claim}
 \label{cl:each block from single seed}
