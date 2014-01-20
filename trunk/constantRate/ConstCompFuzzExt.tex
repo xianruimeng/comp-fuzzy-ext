@@ -429,7 +429,6 @@ denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distr
 \end{definition}
 
 We now define the two primitives for this approach: a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
-\bnote{depending on what we get from obfuscation may need this to be relaxed HILL entropy.  Would have to redo lemma below, but it is essentially the same.}
 \begin{definition}
 \label{def:comp fuzzy cond}
 Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
@@ -520,53 +519,81 @@ Assuming virtual black-box obfuscation, we argue security in the presence of equ
 
 \begin{definition}
 \label{def:block guessable}
-Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that return $\mathcal{O}_{w_1,..., w_\ell}(i, w_i')=\left( w_i\overset{?}=w_i'\right)$.
-A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if for any adversary $A$~(not bounded in time or space) with oracle access to $\mathcal{O}$ making at most $q$ queries there exists a set $\mathcal{I}$ of size at least $\ell -\beta$ such that 
+Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that returns \[\mathcal{O}_{w_1,..., w_\ell}(i, w_i')=
+\begin{cases}
+1 & w_i = w_i'\\
+0 & \text{otherwise}.
+\end{cases}
+\]
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that 
 \[
 \forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
 \end{definition}
 
-\noindent We argue security assuming that the adversary knows the value of all blocks outside of $\mathcal{I}$.  The outline of the proof is to:
-
+%\noindent We argue security assuming that the adversary knows the value of all blocks outside of $\mathcal{I}$.  
+We now show security of \consref{cons:first construction} for distributions satisfying \defref{def:block guessable}.
+To show security it is sufficient to show that there exists a distribution $C'$ such that $\Hav(C' | P) \geq k$ and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))$ are indistinguishable.  Let $\mathcal{I}$ be the set of indices that exists in \defref{def:block guessable}, the distribution $C'$ is defined as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $\mathcal{I}$.  First note that $\Hav(C' |P) =\Hav(C' | \mathcal{I}^c) =  \Hav|C'| = |C| - |\mathcal{I}^c|$~(\clref{cl:many locations ent}).  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))$.  
+Define the distribution $X$ as follows:
+\[X_i = 
+\begin{cases}
+W_i & C_i = 0\\
+R_i & C_i = 1.
+\end{cases}\]
+The outline for the rest of the proof is as follows:
 \begin{itemize}
-\item Show that conditioned on the values of all other indices, $\mathcal{I}^c$, $C$ still has many possible values.  That is, $\Hav(C | C_{\mathcal{I}^c})$ is large~(\clref{cl:many locations ent}).
-\item Assume that the adversary has perfect knowledge of $C_{\mathcal{I}^c}$.
-\item For all codewords $c, c' \in C| C_{\mathcal{I}^c}$, the codewords $c, c'$ are indistinguishable given the adversary's view~(\lemref{lem:codewords in I close}).
-%\item The distribution $ C| C_{\mathcal{I}^c} \wedge View(A)$ is close to $C| C_{\mathcal{I}^c}$.  
-%\item For all indices in $\mathcal{I}$, the adversary's guess for $c_i, i\in \mathcal{I}$ is close to the prior distribution $C_i | C_{\mathcal{I}^c}$.  
-%\item Without seeing a $1$ on a particular block, it is impossible to the distinguish between $c_i=1$ and $c_i=0$.  
-%tell if a $1$ or $0$ On all blocks where the probability of a query having returned a $1$ is negligible, it is impossible to tell if you presented with an obfuscation of $W_i$ or a uniform random variable.
-% $c_i, i\not \in \mathcal{I}$ there are many possible values of $c\in C$~(\clref{cl:many locations ent}).
-%\item Any two codewords, $c_1, c_2\in C | C_{\mathcal{I}^c}$ are statistically close given the adversary's view.
-\item The set of codewords $C| View(A) \wedge C_{\mathcal{I}^c}$ has conditional min-entropy~(and thus $C|View(A)$ has conditional min-entropy)~(\corref{cor:avg min after view}).  
-\item By the security of obfuscation for every adversary $A$, there exists a simulator $S$ such that $C | A^{P_1,..., P_\ell}$ is computationally indistinguishable from $C | S^{\mathcal{O}}$%~(\lemref{lem:obf has hill ent}).
-\bnote{I am having a little trouble formalizing this.  Was hoping for HILL entropy but I don't think that's true.  Will we get relaxed HILL entropy?}
+\item Let $D$ be a distinguisher between $(C, P)$ and $(C', P)$, since $P$ is a collection of obfuscated programs there exists a simulator, $S$~(outputting a single bit), such that $D(C, P) \approx_c S^{\mathcal{O}_X(\cdot, \cdot)}(C)$~(\defref{def:obf}).
+\item Show that even an unbounded $S$ with oracle access to $X_1,..., X_\ell$ cannot distinguish between $C$ and $C'$.  That is, $S^{\mathcal{O}_X(\cdot, \cdot)}(C) \approx S^{\mathcal{O}_X(\cdot, \cdot)}(C')$.
+This is done in \lemref{lem:sim cannot distinguish}.
+% the following steps:
+%\begin{itemize}
+%%\item Show that conditioned on the values of all other indices, $\mathcal{I}^c$, $C$ still has many possible values.  That is, $\Hav(C | C_{\mathcal{I}^c})$ is large~(\clref{cl:many locations ent}).
+%%\item Assume that the simulator has knowledge of $C_{\mathcal{I}^c}$.
+%\item For all codewords $c, c' \in C| C_{\mathcal{I}^c}$, the codewords $c, c'$ are indistinguishable given the simulator's view~(\lemref{lem:codewords in I close}).
+%\item The two distributions $C$ and $C'$ are indistinguishable given the simulator's view~(\bnote{this needs to be written down.})
+%\item The set of codewords $C| View(S) \wedge C_{\mathcal{I}^c}$ has conditional min-entropy~(and thus $C|View(S)$ has conditional min-entropy)~(\corref{cor:avg min after view}).  
+%\item Any adversary given $C$ or a fresh $C'$ cannot statistically distinguish.
+%\end{itemize}
+\item By the security of obfuscation, $S^{\mathcal{O}}(C') \approx_c D(C', P)$~(\defref{def:obf}).
 \end{itemize}
 
-Let $\mathcal{I}$ be the set of all indices in \defref{def:block guessable}.  Then $\Hav(C | C_{\mathcal{I}^c}) \geq |C| - \beta$~(by \clref{cl:many locations ent}).  We now show that codewords differing in positions of $\mathcal{I}$ are indistinguishable.
+Together these arguments allow us to conclude:
+\begin{theorem}
+\label{thm:security of cons}
+Let $\mathcal{O}$ be a virtual black box obfuscator \bnote{fill in parameters for auxiliary and composability} \bnote{need to link parameters for obfuscation and block unguessable} for point programs of hardness $s_{obf}, \epsilon_{obf}$.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Then $H^{\hill}_{\epsilon', s_{obf}}( C | P ) \geq |C| - \beta$ for $\epsilon' = 2\epsilon_{obf} + 2^{-(\alpha - 1)}$.
+\end{theorem}
+
+We now prove $S$ cannot distinguish between $C$ and $C'$.  
+Let $\mathcal{I}$ be the set of all indices in \defref{def:block guessable}.  Recall that $C'$ is a uniformly distributed codeword conditioned on agreeing with $C$ in all coordinates of $C_{\mathcal{I}^c}$.
+\begin{lemma}
+\label{lem:sim cannot distinguish}
+$\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) < 2^{-(\alpha+1)}$.
+\end{lemma}
+
+\begin{proof}
+\noindent It suffices to show that for any two codewords that agree on $\mathcal{I}^c$, the statistical distance is $2^{-(\alpha+1)}$.
 \begin{lemma}
 \label{lem:codewords in I close}
 Let $c_1, c_2$ be two codewords that agree on all indices $\mathcal{I}^c$.  Then, 
 \[
-\Delta( ((View(A), C_{\mathcal{I}^c} )| C = c_1),( (View(A), C_{\mathcal{I}^c})  | C= c_2)) < 2^{\alpha+1}.
+\Delta( S^{\mathcal{O}_X(\cdot, \cdot)}(c_1), S^{\mathcal{O}_X(\cdot, \cdot)}(c_2)) < 2^{-(\alpha+1)}.
 \]
 \end{lemma}
 \begin{proof}
-Recall that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))\geq \alpha$.  The only information about $C_i$ is contained in the query responses.  Thus, it suffices to show that whether $c_i= 1$ or $c_i=0$, with probability $1-2^{-\alpha+1}$ all responses to $c_i$ are $0$.  Suppose not, that is suppose, the probability of a nonzero response on an $i$ query is $>2^{-\alpha+1}$.  Since $w, w'$ are independent of $p$, the probability of this happening when $c_i = 1$ is at most $q/2^n$.  Thus, it must occur with probability:
+Recall that for all $i\in \mathcal{I}$, $\Hav(W_i | View(S))\geq \alpha$.  The only information about the correct value of the codeword is contained in the query responses.  Let $c^*\in C | C_{\mathcal{I}^c}$ be the value that was used to generate $X$.  It suffices to show that for any value of $c^*$ all queries on $i \in \mathcal{I}$ return $0$ with probability $1-2^{-\alpha+1}$.  Suppose not, that is suppose, the probability of at least one nonzero response is $> 2^{-(\alpha+1)}$.  Since $w, w'$ are independent of $p$, the probability of this happening when $c^*_i = 1$ is at most $q/2^n$.  Thus, it must occur with probability:
 \begin{align*}
 2^{-\alpha+1}&>\Pr[\text{non zero response location }i]\\
-\Pr[\text{non zero response location }i] &= \Pr[c_i =1]\Pr[\text{non zero response location }i\wedge c_i=1] \\&+ \Pr[c_i=0] \Pr[\text{non zero response location }i \wedge c_i=0]\\
-&=1/2 \times 2^{-n+\log q} + 1/2 \Pr[\text{non zero response location }i \wedge c_i=0]
+\Pr[\text{non zero response location }i] &= \Pr[c_i^* =1]\Pr[\text{non zero response location }i\wedge c_i^*=1] \\&+ \Pr[c_i^*=0] \Pr[\text{non zero response location }i \wedge c_i^*=0]\\
+&=1/2 \times 2^{-n+\log q} + 1/2 \Pr[\text{non zero response location }i \wedge c_i^*=0]
 \end{align*}
 We now show that $n-\log q \geq \alpha$:
 \begin{claim}
 $n-\log q \geq \alpha$
 \end{claim}
 \begin{proof}
-Consider one particular $i \in \mathcal{I}$.  It suffices to show that there exists an adversary $A$ making $q$ queries such that the remaining entropy in that block is at most $n-\log (q+1)$.  Let $W_i$ be a distribution, consider $A$ that asks the $q$ most likely outcomes, the total probability of this block must be at least $2^{-n+\log q}$.  After these queries, Then, the remaining min-entropy is at most:
+Consider one particular $i \in \mathcal{I}$.  It suffices to show that there exists a simulator $S$ making $q$ queries such that the remaining entropy in that block is at most $n-\log (q+1)$.  Let $W_i$ be a distribution, consider $S$ that asks the $q$ most likely outcomes, the total probability of this block must be at least $2^{-n+\log q}$.  After these queries, Then, the remaining min-entropy is at most:
 \begin{align*}
-\Hav(W_i | View(A)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
+\Hav(W_i | View(S)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
 &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1\right)\\
 &=-\log\left( 2^{-n+\log q} \right) = n-\log q
 \end{align*}
@@ -577,84 +604,46 @@ We then have that:
  \Pr[\text{non zero response location }i \wedge c_i=0] &> 2(2^{-\alpha} - 2^{-(n+1) +\log q} )\\
  &\geq 2\times 2^{-\alpha-1}  = 2^{-\alpha}
  \end{align*}
- When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the super-logarithmic conditional min-entropy condition.  Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $2^{-\alpha+1}$.
+ When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
+\end{proof}
+Since point wise the two distributions are close we can conclude that $\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) < 2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
 
+%The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
 %\begin{lemma}
-%\bnote{what goes here?}
-%Let $\mathcal{I}$ be a set of indices such that for all $i\in \mathcal{I}$, $\Hav(W_i | View(A))$
-%\end{lemma}
-%\begin{lemma}
-%\label{lem:super log indist by equal queries}
-%Let $W$ and $U$ be two distributions of super-logarithmic entropy.  Then for all adversaries $A$, $q = poly(n)$ queries, $\Delta(View(A^{\mathcal{O}_W(\cdot)}), View(A^{\mathcal{O}_U(\cdot)}))\leq \ngl(n)$.
-%\end{lemma}
-%\begin{proof}
-%It suffices to show that with the probability of all responses being $0$ is overwhelming.  Clearly, in the case when all responses are $0$ the views are identical, and thus the statistical distance is $0$.  \bnote{Finish this proof}
-%\end{proof}
-
-%\begin{lemma}
-%\label{lem:code bits statistically indist}
-%Let $X_i = W_i$ if $c_i = 1$, otherwise let $X_i = U$.  Then, for every $i$, $\Delta(View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)})| c_i = 1, View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)} | c_i =0) \leq \ngl(n)$.
-%\end{lemma}
-%\begin{proof}
-%\bnote{Do this}
-%\end{proof}
-%We can extend this lemma to the entire codeword $C$:
-%\begin{lemma}
-%For all $c_1, c_2 \in C$ we have the following: 
+%\label{lem:no codeword high prob}
+%For all $c\in C|C_{\mathcal{I}^c}$, 
 %\[
-%\Delta(View(A^{\mathcal{O}_{(X_{c_{1_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)})| C = c_1, View(A^{\mathcal{O}_{(X_{c_{2_1}},..., X_{c_{2_\ell}})}(\cdot, \cdot)} | C = c_2)) \leq \ngl(n).
+%\expe_{View(S)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(S)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+2^{-(\alpha-1)}.
 %\]
 %\end{lemma}
-The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
-\begin{lemma}
-\label{lem:no codeword high prob}
-For all $c\in C|C_{\mathcal{I}^c}$, 
-\[
-\expe_{View(A)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(A)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+2^{-(\alpha-1)}.
-\]
-\end{lemma}
-\begin{proof}
-We begin by noting there must exist some $c\in C|C_{\mathcal{I}^c}$ such that 
-\[
-\expe_{view\leftarrow View}\Pr[C = c | C_{\mathcal{I}^c}] \le \frac{1}{| C| C_{\mathcal{I}^c}|}.
-\]
-Otherwise the sum of the probabilities of $c\in C | C_{\mathcal{I}^c}$ will be greater than $1$.  Let $c_{min}$ be one such value.
-Let $c^*$ be an arbitrary $c^*$ in the support of $C|C_{\mathcal{I}^c}$.  Suppose that  
-\begin{align*}
-\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-(\alpha-1)} \\
-\end{align*}
-This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $2^{-\alpha+1}$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
-\end{proof}
-\begin{corollary}
-\label{cor:avg min after view}
-$\Hav(C| View(A))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\} -1= \min\{ |C| - |\mathcal{I}^c|, \alpha-1\} -1$.
-\end{corollary}
-\begin{proof}
-%Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$). 
-Taking the negative log of \lemref{lem:no codeword high prob} one has:
-\begin{align*}
-\Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
- &= \\
- -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (\Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-\alpha+1}) \\
- &\geq \min \{-\log P_c, -\log 2^{-\alpha+1}\} -1\\
- &= \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\}-1 
-\end{align*}
-\end{proof}
-%\begin{lemma}
-%\label{lem:obf has hill ent}
-%For every $s_{sec} = \poly(n)$, there exists some $\epsilon = \ngl(n)$ such that $H^{\hillrlx}_{\epsilon, s_{sec}}(C | P) \geq |C| - \ngl(n)$.
-%\end{lemma}
 %\begin{proof}
-%Suppose not, that is for all $\Hav( X | Y) \geq |C| - \ngl(n)$ there exists some $D$ of size $s_{sec} = \poly(n)$ and $\epsilon = 1/\poly(n)$ such that $\Pr[D(C, P) = 1] - \Pr[D(X, Y)  = 1] = \epsilon$.  Let $ (X, Y)  = (C, 
+%We begin by noting there must exist some $c\in C|C_{\mathcal{I}^c}$ such that 
+%\[
+%\expe_{view\leftarrow View}\Pr[C = c | C_{\mathcal{I}^c}] \le \frac{1}{| C| C_{\mathcal{I}^c}|}.
+%\]
+%Otherwise the sum of the probabilities of $c\in C | C_{\mathcal{I}^c}$ will be greater than $1$.  Let $c_{min}$ be one such value.
+%Let $c^*$ be an arbitrary $c^*$ in the support of $C|C_{\mathcal{I}^c}$.  Suppose that  
+%\begin{align*}
+%\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-(\alpha-1)} \\
+%\end{align*}
+%This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $2^{-\alpha+1}$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
 %\end{proof}
-%By similar reasoning we can extend this lemma to the entire codeword:
-%\begin{lemma}
-%If $C$ is output equiprobable then, $\Hav(C | View(A^{\mathcal{O}_{(X_{c_{2_1}},..., X_{c_{2_\ell}})}})) \geq |C| - \ngl(n)$.
-%\end{lemma}
-%\begin{lemma}
-%$\Hoo(C | View (A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot, \cdot)})) \geq \log |C| - o(\ell \log n)$.
-%\end{lemma}
+%\begin{corollary}
+%\label{cor:avg min after view}
+%$\Hav(C| View(S))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\} -1= \min\{ |C| - |\mathcal{I}^c|, \alpha-1\} -1$.
+%\end{corollary}
+%\begin{proof}
+%%Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$). 
+%Taking the negative log of \lemref{lem:no codeword high prob} one has:
+%\begin{align*}
+%\Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
+% &= \\
+% -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (\Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-\alpha+1}) \\
+% &\geq \min \{-\log P_c, -\log 2^{-\alpha+1}\} -1\\
+% &= \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\}-1 
+%\end{align*}
+%\end{proof}
 
 \subsection{Correctness of \consref{cons:first construction}}
 We begin by showing that the probability of a single $1\rightarrow 0$ bit flip in $c$ is negligible.
@@ -675,6 +664,7 @@ Recall that $c$ contains at most $\ell$ $1$s.  Since $w'$ is chosen independentl
 We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\rightarrow 1$ flip on index $i$ occurs when two conditions are met $w_i\neq w_i'$ and $c_i = 0$.  Since the first conditioned is only fulfilled at most $t$ times, we have the following lemma:
 
 \begin{lemma}
+\label{lem:correct of cons}
 Let $C$ be a code that corrects $t$ $0\rightarrow 1$ bit errors.  Then when $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then 
 \[
 \Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{2^n}.
@@ -697,12 +687,12 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 %\bnote{This analysis is done assuming that the two sets are the same size.  Need to worry about variation in the number of $1$s and $0$s in $c$.  Need to show that for most codes (linear?) the variance in Hamming weight is small.}
 %\textbf{Note:} If $t = O(\log n)$ the only error tolerance for $C$ that results in decoding with overwhelming probability is $t$.  However, in most use cases, we expect $t=\omega(\log n)$.  
 
-Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correctness for independent sources~(where each block has a super-logarithmic amount of entropy):
+Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correctness for block unguessable distributions:
 \begin{theorem}
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} = \min\{\log |C| - \beta, \alpha-\log s_{sec} -1\}-1$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
 \begin{proof}
-Security is result of arguments in \secref{sec:sec of construction}.  Correctness follows from the arguments above and the fact that $C$ is a $(\neigh_t, \epsilon_{code})$-code.
+Security is result of \thref{thm:security of cons}.  Correctness follows from \lemref{lem:correct of cons} and the fact that $C$ is a $(\neigh_t, \epsilon_{code})$-code.
 \end{proof}
 
 
@@ -731,7 +721,7 @@ Consider a particular block $i$, we measure how an adversary's queries affect th
 Let $q_w$ be a query asking if the stored value is $a_w$ and its corresponding response.  
 Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary (the adversary is unbounded and thus can compute the best possible queries).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$~(including the duplicates does not change the number of possible responses).  Thus, we have the following,
 \begin{align*}
-\Hav(W_i | View(A)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
+\Hav(W_i | View(S)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
 &=\Hav(W_i | A_{w_1},..., A_{w_q})\\
 &=\Hav(W_i |A') \\
 &=\Hoo(W_i) - \log |A'|\\
@@ -770,6 +760,7 @@ The previous example relied on an adversaries ability to completely determine a 
 Let $W = W_1,..., W_\ell$ be a source under ordering $i_1,..., i_\ell$.  The \emph{jump} of a block $i_j$ is $J(i_j) = \max|W_{i_j} |$ conditioned on the values $W_{i_1},..., W_{i_{j-1}}$.
 \end{definition}
 
+\noindent
 We now show that there must be a super-logarithmic jump early enough.
 
 \begin{claim}
