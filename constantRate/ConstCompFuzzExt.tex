@@ -470,7 +470,7 @@ In the computational setting once a ``long enough'' key may be expanded using a 
 
 \begin{construction}
 \label{cons:first construction}
-Let $n$ be a security parameter and let $W = W_1,..., W_\ell$ be a distribution over $\zo^{\ell n}$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^n$.  Let $t$ be the desired error-tolerance and let $C\subset \zo^\ell$ %be an output equiprobable 
+Let $n$ be a security parameter and let $W = W_1,..., W_\ell$ be a distribution over $\zo^{\ell n}$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^n$.  Let $t$ be the desired error-tolerance and let $C\subset \zo^\ell$ be a
 $(\neigh_t, \epsilon_{code})$-error-correcting code.  
 We describe $\gen, \rep$ as follows:
 
@@ -502,7 +502,6 @@ We describe $\gen, \rep$ as follows:
 \end{minipage} 
 \end{tabular}
 \end{center}
-\label{cons:informal construction}
 \end{construction}
 
 \textbf{Notes:}  We make several observations about the above construction:
@@ -773,7 +772,7 @@ Let $W$ be a distribution and let $q$ be a parameter, if there exists an orderin
 For convenience relabel the ordering that violates the condition as $1,..., \ell$.  We describe an unbounded adversary that determines $W_1,..., W_{\ell-\beta+1}$.  As before $A$ queries the $q /\ell$ possible values for $W_1$ and determines $W_1$.  Then $A$ queries the $q/\ell$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\ell-\beta+1}$ is learned.  Note the optimum ordering for the adversary can be encoded nonuniformly but it may take an unbounded amount of time/space to construct the support of $W_i | W_1,.., W_{i-1}$.
 \end{proof}
 
-\section{Discussion}
+\subsection{Discussion}
 \label{sec:discussion}
 Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:sec of construction}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
 
@@ -793,7 +792,89 @@ When $t =\Theta(\ell)$, then $gap<0$ and the output entropy is $|C| - \ngl(n)$~(
 Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta(\ell)$.  Furthermore, not every block must contribute entropy, so security is possible when the total starting entropy is $\omega(\log n)$.  For example, \consref{cons:first construction} is secure when each block is equal and drawn from a distribution of super-logarithmic min-entropy.  So there are supported sources with negative $gap$ for any value of $t$.  We achieve $gap<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters. 
 
-\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.  The first is that Hamming distance is over an alphabet of exponential size, which precludes use in some applications.  The second is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Lastly, we obtain only a single bit from each block of $W_i$ which seems sub optimum.
+\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.   The first is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Second, we obtain only a single bit from each block of $W_i$ which seems sub optimum.  Lastly, Hamming distance is computed over an alphabet of exponential size, which precludes use in some applications. We begin to address this weakness in the next section.
+
+\section{Reducing Alphabet Size}
+\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  Unfortunately, each block is individually obfuscated causing the blocks to be of super-polynomial size~(our analysis was in the case where the blocks where exponential in the security parameter).  In this section, we present a generalization of \consref{cons:first construction} where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  Unfortunately, obfuscated multiple blocks together decreases the effective error tolerance.  
+\begin{construction}
+\label{cons:sampling}
+Let $n$ be a security parameter.
+Let $Z$ be an alphabet where $|Z| = \Omega(n)$, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.  Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
+
+\begin{center}
+\begin{tabular}{c|c}
+\begin{minipage}{3in}
+\textbf{\gen}
+\begin{enumerate}
+\item \underline{Input}: $w = w_1,..., w_\gamma$
+\item Sample $c\leftarrow C$.
+\item For $i=1,..., \ell$:
+\begin{itemize}
+\item Sample $j_{i, 1},..., j_{i, \eta}\overset{\$}\leftarrow \{1,..., \gamma\}$
+\item If $c_i = 0$: 
+\subitem Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
+\subitem Set $\rho_i = \mathcal{O}(I_{w_i})$.
+\subitem Set $p_i = \rho_i, j_{i, 1},..., j_{i, \eta}$.
+\item If $c_i = 1$: Sample $r_i \leftarrow U_n$. 
+\subitem Let $p_i = \mathcal{O}(I_{r_i}) j_{i,1},..., j_{i, \eta}$.
+\end{itemize}
+\item Output $(c, p)$.
+\end{enumerate}
+ \end{minipage} &
+\begin{minipage}{3in}
+\textbf{\rep}
+\begin{enumerate}
+\item \underline{Input}: $(w', p)$ 
+\item For $i=1,..., \ell$:
+\begin{itemize}
+\item Parse $p_i$ as $\rho_i, j_{i, 1},..., j_{i, \eta}$.
+\item Set $v_i = w_{j_{i, 1}},..., w_{j_{i, \eta}}$.
+\item If $\rho_i(w_i') = 1$ set $c_i' = 0$.
+\item Else set $c_i' = 1$.
+\end{itemize}
+\item Set $c = \decode(c')$.
+\item Output $c$.
+\end{enumerate}
+\vspace{0.37in}
+\end{minipage} 
+\end{tabular}
+\end{center}
+\end{construction}
+
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated alphabet symbols of $W$.  In the setting where each symbol of $W$ is long enough for secure obfuscation, \consref{cons:sampling} is essentially the same as \consref{cons:first construction}.  As before we must show security and correctness of \consref{cons:sampling}.  For security, the main argument is that each of the $v_i$ created has enough entropy to be unguessable.  We show this in the setting of block fixing sources~\cite{KZ07}.  This argument comes from the sampling literature~(used to create locally computable randomness extractors~\cite{lu2002hyper,vadhan2003constructing}).  For correctness we must show that the probability for each symbol $v_i \neq v_i'$ is a small constant so that $c'$ will be corrected to $c$.
+
+\subsection{Security of \consref{cons:sampling}}
+In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $v_i$ has entropy on its own.  Consider a source with entropy $\lambda$.  Then the expected entropy of 
+\begin{align*}
+\expe[\Hoo(V_i)] &=\expe[\text{entropy of each uniform }w_j] (\text{number of }w_j\text{ selected})\\
+&=\frac{\lambda}{\gamma} \times \eta= \frac{\lambda \eta}{\gamma}.
+\end{align*}
+This value is super-logarithmic when $\lambda = \omega (\frac{\gamma \log n}{\eta})$.
+
+\bnote{something something about by sampling theory the prob of this being more than constant from expected value is negligible.}
+\bnote{need to finish this}
+
+\subsection{Correctness of \consref{cons:sampling}}
+The argument that $1\rightarrow 0$ flips are extremely unlikely carries over from \consref{cons:first construction}.  In this section, we analyze what values of $t$ will yield a small constant likelihood of error between $v_i$ and $v_i'$ yielding a constant probability of bit flip $0\rightarrow 1$ between $c$ and $c'$.  Consider a single index $i$ and let $t$ be the number of errors between $w$ and $w'$.  Then 
+\begin{align*}
+\Pr[v_i = v_i' ] &= \Pr[w_{j_{i,1}} = w_{j_{i,1}}' \wedge ... \wedge w_{j_{i, \eta/|Z|}} = w_{j_{i, \eta}}']\\
+&=\Pr[w_{j_{i,1}} = w_{j_{i,1}}'] \times ... \times \Pr[w_{j_{i, \eta/|Z|}} = w_{j_{i, \eta}}']\\
+&=\left (1-\frac{t}{\gamma}\right)^{\eta}
+\end{align*} 
+This value is $\Theta(1)$ when $t = \Theta(\frac{\gamma }{\eta})$.
+\bnote{finish}
+
+\subsection{Discussion}
+As shown above we get security when $\lambda = \omega(\gamma \log n/\eta)$ and correctness when $t = \Theta(\gamma /\eta)$.  This yields:
+\begin{align*}
+gap &= \Hoo(W) -\log |B_t| \\
+&< \omega(\frac{\gamma  \log n}{\eta} ) - (\Theta(t \mu) + \log {\gamma \choose t})\\
+&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \mu^2}{\eta}))\\
+&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \log |Z|}{\eta}))\\
+&= \omega(\frac{\gamma \log n}{\eta})
+\end{align*}
+%Taking $\gamma = \Omega(n)$ and $\eta = \log^c n$ yields a negative $gap$.
+\bnote{finish}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
