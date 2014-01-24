@@ -1,0 +1,266 @@
+\documentclass[10pt]{article}
+\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{algpseudocode} 
+
+\mathchardef\mhyphen="2D
+
+\newcommand{\secref}[1]{\mbox{Section~\ref{#1}}}
+\newcommand{\subsecref}[1]{\mbox{Subsection~\ref{#1}}}
+\newcommand{\apref}[1]{\mbox{Appendix~\ref{#1}}}
+\newcommand{\thref}[1]{\mbox{Theorem~\ref{#1}}}
+\newcommand{\exref}[1]{\mbox{Example~\ref{#1}}}
+\newcommand{\defref}[1]{\mbox{Definition~\ref{#1}}}
+\newcommand{\corref}[1]{\mbox{Corollary~\ref{#1}}}
+\newcommand{\lemref}[1]{\mbox{Lemma~\ref{#1}}}
+\newcommand{\assref}[1]{\mbox{Assumption~\ref{#1}}}
+\newcommand{\probref}[1]{\mbox{Problem~\ref{#1}}}
+\newcommand{\clref}[1]{\mbox{Claim~\ref{#1}}}
+\newcommand{\propref}[1]{\mbox{Proposition~\ref{#1}}}
+\newcommand{\remref}[1]{\mbox{Remark~\ref{#1}}}
+\newcommand{\consref}[1]{\mbox{Construction~\ref{#1}}}
+\newcommand{\figref}[1]{\mbox{Figure~\ref{#1}}}
+\DeclareMathOperator*{\expe}{\mathbb{E}}
+\DeclareMathOperator*{\var}{\text{Var}}
+
+
+\newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
+\newcommand{\gen}{\ensuremath{\class{Gen}}\xspace}
+\newcommand{\rep}{\ensuremath{\class{Rep}}\xspace}
+\newcommand{\sketch}{\ensuremath{\class{SS}}\xspace}
+\newcommand{\rec}{\ensuremath{\class{Rec}}\xspace}
+\newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
+\newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
+\newcommand{\prg}{\ensuremath{\class{prg}}\xspace}
+\newcommand{\zo}{\ensuremath{\{0, 1\}}}
+\newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\zq}{\ensuremath{\mathbb{Z}_q}}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}}
+\newcommand{\sample}{\ensuremath{\class{Sample}}\xspace}
+\newcommand{\neigh}{\ensuremath{\class{Neigh}}\xspace}
+\newcommand{\dis}{\ensuremath{\mathsf{dis}}}
+\newcommand{\decode}{\ensuremath{\mathsf{Decode}}}
+
+\newcommand{\A}{\mathcal{A}}
+
+
+\newcommand{\metric}{\ensuremath{\mathtt{Metric}}\xspace}
+\newcommand{\hill}{\ensuremath{\mathtt{HILL}}\xspace}
+\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL\mhyphen rlx}}\xspace}
+\newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
+\newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
+\newcommand{\unprlx}{\ensuremath{\mathtt{unp\mhyphen rlx}}\xspace}
+\newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
+\newcommand{\metricd}{\ensuremath{\mathtt{Metric}^*\mathtt{-d}}\xspace}
+\newcommand{\hillstar}{\ensuremath{\mathtt{HILL}^*}\xspace}
+\newcommand{\hillprime}{\ensuremath{\mathtt{HILL'}}\xspace}
+\newcommand{\metricprime}{\ensuremath{\mathtt{Metric'}}\xspace}
+\newcommand{\metricprimestar}{\ensuremath{\mathtt{Metric'}^*}\xspace}
+\newcommand{\hillprimestar}{\ensuremath{\mathtt{HILL'}^*}\xspace}
+\newcommand{\poly}{\ensuremath{\mathtt{poly}}\xspace}
+\newcommand{\rank}{\ensuremath{\mathtt{rank}}\xspace}
+\newcommand{\ngl}{\ensuremath{\mathtt{ngl}}\xspace}
+\newcommand{\Hoo}{\mathrm{H}_\infty}
+\newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
+\newcommand{\Dom}{\mathsl{Dom}}
+\newcommand{\Range}{\mathsl{Rng}}
+\newcommand{\Keys}{\mathsl{Keys}}
+\def\col{\mathrm{Col}}
+
+\newcommand{\ddetbin}{\ensuremath{\mathcal{D}^{det,\{0,1\}}}}
+\newcommand{\drandbin}{\ensuremath{\mathcal{D}^{rand,\{0,1\}}}}
+\newcommand{\ddetrange}{\ensuremath{\mathcal{D}^{det,[0,1]}}}
+\newcommand{\drandrange}{\ensuremath{\mathcal{D}^{rand,[0,1]}}}
+
+\newcommand{\expinfo}{\ensuremath{\mathcal{E}}}
+\newcommand{\ext}{\ensuremath{\mathtt{ext}}}
+\newcommand{\cext}{\ensuremath{\mathtt{cext}}}
+\newcommand{\rext}{\ensuremath{\mathtt{rext}}}
+\newcommand{\cons}{\ensuremath{\mathtt{cons}}}
+\newcommand{\decons}{\ensuremath{\mathtt{decons}}}
+
+
+\newcommand{\lwe}{\class{LWE}}
+\newcommand{\LWE}{\class{LWE}}
+\newcommand{\distLWE}{\ensuremath{\class{dist\mbox{-}LWE}}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{construction}[theorem]{Construction}
+
+\newcounter{ctr}
+\newcounter{savectr}
+\newcounter{ectr}
+
+\newenvironment{newitemize}{%
+\begin{list}{\mbox{}\hspace{5pt}$\bullet$\hfill}{\labelwidth=15pt%
+\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{3pt} }}{\end{list}}
+
+
+\newenvironment{newenum}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=17pt%
+\labelsep=5pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{tiret}{%
+\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+\labelsep=3pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt}}}{\end{list}}
+
+
+\newenvironment{blocklist}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{20pt}}}{\end{list}}
+
+\newenvironment{blocklistindented}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=30pt \leftmargin=30pt\topsep=5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt}}}{\end{list}}
+
+\newenvironment{onelist}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=18pt%
+\labelsep=7pt \leftmargin=25pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{twolist}{%
+\begin{list}{{\rm (\arabic{ctr}.\arabic{ectr})}%
+\hfill}{\usecounter{ectr} \labelwidth=26pt%
+\labelsep=7pt \leftmargin=33pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{centerlist}{%
+\begin{list}{\mbox{}}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt} }}{\end{list}}
+
+\newenvironment{newcenter}[1]{\begin{centerlist}\centering%
+\item #1}{\end{centerlist}}
+
+\newenvironment{codecenter}[1]{\begin{small}\begin{centerlist}\centering%
+\item #1}{\end{centerlist}\end{small}}
+
+\newcommand{\ve}{\vect{e}}
+\newcommand{\vm}{\vect{m}}
+\newcommand{\vy}{\vect{y}}
+\newcommand{\vE}{\vect{E}}
+\newcommand{\vS}{\vect{S}}
+\newcommand{\vA}{\vect{A}}
+\newcommand{\vc}{\vect{c}}
+\newcommand{\vW}{\vect{W}}
+\newcommand{\vQ}{\vect{Q}}
+\newcommand{\vR}{\vect{R}}
+\newcommand{\vU}{\vect{U}}
+\newcommand{\vT}{\vect{T}}
+\newcommand{\vX}{\vect{X}}
+\newcommand{\vB}{\vect{B}}
+\newcommand{\vz}{\vect{z}}
+\newcommand{\vd}{\vect{d}}
+\newcommand{\vs}{\vect{s}}
+\newcommand{\vx}{\vect{x}}
+\newcommand{\va}{\vect{a}}
+\newcommand{\vb}{\vect{b}}
+\newcommand{\vgamma}{\mathbf{\Gamma}}
+\newcommand{\vt}{\vect{t}}
+\newcommand{\vu}{\vect{u}}
+\newcommand{\vF}{\vect{F}}
+\newcommand{\recout}{x}
+\newcommand{\ignore}[1]{}
+\newcommand{\M}{\mathcal{M}}
+
+
+\begin{document}
+\begin{itemize}
+\item $A$-adversary, generally unbounded
+\item $B$-ball for distance calculation
+\item $c$-codeword
+\item $C$-code
+\item $C$-also being used as input circuit to obfuscation
+\item $D$-distinguisher
+\item $d$-length of seed in extractor
+\item $\mathcal{D}$-class of distinguishers
+\item $\dis$-distance function for metric space
+\item $\mathbb{F}$-field
+\item $gap$-difference between entropy and size of ball
+\item $G$-group (for Diffie-Hellman)
+\item $g$-generator of group
+\item $h$-element of a group
+\item $\Hoo$-min-entropy of random variable
+\item $\Hav$-conditional min-entropy of random variable
+\item $i$-index for block number
+\item $I$-point function
+\item $\ell$-number of blocks in input source, also length of code
+\item $\mathcal{M}$-metric space
+\item $m$-starting entropy of source
+\item $\tilde{m}$-remaining entropy after extraction/conduction
+\item $n$-security parameter, also size of each block
+\item $\mathcal{O}$-obfuscator for a family of functions
+\item $P$-public info generated by fuzzy extractor
+\item $p$-prime
+\item $q$-prime
+\item $R$-key generated by fuzzy extractor
+\item $r$-also being used for randomness of obfuscation algorithm
+\item $S$-simulator for obfuscation 
+\item $s$-size of distinguisher (with various subscripts)
+\item $t$-desired error tolerance
+\item $U$-uniform distribution
+\item $W$-distribution of source
+\item $\mathcal{W}$-class of distributions accepted to fuzzy extractor
+\item $w'$-second reading of source
+\item $X$-starting value for entropy
+\item $y$-intermediate value output by conductor
+\item $Y$-condition for entropy
+\item $\mathcal{Z}$-alphabet for each block
+\item $z$-auxiliary input in security of obfuscation
+
+\item $\delta$-error of fuzzy extractor
+\item $\epsilon$-advantage of distinguisher (with various subscripts)
+\item $\chi_1$-input space for extractor
+\item $\chi_2$-space for condition of $Y$
+\item $\kappa$-key length (also output of extractor)
+\item $\psi$-polynomial slowdown of output of obfuscator
+\item $\rho$-quality of obfuscation simulator
+
+\item $\gen$-generate of fuzzy extractor
+\item $\rep$-reproduce of fuzzy extractor
+\item $\gen'$-generate of fuzzy conductor
+\item $\rep'$-reproduce of fuzzy conductor
+\item $\ext$-randomness extractor
+\item $\neigh$-set of possible neighbors for a given codeword
+\item $\poly$-something bounded by a fixed polynomial in the input parameter
+\end{itemize}
+
+\end{document}
