@@ -794,12 +794,13 @@ Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta
 
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.   The first is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Second, we obtain only a single bit from each block of $W_i$ which seems sub optimum.  Lastly, Hamming distance is computed over an alphabet of exponential size, which precludes use in some applications. We begin to address this weakness in the next section.
 
-\section{Reducing Alphabet Size}
-\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  Unfortunately, each block is individually obfuscated causing the blocks to be of super-polynomial size~(our analysis was in the case where the blocks where exponential in the security parameter).  In this section, we present a generalization of \consref{cons:first construction} where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  Unfortunately, obfuscated multiple blocks together decreases the effective error tolerance.  
+\section{Sample-then-Obfuscate}
+\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization of where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  This has two advantages, first it simplifies the type of sources we consider as we no longer need high entropy blocks.  Second, it allows us to decrease the size of each block from exponential to a super polynomial $2^{\log^c n}$ for some $c>0$.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  
+
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $Z$ be an alphabet where $|Z| = \Omega(n)$, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.  Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
+Let $Z$ be an alphabet where $|Z| = \omega(\poly(n))$, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.  Let $\sample_\beta(\gamma)$ output a uniform subset of indices of $1,..., \gamma$ of size $\beta$. Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -810,7 +811,7 @@ Let $Z$ be an alphabet where $|Z| = \Omega(n)$, and let $W = W_1,..., W_\gamma$ 
 \item Sample $c\leftarrow C$.
 \item For $i=1,..., \ell$:
 \begin{itemize}
-\item Sample $j_{i, 1},..., j_{i, \eta}\overset{\$}\leftarrow \{1,..., \gamma\}$
+\item Sample $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_\eta(\gamma)$
 \item If $c_i = 0$: 
 \subitem Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
 \subitem Set $\rho_i = \mathcal{O}(I_{w_i})$.
@@ -841,15 +842,34 @@ Let $Z$ be an alphabet where $|Z| = \Omega(n)$, and let $W = W_1,..., W_\gamma$ 
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated alphabet symbols of $W$.  In the setting where each symbol of $W$ is long enough for secure obfuscation, \consref{cons:sampling} is essentially the same as \consref{cons:first construction}.  As before we must show security and correctness of \consref{cons:sampling}.  For security, the main argument is that each of the $v_i$ created has enough entropy to be unguessable.  We show this in the setting of block fixing sources~\cite{KZ07}.  This argument comes from the sampling literature~(used to create locally computable randomness extractors~\cite{lu2002hyper,vadhan2003constructing}).  For correctness we must show that the probability for each symbol $v_i \neq v_i'$ is a small constant so that $c'$ will be corrected to $c$.
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated alphabet symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  There is a crucial difference, our use of a computationally-secure primitive allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  
+
+As before we must show security and correctness of \consref{cons:sampling}.  For security, the main argument is that each of the $v_i$ created has enough entropy to be unguessable.  For correctness we must show that the probability for each symbol $v_i \neq v_i'$ is a small constant so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
-In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $v_i$ has entropy on its own.  Consider a source with entropy $\lambda$.  Then the expected entropy of 
+In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $v_i$ has entropy on its own.  From here security follows as the set of $V_1,..., V_\ell$ is a block-unguessable distribution and then overall security follows by \thref{thm:security of cons}.  Consider a source with entropy $\lambda$.  Then the expected entropy of 
 \begin{align*}
 \expe[\Hoo(V_i)] &=\expe[\text{entropy of each uniform }w_j] (\text{number of }w_j\text{ selected})\\
 &=\frac{\lambda}{\gamma} \times \eta= \frac{\lambda \eta}{\gamma}.
 \end{align*}
-This value is super-logarithmic when $\lambda = \omega (\frac{\gamma \log n}{\eta})$.
+This value is super-logarithmic when $\lambda = \omega (\frac{\gamma \log n}{\eta})$.  Note this is independent of how the entropy is distributed between blocks.  In particular, we make no assumptions about particular blocks being unguessable, only about the overall entropy rate.  This is a much more natural condition for a source than \defref{def:block guessable}.  To show security we need the entropy of all $v_i$ to be $\omega(\log n)$ with overwhelming probability.  This follows by an argument from the locally computable extractor literature.
+
+\begin{theorem}
+\label{th:samp sec}
+Let $n$ be a security parameter and let $Z$ be some super-polynomially size alphabet.  Let $W = W_1,..., W_\gamma$ be a distribution where each $W_i$ is over $Z$.  Let 
+\[
+\Hoo(W) = \omega\left(\frac{\gamma \log n}{\eta}\right),
+\] 
+then for all $i$ and for all values of $j_{1,1},..., j_{\ell, \eta}$ the distribution $\delta(V_i | j_{1,1},..., j_{\ell, \eta} , V'_i ) <\epsilon_{sam}$ where $\Hoo(V_i') = \omega(\log n)$.
+\end{theorem}
+
+\begin{corollary}
+\label{cor:samp unguess}
+Let $n, Z, W$ be as in \thref{th:samp sec}, then for all $j_{1,1},..., j_{\ell, \eta}$, $V | j_{1,1},..., j_{\ell,\eta}$ is $\epsilon_{sam}$ close to a $(\poly(n), \alpha = \omega(\log n), 0)$-block unguessable distribution.  In particular, If $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator with auxiliary inputs for point programs over $\zo^{\beta}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = 2\epsilon_{obf} + \ell(\epsilon_{sam} + 2^{-(\alpha-1)})$.
+\end{corollary}
+\begin{proof}
+Direct result of \thref{th:samp sec}, \bnote{need a claim saying if all $W_i$ have entropy, we are block unguessable}, and \thref{thm:security of cons}.
+\end{proof}
 
 \bnote{something something about by sampling theory the prob of this being more than constant from expected value is negligible.}
 \bnote{need to finish this}
@@ -862,19 +882,20 @@ The argument that $1\rightarrow 0$ flips are extremely unlikely carries over fro
 &=\left (1-\frac{t}{\gamma}\right)^{\eta}
 \end{align*} 
 This value is $\Theta(1)$ when $t = \Theta(\frac{\gamma }{\eta})$.
-\bnote{finish}
+\bnote{finish, Chernoff, not far from expectation.}
 
 \subsection{Discussion}
-As shown above we get security when $\lambda = \omega(\gamma \log n/\eta)$ and correctness when $t = \Theta(\gamma /\eta)$.  This yields:
-\begin{align*}
-gap &= \Hoo(W) -\log |B_t| \\
-&< \omega(\frac{\gamma  \log n}{\eta} ) - (\Theta(t \mu) + \log {\gamma \choose t})\\
-&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \mu^2}{\eta}))\\
-&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \log |Z|}{\eta}))\\
-&= \omega(\frac{\gamma \log n}{\eta})
-\end{align*}
-%Taking $\gamma = \Omega(n)$ and $\eta = \log^c n$ yields a negative $gap$.
-\bnote{finish}
+\bnote{need to write this once we have parameters in the two sections above.}
+%As shown above we get security when $\lambda = \omega(\gamma \log n/\eta)$ and correctness when $t = \Theta(\gamma /\eta)$.  This yields:
+%\begin{align*}
+%gap &= \Hoo(W) -\log |B_t| \\
+%&< \omega(\frac{\gamma  \log n}{\eta} ) - (\Theta(t \mu) + \log {\gamma \choose t})\\
+%&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \mu^2}{\eta}))\\
+%&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \log |Z|}{\eta}))\\
+%&= \omega(\frac{\gamma \log n}{\eta})
+%\end{align*}
+%%Taking $\gamma = \Omega(n)$ and $\eta = \log^c n$ yields a negative $gap$.
+%\bnote{finish}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
