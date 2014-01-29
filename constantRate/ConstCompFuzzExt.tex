@@ -17,7 +17,7 @@
 \usepackage{latexsym}
 \usepackage{color}
 \usepackage{framed}
-\usepackage{algpseudocode} 
+\usepackage{algpseudocode}  
 
 \mathchardef\mhyphen="2D
 
@@ -795,12 +795,21 @@ Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.   The first is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Second, we obtain only a single bit from each block of $W_i$ which seems sub optimum.  Lastly, Hamming distance is computed over an alphabet of exponential size, which precludes use in some applications. We begin to address this weakness in the next section.
 
 \section{Sample-then-Obfuscate}
-\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization of where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  This has two advantages, first it simplifies the type of sources we consider as we no longer need high entropy blocks.  Second, it allows us to decrease the size of each block from exponential to a super polynomial $2^{\log^c n}$ for some $c>0$.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  
+\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization of where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  This has two advantages, first it simplifies the type of sources we consider as we no longer need high entropy blocks.  Second, it allows us to decrease the size of each block from exponential to a super polynomial $2^{\log^c n}$ for some $c>0$.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  In ordering for sampling to work properly, we need a source that is likely contribute some entropy from a randomly chosen block.  
 
+\begin{definition}
+\label{def:unordered source}
+A distribution $W = W_1,..., W_\gamma$ is called a $(\alpha, \beta)$-unordered block source if there exists a set of indices $\mathcal{I}$ where $|\mathcal{I}| \geq \gamma - \beta$ such that the following holds:
+\[
+\forall i\in \mathcal{I}, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_i | W_1 = w_1,..., W_{i-1}=w_{i-1}, W_{i+1}=w_{i+1},..., W_\gamma = w_\gamma) \geq \alpha.
+\]
+\end{definition}
+
+\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), an unordered block source is one where most blocks contribute some entropy conditioned on the value of the other blocks.  This is a strengthening of an unguessable block distribution~(\defref{def:block guessable}), however we will achieve security for significantly lower entropy levels than were necessary for block unguessable distributions.  
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $Z$ be an alphabet where $|Z| = \omega(\poly(n))$, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.  Let $\sample_\beta(\gamma)$ output a uniform subset of indices of $1,..., \gamma$ of size $\beta$. Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
+Let $Z$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.  Let $\sample_\beta(\gamma)$ output a uniform subset of indices of $1,..., \gamma$ of size $\beta$. Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable f for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -842,17 +851,22 @@ Let $Z$ be an alphabet where $|Z| = \omega(\poly(n))$, and let $W = W_1,..., W_\
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated alphabet symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  There is a crucial difference, our use of a computationally-secure primitive allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated alphabet symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  There is a crucial difference, our use of a computationally-secure primitive allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  Our construction uses the na\"{i}ve sampler that takes truly random samples, the analysis is essentially the same for more sophisticated samplers that use fewer random bits.  Goldreich provides an accessible introduction to samplers~\cite{goldreich1997sample}.
 
-As before we must show security and correctness of \consref{cons:sampling}.  For security, the main argument is that each of the $v_i$ created has enough entropy to be unguessable.  For correctness we must show that the probability for each symbol $v_i \neq v_i'$ is a small constant so that $c'$ will be corrected to $c$ with overwhelming probability.
+As before we must show security and correctness of \consref{cons:sampling}.  For security, the main argument is that each of the $v_i$ has enough entropy to be unguessable.  For correctness we must show that the induced error rate in $v$ and $v'$ is a small constant so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
-In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $v_i$ has entropy on its own.  From here security follows as the set of $V_1,..., V_\ell$ is a block-unguessable distribution and then overall security follows by \thref{thm:security of cons}.  Consider a source with entropy $\lambda$.  Then the expected entropy of 
-\begin{align*}
-\expe[\Hoo(V_i)] &=\expe[\text{entropy of each uniform }w_j] (\text{number of }w_j\text{ selected})\\
-&=\frac{\lambda}{\gamma} \times \eta= \frac{\lambda \eta}{\gamma}.
-\end{align*}
-This value is super-logarithmic when $\lambda = \omega (\frac{\gamma \log n}{\eta})$.  Note this is independent of how the entropy is distributed between blocks.  In particular, we make no assumptions about particular blocks being unguessable, only about the overall entropy rate.  This is a much more natural condition for a source than \defref{def:block guessable}.  To show security we need the entropy of all $v_i$ to be $\omega(\log n)$ with overwhelming probability.  This follows by an argument from the locally computable extractor literature.
+In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $v_i$ has entropy on its own.  This means that  $V_1,..., V_\ell$ is a block-unguessable distribution and security follows by \thref{thm:security of cons}.  Consider a source with entropy $\lambda$.  The expected number of selected blocks that have entropy at least $\alpha$ is $\frac{\gamma-\beta}{\gamma} \times \beta$.  A good sampler selects a within a constant fraction of the expected number of these blocks.
+
+\begin{lemma}
+\bnote{write a lemma about this}
+\end{lemma}
+%\begin{align*}
+%\expe[\Hoo(V_i)] &=\expe[\text{entropy of each uniform }w_j] (\text{number of }w_j\text{ selected})\\
+%&=\frac{\lambda}{\gamma} \times \eta= \frac{\lambda \eta}{\gamma}.
+%\end{align*}
+%This value is super-logarithmic when $\lambda = \omega (\frac{\gamma \log n}{\eta})$.  Note this is independent of how the entropy is distributed between blocks.  In particular, we make no assumptions about particular blocks being unguessable, only about the overall entropy rate.  This is a much more natural condition for a source than \defref{def:block guessable}.  
+%To show security we need the entropy of all $v_i$ to be $\omega(\log n)$ with overwhelming probability.  This follows by an argument from the locally computable extractor literature.
 
 \begin{theorem}
 \label{th:samp sec}
@@ -860,7 +874,7 @@ Let $n$ be a security parameter and let $Z$ be some super-polynomially size alph
 \[
 \Hoo(W) = \omega\left(\frac{\gamma \log n}{\eta}\right),
 \] 
-then for all $i$ and for all values of $j_{1,1},..., j_{\ell, \eta}$ the distribution $\delta(V_i | j_{1,1},..., j_{\ell, \eta} , V'_i ) <\epsilon_{sam}$ where $\Hoo(V_i') = \omega(\log n)$.
+then for all $i$ and for all values of $j_{1,1},..., j_{\ell, \eta}$ the distribution $\delta(V_i | j_{1,1},..., j_{\ell, \eta} , V'_i ) <\epsilon_{sam}$ where $\Hoo(V_i') = \omega(\log n)$.\bnote{I think $\epsilon_{sam}$ will be a negligible for resultant entropy of $O(\beta \times \alpha \times (\mathcal{I}-\beta)/\mathcal{I})$.}
 \end{theorem}
 
 \begin{corollary}
