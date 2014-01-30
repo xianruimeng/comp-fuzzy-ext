@@ -490,9 +490,11 @@ We describe $\gen, \rep$ as follows:
 \item \underline{Input}: $w = w_1,..., w_\ell$
 \item Sample $c\leftarrow C$.
 \item For $i=1,..., \ell$:
-\subitem If $c_i = 0$: $p_i = \mathcal{O}(I_{w_i})$.
-\subitem Else: Sample $r_i \leftarrow U_n$. 
-\subsubitem Let $p_i = \mathcal{O}(I_{r_i})$.
+\begin{enumerate}
+\item If $c_i = 0$: $p_i = \mathcal{O}(I_{w_i})$.
+\item Else: Sample $r_i \leftarrow U_n$. 
+\subitem Let $p_i = \mathcal{O}(I_{r_i})$.
+\end{enumerate}
 \item Output $(c, p)$.
 \end{enumerate}
  \end{minipage} &
@@ -501,8 +503,10 @@ We describe $\gen, \rep$ as follows:
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$ 
 \item For $i=1,..., \ell$:
-\subitem If $p_i(w_i') = 1$: set $c_i' = 0$.
-\subitem Else: set $c_i' = 1$.
+\begin{enumerate}
+\item If $p_i(w_i') = 1$: set $c_i' = 0$.
+\item Else: set $c_i' = 1$.
+\end{enumerate}
 \item Set $c = \decode(c')$.
 \item Output $c$.
 \end{enumerate}
@@ -691,21 +695,21 @@ Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta
 
 \section{Sample-then-Obfuscate}
 \label{sec:sampling}
-\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization of where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  This has two advantages, first it simplifies the type of sources we consider as we no longer need high entropy blocks.  Second, it allows us to decrease the size of each block from exponential to an arbitrary super polynomial.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  In ordering for sampling to work properly, we need a source that is likely contribute some entropy from a randomly chosen block.  
+\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).  The main advantage of this approach is it expands the supported sources as no single block must have high entropy.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source that is likely contribute some entropy from a randomly chosen block.  
 
 \begin{definition}
 \label{def:unordered source}
-A distribution $W = W_1,..., W_\gamma$ is called a $(\alpha, \beta)$-unordered block source if there exists a set of indices $\mathcal{I}$ where $|\mathcal{I}| \geq \gamma - \beta$ such that the following holds:
+A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-unordered block source if there exists a set of indices $\mathcal{I}$ where $|\mathcal{I}| \geq \gamma - \beta$ such that the following holds:
 \[
 \forall i\in \mathcal{I}, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_i | W_1 = w_1,..., W_{i-1}=w_{i-1}, W_{i+1}=w_{i+1},..., W_\gamma = w_\gamma) \geq \alpha.
 \]
 \end{definition}
 
-\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), an unordered block source is one where most blocks contribute some entropy conditioned on the value of the other blocks.  This is a strengthening of an unguessable block distribution~(\defref{def:block guessable}), however we will achieve security for significantly lower entropy levels than were necessary for block unguessable distributions.  We will use an algorithm that draws random samples from block sources.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs $\eta$ random and unique indices of $\{1,..., \gamma\}$ and let $r_{sam}$ the number of required coins for $\sample$.
+\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), an unordered block source is one where most blocks contribute some entropy conditioned on the value of the other blocks.  This is a strengthening of an unguessable block distribution~(\defref{def:block guessable}), however we achieve security for significantly lower entropy levels than were necessary for block unguessable distributions.  We use an algorithm that draws random samples from block sources.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample$.
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = Omega(n)$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.   Let $\eta = \omega(\log n)$ be some function such that $\eta \log (\mathcal{Z}) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable f for the family of point functions over $\zo^\eta\times \mathcal{Z}$.  Define $\gen, \rep$ as:
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.   Let $\eta = \omega(\log n)$ and let $\mathcal{O}$ be a $\ell$-composable obfuscator\bnote{right def?} for the family of point functions over $\zo^\eta\times \mathcal{Z}$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -715,16 +719,16 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \item \underline{Input}: $w = w_1,..., w_\gamma$
 \item Sample $c\leftarrow C$.
 \item For $i=1,..., \ell$:
-\begin{itemize}
+\begin{enumerate}
 \item Sample $\lambda_i\overset{\$}\leftarrow \zo^{r_{sam}}$.
 \item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\eta,\gamma}( \lambda_i)$
 \item If $c_i = 0$: 
 \subitem Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
-\subitem Set $\rho_i = \mathcal{O}(I_{w_i})$.
+\subitem Set $\rho_i = \mathcal{O}(I_{v_i})$.
 \subitem Set $p_i = \rho_i, \lambda_i$.
 \item If $c_i = 1$: Sample $r_i \leftarrow U_n$. 
-\subitem Let $p_i = \mathcal{O}(I_{r_i}) \lambda_i$.
-\end{itemize}
+\subitem Let $p_i = \mathcal{O}(I_{r_i}), \lambda_i$.
+\end{enumerate}
 \item Output $(c, p)$.
 \end{enumerate}
  \end{minipage} &
@@ -733,13 +737,13 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$ 
 \item For $i=1,..., \ell$:
-\begin{itemize}
+\begin{enumerate}
 \item Parse $p_i$ as $\rho_i, \lambda_i$.
 \item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\gamma, \eta}(\lambda_i)$.
-\item Set $v_i = w_{j_{i, 1}},..., w_{j_{i, \eta}}$.
-\item If $\rho_i(w_i') = 1$ set $c_i' = 0$.
+\item Set $v_i' = w_{j_{i, 1}},..., w_{j_{i, \eta}}$.
+\item If $\rho_i(v_i') = 1$ set $c_i' = 0$.
 \item Else set $c_i' = 1$.
-\end{itemize}
+\end{enumerate}
 \item Set $c = \decode(c')$.
 \item Output $c$.
 \end{enumerate}
@@ -749,12 +753,11 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated alphabet symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  There is a crucial difference, our use of a computationally-secure primitive allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  Our construction uses the na\"{i}ve sampler that takes truly random samples, the analysis is essentially the same for more sophisticated samplers that use fewer random bits.  Goldreich provides an accessible introduction to samplers~\cite{goldreich1997sample}.
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated alphabet symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  There is a crucial difference, our use of a computational primitive allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  Our construction uses the na\"{i}ve sampler that takes truly random samples, but the public randomness can be substantially decreased by using more sophisticated samplers.  Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
 
-As before we must show security and correctness of \consref{cons:sampling}.  For security, the main argument is that each of the $v_i$ has enough entropy to be unguessable.  For correctness we must show that the induced error rate in $v$ and $v'$ is a small constant so that $c'$ will be corrected to $c$ with overwhelming probability.
+As before we show security and correctness of \consref{cons:sampling}.  For security, we argue that each of the $v_i$ is unguessable.  For correctness we show that the induced error rate in $v$ and $v'$ is a small constant~(with overwhelming probability) so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
-Consider a source where most blocks have some entropy~(conditioned on the rest).
 In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $v_i$ has super-logarithmic entropy on its own.  A sampler will select enough good blocks almost all the time, meaning if we take enough samples we obtain a super-logarithmic amount of entropy.  This means that  $V_1,..., V_\ell$ is a block-unguessable distribution~(by \clref{cl:all blocks entropy}) and security follows by \thref{thm:security of cons}.     
 
 \begin{lemma}
@@ -762,20 +765,21 @@ In order to show security \consref{cons:sampling}, we show that with overwhelmin
 Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1/2-\Theta(1)))$-unordered block source.  Let $\eta = \Omega(\log n)$. Consider some fixed $i$, the distribution $V_{i}, \Lambda_i$ is $(\ngl(n)+ 2^{-\Omega(n)})$-close to a distribution $V', U_{r_{sam}}$ where for all $u\in U_{r_{sam}}$ $V' | U_{r_{sam}}=u$, $\Hoo(V' | U_{r_{sam}}=u) \geq \Omega(\alpha\times (1-2\times \beta) \times \eta) = \omega(\log n) = \alpha'$.
 \end{lemma}
 \begin{proof}
-By~\cite[Lemma 9]{vadhan2003constructing}, noting that the truly random sampler is optimum in necessary samples and we take $\eta = \Omega(\log n)$ samples.  \bnote{need someone to check parameters, I am fairly sure of the quality of the statement}
+By~\cite[Lemma 9]{vadhan2003constructing}, noting that the truly random sampler is optimum in necessary samples and we take $\eta = \Omega(\log n)$ samples.  \bnote{need someone to check parameters, in the abstract, I am fairly sure the statement makes sense, but I could easily have messed something up}
 \end{proof}
 
 \begin{corollary}
 \label{cor:samp sec}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma /2-\Omega(1))$-unordered block source.  Let $\eta = \Omega(\log n)$.  
-The distribution $V, \Lambda$ is $\epsilon_{sam}(\ell (\ngl(n) +2^{-\Omega(n)})) = \ngl(n)$-close to a distribution $V', U_{\ell\times r_{sam}}$ where for $u\in U_{\ell\times r_{sam}}$ for all $i$, $\Hoo(V_i' | U_{\ell\times r_{sam}} =u)\geq \alpha'$.
+Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma /2-\Omega(1))$-unordered block source.  Let $\eta = \Omega(\log n)$.  Denote by $\epsilon_{sam} = \ngl(n) + 2^{-\Omega(n)} = \ngl(n)$ the value from \lemref{lem:sampling works}.
+Then, the distribution $(V, \Lambda)$ is $(\ell\epsilon_{sam})$-close to a distribution $(V', U_{\ell\times r_{sam}})$ where for $u\in U_{\ell\times r_{sam}}$ for all $i$, $\Hoo(V_i' | U_{\ell\times r_{sam}} =u)\geq \alpha'$.
 \end{corollary}
 \begin{proof}
-Union bound over the statistical distance in \lemref{lem:sampling works}.
+Hybrid argument over the statistical distance in \lemref{lem:sampling works}.
 \end{proof}
 
 \begin{corollary}
 \label{cor:v are unguessable}
+Let $W, V, \Lambda, V', U_{\ell\times r_{sam}}$ be as in \corref{cor:samp sec}.
 Let $q = \poly(n)$, there exists some $\alpha'' = \omega(\log n)$ such that distribution $V' , U_{\ell\times r_{sam}}$ is a $(q, \alpha'', 0)$-block unguessable distribution.
 \end{corollary}
 \begin{proof}
@@ -784,7 +788,7 @@ Result of \clref{cl:all blocks entropy}.
 
 \begin{corollary}
 \label{cor:samp unguess}
-Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \epsilon_{sam}+ 2^{-(\alpha''-1)}) = \ngl(n)$.
+Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator \bnote{what type of obfuscator?} with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \ell\epsilon_{sam}+ 2^{-(\alpha''-1)}) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
 Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
@@ -803,23 +807,23 @@ The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref
 Thus, by setting $c = -\log(1-t'/\ell)/2$ we obtain in $\expe[\dis(v, v')\leq t']$.  We need a stronger condition that this occurs with overwhelming probability.
 
 \begin{lemma}
-Let $n, W$ be as above and Let $C$ be a code that corrects $t$ $0\rightarrow 1$ bit errors where $t =\Theta(\eta)$.  Let $c = -\log(1-t'/(2\ell))/2 = \Theta(1)$, when $t \leq c(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\ell})$ where the probability is over the coins of $\gen$.
+Let $n, W$ be as above and Let $C$ be a code that corrects $t$ $0\rightarrow 1$ bit errors where $t =\Theta(\eta)$.  Let $c = -\log(1-t'/(2\ell))/2 = \Theta(1)$, when $t \leq c(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\eta})$ where the probability is over the coins of $\gen$.
 \end{lemma}
 \begin{proof}
 With each $i$ we can associate a Bernoulli random variable $X_i \overset{def}= V_i \overset{?}\neq V_i'$.  As stated above, we have that $\expe[X_i] \leq 1-\frac{1}{4}^c = t'/(2\eta)$. By the Chernoff bound, we have
 \begin{align*}
-\Pr\left[\frac{1}{\eta} \sum_{i=1}^\eta X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\eta} = O(e^{- \ell}) 
+\Pr\left[\frac{1}{\eta} \sum_{i=1}^\eta X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\eta} = O(e^{- \eta}) 
 \end{align*}
 \end{proof}
 
 \begin{corollary}
-Let $\ell = \omega(\log n)$ and let $C\subset\zo^\ell$ and  be a code that corrects $t' = \Theta(\ell)$ $0\rightarrow 1$ bit errors.  Then when 
+Let $\eta = \omega(\log n)$ and let $C\subset\zo^\ell$ and  be a code that corrects $t' = \Theta(\ell)$ $0\rightarrow 1$ bit errors.  Then when 
 \[
-\dis(w, w')\leq \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = O(\frac{\gamma-\eta}{\eta}) = O(\gamma/\eta)
+\dis(w, w')= \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = O(\frac{\gamma-\eta}{\eta}) = O(\gamma/\eta)
 \] 
 and $(R, P)\leftarrow \gen(w)$, then 
 \[
-\Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{2^n} - O(2^{-\ell}) = 1-\ngl(n).
+\Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{2^n} - O(2^{-\eta}) = 1-\ngl(n).
 \]
 That is, \consref{cons:sampling} is correct with error at most $\ngl(n)$.
 
