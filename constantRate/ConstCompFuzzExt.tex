@@ -833,13 +833,17 @@ Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
 
 
 \subsection{Correctness of \consref{cons:sampling}}
-The argument that $1\rightarrow 0$ flips are extremely unlikely carries over from \consref{cons:first construction}.  In this section, we analyze what values of $t$ will yield a small constant likelihood of error between $v_i$ and $v_i'$ yielding a constant probability of bit flip $0\rightarrow 1$ between $c$ and $c'$.  Consider a single index $i$ and let $t$ be the number of errors between $w$ and $w'$.  Then 
+The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  Let $t'$ be the capacity of $C$.  To show correctness we must show that with overwhelming probability $\dis(v, v')\leq t'$.  Let $t$ be the number of supported errors between $w$ and $w'$.  Let $c>0$ and let $t = c(\gamma-\eta)/\eta$, for any  $i$ one has:
+% In this section, we analyze what values of $t$ will yield a small constant likelihood of error between $v_i$ and $v_i'$ yielding a constant probability of bit flip $0\rightarrow 1$ between $c$ and $c'$.  Consider a single index $i$ and let $t$ be the number of errors between $w$ and $w'$.  Then 
 \begin{align*}
-\Pr[v_i = v_i' ] &= \Pr[w_{j_{i,1}} = w_{j_{i,1}}' \wedge ... \wedge w_{j_{i, \eta/|Z|}} = w_{j_{i, \eta}}']\\
-&=\Pr[w_{j_{i,1}} = w_{j_{i,1}}'] \times ... \times \Pr[w_{j_{i, \eta/|Z|}} = w_{j_{i, \eta}}']\\
-&=\left (1-\frac{t}{\gamma}\right)^{\eta}
+\expe \Pr[v_i = v_i'] &=\Pr[j_{i,1},..., j_{i,\eta}\text{ have no errors}]\\
+&\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{c(\gamma-\eta)/\eta}{\gamma-i}\right)\\
+&\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{c}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{c}{\eta}\right) \\
+&\geq \left(1-\frac{c}{\eta}\right)^{\eta} =\left( \left(1-\frac{c}{\eta}\right)^{\eta/c}\right)^c\geq \frac{1}{4}^c
 \end{align*} 
-This value is $\Theta(1)$ when $t = \Theta(\frac{\gamma }{\eta})$.
+Thus, by setting $c = -\log(1-t')/2$ we obtain in $\expe[\dis(v, v')\leq t']$.  We need a stronger condition that this occurs with overwhelming probability.
+
+
 \bnote{finish, Chernoff, not far from expectation.}
 
 \subsection{Discussion}
