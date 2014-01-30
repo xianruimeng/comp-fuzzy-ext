@@ -556,59 +556,12 @@ This is done in \lemref{lem:sim cannot distinguish}.
 \item By the security of obfuscation, $S^{\mathcal{O}}(C') \approx_c D(C', P)$~(\defref{def:obf}).
 \end{itemize}
 
-Together these arguments allow us to conclude:
+\noindent Together these arguments allow us to conclude:
 \begin{theorem}
 \label{thm:security of cons}
 Let $\mathcal{O}$ be an $\ell$-composable virtual black box obfuscator with auxiliary inputs for point programs over $\zo^n$ that is $(s_{obf}, \epsilon_{obf})$-hard.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Then $H^{\hill}_{\epsilon', s_{obf}}( C | P ) \geq |C| - \beta$ for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{theorem}
 
-\noindent
-We now prove $S$ cannot distinguish between $C$ and $C'$.  
-Let $\mathcal{I}$ be the set of all indices in \defref{def:block guessable}.  Recall that $C'$ is a uniformly distributed codeword conditioned on agreeing with $C$ in all coordinates of $C_{\mathcal{I}^c}$.
-\begin{lemma}
-\label{lem:sim cannot distinguish}
-$\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) \le (\ell-\beta) 2^{-(\alpha+1)}$.
-\end{lemma}
-
-\begin{proof}
-\noindent It suffices to show that for any two codewords that agree on $\mathcal{I}^c$, the statistical distance is at most $2^{-(\alpha+1)}$.
-\begin{lemma}
-\label{lem:codewords in I close}
-Let $c^*$ be true value encoded in $X$ and let $c'$ a codeword in $C'$.  Then, 
-\[
-\Delta( S^{\mathcal{O}_X(\cdot, \cdot)}(c^*), S^{\mathcal{O}_X(\cdot, \cdot)}(c')) \le ( \ell -\beta) 2^{-(\alpha+1)}.
-\]
-\end{lemma}
-\begin{proof}
-Recall that for all $i\in \mathcal{I}$, $\Hav(W_i | View(S))\geq \alpha$.  The only information about the correct value of $c_i^*$ is contained in the query responses.  When all responses are $0$ the view of $S$ is identical when presented with $c^*$ or $c'$.  We now show that for any value of $c^*$ all queries on $i \in \mathcal{I}$ return $0$ with probability $1-2^{-\alpha+1}$.  Suppose not, that is suppose, the probability of at least one nonzero response on index $i$ is $> 2^{-(\alpha+1)}$.  Since $w, w'$ are independent of $r_i$, the probability of this happening when $c^*_i = 1$ is at most $q/2^n$ or equivalently $2^{-n+\log q}$.  Thus, it must occur with probability:
-\begin{align}
-2^{-\alpha+1}&<\Pr[\text{non zero response location }i]\nonumber \\
- &= \Pr[c_i^* =1]\Pr[\text{non zero response location }i\wedge c_i^*=1]\nonumber \\&+ \Pr[c_i^*=0] \Pr[\text{non zero response location }i \wedge c_i^*=0]\nonumber \\
-&\le 1\times 2^{-n+\log q} + 1\times  \Pr[\text{non zero response location }i \wedge c_i^*=0] \label{eq:ways to remove ent}
-\end{align}
-We now show that $n-\log q \geq \alpha$:
-\begin{claim}
-\label{cl:ent bounded away from n}
-$n-\log q \geq \alpha$
-\end{claim}
-\begin{proof}
-It suffices to show that there exists a simulator $S$ making $q$ queries such that the remaining entropy in that block is at most $n-\log q$.  Let $W_i$ be a distribution, consider $S$ that asks the $q$ most likely outcomes, the total probability of this block must be at least $2^{-n+\log q}$.  After these queries the remaining min-entropy is at most:
-\begin{align*}
-\Hav(W_i | View(S)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
-&\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1\right)\\
-&=-\log\left( 2^{-n+\log q} \right) = n-\log q
-\end{align*}
-This completes the proof of \clref{cl:ent bounded away from n}.
-\end{proof}
-\noindent
-Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
-\begin{align*}
- \Pr[\text{non zero response location }i \wedge c_i=0] &>2^{-\alpha+1} - 2^{-(n-\log q)}=  2^{-\alpha}
- \end{align*}
- When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in\mathcal{I}$ the total probability of a $1$ in $\mathcal{I}$ is at most $(\ell-\beta)2^{-\alpha+1}$. Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
-\end{proof}
-By averaging over all points in $C'$ we conclude that $\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
-\end{proof}
 
 %The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
 %\begin{lemma}
@@ -726,7 +679,7 @@ When $t =\Theta(\ell)$, then $gap<0$ and the output entropy is $|C| - \ngl(n)$~(
 Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta(\ell)$.  Furthermore, not every block must contribute entropy, so security is possible when the total starting entropy is $\omega(\log n)$.  For example, \consref{cons:first construction} is secure when each block is equal and drawn from a distribution of super-logarithmic min-entropy.  So there are supported sources with negative $gap$ for any value of $t$.  We achieve $gap<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters. 
 
-\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.   The first is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Second, we obtain only a single bit from each block of $W_i$ which seems sub optimum.  Lastly, Hamming distance is computed over an alphabet of exponential size, which precludes use in some applications. We begin to address this weakness in the next section.
+\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.   The first is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Second, we obtain only a single bit from each block of $W_i$ which seems sub optimum.  Lastly, Hamming distance is computed over an alphabet of exponential size, which precludes use in some applications. We begin to address this weakness in the next section.\bnote{come back to this linking language}
 
 \section{Sample-then-Obfuscate}
 \consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization of where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  This has two advantages, first it simplifies the type of sources we consider as we no longer need high entropy blocks.  Second, it allows us to decrease the size of each block from exponential to a super polynomial $2^{\log^c n}$ for some $c>0$.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  In ordering for sampling to work properly, we need a source that is likely contribute some entropy from a randomly chosen block.  
@@ -743,7 +696,7 @@ A distribution $W = W_1,..., W_\gamma$ is called a $(\alpha, \beta)$-unordered b
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $Z$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.  Let $\sample_\beta(\gamma)$ output a uniform subset of indices of $1,..., \gamma$ of size $\beta$. Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable f for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
+Let $Z$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$ and $\gamma = Omega(n )$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.  Let $\sample_\beta(\gamma)$ output a uniform subset of indices of $1,..., \gamma$ of size $\beta$. Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable f for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -794,7 +747,7 @@ In order to show security \consref{cons:sampling}, we show that with overwhelmin
 
 \begin{lemma}
 \label{lem:sampling works}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma /2-\Omega(1))$-unordered block source.  Let $\eta = \Omega(\log n)$. Consider some fixed $i$, the distribution $V_{i}, J_{i, 1},..., J_{i, \eta}$ is $(\ngl(n)+ 2^{-\Omega(n)})$-close to a distribution $V', U_{\beta\times \log \gamma}$ where for all $u\in U_{\beta \times \log \gamma}$ $V' | A=a$, $\Hoo(V' | A=a) \geq \Omega(\alpha\times (1-2\times \beta) \times \eta) = \omega(\log n) = \alpha'$.\bnote{need to come up with the right number of coins for $\sample$}
+Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1/2-\Theta(1))$-unordered block source.  Let $\eta = \Omega(\log n)$. Consider some fixed $i$, the distribution $V_{i}, J_{i, 1},..., J_{i, \eta}$ is $(\ngl(n)+ 2^{-\Omega(n)})$-close to a distribution $V', U_{\beta\times \log \gamma}$ where for all $u\in U_{\beta \times \log \gamma}$ $V' | A=a$, $\Hoo(V' | A=a) \geq \Omega(\alpha\times (1-2\times \beta) \times \eta) = \omega(\log n) = \alpha'$.\bnote{need to come up with the right number of coins for $\sample$}
 \end{lemma}
 \begin{proof}
 By~\cite[Lemma 9]{vadhan2003constructing}, noting that the truly random sampler is optimum in necessary samples and we take $\eta = \Omega(\log n)$ samples.  \bnote{need someone to check parameters, I am fairly sure of the quality of the statement}
@@ -825,7 +778,7 @@ Result of \clref{cl:all blocks entropy}.
 
 \begin{corollary}
 \label{cor:samp unguess}
-Let $n, Z, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |Z|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \epsilon_{sam}+ 2^{-(\alpha-1)}) = \ngl(n)$.
+Let $n, Z, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |Z|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \epsilon_{sam}+ 2^{-(\alpha''-1)}) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
 Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
@@ -841,23 +794,39 @@ The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref
 &\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{c}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{c}{\eta}\right) \\
 &\geq \left(1-\frac{c}{\eta}\right)^{\eta} =\left( \left(1-\frac{c}{\eta}\right)^{\eta/c}\right)^c\geq \frac{1}{4}^c
 \end{align*} 
-Thus, by setting $c = -\log(1-t')/2$ we obtain in $\expe[\dis(v, v')\leq t']$.  We need a stronger condition that this occurs with overwhelming probability.
+Thus, by setting $c = -\log(1-t'/\ell)/2$ we obtain in $\expe[\dis(v, v')\leq t']$.  We need a stronger condition that this occurs with overwhelming probability.
 
+\begin{lemma}
+Let $n, W$ be as above and Let $C$ be a code that corrects $t$ $0\rightarrow 1$ bit errors where $t =\Theta(\eta)$.  Let $c = -\log(1-t'/(2\ell))/2 = \Theta(1)$, when $t \leq c(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\ell})$ where the probability is over the coins of $\gen$.
+\end{lemma}
+\begin{proof}
+With each $i$ we can associate a Bernoulli random variable $X_i \overset{def}= V_i \overset{?}\neq V_i'$.  As stated above, we have that $\expe[X_i] \leq 1-\frac{1}{4}^c = t'/(2\eta)$. By the Chernoff bound, we have
+\begin{align*}
+\Pr\left[\frac{1}{\eta} \sum_{i=1}^\eta X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\eta} = O(e^{- \ell}) 
+\end{align*}
+\end{proof}
 
-\bnote{finish, Chernoff, not far from expectation.}
+\begin{corollary}
+Let $\ell = \omega(\log n)$ and let $C\subset\zo^\ell$ and  be a code that corrects $t' = \Theta(\ell)$ $0\rightarrow 1$ bit errors.  Then when 
+\[
+\dis(w, w')\leq \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = O(\frac{\gamma-\eta}{\eta}) = O(\gamma/\eta)
+\] 
+and $(R, P)\leftarrow \gen(w)$, then 
+\[
+\Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{2^n} - O(2^{-\ell}) = 1-\ngl(n).
+\]
+That is, \consref{cons:sampling} is correct with error at most $\ngl(n)$.
 
-\subsection{Discussion}
-\bnote{need to write this once we have parameters in the two sections above.}
-%As shown above we get security when $\lambda = \omega(\gamma \log n/\eta)$ and correctness when $t = \Theta(\gamma /\eta)$.  This yields:
-%\begin{align*}
-%gap &= \Hoo(W) -\log |B_t| \\
-%&< \omega(\frac{\gamma  \log n}{\eta} ) - (\Theta(t \mu) + \log {\gamma \choose t})\\
-%&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \mu^2}{\eta}))\\
-%&= \omega(\frac{\gamma \log n}{\eta}) - (\Theta(\frac{\gamma \log |Z|}{\eta}))\\
-%&= \omega(\frac{\gamma \log n}{\eta})
-%\end{align*}
-%%Taking $\gamma = \Omega(n)$ and $\eta = \log^c n$ yields a negative $gap$.
-%\bnote{finish}
+\end{corollary}
+\subsection{Discussion of \consref{cons:sampling}}
+We now show that \consref{cons:sampling} achieves $gap<0$ for an interesting setting of parameters.  For security of an unordered block source we needed both $\alpha = \Theta(1)$ and $\beta\leq \gamma/2-\Omega(1)$.  This means that the overall required entropy of $\Hoo(W) = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors
+This yields:
+\begin{align*}
+gap &= \Hoo(W) -\log |B_t| \\
+&< \Theta(\gamma)- t \log |Z|\\
+&= \Theta(\gamma) - O(\gamma/\eta) \log |Z|\\
+\end{align*}
+That is, \consref{cons:sampling} achieves $gap<0$ when the starting alphabet is super polynomial~(noting that for any fixed $Z$ we can set $\eta = \omega(\log n)$ and $\eta = o(\log |Z|)$).  If we are willing to accept $gap\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $Z$.
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
@@ -1029,8 +998,6 @@ Let $W$ be a distribution and let $q$ be a parameter, if there exists an orderin
 For convenience relabel the ordering that violates the condition as $1,..., \ell$.  We describe an unbounded adversary that determines $W_1,..., W_{\ell-\beta+1}$.  As before $A$ queries the $q /\ell$ possible values for $W_1$ and determines $W_1$.  Then $A$ queries the $q/\ell$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\ell-\beta+1}$ is learned.  Note the optimum ordering for the adversary can be encoded nonuniformly but it may take an unbounded amount of time/space to construct the support of $W_i | W_1,.., W_{i-1}$.
 \end{proof}
 
-
-
 \section{Proof of \lemref{lem:cond and cext}}
 \label{sec:cond and cext}
 \begin{proof}
@@ -1053,5 +1020,53 @@ Then define $D'$ as follows.  On input $y, p$ sample $x\leftarrow U_d$, compute 
 Thus $D'$ distinguishes $Y$ from all $Z$ with sufficient conditional min-entropy.  This is a contradiction.
 \end{proof}
 
+\section{Proof of \thref{thm:security of cons}}
+\noindent
+We now prove $S$ cannot distinguish between $C$ and $C'$.  
+Let $\mathcal{I}$ be the set of all indices in \defref{def:block guessable}.  Recall that $C'$ is a uniformly distributed codeword conditioned on agreeing with $C$ in all coordinates of $C_{\mathcal{I}^c}$.
+\begin{lemma}
+\label{lem:sim cannot distinguish}
+$\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) \le (\ell-\beta) 2^{-(\alpha+1)}$.
+\end{lemma}
+
+\begin{proof}
+\noindent It suffices to show that for any two codewords that agree on $\mathcal{I}^c$, the statistical distance is at most $2^{-(\alpha+1)}$.
+\begin{lemma}
+\label{lem:codewords in I close}
+Let $c^*$ be true value encoded in $X$ and let $c'$ a codeword in $C'$.  Then, 
+\[
+\Delta( S^{\mathcal{O}_X(\cdot, \cdot)}(c^*), S^{\mathcal{O}_X(\cdot, \cdot)}(c')) \le ( \ell -\beta) 2^{-(\alpha+1)}.
+\]
+\end{lemma}
+\begin{proof}
+Recall that for all $i\in \mathcal{I}$, $\Hav(W_i | View(S))\geq \alpha$.  The only information about the correct value of $c_i^*$ is contained in the query responses.  When all responses are $0$ the view of $S$ is identical when presented with $c^*$ or $c'$.  We now show that for any value of $c^*$ all queries on $i \in \mathcal{I}$ return $0$ with probability $1-2^{-\alpha+1}$.  Suppose not, that is suppose, the probability of at least one nonzero response on index $i$ is $> 2^{-(\alpha+1)}$.  Since $w, w'$ are independent of $r_i$, the probability of this happening when $c^*_i = 1$ is at most $q/2^n$ or equivalently $2^{-n+\log q}$.  Thus, it must occur with probability:
+\begin{align}
+2^{-\alpha+1}&<\Pr[\text{non zero response location }i]\nonumber \\
+ &= \Pr[c_i^* =1]\Pr[\text{non zero response location }i\wedge c_i^*=1]\nonumber \\&+ \Pr[c_i^*=0] \Pr[\text{non zero response location }i \wedge c_i^*=0]\nonumber \\
+&\le 1\times 2^{-n+\log q} + 1\times  \Pr[\text{non zero response location }i \wedge c_i^*=0] \label{eq:ways to remove ent}
+\end{align}
+We now show that $n-\log q \geq \alpha$:
+\begin{claim}
+\label{cl:ent bounded away from n}
+$n-\log q \geq \alpha$
+\end{claim}
+\begin{proof}
+It suffices to show that there exists a simulator $S$ making $q$ queries such that the remaining entropy in that block is at most $n-\log q$.  Let $W_i$ be a distribution, consider $S$ that asks the $q$ most likely outcomes, the total probability of this block must be at least $2^{-n+\log q}$.  After these queries the remaining min-entropy is at most:
+\begin{align*}
+\Hav(W_i | View(S)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
+&\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1\right)\\
+&=-\log\left( 2^{-n+\log q} \right) = n-\log q
+\end{align*}
+This completes the proof of \clref{cl:ent bounded away from n}.
+\end{proof}
+\noindent
+Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
+\begin{align*}
+ \Pr[\text{non zero response location }i \wedge c_i=0] &>2^{-\alpha+1} - 2^{-(n-\log q)}=  2^{-\alpha}
+ \end{align*}
+ When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in\mathcal{I}$ the total probability of a $1$ in $\mathcal{I}$ is at most $(\ell-\beta)2^{-\alpha+1}$. Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
+\end{proof}
+By averaging over all points in $C'$ we conclude that $\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
+\end{proof}
 
 \end{document}
