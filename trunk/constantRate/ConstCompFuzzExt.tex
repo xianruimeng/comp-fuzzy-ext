@@ -78,6 +78,7 @@
 \newcommand{\ngl}{\ensuremath{\mathtt{ngl}}\xspace}
 \newcommand{\Hoo}{\mathrm{H}_\infty}
 \newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
+\newcommand{\Hfuzz}{\mathrm{H}^{\mathtt{fuzz}}_{t,\infty}}
 \newcommand{\Dom}{\mathsl{Dom}}
 \newcommand{\Range}{\mathsl{Rng}}
 \newcommand{\Keys}{\mathsl{Keys}}
@@ -234,6 +235,7 @@ Fuzzy extractors derive strong keys from noisy sources.  The goal is to reliably
 Fuller, Meng, and Reyzin (Asiacrypt 2013) hypothesize that these bounds can be overcome by only providing security against computationally-bounded adversaries. 
 In this work, we provide the first construction of a fuzzy extractor for a large class of distributions where the starting entropy is smaller than the logarithm of the number of correctable error patterns.
 
+\bnote{there are two constructions now}
 \textbf{Construction:} We construct a computational fuzzy extractor based on obfuscation of point functions.  
 Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~(Eurocrypt 2008).  
 Our construction provides the following novel features:
@@ -246,27 +248,30 @@ Our construction provides the following novel features:
 
 
 \section{Introduction}\label{sec:introduction}
-Reliable key derivation is a cornerstone of authentication.  However, many sources with sufficient entropy for key derivation are noisy and provide similar but not identical values when the source is read multiple times~(examples include biometrics~\cite{daugman2004} and physically unclonable functions~\cite{pappu2002physical}). \bnote{add more examples here} To use noisy physical sources in applications, two problems must be addressed.  The first is ensuring the same value is obtained from every reading of the source.  This must be done in a way that does not eliminate all the entropy from the output~(known as information-reconciliation~\cite{bennett1988privacy}).  The second is converting the entropic source to a uniform random key~(privacy amplification~\cite{bennett1988privacy}).  Both of these problems have interactive and non-interactive versions.  For a single user~(trying to produce the same key from multiple readings of a physical source) the non-interactive solutions are appropriate.  We focus on this setting.  %If both of these tasks are achieved a noisy physical source can be used like a uniformly random private key. 
+\bnote{I want a new name for $gap$!}
+Reliable key derivation is a cornerstone of authentication.  However, many sources with sufficient entropy for key derivation are noisy and provide similar but not identical values when the source is read multiple times~(examples include biometrics~\cite{daugman2004} and physically unclonable functions~\cite{pappu2002physical}). \bnote{add more examples here} To use noisy physical sources in applications, two problems must be addressed.  The first is ensuring the same value is obtained from every reading of the source.  This must be done in a way that does not eliminate all the entropy from the output~(known as information-reconciliation~\cite{bennett1988privacy}).  The second is converting the entropic source to a uniform random key~(privacy amplification~\cite{bennett1988privacy}).  Both of these problems have interactive and non-interactive versions.  For a single user~(trying to produce the same key from multiple readings of a physical source) non-interactive solutions are appropriate.  We focus on this setting.  %If both of these tasks are achieved a noisy physical source can be used like a uniformly random private key. 
 
 Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} perform both tasks non-interactively.  They consist of a pair of algorithms: \gen takes a source value $w$, and produces a key $r$ and a public value $p$.  The second algorithm \rep takes this public value $p$ and a close $w'$ to reproduce the original key $r$.  Traditionally, a secure sketch~\cite{DBLP:journals/siamcomp/DodisORS08} performs information-reconciliation and a randomness extractor~\cite{nisan1993randomness} performs privacy amplification.
 
 Unfortunately, fuzzy extractors have not yielded key derivation for all noisy sources.  
 This is because there is tension between security and error-tolerance.  The key should be uniform to an observer but nearby $w'$ should map to the same key.  By nearby, we mean that $\dis(w, w')\leq t$ for some metric $\dis$.  In the information-theoretic realm, increasing $t$ means a decrease in the strength of the key $r$.  This is because a fuzzy extractor can be converted into an error correcting code~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  The length of $r$ is dictated by size of the best code that corrects $t$ errors.  Error-correcting codes are well studied and we have tight bounds on this quantity. % how many codewords may be in a code that corrects $t$ errors.  
 
-We consider the Hamming metric.  For the Hamming metric, the key may be no longer than the difference between the starting entropy of the source\footnote{We assume that the fuzzy extractor operates independently of the source $W$.  As we discuss later, it is possible to avoid these losses if the fuzzy extractor has additional knowledge about the distribution.} and logarithm of the number of error patterns to be corrected. For the remainder of this paper we denote this quantity by $gap$.  This represents a real problem, important biometrics, such as irises~\cite{daugman2004}, have $gap <0$ and current fuzzy extractors provide no security guarantee.
+\bnote{the whole introduction should be rewritten, doesn't mention second construction.}
+We consider the Hamming metric.  For the Hamming metric, the key may be no longer than the difference between the starting entropy of the source\footnote{We assume that the fuzzy extractor operates independently of the source $W$.  As we discuss later, it is possible to avoid these losses if the fuzzy extractor knows something about the distribution.} and logarithm of the number of error patterns to be corrected. For the remainder of this paper we denote this quantity by $gap$.  This represents a real problem, important biometrics, such as irises~\cite{daugman2004}, have $gap <0$ and current fuzzy extractors provide no security guarantee.
  
  %let $|B_t|$ be the number of points within distance $t$.  The length of the key $|r| < \Hoo(W) - \log |B_t|$~(see~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08} for the precise conditions).  For the remainder of this paper, we denote this quantity by $gap = \Hoo(W) - \log |B_t|$.
 
 This does not need to be the case in the computational setting.  Fuller, Meng, and Reyzin define computational fuzzy extractors~\cite{fuller2013computational}.  Computational fuzzy extractors produce pseudorandom instead of truly random keys.  They hypothesize a computational fuzzy extractor may exist with a small or negative $gap$.  We resolve this question and construct a computational fuzzy extractor when $gap<0$.  This is impossible for an arbitrary min-entropy distribution as every point could be within distance $t$.  A necessary condition for security is that a negligible portion of the source's probability distribution lies within any Hamming ball of radius $t$.  We require a stronger condition that many blocks are unpredictable~(\defref{def:block guessable}).  
 
 The goal of an information-theoretic fuzzy extractor is to output a maximal length key for a source $W$.  
-In the computational setting, a key may be expanded once it is long enough to serve as input to a pseudorandom generator.  Our focus is on expanding the class of distributions for which we can provide meaningful security, and remember keys can be expanded once they are long enough.
+In the computational setting, a key may be expanded once it is long enough to serve as input to a pseudorandom generator.  Our focus is on expanding the class of distributions for which we can provide meaningful security.
 
+\bnote{two constructions}
 \textbf{Overview of Construction:}  Fuller, Meng, and Reyzin~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational} show that replacing an information-theoretic information-reconciliation component with a computational component is unlikely to be fruitful.  Instead, the authors suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent high-entropy secret instead of recovering $w$.  This is known as a fuzzy conductor~(the entropy is ``conducted'' from $w$ to a new distribution) and was introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.  Here, we follow the second approach and use a \emph{computational} fuzzy conductor.
 
 Our construction~(\consref{cons:first construction}) is based on obfuscation of point programs.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.  Obfuscation for this class of functions is achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  
 
-Consider a source $W = W_1,..., W_\ell$ that is split into blocks~(over a large alphabet).  We would like to tolerate errors in $t$ individual blocks.  For each block $i$, we flip a coin $c_i$ and either obfuscate $I_{w_i}$ or pick a random point $r_i$ and obfuscate $I_{r_i}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rec$ then runs the obfuscated program $P_i$ on $w_i'$ and checks whether $P_i(w_i')=1$.  For most locations $i$, \rep can determine whether $w_i$ or a random value was the point obfuscated.  Thus, most bits of $c_i$ are recoverable. To tolerate errors we choose the coins $c$ from an error-correcting code.  The set of possible codewords forms a high entropy distribution.  This construction conducts entropy from $w$ to $c$ and is a computational fuzzy conductor.  It may be converted to a computational fuzzy extractor by either information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors.  Note, it is hard to recover $w$ from the value $c$.   This is necessary to overcome the information-theoretic lower bounds~\cite[Section 3.3]{fuller2013computational}.  
+Consider a source $W = W_1,..., W_\ell$ that is split into blocks~(over a large alphabet).  We would like to tolerate errors in $t$ individual blocks.  For each block $i$, we flip a coin $c_i$ and either obfuscate $I_{w_i}$ or pick a random point $r_i$ and obfuscate $I_{r_i}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rec$ then runs the obfuscated program $P_i$ on $w_i'$ and checks whether $P_i(w_i')=1$.  For most locations $i$, \rep can determine whether $w_i$ or a random value was the point obfuscated.  Thus, most bits of $c_i$ are recoverable. To tolerate errors we choose the coins $c$ from an error-correcting code.  The set of possible codewords forms a high entropy distribution.  This construction conducts entropy from $w$ to $c$ and is a computational fuzzy conductor.  It may be converted to a computational fuzzy extractor by either information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors.  It is hard to recover $w$ from the value $c$.   This is necessary to overcome lower bounds on entropy loss~\cite[Section 3.3]{fuller2013computational}.  
 Our construction is inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  
 
 Our construction provides several advantages over previous constructions of computational fuzzy extractors:
@@ -275,13 +280,15 @@ Our construction provides several advantages over previous constructions of comp
 \item The first computational fuzzy extractor that allows for a constant fraction of errors.  Previous constructions could correct only  a logarithmic fraction of errors~($O(\frac{\log \ell}{\ell})$)
 \item The first computational fuzzy extractor where blocks are not required to be uniformly distributed.  Our construction simply requires a large number of blocks that are unguessable given equality queries.  This subsumes the distributions supported by~\cite[Construction 4.1]{fuller2013computational}.
 \end{itemize}
+\bnote{compare contrast constructions}
 
 \textbf{Limitations: } The main limitation of our construction is that each block is individually obfuscated.  This means that blocks much be drawn from distributions with super-logarithmic entropy.  Furthermore, our distance is Hamming distance over a large alphabet~(super-polynomial in the security parameter).  Our construction is applicable for physical sources where many bits are expected to err consecutively, followed by many consecutive correct bits~(known as burst errors~\cite{gilbert1960capacity}).  Constructing a computational fuzzy extractor with the above advantages and a small alphabet is an open problem.
 
 
-\textbf{Connection with Noisy Point Obfuscation: } Ideally, our construction would be a noisy point obfuscation~(which is a stronger object than a computational fuzzy extractor).  Unfortunately, this is not the case.  Each block is individually obfuscated, so an adversary may ask equality queries on individual blocks.  If not all blocks have high entropy an adversary may learn significant information about the source.  Thus, our construction is not a virtual black box~(VBB) obfuscation~(where anything learnable by the circuit is simulatable using input/output behavior).  Dodis and Smith~\cite{DBLP:conf/stoc/DodisS05} construct noisy point obfuscation for $gap>>0$ using a information-reconciliation component that hides partial information.  Constructing VBB obfuscation for sources where $gap <0$ is an open problem.
+\textbf{Connection with Noisy Point Obfuscation: } Ideally, our construction would be a noisy point obfuscation~(which is a stronger object than a computational fuzzy extractor).  Unfortunately, this is not the case.  Each block is individually obfuscated, so an adversary may ask equality queries on individual blocks.  If not all blocks have high entropy an adversary may learn significant information about the source.  Thus, our construction is not a obfuscation for any reasonable definition.  Dodis and Smith~\cite{DBLP:conf/stoc/DodisS05} construct noisy point obfuscation for $gap>>0$ using a information-reconciliation component that hides partial information.  Constructing VBB obfuscation for sources where $gap <0$ is an open problem.
+\bnote{does second construction get closer to obfuscation?}
 
-The remainder is organized as follows: we cover notation and background on obfuscation and error correcting codes in \secref{sec:preliminaries} , describe computational fuzzy extractors in \secref{sec:fuzzy extractors}, present our construction in \secref{sec:construction} and discuss parameters and tradeoffs in \secref{sec:discussion}.
+The remainder is organized as follows: we cover notation and background on obfuscation and error correcting codes in \secref{sec:preliminaries} , describe computational fuzzy extractors in \secref{sec:fuzzy extractors}, present our two constructions in Sections \ref{sec:construction} and \ref{sec:sampling} respectively.
 
 \section{Preliminaries}
 \label{sec:preliminaries}
@@ -290,11 +297,11 @@ and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) 
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$. 
 For a distinguisher $D$~(or a class of distinguishers $\mathcal{D}$) we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$.  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
 
-For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t|$ the size of a ball of radius $t$.  For our sources, we consider the Hamming metric, for two vectors $x, y$ over $\mathcal{Z}^n$ the Hamming distance between $x,y$ is $d(x,y) = \{i | x_i \neq y_i\}$.  For the Hamming metric, $|B_t| = \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  Unless otherwise noted logarithms are base $2$.
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t|$ the size of a ball of radius $t$.  For our sources, we consider the Hamming metric, for two vectors $x, y$ over $\mathcal{Z}^\ell$ the Hamming distance between $x,y$ is $d(x,y) = \{i | x_i \neq y_i\}$.  For the Hamming metric, $|B_t| = \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  Unless otherwise noted logarithms are base $2$.
 %\bnote{this is weird here and doesn't fit}  However, we will use codes that only correct one-sided errors~(see \secref{sec:coding theory}).
 
 
-Usually, we use bold letters for vectors or matrices, capitalized letters for random variables, and lowercase letters for elements in a vector or samples from a random variable. 
+Usually, we use capitalized letters for random variables and lowercase letters for samples from a random variable. 
 
 \subsection{Coding Theory}
 \label{sec:coding theory}
@@ -351,6 +358,7 @@ We present the notion of virtual black-box obfuscation with the weakening that t
 \[
 \Pr[\mathcal{O}(C; r)(x) = C(x)] > 1-\epsilon(n),
 \]
+\bnote{We need a different name for the circuit, $C$ is our error-correcting code.}
 where the probability is taken over the randomness $r$.  \emph{Almost exact functionality} is a stronger condition that requires $\mathcal{O}(C;r)\equiv C$ with overwhelming probability over the random coin tosses $r$.  Finally, if this probability always equals $1$, then $\mathcal{O}$ has \emph{exact functionality}.
 \item \emph{Polynomial Slowdown:}  There exists a polynomial $\psi$ such that for every $n$, every circuit $C\in \mathcal{C}_n$, and every possible $r$, the circuit $\mathcal{O}(C; r)$ run-in time at most $\psi(n)$.
 \item \emph{Virtual Black-box:}  For every PPT adversary $A$ and polynomial $\rho$, there exists a PPT simulator $S$ such that for all sufficiently large $n$, for all $C\in \mathcal{C}_n$, for all auxiliary inputs $z\in \zo^*$, 
@@ -367,7 +375,7 @@ where the first probability is taken over the coin tosses of $A$ and $\mathcal{O
 \section{Computational Fuzzy Extractors}
 \label{sec:fuzzy extractors}
 
-We focus on computational fuzzy extractors introduced by Fuller, Meng, and Reyzin~\cite{fuller2013computational}.  Definitions for information-theoretic fuzzy extractors and a non-interactive information-reconciliation component, known as a secure sketch, can be found in the work of Dodis et al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08}.  The definition of computational fuzzy extractors allows for a small probability of error.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.  
+We focus on computational fuzzy extractors introduced by Fuller, Meng, and Reyzin~\cite{fuller2013computational}.  Definitions for information-theoretic fuzzy extractors can be found in the work of Dodis et al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08}.  The definition of computational fuzzy extractors allows for a small probability of error.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.  
 %\begin{definition}
 %\label{def:fuzzy extractor}
 %An $(\mathcal{M}, m, \ell, t, \epsilon)$-\emph{fuzzy extractor} with error $\delta$ is a pair of randomized procedures, ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$, with the following properties: 
@@ -414,7 +422,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$ is known: if the error pattern between $w$ and $w'$ depends on the output of $\gen$ there is no guarantee about the probability of correctness.
-The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $gap<0$ there are distributions contained in a single Hamming ball, so restricting the family of sources is necessary.
+The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $gap<0$ there are distributions contained in a single Hamming ball, so restricting the family of sources is necessary~(see \apref{sec:minimal conditions} for the precise statement).
 
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.  
 
@@ -430,12 +438,12 @@ denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distr
 We now define the two primitives for this approach: a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 \begin{definition}
 \label{def:comp fuzzy cond}
-Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(s_{cone}, \epsilon_{cond})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
 \begin{itemize}
-\item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $Y\in\{0,1\}^\ell$ and a helper string $P\in\{0,1\}^*$.
-\item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(Y, P)\leftarrow \gen'(w)$, then $\Pr[\rep'( w', P) = Y] \geq 1-\delta$ where the probability is over the randomness of $(\gen', \rep')$.  
+\item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $X\in\{0,1\}^\ell$ and a helper string $SS\in\{0,1\}^*$.
+\item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $SS\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(X, SS)\leftarrow \gen'(w)$, then $\Pr[\rep'( w', SS) = X] \geq 1-\delta$ where the probability is over the randomness of $(\gen', \rep')$.  
 If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep'$.
-\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $Y$ has high HILL entropy conditioned on $P$, that is $H^{\hill}_{\epsilon, s_{sec}}(Y |P)\geq \tilde{m}$.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $Y$ has high HILL entropy conditioned on $P$, that is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(Y |P)\geq \tilde{m}$.
 \end{itemize}
 \end{definition}
 
@@ -443,20 +451,20 @@ A computational extractor is the natural adaption of a randomness extractor to t
 %start with the standard notion of an average-case extractor. An average-case extractor is a generalization of a strong randomness extractor \cite[Definition 2]{nisan1993randomness}) (in particular, Vadhan~\cite[Problem 6.8]{Vad12} showed that all strong extractors are average-case extractors with a slight loss of parameters):
 \begin{definition}
 Let $\chi$ be a finite set.
-A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, s_{sec}, \epsilon)$-average-case computational extractor} if for all pairs
+A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, s_{ext}, \epsilon_{ext})$-average-case computational extractor} if for all pairs
 of random variables $X, Y$ over $\zo^\ell, \chi$ such that
-$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{sec}}}((\cext(X, U_d), U_d, Y), U_\kappa\times
-U_d \times Y) \le \epsilon$.
+$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{ext}}}((\cext(X, U_d), U_d, Y), U_\kappa\times
+U_d \times Y) \le \epsilon_{ext}$.
 \end{definition}
 
 Combining a computational fuzzy conductor and an appropriate randomness extractor yields a computational fuzzy extractor~(proof in \secref{sec:cond and cext}):
 
 \begin{lemma}
 \label{lem:cond and cext}
-Let $\gen'$, $\rep'$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, s_{ext}, \epsilon_{ext})$-average case computational extractor.  Define $\gen, \rep$ as:
+Let $\gen'$, $\rep'$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{cond},\epsilon_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, s_{ext}, \epsilon_{ext})$-average case computational extractor.  Define $\gen, \rep$ as:
 \begin{itemize}
-\item $\gen(w; r, x):$ run $(y, p')= \gen'(w; r)$ and set $r = \cext(y; x)$ and $p = (p', x)$.  Output $(r, p)$.
-\item $\rep(w, (p', x)):$ recover $y = \rec'(w'; p')$ and output $r = \cext(y; x)$. 
+\item $\gen(w; seed):$ run $(x, ss)= \gen'(w)$ and set $r = \cext(x; seed)$, $p = (ss, seed)$.  Output $(r, p)$.
+\item $\rep(w, (ss, seed)):$ recover $x = \rec'(w'; p')$ and output $r = \cext(x; seed)$. 
 \end{itemize}
 Then $\gen, \rep$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{cond}+\epsilon_{ext}, s')$-hard with error $\delta$ where $s' = \max\{s_{cond} - |\cext| -d, s_{ext}\}$.
 \end{lemma}
@@ -464,8 +472,8 @@ Then $\gen, \rep$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuz
 
 \section{A Constant Error-Tolerance Computational Fuzzy Extractor}
 \label{sec:construction}
-
-Before describing our construction, we recall the problem we are trying address.  The goal is to derive strong keys from noisy sources.  As discussed in the introduction, our goal is to provide security when $gap = \Hoo(W) - \log|B_t|$ is small or even negative.
+\bnote{this needs to be rewritten}
+Before describing our construction, we recall the problem we are trying address.  The goal is to derive strong keys from noisy sources.  As discussed in the introduction, our goal is to provide security when $gap = \Hoo(W) - \log|B_t|$ is  negative.
 In the computational setting once a ``long enough'' key may be expanded using a pseudorandom generator.  Thus, we focus on providing enough security when $gap<0$.  We build a computational fuzzy conductor, which can be converted to a computational fuzzy extractor using a computational extractor~(\lemref{lem:cond and cext}).%If $gap> \omega(\log n)$~(ignoring losses due to randomness extraction), then a key of any length can be formed by using an information-theoretic fuzzy extractor~(which yields nearly this many bits using an optimal code) and expanding the output with a pseudorandom generator~(or using a secure sketch with a computational extractor).  Using an information-theoretic analysis of a fuzzy extractor this seems to be the best construction possible.  As described in Fuller, Meng, and Reyzin~\cite{fuller2013computational}, use of a computational fuzzy extractor may allow a construction when $gap = O(\log n)$.  Their construction is only applicable for high entropy input and yield a result when $gap$ is small.  We will provide the first construction where $gap$ is negative.  
 
 \begin{construction}
@@ -514,7 +522,7 @@ In locations where $c_i=0$ it is hard to find $w_i$ given the point obfuscation.
 \subsection{Security of Construction}
 \label{sec:sec of construction}
 \bnote{this paragraph needs to be rewritten}
-Assuming virtual black-box obfuscation, we argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversary's inability to tell whether they are working with obfuscations of $w_i$ or random points using \emph{adaptive} equality queries.  Our construction is secure as long as enough blocks are unpredictable after adaptive queries:
+Assuming virtual black-box obfuscation, we argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversary's inability to tell whether they are working with obfuscations of $w_i$ or random points using \emph{adaptive} equality queries.  Our construction is secure as long as enough blocks are unpredictable after adaptive queries~(we discuss minimal conditions for fuzzy extractor security in more depth in \apref{sec:minimal conditions}):
 
 \begin{definition}
 \label{def:block guessable}
@@ -531,7 +539,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 \end{definition}
 
 %\noindent We argue security assuming that the adversary knows the value of all blocks outside of $\mathcal{I}$.  
-We show security of \consref{cons:first construction} for distributions satisfying \defref{def:block guessable}.  In \apref{sec:characterize} we provide discussion on the types of sources that satisfy \defref{def:block guessable}.
+We show security of \consref{cons:first construction} for distributions satisfying \defref{def:block guessable}.  We discuss  block unguessable distributions in \apref{sec:characterize}.
 To show security it is sufficient to show that there exists a distribution $C'$ with conditional min-entropy and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))$ are indistinguishable.  Let $\mathcal{I}$ be the set of indices that exists in \defref{def:block guessable}, the distribution $C'$ is defined as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $\mathcal{I}$.  First note that $\Hav(C' |P) =\Hav(C' | C_{\mathcal{I}^c} = C'_{\mathcal{I}^c}) = |C| - |\mathcal{I}^c|$~(\clref{cl:many locations ent}).  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))$.  
 Define the distribution $X$ as follows:
 \[X_i = 
@@ -559,7 +567,7 @@ This is done in \lemref{lem:sim cannot distinguish}.
 \noindent Together these arguments allow us to conclude:
 \begin{theorem}
 \label{thm:security of cons}
-Let $\mathcal{O}$ be an $\ell$-composable virtual black box obfuscator with auxiliary inputs for point programs over $\zo^n$ that is $(s_{obf}, \epsilon_{obf})$-hard.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Then $H^{\hill}_{\epsilon', s_{obf}}( C | P ) \geq |C| - \beta$ for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
+Let $\mathcal{O}$ be an $\ell$-composable virtual black box obfuscator \bnote{grey box?} with auxiliary inputs for point programs over $\zo^n$ that is $(s_{obf}, \epsilon_{obf})$-hard.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Then $H^{\hill}_{\epsilon', s_{obf}}( C | P ) \geq |C| - \beta$ for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{theorem}
 
 
@@ -619,9 +627,9 @@ We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\
 
 \begin{lemma}
 \label{lem:correct of cons}
-Let $C$ be a code that corrects $t$ $0\rightarrow 1$ bit errors.  Then when $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then 
+Let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then when $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then 
 \[
-\Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{2^n}.
+\Pr[\rep( w', P) = R] \geq 1-\left(\frac{\ell}{2^n}+\epsilon_{code}\right).
 \]
 That is, \consref{cons:first construction} is correct with error at most $\ell/2^n$.
 \end{lemma}
@@ -641,12 +649,12 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 %\bnote{This analysis is done assuming that the two sets are the same size.  Need to worry about variation in the number of $1$s and $0$s in $c$.  Need to show that for most codes (linear?) the variance in Hamming weight is small.}
 %\textbf{Note:} If $t = O(\log n)$ the only error tolerance for $C$ that results in decoding with overwhelming probability is $t$.  However, in most use cases, we expect $t=\omega(\log n)$.  
 
-Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correctness for block unguessable distributions:
+Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correct for block unguessable distributions:
 \begin{theorem}
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \epsilon_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{sec}, \epsilon_{sec})$ with error $\epsilon_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
 \begin{proof}
-Security is a result of \thref{thm:security of cons} because $2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha-1)}$ is negligible when $\epsilon_{obf} = \ngl(n), \ell = \poly(n)$ and $\alpha =\omega(\log n)$.  Correctness follows from \lemref{lem:correct of cons} and the fact that $C$ is a $(\neigh_t, \epsilon_{code})$-code.
+Security is a result of \thref{thm:security of cons} because $2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha-1)}$ is negligible when $\epsilon_{obf} = \ngl(n), \ell = \poly(n)$ and $\alpha =\omega(\log n)$.  Correctness follows from \lemref{lem:correct of cons}.
 \end{proof}
 
 
@@ -663,25 +671,26 @@ Security is a result of \thref{thm:security of cons} because $2\epsilon_{obf} + 
 \label{sec:discussion}
 Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:sec of construction}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
 
-To show that $gap$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet of size $2^n$.  This means that
+To show that $gap$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
 \begin{align*}
-\log |B_t| &= \log \sum_{i=0}^t {\ell \choose i} (2^n-1)^i\\
+\log |B_t| &= \log \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i\\
 &> \log {\ell \choose t} (2^n-1)^t\\
 &=\Theta(tn) + \log {\ell\choose t}
 % \log (2^n)^{H_{2^n}(t/\ell)\ell - o(\ell)} =n( H_{2^n}(t/\ell)\ell -o(\ell) )
 \end{align*}
-\bnote{Need a good bound on ${\ell \choose t}$.}
-We now ask how much entropy is necessary for security.  The type of source we considered was independent blocks each with super-logarithmic min-entropy.  This yields 
+
+We consider what entropy is necessary for security.  The simplest type of block unguessable distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \ell\omega(\log n)$.  This yields:
 \[
 gap = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t n) + \log {\ell \choose t}\right). 
 \]
-When $t =\Theta(\ell)$, then $gap<0$ and the output entropy is $|C| - \ngl(n)$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
-Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta(\ell)$.  Furthermore, not every block must contribute entropy, so security is possible when the total starting entropy is $\omega(\log n)$.  For example, \consref{cons:first construction} is secure when each block is equal and drawn from a distribution of super-logarithmic min-entropy.  So there are supported sources with negative $gap$ for any value of $t$.  We achieve $gap<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
+When $t =\Theta(\ell)$, then $gap<0$ and the output entropy is $|C| -\beta$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
+Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta(\ell)$.  We achieve $gap<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters. 
 
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.   The first is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Second, we obtain only a single bit from each block of $W_i$ which seems sub optimum.  Lastly, Hamming distance is computed over an alphabet of exponential size, which precludes use in some applications. We begin to address this weakness in the next section.\bnote{come back to this linking language}
 
 \section{Sample-then-Obfuscate}
+\label{sec:sampling}
 \consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization of where the values being obfuscated are sampled from the blocks of the source, but blocks are not individually obfuscated.  This has two advantages, first it simplifies the type of sources we consider as we no longer need high entropy blocks.  Second, it allows us to decrease the size of each block from exponential to an arbitrary super polynomial.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  In ordering for sampling to work properly, we need a source that is likely contribute some entropy from a randomly chosen block.  
 
 \begin{definition}
@@ -696,7 +705,7 @@ A distribution $W = W_1,..., W_\gamma$ is called a $(\alpha, \beta)$-unordered b
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $Z$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $Z$ and $\gamma = Omega(n )$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.   Let $\eta = \omega(\log n)$ be some function such that $\eta \log (Z) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable f for the family of point functions over $\zo^\eta$.  Define $\gen, \rep$ as:
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = Omega(n)$.  Let $t$ be the desired error tolerance and let $C\subset \zo^\ell$ be a $(\neigh_t, \epsilon_{code})$ code.   Let $\eta = \omega(\log n)$ be some function such that $\eta \log (\mathcal{Z}) = \omega(\log n)$.  Let $\mathcal{O}$ be a $\ell$-composable f for the family of point functions over $\zo^\eta\times \mathcal{Z}$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -775,7 +784,7 @@ Result of \clref{cl:all blocks entropy}.
 
 \begin{corollary}
 \label{cor:samp unguess}
-Let $n, Z, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |Z|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \epsilon_{sam}+ 2^{-(\alpha''-1)}) = \ngl(n)$.
+Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \epsilon_{sam}+ 2^{-(\alpha''-1)}) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
 Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
@@ -820,10 +829,10 @@ We now show that \consref{cons:sampling} achieves $gap<0$ for an interesting set
 This yields:
 \begin{align*}
 gap &= \Hoo(W) -\log |B_t| \\
-&< \Theta(\gamma)- t \log |Z|\\
-&= \Theta(\gamma) - O(\gamma/\eta) \log |Z|\\
+&< \Theta(\gamma)- t \log |\mathcal{Z}|\\
+&= \Theta(\gamma) - O(\gamma/\eta) \log |\mathcal{Z}|\\
 \end{align*}
-That is, \consref{cons:sampling} achieves $gap<0$ when the starting alphabet is super polynomial~(noting that for any fixed $Z$ we can set $\eta = \omega(\log n)$ and $\eta = o(\log |Z|)$).  If we are willing to accept $gap\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $Z$.
+That is, \consref{cons:sampling} achieves $gap<0$ when the starting alphabet is super polynomial~(noting that for any fixed $\mathcal{Z}$ we can set $\eta = \omega(\log n)$ and $\eta = o(\log |\mathcal{Z}|)$).  If we are willing to accept $gap\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
@@ -871,9 +880,9 @@ Fuzzy extractors are known to have strong upper bounds on remaining entropy base
 \begin{definition}
 A $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-\emph{fuzzy conductor} with error $\delta$ is a pair of randomized procedures, ``generate''~(\gen') and ``reproduce''~(\rep'), with the following properties:
 \begin{enumerate}
-\item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $y\in\zo^*$ and a helper string $p\in\zo^*$.
-\item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $p\in\zo^*$ as inputs.  The \emph{correctness} property of fuzzy extractors guarantees that for $w$ and $w'$ such that $\dis(w, w')\leq t$, if $Y, P$ were generated by $(Y, P)\leftarrow \gen'(w)$, then $\rep(w', P) = Y$ with probability~(over the coins of $\gen', \rep'$) at least $1-\epsilon$.  If $\dis(w, w')>t$, then no guarantee is provided about the output of $\rep'$.
-\item The security property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $Y$ is close to a high entropy distribution $Z$.  That is, $\exists Z$ with $\Hav(Z | P ) \geq \tilde{m}$ such that $\mathbf{SD}((Y, P), (Z, P))\leq \epsilon$.
+\item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $x\in\zo^*$ and a helper string $ss\in\zo^*$.
+\item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $ss\in\zo^*$ as inputs.  The \emph{correctness} property of fuzzy extractors guarantees that for $w$ and $w'$ such that $\dis(w, w')\leq t$, if $X, SS$ were generated by $(X, SS)\leftarrow \gen'(w)$, then $\rep(w', SS) = X$ with probability~(over the coins of $\gen', \rep'$) at least $1-\epsilon$.  If $\dis(w, w')>t$, then no guarantee is provided about the output of $\rep'$.
+\item The security property guarantees that for any distribution $W$ on $\mathcal{M}$ of min-entropy $m$, the string $X$ is close to a high entropy distribution $Y$.  That is, $\exists Y$ with $\Hav(Y | SS ) \geq \tilde{m}$ such that $\Delta((X, SS), (Y, SS))\leq \epsilon$.
 \end{enumerate}
 \end{definition}
 
@@ -889,17 +898,38 @@ We borrow the following notation from the work of Dodis et al.~\cite{DBLP:journa
 \begin{lemma}
 The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor implies that $\tilde{m}\leq L(\mathcal{M}, t, m) +1 -\log (1-2\epsilon)$.
 \end{lemma}
-\begin{proof}  Assume $(\gen', \rep')$ is a fuzzy conductor with the parameters stated.  Let $S$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $S$.  Define $(Y, P) \leftarrow \gen'(W)$.  Then there must exist a distribution $Z$ with $\Hav(Z|P) \geq \tilde{m}$ such that $\mathbf{SD}((Y, P), (Z, P))\leq \epsilon$.  By Markov's inequality, there exists some set $S_P$ such that $\Pr[P\in S_p] \geq 1/2$ and $\forall p\in S_P$ one has $\mathbf{SD}(Y | P = p, p ), (Z | P = p, p)<2\epsilon$.  Now applying Markov's inequality of $\max_{z} \Pr[Z=z | P=p]$, there exists a set $S_P'$ such that $\Pr[P\in S_P']>1/2$, and for all $p\in S_P'$, $\Hoo(Z| P =p ) \geq \tilde{m}-1$.  Denote by $p^*$ a value in $S_P\cap S_P'$~(one value must exist).  Then $\mathbf{SD}((Y | P =p^* , p^*), (Z| P = p^*, p^*))\leq 2\epsilon$ and $\Hoo(Z|P=p^*)\geq \tilde{m}-1$.  Denote by the set $T$ the possible values of $Y$ when $P=p^*$.  For the statistical distance property to hold, $|T| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $y\in T$ some $w\in S$ which could have produced $y$ with nonzero probability given $P=p^*$, and call this map $C$.  $C$ defines an error correcting code with the required parameters.
-
+\begin{proof}  Assume $(\gen', \rep')$ is a fuzzy conductor with the parameters stated.  Let $A$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $A$.  Define $(X,SS) \leftarrow \gen'(W)$.  Then there must exist a distribution $Y$ with $\Hav(Y|SS) \geq \tilde{m}$ such that $\Delta((X,SS), (Y, SS))\leq \epsilon$.  By Markov's inequality, there exists some set $B_{SS}$ such that $\Pr[ss\in B_{SS}] \geq 1/2$ and $\forall s\in B_{SS}$ one has $\Delta(X | SS = s, s ), (Y | SS = s, s)<2\epsilon$.  Now applying Markov's inequality of $\max_{Y} \Pr[Y=y | SS=s]$, there exists a set $B_{SS'}$ such that $\Pr[SS\in B_{SS'}]>1/2$, and for all $s\in B_{SS'}$, $\Hoo(Y| SS =s ) \geq \tilde{m}-1$.  Denote by $s^*$ a value in $B_{SS}\cap B_{SS'}$~(one value must exist).  Then $\Delta((X | SS =s^* , s^*), (Y| SS = s^*, s^*))\leq 2\epsilon$ and $\Hoo(Y|SS=s^*)\geq \tilde{m}-1$.  Denote by the set $A'$ the possible values of $X$ when $SS=s^*$.  For the statistical distance property to hold, $|A'| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $x\in A'$ some $w\in S$ which could have produced $x$ with nonzero probability given $SS=s^*$, and call this map $C$.  $C$ defines an error correcting code with the required parameters.
 \end{proof}
 
+\section{Minimal Conditions for Fuzzy Extractor Security}
+\label{sec:minimal conditions}
+As mentioned in the introduction a necessary condition for fuzzy extractor security is that a negligible portion of the source distribution lies within any Hamming ball.  In the interactive setting using multi-party computation it is possible to achieve security under this condition.  We codify this notion:
 
-%\section{Proof of \lemref{lem:linear codes independent}}
-%\label{sec:proof of linear indep}
-%\begin{proof}
-%Suppose there is some $i$ that is not equiprobable.  Let $C_{i_1} = \{C | C_i =1\}$ and $C_{i_0} = \{C | C_i = 0\}$. First note that since $C$ does not have any constant bits, it dimension is at least $1$ yielding that $|C| = 2^k$ for some $k$. First suppose that $0<|C_{i_1}| < |C_{i_0}|$.  Let $c\in C_{i_1}$ then by linearity $\forall c'\in C_{i_0}$, $c\oplus c' \in C_{i_1}$.  Furthermore, for all distinct $c_1, c_2\in C_{i_0}$, $c_1\oplus c \neq c_2\oplus c$.  This means that $|C_{i_i}|\geq |C_{i_0}|$ as all $c'\oplus c$ must be distinct and contained in $C_{i_1}$.  
-%Now suppose that $|C_{i_1}| > |C_{i_0}| >0$, denote the elements of $C_{i_1}$ by $c_1,..., c_{|C_{i_1}|}$, then by linearity $c_1\oplus c_2, c_1\oplus c_3,..., c_1\oplus c_{|C_{i_1}|}$ are all distinct elements of $C_{i_0}$ this means that $|C_{i_0}|\geq |C_{i_1}| -1 $, for the total size to be even this means that $|C_{i_0}|\geq |C_{i_1}|$.  This is a contradiction and completes the proof.
-%\end{proof}
+\begin{definition}
+\label{def:fuzzy min-ent}
+A distribution $W$ in a metric space $\mathcal{M}$ has $(t, k)$-fuzzy min-entropy, denoted $\Hfuzz(W) = k$ if the following holds:
+\[
+\forall m\in \mathcal{M} Pr_{w\in W}[\dis(w, m) \leq t] \leq 2^{-k}.
+\]
+\end{definition}
+\begin{lemma}
+Let $n$ be a security parameter and let $W$ be a distribution over $\mathcal{M}$  
+If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that corrects is secure against nonuniform adversaries of size $\log \mathcal{M} + |\rep|$ for negligible $\epsilon$~(and thus no fuzzy extractor) if $\kappa =\omega(\log n)$.
+\end{lemma}
+\begin{proof}
+Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m\mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
+\begin{itemize}
+\item On input $r, p$.
+\item If $\rep(m, p) = r$, output $1$.
+\item Else output $0$.
+\end{itemize}
+First note that $|D|$ is of size $\log |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(R, P) = 1]\geq 1/\poly(n)$, while $\Pr[D(U_\kappa, P)=1 ]\leq 1/2^{-\kappa}$.  Thus, when $\kappa = \omega(\log n)$:
+\[
+\delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} - \frac{1}{2^{-\kappa}} = 1/\poly(n).
+\]
+\end{proof}
+
+For the Hamming distance having $\Hfuzz(W)\geq \omega(\log n)$ means that there are more entropic dimensions that the desired error-tolerance.  There are two minimal types of distributions that provide $\Hfuzz(W)\geq \omega(\log n)$, the first is where the $(t+1)$-st least entropic block has super-logarithmic entropy~(the $t$ most entropic blocks are essentially free to the adversary).  The other is that there $t+\omega(\log n)$ blocks that contribute some constant amount of entropy.  Definitions~\ref{def:block guessable} and~\ref{def:unordered source} are geared towards this type of source, achieving security when the number of entropic blocks is only one greater than the desired error correction is an open problem.
 
 \section{Characterizing unguessable block distributions}
 \label{sec:characterize}
@@ -949,7 +979,7 @@ Let $W = W_1,..., W_\ell$ be a source.  Let $\alpha =\omega(\log n)$ and suppose
 \begin{proof}
 Consider a particular block $W_i$, it suffices to show that $\Hav(W_i | Q_1,A_1,..., Q_q, A_q) \geq \omega(\log n)$.  By the definition of conditional min-entropy:
 \begin{align*}
-\Hav(W_i | Q_1, A_1,..., Q_q, A_q) &= -\log (\Pr[\text{some non zero response}] \max_{w\in W_i} \Pr[W_i | \text{non zero response}) \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i| \text{all zero responses}])\\
+\Hav(W_i | Q_1, A_1,..., Q_q, A_q) &= -\log (\Pr[\text{some non zero response}] \max_{w\in W_i} \Pr[W_i | \text{non zero response}) \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i| \text{all zero responses}]\\
 &\geq-\log (\Pr[\text{some non zero response}]\times 1 \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i | \text{all zero responses}]).
 \end{align*}
 It suffices to show that $\Pr[\text{some non zero response}] = \ngl(n)$ and that $\max_{w\in W_i} \Pr[W_i | \text{all zero responses}] = \ngl(n)$.  We show each of these is turn.
@@ -998,23 +1028,23 @@ For convenience relabel the ordering that violates the condition as $1,..., \ell
 \section{Proof of \lemref{lem:cond and cext}}
 \label{sec:cond and cext}
 \begin{proof}
-It suffices to show if there is some distinguisher $D$ of size $s'$ where 
-\[\delta^D((\cext(W; X), U_d, P), (U_\kappa, U_d, P))>\epsilon_{cond}+ \epsilon_{ext}\]
- then there is an distinguisher $D'$ of size $s_{cond}$ where for all $Z$ where $\Hav(Z|P)\geq \tilde{m}$ such that
+It suffices to show if there is some distinguisher $D'$ of size $s'$ where 
+\[\delta^{D'}((\cext(X; U_d), U_d, SS), (U_\kappa, U_d, SS))>\epsilon_{cond}+ \epsilon_{ext}\]
+ then there is an distinguisher $D$ of size $s_{cond}$ where for all $Y$ where $\Hav(Y|SS) \geq \tilde{m}$ such that
  \[
- \delta^{D'}((Y, P), (Z, P))\geq \epsilon_{cond}.
+ \delta^{D}((X, SS), (Y, SS))\geq \epsilon_{cond}.
  \]
-Let $D$ be such a distinguisher.  That is,
+Let $D'$ be such a distinguisher.  That is,
 \[
-\delta^D(\ext(X, U_d)\times U_d \times P, U_\kappa\times U_d\times P)> \epsilon_{ext}+\epsilon_{cond}.
+\delta^{D'}(\cext(X, U_d)\times U_d \times SS, U_\kappa\times U_d\times SS)> \epsilon_{ext}+\epsilon_{cond}.
 \]
-Then define $D'$ as follows.  On input $y, p$ sample $x\leftarrow U_d$, compute $r\leftarrow \cext(y, x)$ and output $D(r, x, p)$.  Note that $|D'| \approx s' + |\cext| +d= s_{cond}$.  Then we have the following:
+Then define $D$ as follows.  On input $(y, ss)$ sample $seed\leftarrow U_d$, compute $r\leftarrow \cext(y; seed)$ and output $D(r, seed, ss)$.  Note that $|D| \approx s' + |\cext| +d= s_{cond}$.  Then we have the following:
 \begin{align*}
-\delta^{D'}((Y, P), (Z, P))&= \delta^D((\cext(Y, U_d), U_d, P), \cext(Z, U_d), U_d, P)\\
-&\geq \delta^D((\cext(Y, U_d), U_d, P), (U_\kappa\times U_d \times P)) - \delta^D((\cext(Z, U_d), U_d, P), (U_\kappa\times U_d \times P))\\
+\delta^{D}((X, SS), (Y, SS))&= \delta^{D'}((\cext(X, U_d), U_d, SS), \cext(Y, U_d), U_d, SS)\\
+&\geq \delta^{D'}((\cext(X, U_d), U_d, P), (U_\kappa\times U_d \times P)) - \delta^{D'}((\cext(Y, U_d), U_d, SS), (U_\kappa\times U_d \times SS))\\
 &>\epsilon_{cond}+\epsilon_{ext}- \epsilon_{ext} = \epsilon_{cond}.
 \end{align*}
-Thus $D'$ distinguishes $Y$ from all $Z$ with sufficient conditional min-entropy.  This is a contradiction.
+Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.  This is a contradiction.
 \end{proof}
 
 \section{Proof of \thref{thm:security of cons}}
