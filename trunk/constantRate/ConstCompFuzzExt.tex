@@ -317,30 +317,12 @@ The class of errors we support~($t$ Hamming errors over a large alphabet) in our
 Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\rec$ such that for all $c\in C, \forall c'\in \neigh(c), \Pr[\rec(c') \neq c] \leq \delta_{code}$.
 \end{definition}
 
-We note that for any code learning a few bits does not inform on the remainder of the bits.
+We note that for any code learning a few bits does not inform on the remainder of the bits~(the claim is a direct result of \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}).
 
 \begin{claim}
 \label{cl:many locations ent}
 Let $C$ be a binary code and let $\mathcal{I}^c$ be a set of indices of $C$.  Then $\Hav(C | C_{\mathcal{I}^c}) = \log |C| - |\mathcal{I}^c|$.
 \end{claim}
-This claim is a direct result of \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}
-
-
-%need one special property of the code, namely that each output bit is set to $1$ with probability $1/2$.
-
-%\bnote{I don't think we need this!}
-%\begin{definition}
-%A binary $(\neigh_t, \delta_{code})$ code is output equiprobable\bnote{Find the right name for this} $\forall i, |\{C | C_i =1\}| =|C|/2$.
-%\end{definition}
-%All binary linear codes~(without constant bits) are output equiprobable and .  This is true as long as $C$ contains no constant bits.  Usually, if a code has constant bits, we can truncate those bits before encoding and obtain a code with better parameters.  For the remainder of this work when we say a code, we assume there are no constant bits.
-%
-%\begin{lemma}
-%\label{lem:linear codes independent}
-%Let $C$ be a \emph{linear} binary code with no constant bits.  Then $C$ is output equiprobable.
-%\end{lemma}
-%Proof in \apref{sec:proof of linear indep}.
-%
-%
 
 \subsection{Obfuscation}
 Our construction uses virtual black-box obfuscation of point functions.  This is the following family of functions:
@@ -375,7 +357,7 @@ where the first probability is taken over the coin tosses of $A$ and $\mathcal{O
 \section{Computational Fuzzy Extractors}
 \label{sec:fuzzy extractors}
 
-We focus on computational fuzzy extractors introduced by Fuller, Meng, and Reyzin~\cite{fuller2013computational}.  Definitions for information-theoretic fuzzy extractors can be found in the work of Dodis et al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08}.  The definition of computational fuzzy extractors allows for a small probability of error.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.
+We focus on computational fuzzy extractors introduced~\cite{fuller2013computational}.  Definitions for information-theoretic fuzzy extractors can be found in the work of Dodis et al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08}.  The definition of computational fuzzy extractors allows for a small probability of error.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.
 %\begin{definition}
 %\label{def:fuzzy extractor}
 %An $(\mathcal{M}, m, \ell, t, \epsilon)$-\emph{fuzzy extractor} with error $\delta$ is a pair of randomized procedures, ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$, with the following properties:
@@ -472,9 +454,8 @@ Then $\gen, \rep$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuz
 
 \section{A Constant Error-Tolerance Computational Fuzzy Extractor}
 \label{sec:construction}
-\bnote{this needs to be rewritten}
-Before describing our construction, we recall the problem we are trying address.  The goal is to derive strong keys from noisy sources.  As discussed in the introduction, our goal is to provide security when $gap = \Hoo(W) - \log|B_t|$ is  negative.
-In the computational setting once a ``long enough'' key may be expanded using a pseudorandom generator.  Thus, we focus on providing enough security when $gap<0$.  We build a computational fuzzy conductor, which can be converted to a computational fuzzy extractor using a computational extractor~(\lemref{lem:cond and cext}).%If $gap> \omega(\log n)$~(ignoring losses due to randomness extraction), then a key of any length can be formed by using an information-theoretic fuzzy extractor~(which yields nearly this many bits using an optimal code) and expanding the output with a pseudorandom generator~(or using a secure sketch with a computational extractor).  Using an information-theoretic analysis of a fuzzy extractor this seems to be the best construction possible.  As described in Fuller, Meng, and Reyzin~\cite{fuller2013computational}, use of a computational fuzzy extractor may allow a construction when $gap = O(\log n)$.  Their construction is only applicable for high entropy input and yield a result when $gap$ is small.  We will provide the first construction where $gap$ is negative.
+For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys when the number of possible error patterns is larger than the starting entropy of source.  That is we want to provide some security when $0>gap = \Hoo(W) - \log|B_t|$.
+In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  Thus, we focus on building a computational fuzzy conductor with meaningful output entropy.  Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.  
 
 \begin{construction}
 \label{cons:first construction}
@@ -525,8 +506,7 @@ In locations where $c_i=0$ it is hard to find $w_i$ given the point obfuscation.
 
 \subsection{Security of Construction}
 \label{sec:sec of construction}
-\bnote{this paragraph needs to be rewritten}
-Assuming virtual black-box obfuscation, we argue security in the presence of equality oracles for each block.  The adversary is provided with equality oracles for each block individually.  Security rests on an adversary's inability to tell whether they are working with obfuscations of $w_i$ or random points using \emph{adaptive} equality queries.  Our construction is secure as long as enough blocks are unpredictable after adaptive queries~(we discuss minimal conditions for fuzzy extractor security in more depth in \apref{sec:minimal conditions}):
+\consref{cons:first construction} is secure if no distinguisher can tell whether they are working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  This means we can consider what the adversary learns using adaptive equality queries to individual blocks.  Our construction is secure as long as enough blocks are unpredictable after adaptive queries~(we discuss minimal conditions for fuzzy extractor security in more depth in \apref{sec:minimal conditions}):
 
 \begin{definition}
 \label{def:block guessable}
@@ -624,7 +604,7 @@ Let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then when $\dis(w, w')\leq t$ an
 \[
 \Pr[\rep( w', P) = R] \geq 1-\left(\frac{\ell}{2^n}+\delta_{code}\right).
 \]
-That is, \consref{cons:first construction} is correct with error at most $\ell/2^n$.
+That is, \consref{cons:first construction} is correct with error at most $\ell/2^n+\delta_{code}$.
 \end{lemma}
 
 \textbf{Note: }By using a more structured type of code, the necessary error tolerance may be decreased from $t$ to  $(1/2+O(1))t$ by arguing that roughly half of the mismatches between $w, w'$ occur where $c_i =1$.  However, this requires a codeword where most codewords have Hamming weight close to $1/2$.
@@ -680,11 +660,11 @@ When $t =\Theta(\ell)$, then $gap<0$ and the output entropy is $|C| -\beta$~(if 
 Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta(\ell)$.  We achieve $gap<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters.
 
-\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to our construction.   The first is that we leak equality information about particular blocks, this may be sensitive information in the presence of auxiliary information.  Second, we obtain only a single bit from each block of $W_i$ which seems sub optimum.  Lastly, Hamming distance is computed over an alphabet of exponential size, which precludes use in some applications. We begin to address this weakness in the next section.\bnote{come back to this linking language}
+\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks.  To compensate for this leakage, we need most blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
 
 \section{Sample-then-Obfuscate}
 \label{sec:sampling}
-\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).  The main advantage of this approach is it expands the supported sources as no single block must have high entropy.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source that is likely contribute some entropy from a randomly chosen block.
+\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).  The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where most blocks are likely to contribute some entropy.
 
 \begin{definition}
 \label{def:unordered source}
@@ -694,7 +674,7 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-unordered block s
 \]
 \end{definition}
 
-\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), an unordered block source is one where most blocks contribute some entropy conditioned on the value of the other blocks.  This is a strengthening of an unguessable block distribution~(\defref{def:block guessable}), however we achieve security for significantly lower entropy levels than were necessary for block unguessable distributions.  We use an algorithm that draws random samples from block sources.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample$.
+\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), an unordered block source is one where most blocks contribute some entropy conditioned on the value of the other blocks.  This is a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unguessable block distribution is a statement about the average remaining entropy while an unordered block source is a worst case condition.  However, we achieve security for significantly lower entropy levels than were necessary for block unguessable distributions.  We use an algorithm that draws random samples from block sources.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample$.
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
@@ -747,6 +727,7 @@ The main change in \consref{cons:sampling} is that the obfuscated values are con
 As before we show security and correctness of \consref{cons:sampling}.  For security, we argue that each of the $v_i$ is unguessable.  For correctness we show that the induced error rate in $v$ and $v'$ is a small constant~(with overwhelming probability) so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
+\bnote{this whole chain of arguments needs to be cleaned up}
 In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $v_i$ has super-logarithmic entropy on its own.  A sampler will select enough good blocks almost all the time, meaning if we take enough samples we obtain a super-logarithmic amount of entropy.  This means that  $V_1,..., V_\ell$ is a block-unguessable distribution~(by \clref{cl:all blocks entropy}) and security follows by \thref{thm:security of cons}.
 
 \begin{lemma}
@@ -777,7 +758,7 @@ Result of \clref{cl:all blocks entropy}.
 
 \begin{corollary}
 \label{cor:samp unguess}
-Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual black obfuscator \bnote{what type of obfuscator?} with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \ell\epsilon_{sam}+ 2^{-(\alpha''-1)}) = \ngl(n)$.
+Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual grey box obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
 Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
@@ -785,48 +766,47 @@ Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
 
 
 \subsection{Correctness of \consref{cons:sampling}}
-The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  Let $t'$ be the capacity of $C$.  To show correctness we must show that with overwhelming probability $\dis(v, v')\leq t'$.  Let $t$ be the number of supported errors between $w$ and $w'$.  \bnote{should really use something other than $c$ here}
-Let $c>0$ and let $t = c(\gamma-\eta)/\eta$, for any  $i$ one has:
-% In this section, we analyze what values of $t$ will yield a small constant likelihood of error between $v_i$ and $v_i'$ yielding a constant probability of bit flip $0\rightarrow 1$ between $c$ and $c'$.  Consider a single index $i$ and let $t$ be the number of errors between $w$ and $w'$.  Then
+The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  Let $t'$ be the capacity of $C$.  To show correctness we must show that with overwhelming probability $\dis(v, v')\leq t'$.  Let $t$ be the number of supported errors between $w$ and $w'$.  
+Let $\mu$ be a parameter and let $t = \mu(\gamma-\eta)/\eta$, for any  $i$ one has:
 \begin{align*}
 \expe \Pr[v_i = v_i'] &=\Pr[j_{i,1},..., j_{i,\eta}\text{ have no errors}]\\
-&\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{c(\gamma-\eta)/\eta}{\gamma-i}\right)\\
-&\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{c}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{c}{\eta}\right) \\
-&\geq \left(1-\frac{c}{\eta}\right)^{\eta} =\left( \left(1-\frac{c}{\eta}\right)^{\eta/c}\right)^c\geq \frac{1}{4}^c
+&\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu(\gamma-\eta)/\eta}{\gamma-i}\right)\\
+&\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\right) \\
+&\geq \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \frac{1}{4}^\mu
 \end{align*}
-Thus, by setting $c = -\log(1-t'/\ell)/2$ we obtain in $\expe[\dis(v, v')\leq t']$.  We need a stronger condition that this occurs with overwhelming probability.
+Thus, by setting $\mu = -\log(1-t'/\ell)/2$ we obtain in $\expe[\dis(v, v')\leq t']$.  We need a stronger condition that this occurs with overwhelming probability.
 
 \begin{lemma}
-Let $n, W$ be as above and Let $C$ be a code that corrects $t$ $0\rightarrow 1$ bit errors where $t =\Theta(\eta)$.  Let $c = -\log(1-t'/(2\ell))/2 = \Theta(1)$, when $t \leq c(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\eta})$ where the probability is over the coins of $\gen$.
+Let $n, W$ be as above and Let $C$ be a code that corrects $t$ $0\rightarrow 1$ bit errors where $t =\Theta(\eta)$.  Let $\mu = -\log(1-t'/(2\ell))/2 = \Theta(1)$, when $t \leq \mu(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\eta})$ where the probability is over the coins of $\gen$.
 \end{lemma}
 \begin{proof}
-With each $i$ we can associate a Bernoulli random variable $X_i \overset{def}= V_i \overset{?}\neq V_i'$.  As stated above, we have that $\expe[X_i] \leq 1-\frac{1}{4}^c = t'/(2\eta)$. By the Chernoff bound, we have
+With each $i$ we can associate a Bernoulli random variable $X_i \overset{def}= V_i \overset{?}\neq V_i'$.  As stated above, we have that $\expe[X_i] \leq 1-\frac{1}{4}^\mu = t'/(2\eta)$. By the Chernoff bound, we have
 \begin{align*}
-\Pr\left[\frac{1}{\eta} \sum_{i=1}^\eta X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\eta} = O(e^{- \eta})
+\Pr\left[\frac{1}{\eta} \sum_{i=1}^\eta X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\eta} = O(e^{- \eta}).
 \end{align*}
 \end{proof}
 
 \begin{corollary}
-Let $\eta = \omega(\log n)$ and let $C\subset\zo^\ell$ and  be a code that corrects $t' = \Theta(\ell)$ $0\rightarrow 1$ bit errors.  Then when
+Let $\eta = \omega(\log n)$ and let $C\subset\zo^\ell$ be a $(\neigh_t, \delta_{code})$ for $t' = \Theta(\ell)$ and $\delta_{code} = \ngl(n)$.  Then when
 \[
 \dis(w, w')= \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = O(\frac{\gamma-\eta}{\eta}) = O(\gamma/\eta)
 \]
 and $(R, P)\leftarrow \gen(w)$, then
 \[
-\Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{2^n} - O(2^{-\eta}) = 1-\ngl(n).
+\Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{2^n} - O(2^{-\eta}) -\delta_{code}= 1-\ngl(n).
 \]
-That is, \consref{cons:sampling} is correct with error at most $\ngl(n)$.
+That is, \consref{cons:sampling} is correct with overwhelming probability.
 
 \end{corollary}
 \subsection{Discussion of \consref{cons:sampling}}
-We now show that \consref{cons:sampling} achieves $gap<0$ for an interesting setting of parameters.  For security of an unordered block source we needed both $\alpha = \Theta(1)$ and $\beta\leq \gamma/2-\Omega(1)$.  This means that the overall required entropy of $\Hoo(W) = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors
+\consref{cons:sampling} achieves $gap<0$ for an interesting setting of parameters.  The required entropy of  an unordered block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
 This yields:
 \begin{align*}
 gap &= \Hoo(W) -\log |B_t| \\
 &< \Theta(\gamma)- t \log |\mathcal{Z}|\\
 &= \Theta(\gamma) - O(\gamma/\eta) \log |\mathcal{Z}|\\
 \end{align*}
-That is, \consref{cons:sampling} achieves $gap<0$ when the starting alphabet is super polynomial~(noting that for any fixed $\mathcal{Z}$ we can set $\eta = \omega(\log n)$ and $\eta = o(\log |\mathcal{Z}|)$).  If we are willing to accept $gap\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.
+That is, \consref{cons:sampling} achieves $gap<0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$.  If we are willing to accept $gap\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.  However, in this setting $gap =\Omega(\gamma)$ and known constructions of information-theoretic fuzzy extractors suffice in this setting.
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
