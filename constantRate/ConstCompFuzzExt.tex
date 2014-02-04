@@ -230,20 +230,16 @@ are not necessarily endorsed by the United States Government.} \and Omer Paneth 
 
 
 \begin{abstract}
-Fuzzy extractors derive strong keys from noisy sources.  The goal is to reliably convert a high entropy source~(which may have different values on repeated readings) to the same uniformly distributed key.  Traditionally, their security is defined information-theoretically.  Fuzzy extractors have upper bounds on the length of the derived key~(Dodis et al., J. of Comp 2008).  In particular, the starting entropy of the source must be significantly higher than the logarithm of number of error patterns corrected.  For many practical noisy sources, like biometrics, this condition is not fulfilled, leaving reliable key derivation from these sources as open problem.
+Fuzzy extractors derive strong keys from noisy sources.  The goal is to reliably convert a high entropy source~(which may have different values on repeated readings) to the same uniformly distributed key.  Traditionally, their security is defined information-theoretically.  Fuzzy extractors have upper bounds on the length of the derived key~(Dodis et al., J. of Comp 2008).  In particular, the starting entropy of the source must be significantly higher than the logarithm of number of error patterns corrected.  For many practical noisy sources, like biometrics, this condition is not fulfilled, leaving reliable key derivation from these sources as an open problem.
 
-Fuller, Meng, and Reyzin (Asiacrypt 2013) hypothesize that these bounds can be overcome by only providing security against computationally-bounded adversaries.
-In this work, we provide the first construction of a fuzzy extractor for a large class of distributions where the starting entropy is smaller than the logarithm of the number of correctable error patterns.
+For an arbitrary source it is impossible to provide meaningful security~(even with interaction solutions) when the starting entropy is smaller than the logarithm of the number of error patterns.  Some restriction on the type of source is necessary.  Meaningful restrictions (and accompanying constructions) have proved elusive for information-theoretic fuzzy extractors.
+Fuller, Meng, and Reyzin (Asiacrypt 2013) define a computationally-secure version of a fuzzy extractor.  It may be easier to construct computational fuzzy extractors for meaningful sources.  
 
-\bnote{there are two constructions now}
-\textbf{Construction:} We construct a computational fuzzy extractor based on obfuscation of point functions.
-Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~(Eurocrypt 2008).
-Our construction provides the following novel features:
-\begin{itemize}
-\item The source entropy is smaller than the log of the number of correctable error patterns.
-\item Constant error tolerance rate.
-\item Security for a large and meaningful class of distributions.  \bnote{this description needs to be better}.
-\end{itemize}
+In this work, we construct the first (computational) fuzzy extractors that are secure for a large class of distributions where the starting entropy is smaller than the logarithm of the number of correctable error patterns.
+
+\textbf{Constructions:}  We construct computational fuzzy extractors from point function obfuscation.
+Our constructions are inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~(Eurocrypt 2008).  Our two constructions are similar to spirit but optimize different parameters.  The first requires individual blocks of the source to have super-logarithmic entropy and corrects a constant fraction of errors.  The second construction uses sampling to reduce the required entropy of the source.  Unfortunately, sampling also reduces the effective error tolerance of the construction.  %The first construction works for high-entropy and high-error sources, while the second construction works for distributions with lower entropy and error.
+\bnote{need something else to say here}
 \end{abstract}
 
 
@@ -625,7 +621,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 
 Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correct for block unguessable distributions:
 \begin{theorem}
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{sec}, \epsilon_{sec})$ with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
+Let $\mathcal{W}$ be the family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{sec}, \epsilon_{sec})$-hard with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
 \begin{proof}
 Security is a result of \thref{thm:security of cons} because $2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha-1)}$ is negligible when $\epsilon_{obf} = \ngl(n), \ell = \poly(n)$ and $\alpha =\omega(\log n)$.  Correctness follows from \lemref{lem:correct of cons}.
@@ -769,7 +765,6 @@ Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $
 Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
 \end{proof}
 
-
 \subsection{Correctness of \consref{cons:sampling}}
 The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.  We now show that there are few enough $0\rightarrow 1$ flips with overwhelming probability.  Let $t'$ be the capacity of $C$.  We show that $\Pr_{(v, v')\leftarrow (V, V')}[\dis(v, v')\ge t'] <\ngl(n)$.  
 
@@ -808,6 +803,18 @@ and $(R, P)\leftarrow \gen(w)$, then
 That is, \consref{cons:sampling} is correct with overwhelming probability.
 
 \end{corollary}
+
+Combining the last two sections, we have that \consref{cons:sampling} is secure and correct:
+\begin{theorem}
+Let $n$ be a security parameter.
+Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon = \ngl(n)$ such that \cons{sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ for
+\begin{align*}
+t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
+\tilde{m} &=|C|\\
+\delta &= O(\ell/|\mathcal{Z}|+2^{-\ell} +\delta_{code}).
+\end{align*}
+\end{theorem}
+
 \subsection{Discussion of \consref{cons:sampling}}
 \consref{cons:sampling} achieves $gap<0$ for an interesting setting of parameters.  The required entropy of  an unordered block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
 This yields:
