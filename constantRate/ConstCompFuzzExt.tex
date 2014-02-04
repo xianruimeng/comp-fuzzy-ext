@@ -575,7 +575,6 @@ We begin by showing that the probability of a single $1\rightarrow 0$ bit flip i
 The probability of at least one $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $ \ell/2^n = \ngl(n)$.
 \end{lemma}
 \begin{proof}
-\bnote{we need to come back to this if we use obfuscation with error}
 Recall that $c$ contains at most $\ell$ $1$s.  Since $w'$ is chosen independently of the points $r_i$, this probability is the size of each block, that is $\Pr[r_i =w_i']  = 1/2^n$. Since the $r_i$ are chosen independently, one has,
 \begin{align*}
 \Pr[\text{no $1\rightarrow 0$ flips}] &\geq 1-\Pr[\text{some }r_i = w_i']\\
@@ -882,17 +881,21 @@ The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor im
 \begin{proof}  Assume $(\gen', \rep')$ is a fuzzy conductor with the parameters stated.  Let $A$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $A$.  Define $(X,SS) \leftarrow \gen'(W)$.  Then there must exist a distribution $Y$ with $\Hav(Y|SS) \geq \tilde{m}$ such that $\Delta((X,SS), (Y, SS))\leq \epsilon$.  By Markov's inequality, there exists some set $B_{SS}$ such that $\Pr[ss\in B_{SS}] \geq 1/2$ and $\forall s\in B_{SS}$ one has $\Delta(X | SS = s, s ), (Y | SS = s, s)<2\epsilon$.  Now applying Markov's inequality of $\max_{Y} \Pr[Y=y | SS=s]$, there exists a set $B_{SS'}$ such that $\Pr[SS\in B_{SS'}]>1/2$, and for all $s\in B_{SS'}$, $\Hoo(Y| SS =s ) \geq \tilde{m}-1$.  Denote by $s^*$ a value in $B_{SS}\cap B_{SS'}$~(one value must exist).  Then $\Delta((X | SS =s^* , s^*), (Y| SS = s^*, s^*))\leq 2\epsilon$ and $\Hoo(Y|SS=s^*)\geq \tilde{m}-1$.  Denote by the set $A'$ the possible values of $X$ when $SS=s^*$.  For the statistical distance property to hold, $|A'| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $x\in A'$ some $w\in S$ which could have produced $x$ with nonzero probability given $SS=s^*$, and call this map $C$.  $C$ defines an error correcting code with the required parameters.
 \end{proof}
 
-\section{$gap<0$ for Irises}
-\label{sec:iris no key}
-The iris is the biometric believed to have the most entropy.  The best estimate for iris entropy is $250$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  The transform computes a phase angle at $1024$ locations, this angle is then quantized into a positive/negative value in the two dimensions.  This transform is designed for the process of identification, achieving the best possible true accept/false accept tradeoff.
+\section{Inadequacy of Fuzzy Extractors for Biometrics}
+Fuzzy extractors were developed to derive stable from noisy sources.  Biometrics represent an important noisy physical source.  Unlike physical unclonable functions, biometrics are inherently fixed distributions.  It is not possible to increase their entropy or reduce their error to improve key strength.  Many biometric systems have incorporated fuzzy extractors to improve system security~(see the work of Jain, Nadakumar, and Nagar for a survey~\cite{jain2008biometric}).  The security of the resulting system is usually measured using false accept rate vs. false reject rate.  This assumes an adversary that creates inputs to the \rec algorithm without looking at the public helper data.  A known false accept rate provides there is no guarantee helper data information-leakage.  Indeed the helper data may completely reveal the original input.  In high security applications, this type of analysis is sufficient.  
 
-The precise number of errors that must be tolerated depends on the desired true accept rate (how often the correct key is produced).  For a true accept rate of $20\%$, a $t$ of approximately $205$ is required.\footnote{Daugman considerably improves his true accept rate using a masking vector, where bits that are not considered ``trustworthy'' are excluded from the comparison.  The comparison between the two readings is then made using bits not excluded by either image.  It is not clear how to extend into the fuzzy extractor setting.}  We have the following calculation for $gap$:
+\label{sec:iris no key}
+As an example, the iris is the biometric believed to have the most entropy.  The best estimate for iris entropy is $250$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  The transform computes a phase angle at $1024$ locations, this angle is then quantized into a positive/negative value in the two dimensions.\footnote{There is considerable subsequent research after the work of Daugman~\cite{daugman2004}.  These works do not dramatically improve the original results.}
+
+The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.\footnote{Daugman considerably improves his true accept rate using a masking vector, where bits that are not considered ``trustworthy'' are excluded from the comparison.  The comparison between the two readings is then made using bits not excluded by either image.  It is not clear how to extend into the fuzzy extractor setting.}  We have the following calculation for $gap$:
 \begin{align*}
 gap &= \Hoo(W) - \log |B_t|\\
 &= 249 - \log \sum_{i=0}^{205} {2048 \choose i} = -707.
 \end{align*}
-Irises are believed to be the strongest biometric and reliable key derivation from irises is an open problem.
+Although irises are believed to be the strongest biometric a fuzzy extractor with the above parameters may completely reveal the original value.
 
+%Fingerprints are in a similar situation.  Ratha, Connell, and Bolle estimate that fingerprints contain $82$ bits of entropy~\cite{ratha2003biometrics}.
+%\bnote{Don't know what I want to say about fingerprints right now.  
 \section{Minimal Conditions for Fuzzy Extractor Security}
 \label{sec:minimal conditions}
 A necessary condition for fuzzy extractor security is that a negligible portion of the source distribution lies within any Hamming ball.  We make this intuition formal here:
