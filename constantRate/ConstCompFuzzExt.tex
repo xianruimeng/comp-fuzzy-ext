@@ -326,17 +326,17 @@ Our construction uses obfuscation for a family of point function $\mathcal{I} = 
 \[
 I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
 \]
-The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}) as it allows the simulator to run in unbounded time while making at most polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Compassable auxiliary-input VGB obfuscators for point function are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Difﬁe Hellman assumption which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points.
+The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}) as it allows the simulator to run in unbounded time while making at most polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point function are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points.
 
-\begin{definition}[$t$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
-\label{def:obf} Let $\mathcal{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is a $t$-composable VGB obfuscator for $\mathcal{I}$ with auxiliary-input if the following conditions are met:
+\begin{definition}[$\ell$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
+\label{def:obf} Let $\mathcal{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is a $\ell$-composable VGB obfuscator for $\mathcal{I}$ with auxiliary-input if the following conditions are met:
 \begin{enumerate}
 \item \emph{Functionality:} for every $I \in \mathcal{I}$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.
-\item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^t \in \mathcal{I}_n$, (where $t=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
+\item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^\ell \in \mathcal{I}_n$, (where $\ell=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
 \[
-|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^t)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^t)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^t|}) = 1] | < \frac{1}{p(n)} \enspace,
+|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^t)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | < \frac{1}{p(n)} \enspace,
 \]
-where $(I^1,\dots,I^t)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
+where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
 \end{enumerate}
 \end{definition}
 
@@ -406,7 +406,7 @@ denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distr
 We now define the two primitives for this approach: a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 \begin{definition}
 \label{def:comp fuzzy cond}
-Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(s_{cone}, \epsilon_{cond})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(s_{cond}, \epsilon_{cond})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
 \begin{itemize}
 \item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $X\in\{0,1\}^\ell$ and a helper string $SS\in\{0,1\}^*$.
 \item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $SS\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(X, SS)\leftarrow \gen'(w)$, then $\Pr[\rep'( w', SS) = X] \geq 1-\delta$ where the probability is over the randomness of $(\gen', \rep')$.
@@ -457,7 +457,7 @@ We describe $\gen, \rep$ as follows:
 \item \underline{Input}: $w = w_1,..., w_\ell$
 \item Sample $c\leftarrow C$.
 \item For $i=1,..., \ell$:
-\begin{enumerate}
+\begin{enumerate}[(i)]
 \item If $c_i = 0$: $p_i = \mathcal{O}(I_{w_i})$.
 \item Else: Sample $r_i \leftarrow U_n$.
 \subitem Let $p_i = \mathcal{O}(I_{r_i})$.
@@ -470,7 +470,7 @@ We describe $\gen, \rep$ as follows:
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$
 \item For $i=1,..., \ell$:
-\begin{enumerate}
+\begin{enumerate}[(i)]
 \item If $p_i(w_i') = 1$: set $c_i' = 0$.
 \item Else: set $c_i' = 1$.
 \end{enumerate}
@@ -512,7 +512,8 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 We discuss  block unguessable distributions in \apref{sec:characterize}.  \consref{cons:first construction} is secure for block unguessable distributions:
 \begin{theorem}
 \label{thm:security of cons}
-Let $\mathcal{O}$ be an $\ell$-composable virtual gray box obfuscator with auxiliary inputs for point programs over $\zo^n$ that is $(s_{obf}, \epsilon_{obf})$-hard.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Then $H^{\hill}_{\epsilon', s_{obf}}( C | P ) \geq |C| - \beta$ for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
+Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\zo^n$. %that is $(s_{obf}, \epsilon_{obf})$-hard.  
+Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{theorem}
 
 We give a brief outline of the proof here, the full proof is in \apref{app:security of main cons}.
@@ -613,7 +614,7 @@ Together, with the arguments in \secref{sec:sec of construction} we have the con
 Let $\mathcal{W}$ be the family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{sec}, \epsilon_{sec})$-hard with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
 \begin{proof}
-Security is a result of \thref{thm:security of cons} because $2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha-1)}$ is negligible when $\epsilon_{obf} = \ngl(n), \ell = \poly(n)$ and $\alpha =\omega(\log n)$.  Correctness follows from \lemref{lem:correct of cons}.
+Security is a result of \thref{thm:security of cons}.  Correctness follows from \lemref{lem:correct of cons}.
 \end{proof}
 
 
@@ -666,7 +667,7 @@ We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $\ell = O(\poly(n)) = \omega(\log n)$ and let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.   Let $\eta = \omega(\log n)$ and let $\mathcal{O}$ be a $\ell$-composable virtual grey box obfuscator with auxiliary input for the family of point functions over $\zo^\eta\times \mathcal{Z}$.  Define $\gen, \rep$ as:
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $\ell = O(\poly(n)) = \omega(\log n)$ and let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.   Let $\eta = \omega(\log n)$ and let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $ \mathcal{Z}^\eta$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -676,7 +677,7 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \item \underline{Input}: $w = w_1,..., w_\gamma$
 \item Sample $c\leftarrow C$.
 \item For $i=1,..., \ell$:
-\begin{enumerate}
+\begin{enumerate}[(i)]
 \item Sample $\lambda_i\overset{\$}\leftarrow \zo^{r_{sam}}$.
 \item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\eta,\gamma}( \lambda_i)$
 \item If $c_i = 0$:
@@ -694,7 +695,7 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$
 \item For $i=1,..., \ell$:
-\begin{enumerate}
+\begin{enumerate}[(i)]
 \item Parse $p_i$ as $\rho_i, \lambda_i$.
 \item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\gamma, \eta}(\lambda_i)$.
 \item Set $v_i' = w_{j_{i, 1}},..., w_{j_{i, \eta}}$.
@@ -748,7 +749,7 @@ Let $q = \poly(n)$, there exists some $\alpha'' = \omega(\log n)$ such that dist
 Finally, since $V_1,..., V_\ell$ is statistically close~(conditioned on the randomness of $\sample$) to a block unguessable distribution, \consref{cons:sampling} is just \consref{cons:first construction} applied to $V_1,..., V_\ell$.
 \begin{corollary}
 \label{cor:samp unguess}
-Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable virtual grey box obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$ that is $(s_{obf}, \epsilon_{obf})$-hard, then $H^{\hill}_{\epsilon', s_{obf}}(C | P) \geq |C|$ for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
+Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$, then for every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq |C|$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
 Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
@@ -796,7 +797,7 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 Combining the last two sections, we have that \consref{cons:sampling} is secure and correct:
 \begin{theorem}
 Let $n$ be a security parameter.
-Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ for
+Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{sec}, \epsilon_{sec})$-hard with error $\delta$ for
 \begin{align*}
 t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
 \tilde{m} &=|C|\\
@@ -810,7 +811,7 @@ This yields:
 \begin{align*}
 gap &= \Hoo(W) -\log |B_t| \\
 &< \Theta(\gamma)- t \log |\mathcal{Z}|\\
-&= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|\\
+&= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|
 \end{align*}
 That is, \consref{cons:sampling} achieves $gap<0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$.  If we are willing to accept $gap\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.  However, in this setting $gap =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
 \bibliographystyle{alpha}
@@ -894,7 +895,7 @@ Irises are believed to be the strongest biometric and reliable key derivation fr
 
 \section{Minimal Conditions for Fuzzy Extractor Security}
 \label{sec:minimal conditions}
-As mentioned in the introduction a necessary condition for fuzzy extractor security is that a negligible portion of the source distribution lies within any Hamming ball.  In the interactive setting using multi-party computation it is possible to achieve security under this condition.  We codify this notion:
+A necessary condition for fuzzy extractor security is that a negligible portion of the source distribution lies within any Hamming ball.  We make this intuition formal here:
 
 \begin{definition}
 \label{def:fuzzy min-ent}
@@ -904,6 +905,7 @@ A distribution $W$ in a metric space $\mathcal{M}$ has $(t, k)$-fuzzy min-entrop
 \]
 \end{definition}
 \begin{lemma}
+\label{lem:fuzz necessary}
 Let $n$ be a security parameter and let $W$ be a distribution over $\mathcal{M}$
 If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that corrects is secure against nonuniform adversaries of size $\log \mathcal{M} + |\rep|$ for negligible $\epsilon$~(and thus no fuzzy extractor) if $\kappa =\omega(\log n)$.
 \end{lemma}
@@ -919,6 +921,8 @@ First note that $|D|$ is of size $\log |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(
 \delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} - \frac{1}{2^{-\kappa}} = 1/\poly(n).
 \]
 \end{proof}
+
+\lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is a necessary condition for an interactive solution as well.  The original fuzzy extractors paper of Dodis et al.~\cite{DBLP:journals/siamcomp/DodisORS08} separated the starting entropy of $W$ and the desired error tolerance.  When $gap<0$ there is some distribution such that $\Hfuzz(W)=0$.  This means we inherently must talk about the security and errors together.  
 
 For the Hamming distance having $\Hfuzz(W)\geq \omega(\log n)$ means that there are more entropic dimensions that the desired error-tolerance.  There are two minimal types of distributions that provide $\Hfuzz(W)\geq \omega(\log n)$, the first is where the $(t+1)$-st least entropic block has super-logarithmic entropy~(the $t$ most entropic blocks are essentially free to the adversary).  The other is that there $t+\omega(\log n)$ blocks that contribute some constant amount of entropy.  Definitions~\ref{def:block guessable} and~\ref{def:unordered source} are geared towards this type of source, achieving security when the number of entropic blocks is only one greater than the desired error correction is an open problem.
 
@@ -1041,21 +1045,24 @@ Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.
 \label{app:security of main cons}
 \begin{proof}
 
-Let $\mathcal{O}$ be a $\ell$-composable virtual grey box obfuscator with auxiliary input for point programs over $\zo^n$ that is $(s_{obf}, \epsilon_{obf})$-hard.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to how that $H^{\hill}_{\epsilon', s_{obf}}(C|P)\geq |C|- \beta$ for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
+Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\zo^n$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq |C|- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
+Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < |C|-\beta$.
 
-By \defref{def:block guessable} there exists a set of indices $\mathcal{I}$ such that all blocks within $\mathcal{I}$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $\mathcal{I}$ are fixed.  Then $C | C_{\mathcal{I}^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{\mathcal{I}^c} )= |C| -\beta$ and thus $\Hav(C'| C_{\mathcal{I}^c}) = |C| -\beta$.  Define the distribution $X$ as follows:
+By \defref{def:block guessable} there exists a set of indices $\mathcal{I}$ such that all blocks within $\mathcal{I}$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $\mathcal{I}$ are fixed.  Then $C | C_{\mathcal{I}^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{\mathcal{I}^c} )= |C| -\beta$ and thus $\Hav(C'| C_{\mathcal{I}^c}) = |C| -\beta$.  
+Let $D$ a distinguisher of size be some distinguisher of size at most $s_{sec}$ such that 
+\[
+| \expe[D(C, P)] - \expe[D(C', P)] > \epsilon_{sec} = 1/\poly(n).
+\]  
+Define the distribution $X$ as follows:
 \[X_i =
 \begin{cases}
 W_i & C_i = 0\\
 R_i & C_i = 1.
-\end{cases}\]
-
-Let $D$ be some distinguisher of size at most $s_{obf}$.  By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $s_{obf}$ queries) such that
+\end{cases}\]  By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $q$ queries) such that
 \begin{align}
 \label{eq:dist before}
-|\expe [D(P_1,..., P_\ell, C)] - \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C)] |\leq \epsilon_{obf}.
+|\expe [D(P_1,..., P_\ell, C)] - \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C)] |\leq \epsilon_{sec}/3.
 \end{align}
-
 We now prove $S$ cannot distinguish between $C$ and $C'$.
 \begin{lemma}
 \label{lem:sim cannot distinguish}
@@ -1105,16 +1112,17 @@ By averaging over all points in $C'$ we conclude that $\Delta(S^{\mathcal{O}_X(\
 \noindent Now by the security of obfuscation we have that
 \begin{align}
 \label{eq:dist after}
-|\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C')] |\leq \epsilon_{obf}.
+|\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C')] |\leq \epsilon_{sec}/3.
 \end{align}
 Combining Equations~\ref{eq:dist before} and~\ref{eq:dist after} and \lemref{lem:sim cannot distinguish}, we have
 \begin{align*}
 \delta^{D}(( P, C), (P, C'))&\leq |\expe \expe [D(P_1,..., P_\ell, C)] - \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C)]| \\
 &+|\expe[S^{\mathcal{O}_X(\cdot, \cdot)}(C)] - \expe[S^{\mathcal{O}_X(\cdot, \cdot)}(C')] |\\
 &+|\expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C')] - \expe [D(P_1,..., P_\ell, C') ]|\\
-&\leq \epsilon_{obf} + (\ell-\beta)2^{-(\alpha-1)}+\epsilon_{obf}.
+&\leq \epsilon_{sec}/3+ (\ell-\beta)2^{-(\alpha-1)}+\epsilon_{sec}/3 \\
+&\leq 2\epsilon_{sec}/3 + \ngl(n) < \epsilon_{sec}.
 \end{align*}
-This completes the proof of \thref{thm:security of cons}.
+This is a contradiction and completes the proof of \thref{thm:security of cons}.
 \end{proof}
 
 
