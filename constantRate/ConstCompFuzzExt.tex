@@ -329,7 +329,7 @@ Our construction uses obfuscation for a family of point function $\mathcal{I} = 
 \[
 I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
 \]
-The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}) as it allows the simulator to run in unbounded time while making at most polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point function are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points.
+The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}) as it allows the simulator to run in unbounded time while making at most polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points.
 
 \begin{definition}[$\ell$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
 \label{def:obf} Let $\mathcal{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is a $\ell$-composable VGB obfuscator for $\mathcal{I}$ with auxiliary-input if the following conditions are met:
@@ -820,42 +820,6 @@ That is, \consref{cons:sampling} achieves $H_{usable}<0$ when the starting alpha
 \bibliography{crypto}
 
 \appendix
-\section{Obfuscation}
-\label{sec:obfuscation}
-The standard notion of obfuscation is virtual black-box obfuscation~(introduced by Barak et al.~\cite{barak2001possibility}).  This notion is known to be impossible in a black-box way for all polynomial time programs.  Several variants~(best possible obfuscation~\cite{goldwasser2007best}, indistinguishability obfuscation~\cite{barak2001possibility}, differing inputs indistinguishability obfuscation~\cite{barak2001possibility}) have been presented~(see Varia~\cite{varia2010studies} for implications between various definitions).  Indistinguishability obfuscation has recently been shown to be constructible~\cite{garg2013candidate} using multilinear maps~\cite{garg2013multilinear}.  The definition of virtual black box obfuscation is presented in \defref{def:obf}.
-
-
-In this work, we will use obfuscation of point-programs,
-\[
-I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}
-\]
-
-We present the construction of Canetti~\cite{canetti1997towards}, as an illustration of how point functions can be obfuscated.  Let $G$ be a group:
-\begin{enumerate}
-\item Input: string $w\in \zo^n$.
-\item Choose a generator $g\overset{\$}\leftarrow G$
-\item Compute $h\leftarrow g^w$, where $w$ is viewed as an element of $G$ is some canonical way.
-\item Output: circuit that has $g, h$ hardwired, and on input $x$, accepts iff $g^x=h$.
-\end{enumerate}
-\begin{assumption}[Strong DDH assumption]\label{ass:strong ddh}.  Let $n$ be a security parameter and let $p = 2q+1$ be a randomly chosen $n$-bit safe prime.  Consider the group $Q$ of quadratic residues in $\mathbb{F}_p^*$.  For any $W$ with $\Hoo(W)= \omega(\log n)$ where the domain of $W$ is $\mathbb{F}_q$, for $g\overset{\$}\leftarrow Q, a\leftarrow W, b,c \overset{\$}\leftarrow \mathbb{F}_q$, the ensembles $\langle g, g^a, g^b, g^{ab}\rangle$ and $\langle g, g^a, g^b, g^c\rangle$ are computationally indistinguishable.
-\end{assumption}
-\begin{theorem}~\cite{canetti1997towards}
-The construction above, when instantiated with the group $G = Q$ is a virtual black-box obfuscator for the family of point functions under \assref{ass:strong ddh}.
-\end{theorem}
-
-As mentioned above there exist other constructions of point function obfuscation under various assumptions~\cite{lynn2004positive, wee2005obfuscating}.
-
-Lastly, we will need the notion of composable obfuscation.
-
-\begin{definition}[Composable obfuscation~\cite{bitansky2010strong, canetti2008obfuscating,lynn2004positive}]
-\label{def:obf comp}
-A PPT algorithm $\mathcal{O}$ is a $t$-\emph{composable obfuscator} for the family $\mathcal{C}$ with dependent auxiliary input if functionality and polynomial slowdown hold as before, and the virtual black black-box property holds whenever the adversary and simulator are given up to $t$ circuits in $\mathcal{C}$.  That is, for every PPT $A$ and polynomial $\rho$, there exists a PPT $S$ such that for all sufficiently large $n$, and for all $C_1,..., C_t\in \mathcal{C}_n$, and for all auxiliary inputs $z\in \zo^*$,
-\[
-|\Pr[A(\mathcal{O}(C_1), ..., \mathcal{O}(C_t), z) = 1] - \Pr[S^{C_1,..., C_t}(1^n, z) = 1]| < \frac{1}{\rho(n)},
-\]
-where the probabilities are taken over the random coins tosses of $A, S$ and $\mathcal{O}$.  The runtimes of $A$ and $S$ must be polynomial in the length of their first input.
-\end{definition}
-
 \section{Fuzzy Conductors}
 
 \label{sec:conductors}
