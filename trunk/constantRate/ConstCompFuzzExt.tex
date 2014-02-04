@@ -56,6 +56,8 @@
 \newcommand{\neigh}{\ensuremath{\class{Neigh}}\xspace}
 \newcommand{\dis}{\ensuremath{\mathsf{dis}}}
 \newcommand{\decode}{\ensuremath{\mathsf{Decode}}}
+\newcommand{\guess}{\mathsf{guess}}
+
 
 \newcommand{\A}{\mathcal{A}}
 
@@ -505,7 +507,7 @@ Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that returns \[\mathcal{O}_{w_1
 0 & \text{otherwise}.
 \end{cases}
 \]
-A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} \lnote{is it ''block unguessable'' or ''unguessable block''? the usage is inconsistent}if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries
 \[
 \forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
@@ -900,48 +902,74 @@ For the Hamming distance having $\Hfuzz(W)\geq \omega(\log n)$ means that there 
 \label{sec:characterize}
 
 \defref{def:block guessable} is an inherently adaptive definition and thus a little unwieldy for a distribution.  In this section, we partially characterize sources that satisfy \defref{def:block guessable}.
-The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent so a equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.
+The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent, so an equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.
 
 \begin{claim}
 \label{cl:independent high ent}
-Let $W = W_1,..., W_\ell$ be a source where blocks are independent.  Let $\alpha$ be a parameter.  Let $\mathcal{I}\subset \{1,..., \ell\}$ be a set of blocks such that for all $i\in\mathcal{I}$, $\Hoo(W_i ) =\alpha $.  Then $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-block unguessable distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-block unguessable distribution.
+Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_i$  are mutually independent.  Let $\alpha$ be a parameter.  Let $\mathcal{I}\subset \{1,..., \ell\}$ be a set of indices such that for all $i\in\mathcal{I}$, $\Hoo(W_i ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-block unguessable distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-block unguessable distribution.
 \end{claim}
 \begin{proof}
-We ignore the blocks outside of $\mathcal{I}$ as queries on these blocks do not change the distribution of $W_i$ where $i\in \mathcal{I}$.  It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i) = \alpha -\log q$.
-Consider a particular block $i$, we measure how an adversary's queries affect the entropy of this block~(we ignore all other blocks as they are independent).
-Let $q_w$ be a query asking if the stored value is $a_w$ and its corresponding response.
-Let $Q_{w_1},A_{w_1},..., Q_{w_q}, A_{w_q}$ be the random variables representing the queries and answers for an  adversary $\mathcal{A}$ making $q$ queries.  We assume a deterministic adversary~(we assume the best coins are in nonuniform advice).  The only dependence between $W_i$ and this view of the adversary is in $A_1,..., A_q$ so we can consider these binary responses.  Our goal is to count the total number of possible responses $A_{w_1},..., A_{w_q}$.  There are two basic cases for $A_{w_1},..., A_{w_q}$: the all zeros string and the case where some query returns $1$.  If some query $Q_{w*}$ returns $1$ then all other $Q_{w_i} = Q_{w*}$ will return $1$ but no other query returns $1$.  These responses can be removed as the response is deterministic.  Let $A'$ represent the sequence with all duplicate queries removed.  This sequence has at most a single $1$.  Thus, the total number of possible responses is $q+1$~(including the duplicates does not change the number of possible responses).  Thus, we have the following,
+It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) = \alpha -\log q$.
+We can ignore queries for all blocks but the $i$th, as the blocks are independent. Furthermore, without loss of generality, we can assume that no duplicate queries are asked, and that the adversary is deterministic (we can hardwire the best coins as nonuniform advice). Let $A_1, A_2, \dots A_q$ be the random variables representing the oracle answers for an  adversary $\mathcal{A}$ \lnote{is the adversary $S$, $\mathcal{A}$, or $A$?} making $q$  queries about the $i$th block. Each $A_j$ is just a bit, and at most one of them  is equal to 1 (because duplicate queries are disallowed). Thus, the total number of possible responses is $q+1$. Thus, we have the following,
 \begin{align*}
-\Hav(W_i | View(S)) &= \Hav(W_i| Q_{w_1}, A_{w_1},..., Q_{w_q}, A_{w_q})\\
-&=\Hav(W_i | A_{w_1},..., A_{w_q})\\
-&=\Hav(W_i |A') \\
-&=\Hoo(W_i) - \log |A'|\\
-&=\alpha - \log |A'|\\
-&=\alpha - \log (q+1)
+\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) &= \Hav(W_i| A_1, \dots, A_q)\\
+&=\Hoo(W_i) - H_0(A_1, \dots, A_q)\\
+&=\alpha - \log (q+1)\,,
 \end{align*}
-Where the fourth line follows from the third by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
-This argument holds for all $i$.  This completes the proof.
+where the second line follows from the first by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
 \end{proof}
-\noindent In their work on computational fuzzy extractors, Fuller, Meng, and Reyzin~\cite{fuller2013computational} consider block-fixing sources, where each block is either uniform or a fixed symbol~(block fixing sources were introduced by Kamp and Zuckerman~\cite{KZ07}).  \clref{cl:independent high ent} captures this type of distribution.
+\noindent In their work on computational fuzzy extractors, Fuller, Meng, and Reyzin~\cite{fuller2013computational} show a construction for block-fixing sources, where each block is either uniform or a fixed symbol~(block fixing sources were introduced by Kamp and Zuckerman~\cite{KZ07}).  \clref{cl:independent high ent} captures, in particular, this class of distributions.
 
 However, \defref{def:block guessable} captures considerably more distributions.  We now consider more complicated distributions where blocks are not independent.
 
 \begin{claim}
 \label{cl:each block from single seed}
-Let $e =\omega(\log n)$ and let $f:\zo^e \rightarrow \zo^{n\times \ell}$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to the bits $[i\times n,..., i\times n+n-1]$.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-block unguessable distribution.
+Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to its $i$th coordinate.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-block unguessable distribution.
 \end{claim}
 \begin{proof}
-Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))$.  Consider a query $q_j$ on block $i$, there are two possibilities either $q_j$ is not in the image of $f_i$ on $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$.  Thus, a query eliminates at most a single value of $U_e$, this holds for all blocks $i$.  Then similarly to the proof of \clref{cl:independent high ent}, we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $i$, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) \geq \Hoo(W_i) -\log (q+1)$.
+Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $A$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
+proof of \clref{cl:independent high ent}),
+ and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $i$, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) \geq \Hoo(W_i) -\log (q+1)$.
 \end{proof}
 
-Note the total entropy of a source in \clref{cl:each block from single seed} is $e$, so this is a family of distributions with total entropy $\omega(\log n)$ where \consref{cons:first construction} is secure.  We can prove a slightly weaker claim when the correlation between $W_i$ is arbitrary:
+Note the total entropy of a source in \clref{cl:each block from single seed} is $e$, so this is a family of distributions with total entropy $\omega(\log n)$ for which \consref{cons:first construction} is secure.  For these distributions, all the coordinates are as dependent as possible: one determines all others.
+
+We can prove a slightly weaker claim when the correlation between the coordinates $W_i$ is arbitrary:
 
 \begin{claim}
 \label{cl:all blocks entropy}
-Let $W = W_1,..., W_\ell$ be a source.  Let $\alpha =\omega(\log n)$ and suppose that for all $i$ $\Hoo(W_i)\geq \alpha$, then for $q = \poly(n)$, there exists a $\alpha ' = \omega(\log n)$ such that $W$ is a $(q, \alpha', \ell)$-block unguessable distribution.
+Let $W = W_1,..., W_\ell$ be a source.  Let $\alpha =\omega(\log n)$ and suppose that for all $i$, $\Hoo(W_i)\geq \alpha$. Then for $q = \poly(n)$, there exists an $\alpha ' = \omega(\log n)$ such that $W$ is a $(q, \alpha', \ell)$-block unguessable distribution.
 \end{claim}
 \begin{proof}
-Consider a particular block $W_i$, it suffices to show that $\Hav(W_i | Q_1,A_1,..., Q_q, A_q) \geq \omega(\log n)$.  By the definition of conditional min-entropy:
+Intuitively, the claim is true because the oracle is negligibly like to return 1 on any query. Formally, we proceed by induction on oracle queries. 
+For a random variable $X$, let $\guess(X) = \max_x \Pr[X=x]$.
+Using the same notation as in the proof of Claim  \clref{cl:independent high ent}),  fix $i$ and $j$. Our inductive hypothesis is
+that $\Hav(W_i | A_1 \dots A_{j-1}) \ge \alpha_{j-1}$, where $\alpha_{j-1}=\omega(\log n)$.
+Recall that $\Hav(W_i | A_1 \dots A_j) =  -\log \expe_{a_1 \dots a_j} \guess (W_i|A_1 \dots, A_j=a_1\dots a_j)$.
+\begin{align*}
+\expe_{a_1 \dots a_j} \guess (W_i|A_1 \dots, A_j=a_1\dots a_j)
+ = {} & \sum_{a_1 \dots a_{j-1}} \guess(W_i |A_1\dots A_j=a_1\dots a_{j-1}0) \Pr[A_1\dots A_j=a_1\dots a_{j-1}0] \\
+&+  \sum_{a_1 \dots a_{j-1}} \guess(W_i | A_1\dots A_j=a_1\dots a_{j-1}1) \Pr [A_1\dots A_j=a_1\dots a_{j-1}1] ) \\
+\end{align*}
+
+We first deal with the second term. 
+\begin{align*}
+\sum_{a_1 \dots a_{j-1}}
+\Pr [A_1\dots A_j=a_1\dots a_{j-1}1] & \le
+\sum_{a_1 \dots a_{j-1}}
+\max_k \guess[W_k | A_1\dots A_{j-1}=a_1\dots a_{j-1}] \cdot \Pr[A_1\dots A_{j-1}=a_1\dots a_{j-1}] 
+\\ & \le
+\sum_k \sum_{a_1\dots a_{j-1}} \guess[W_k | A_1\dots A_{j-1}=a_1\dots a_{j-1}] \cdot \Pr[A_1\dots A_{j-1}=a_1\dots a_{j-1}] \\
+& =
+\sum_k 2^{-\Hav(W_k | A_1\dots A_{j-1})}\\
+&\le k 2^{-\alpha_{j-1}} = \ngl(n)\,.
+\end{align*}
+
+
+\lnote{working here}
+
+
+, it suffices to show that $\Hav(W_i | Q_1,A_1,..., Q_q, A_q) \geq \omega(\log n)$.  By the definition of conditional min-entropy:
 \begin{align*}
 \Hav(W_i | Q_1, A_1,..., Q_q, A_q) &= -\log (\Pr[\text{some non zero response}] \max_{w\in W_i} \Pr[W_i | \text{non zero response}) \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i| \text{all zero responses}]\\
 &\geq-\log (\Pr[\text{some non zero response}]\times 1 \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i | \text{all zero responses}]).
