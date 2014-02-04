@@ -217,25 +217,30 @@
 \newcommand{\M}{\mathcal{M}}
 
 \title{Constant Error Tolerance Computational Fuzzy Extractors}
-\author{Ran Canetti \and Benjamin Fuller\footnote{The Lincoln Laboratory portion of this
-work was sponsored by the Department of the Air Force under Air Force
-Contract
-\#FA8721-05-C-0002.  Opinions,
-interpretations, conclusions and recommendations are those of the author
-and
-are not necessarily endorsed by the United States Government.} \and Omer Paneth \and Leonid Reyzin}
+%\author{Ran Canetti \and Benjamin Fuller\footnote{The Lincoln Laboratory portion of this
+%work was sponsored by the Department of the Air Force under Air Force
+%Contract
+%\#FA8721-05-C-0002.  Opinions,
+%interpretations, conclusions and recommendations are those of the author
+%and
+%are not necessarily endorsed by the United States Government.} \and Omer Paneth \and Leonid Reyzin}
 
 \begin{document}
 \maketitle
 
 
 \begin{abstract}
-Fuzzy extractors derive strong keys from noisy sources.  The goal is to reliably convert a high entropy source~(which may have different values on repeated readings) to the same uniformly distributed key.  Traditionally, their security is defined information-theoretically.  Fuzzy extractors have upper bounds on the length of the derived key~(Dodis et al., J. of Comp 2008).  In particular, the starting entropy of the source must be significantly higher than the logarithm of number of error patterns corrected.  For many practical noisy sources, like biometrics, this condition is not fulfilled, leaving reliable key derivation from these sources as an open problem.
+Fuzzy extractors derive strong keys from noisy sources.  The goal is to reliably convert a high entropy source~(which may differ on repeated readings) to the same uniformly distributed key.  Traditionally, their security is defined information-theoretically.  %Fuzzy extractors have upper bounds on the length of the derived key.  
 
-For an arbitrary source it is impossible to provide meaningful security~(even with interaction solutions) when the starting entropy is smaller than the logarithm of the number of error patterns.  Some restriction on the type of source is necessary.  Meaningful restrictions (and accompanying constructions) have proved elusive for information-theoretic fuzzy extractors.
+Traditionally, a fuzzy extractor works for any distribution with enough entropy.  %In this setting, the entropy of the source must be significantly higher than the logarithm of number of error patterns corrected~(Dodis et al., J. of Comp 2008).  
+We call the difference between the starting entropy and the logarithm of the number of correctable error patterns the \emph{minimum usable entropy}.  Dodis et al.~(J. of Comp. 2008) show there is some source where the maximum key length cannot exceed the minimum usable entropy.  Therefore, fuzzy extractors that only consider the input entropy must output a key whose length is at most the minimum usable entropy.
+For many practical noisy sources, like biometrics, this condition is not fulfilled, leaving reliable key derivation from these sources as an open problem.
+
+%Traditional fuzzy extractors output a key roughly of length minimum usable entropy.  
+To achieve meaningful security when the minimum usable entropy is negative, some restriction on the source is necessary.  Meaningful restrictions (and accompanying constructions) have proved elusive for information-theoretic fuzzy extractors.
 Fuller, Meng, and Reyzin (Asiacrypt 2013) define a computationally-secure version of a fuzzy extractor.  It may be easier to construct computational fuzzy extractors for meaningful sources.
 
-In this work, we construct the first (computational) fuzzy extractors that are secure for a large class of distributions where the starting entropy is smaller than the logarithm of the number of correctable error patterns.
+In this work, we construct the first (computational) fuzzy extractors that are secure for a large class of distributions where the minimum usable entropy is negative.
 
 \textbf{Constructions:}  We construct computational fuzzy extractors from point function obfuscation.
 Our constructions are inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~(Eurocrypt 2008).  Our two constructions are similar to spirit but optimize different parameters.  The first requires individual blocks of the source to have super-logarithmic entropy and corrects a constant fraction of errors.  The second construction uses sampling to reduce the required entropy of the source.  Unfortunately, sampling also reduces the effective error tolerance of the construction.  %The first construction works for high-entropy and high-error sources, while the second construction works for distributions with lower entropy and error.
@@ -244,7 +249,6 @@ Our constructions are inspired by the construction of digital lockers from point
 
 
 \section{Introduction}\label{sec:introduction}
-\bnote{I want a new name for $gap$!}
 Reliable key derivation is a cornerstone of authentication.  However, many sources with sufficient entropy for key derivation are noisy and provide similar but not identical values when the source is read multiple times~(examples include biometrics~\cite{daugman2004} and physically unclonable functions~\cite{pappu2002physical}). \bnote{add more examples here} To use noisy physical sources in applications, two problems must be addressed.  The first is ensuring the same value is obtained from every reading of the source.  This must be done in a way that does not eliminate all the entropy from the output~(known as information-reconciliation~\cite{bennett1988privacy}).  The second is converting the entropic source to a uniform random key~(privacy amplification~\cite{bennett1988privacy}).  Both of these problems have interactive and non-interactive versions.  For a single user~(trying to produce the same key from multiple readings of a physical source) non-interactive solutions are appropriate.  We focus on this setting.  %If both of these tasks are achieved a noisy physical source can be used like a uniformly random private key.
 
 Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} perform both tasks non-interactively.  They consist of a pair of algorithms: \gen takes a source value $w$, and produces a key $r$ and a public value $p$.  The second algorithm \rep takes this public value $p$ and a close $w'$ to reproduce the original key $r$.  Traditionally, a secure sketch~\cite{DBLP:journals/siamcomp/DodisORS08} performs information-reconciliation and a randomness extractor~\cite{nisan1993randomness} performs privacy amplification.
@@ -252,17 +256,16 @@ Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} perform both tasks non
 Unfortunately, fuzzy extractors have not yielded key derivation for all noisy sources.
 This is because there is tension between security and error-tolerance.  The key should be uniform to an observer but nearby $w'$ should map to the same key.  By nearby, we mean that $\dis(w, w')\leq t$ for some metric $\dis$.  In the information-theoretic realm, increasing $t$ means a decrease in the strength of the key $r$.  This is because a fuzzy extractor can be converted into an error correcting code~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  The length of the key $r$ is dictated by size of the best code that corrects $t$ errors.  Error-correcting codes are well studied and we have tight bounds on this quantity. % how many codewords may be in a code that corrects $t$ errors.
 
-We consider the Hamming metric.  For the Hamming metric, there exists a distribution $W$ where the key derived from $W$ may be no longer than the difference between the starting entropy of the source and logarithm of the number of error patterns to be corrected. For the remainder of this paper we denote this quantity by $gap$.  This represents a real problem as $gap<0$ for important biometrics and current fuzzy extractors provide no security guarantee~(see \apref{sec:iris no key}).
+We consider the Hamming metric.  For the Hamming metric, there exists a distribution $W$ where the key derived from $W$ may be no longer than the difference between the starting entropy of the source and logarithm of the number of error patterns to be corrected~(and we have constructions of fuzzy extractors that nearly meet this bound). For the remainder of this paper we call this difference the minimum usable entropy, denoted $H_{usable}$.  This represents a practical problem as important biometrics have $H_{usable}<0$~(see \apref{sec:iris no key}).
 
- %let $|B_t|$ be the number of points within distance $t$.  The length of the key $|r| < \Hoo(W) - \log |B_t|$~(see~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08} for the precise conditions).  For the remainder of this paper, we denote this quantity by $gap = \Hoo(W) - \log |B_t|$.
+ %let $|B_t|$ be the number of points within distance $t$.  The length of the key $|r| < \Hoo(W) - \log |B_t|$~(see~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08} for the precise conditions).  For the remainder of this paper, we denote this quantity by $H_{usable} = \Hoo(W) - \log |B_t|$.
 
-To achieve security when $gap<0$, some restriction on the source distribution $W$ is necessary~(minimal conditions are discussed in~\apref{sec:minimal conditions}).  However, the tools for constructing information-theoretic fuzzy extractors have not admitted natural and meaningful restrictions.  Fuller, Meng, and Reyzin define a computationally-secure version of fuzzy extractors~\cite{fuller2013computational}.  Computational fuzzy extractors produce pseudorandom instead of truly random keys.  Building a computational fuzzy extractor with $gap<0$ may be possible for a broader class of distributions than is possible in the information-theoretic realm.
+To achieve security when $H_{usable}<0$, some restriction on the source distribution $W$ is necessary~(minimal conditions are discussed in~\apref{sec:minimal conditions}).  However, the tools for constructing information-theoretic fuzzy extractors have not produced natural restrictions.  Fuller, Meng, and Reyzin define a computationally-secure version of fuzzy extractors~\cite{fuller2013computational}.  Computational fuzzy extractors produce pseudorandom instead of truly random keys.  A computational fuzzy extractor may exist for a larger class of distributions with $H_{usable}<0$ than is possible information-theoretically.
 
-In this work, we show that constructing a computational fuzzy extractor is possible for a large class of distributions with $gap<0$.
-%We resolve this question and construct a computational fuzzy extractor when $gap<0$.  This is impossible for an arbitrary min-entropy distribution as every point could be within distance $t$.  A necessary condition for security is that a negligible portion of the source's probability distribution lies within any Hamming ball of radius $t$.  We require a stronger condition that many blocks are unpredictable~(\defref{def:block guessable}).
-%The goal of an information-theoretic fuzzy extractor is to output a maximal length key for a source $W$.
-In the computational setting, a key may be expanded once it is long enough to serve as input to a pseudorandom generator.  We focus on providing a reasonable length key when $gap<0$.
-Fuller, Meng, and Reyzin show that replacing an information-theoretic information-reconciliation component with a computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, the authors suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent high-entropy secret instead of recovering $w$.  This is known as a fuzzy conductor~(the entropy is ``conducted'' from $w$ to a new distribution) and was introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.  Here, we follow the second approach and use a \emph{computational} fuzzy conductor.  We present two constructions of computational fuzzy conductors for different types of source distributions $W$.  These constructions may be converted to a computational fuzzy extractor by either information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).
+In this work, we construct a computational fuzzy extractor when $H_{usable}<0$ for a large class of distributions.
+In the computational setting, a key may be expanded once it is long enough to serve as input to a computational extractor.  We focus on providing a reasonable length key when $H_{usable}<0$.
+
+Fuller, Meng, and Reyzin show that replacing an information-theoretic information-reconciliation component with a computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, the authors suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent high-entropy secret instead of recovering $w$.  This is known as a fuzzy conductor~(the entropy is ``conducted'' from $w$ to a new distribution) and was introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.  Here, we follow the second approach and use a \emph{computational} fuzzy conductor.  We present two constructions of computational fuzzy conductors for different types of source distributions $W$.  These constructions may be converted to computational fuzzy extractors using information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).
 
 Both of constructions are based on the obfuscation of point programs.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.  Obfuscation for this class of functions is achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.
 
@@ -279,11 +282,11 @@ blocks individually, for each bit $c_i$ we randomly select a subset of blocks.  
 
 %Our construction provides several advantages over previous constructions of computational fuzzy extractors:
 %\begin{itemize}
-%\item The first computational fuzzy extractor where $gap$ may be negative for a large class of distributions.\item The first computational fuzzy extractor that allows for a constant fraction of errors.  Previous constructions could correct only  a logarithmic fraction of errors~($O(\frac{\log \ell}{\ell})$)
+%\item The first computational fuzzy extractor where $H_{usable}$ may be negative for a large class of distributions.\item The first computational fuzzy extractor that allows for a constant fraction of errors.  Previous constructions could correct only  a logarithmic fraction of errors~($O(\frac{\log \ell}{\ell})$)
 %\item The first computational fuzzy extractor where blocks are not required to be uniformly distributed.  Our construction simply requires a large number of blocks that are unguessable given equality queries.  This subsumes the distributions supported by~\cite[Construction 4.1]{fuller2013computational}.
 %\end{itemize}
 
-\textbf{Limitations: } In order to achieve security with $gap<0$, our alphabet~(for Hamming distance) must be super-polynomial in the security parameter.  Our constructions are applicable for sources where many bits are expected to err consecutively, followed by many consecutive correct bits~(known as burst errors~\cite{gilbert1960capacity}).  Constructing a computational fuzzy extractor with the above advantages and a small alphabet is an open problem.  Furthermore, we may leak sensitive information about the underlying source $W$.  For example, in \consref{cons:first construction} it is possible to learn the value of individual blocks $W_i$.  Our two constructions are not noisy point obfuscation for any reasonable definition of obfuscation.  Dodis and Smith~\cite{DBLP:conf/stoc/DodisS05} construct noisy point obfuscation for $gap>>0$ using a information-reconciliation component that hides all partial information.  Constructing VBB obfuscation for sources where $gap <0$ is an open problem.
+\textbf{Limitations: } In order to achieve security with $H_{usable}<0$, our alphabet~(for Hamming distance) must be super-polynomial in the security parameter.  Our constructions are applicable for sources where many bits are expected to err consecutively, followed by many consecutive correct bits~(known as burst errors~\cite{gilbert1960capacity}).  Constructing a computational fuzzy extractor with the above advantages and a small alphabet is an open problem.  Furthermore, we may leak sensitive information about the underlying source $W$.  For example, in \consref{cons:first construction} it is possible to learn the value of individual blocks $W_i$.  Our two constructions are not noisy point obfuscation for any reasonable definition of obfuscation.  Dodis and Smith~\cite{DBLP:conf/stoc/DodisS05} construct noisy point obfuscation for $H_{usable}>>0$ using a information-reconciliation component that hides all partial information.  Constructing VBB obfuscation for sources where $H_{usable} <0$ is an open problem.
 
 The remainder of this paper is organized as follows: we cover notation and background on obfuscation and error correcting codes in \secref{sec:preliminaries}, describe computational fuzzy extractors in \secref{sec:fuzzy extractors}, and present our two constructions in Sections \ref{sec:construction} and \ref{sec:sampling} respectively.
 
@@ -390,7 +393,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$ is known: if the error pattern between $w$ and $w'$ depends on the output of $\gen$ there is no guarantee about the probability of correctness.
-The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $gap<0$ there are distributions contained in a single Hamming ball, so restricting the family of sources is necessary~(see \apref{sec:minimal conditions} for the precise statement).
+The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $H_{usable}<0$ there are distributions contained in a single Hamming ball, so restricting the family of sources is necessary~(see \apref{sec:minimal conditions} for the precise statement).
 
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.
 
@@ -440,7 +443,7 @@ Then $\gen, \rep$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuz
 
 \section{A Constant Error-Tolerance Computational Fuzzy Extractor}
 \label{sec:construction}
-For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys when the number of possible error patterns is larger than the starting entropy of source.  That is we want to provide some security when $0>gap = \Hoo(W) - \log|B_t|$.
+For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys when the number of possible error patterns is larger than the starting entropy of source.  That is we want to provide some security when $0>H_{usable} = \Hoo(W) - \log|B_t|$.
 In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  Thus, we focus on building a computational fuzzy conductor with meaningful output entropy.  Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
 
 \begin{construction}
@@ -630,7 +633,7 @@ Security is a result of \thref{thm:security of cons}.  Correctness follows from 
 \label{sec:discussion}
 Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:sec of construction}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
 
-To show that $gap$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
+To show that $H_{usable}$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
 \begin{align*}
 \log |B_t| &= \log \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i\\
 &> \log {\ell \choose t} (2^n-1)^t\\
@@ -640,17 +643,17 @@ To show that $gap$ can be negative for \consref{cons:first construction}, we fir
 
 We consider what entropy is necessary for security.  The simplest type of block unguessable distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \ell\omega(\log n)$.  This yields:
 \[
-gap = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t n) + \log {\ell \choose t}\right).
+H_{usable} = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t n) + \log {\ell \choose t}\right).
 \]
-When $t =\Theta(\ell)$, then $gap<0$ and the output entropy is $|C| -\beta$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
-Thus, \consref{cons:first construction} achieves negative $gap$ when $t = \Theta(\ell)$.  We achieve $gap<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
+When $t =\Theta(\ell)$, then $H_{usable}<0$ and the output entropy is $|C| -\beta$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
+Thus, \consref{cons:first construction} achieves negative $H_{usable}$ when $t = \Theta(\ell)$.  We achieve $H_{usable}<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters.
 
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks.  To compensate for this leakage, we need most blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
 
 \section{Sample-then-Obfuscate}
 \label{sec:sampling}
-\consref{cons:first construction} is a computational fuzzy extractor with $gap<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).  The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where most blocks are likely to contribute some entropy.
+\consref{cons:first construction} is a computational fuzzy extractor with $H_{usable}<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).  The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where most blocks are likely to contribute some entropy.
 
 \begin{definition}
 \label{def:unordered source}
@@ -805,14 +808,14 @@ t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
 \end{theorem}
 
 \subsection{Discussion of \consref{cons:sampling}}
-\consref{cons:sampling} achieves $gap<0$ for an interesting setting of parameters.  The required entropy of  an unordered block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
+\consref{cons:sampling} achieves $H_{usable}<0$ for an interesting setting of parameters.  The required entropy of  an unordered block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
 This yields:
 \begin{align*}
-gap &= \Hoo(W) -\log |B_t| \\
+H_{usable} &= \Hoo(W) -\log |B_t| \\
 &< \Theta(\gamma)- t \log |\mathcal{Z}|\\
 &= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|
 \end{align*}
-That is, \consref{cons:sampling} achieves $gap<0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$.  If we are willing to accept $gap\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.  However, in this setting $gap =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
+That is, \consref{cons:sampling} achieves $H_{usable}<0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$.  If we are willing to accept $H_{usable}\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.  However, in this setting $H_{usable} =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
@@ -887,9 +890,9 @@ Fuzzy extractors were developed to derive stable from noisy sources.  Biometrics
 \label{sec:iris no key}
 As an example, the iris is the biometric believed to have the most entropy.  The best estimate for iris entropy is $250$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  The transform computes a phase angle at $1024$ locations, this angle is then quantized into a positive/negative value in the two dimensions.\footnote{There is considerable subsequent research after the work of Daugman~\cite{daugman2004}.  These works do not dramatically improve the original results.}
 
-The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.\footnote{Daugman considerably improves his true accept rate using a masking vector, where bits that are not considered ``trustworthy'' are excluded from the comparison.  The comparison between the two readings is then made using bits not excluded by either image.  It is not clear how to extend into the fuzzy extractor setting.}  We have the following calculation for $gap$:
+The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.\footnote{Daugman considerably improves his true accept rate using a masking vector, where bits that are not considered ``trustworthy'' are excluded from the comparison.  The comparison between the two readings is then made using bits not excluded by either image.  It is not clear how to extend into the fuzzy extractor setting.}  We have the following calculation for $H_{usable}$:
 \begin{align*}
-gap &= \Hoo(W) - \log |B_t|\\
+H_{usable} &= \Hoo(W) - \log |B_t|\\
 &= 249 - \log \sum_{i=0}^{205} {2048 \choose i} = -707.
 \end{align*}
 Although irises are believed to be the strongest biometric a fuzzy extractor with the above parameters may completely reveal the original value.
@@ -902,15 +905,15 @@ A necessary condition for fuzzy extractor security is that a negligible portion 
 
 \begin{definition}
 \label{def:fuzzy min-ent}
-A distribution $W$ in a metric space $\mathcal{M}$ has $(t, k)$-fuzzy min-entropy, denoted $\Hfuzz(W) = k$ if the following holds:
+A distribution $W$ in a metric space $(\mathcal{M}, \dis)$ has $(t, k)$-fuzzy min-entropy, denoted $\Hfuzz(W) \ge k$ if the following holds:
 \[
-\forall m\in \mathcal{M} Pr_{w\in W}[\dis(w, m) \leq t] \leq 2^{-k}.
+\forall m\in \mathcal{M}, Pr_{w\in W}[\dis(w, m) \leq t] \leq 2^{-k}.
 \]
 \end{definition}
 \begin{lemma}
 \label{lem:fuzz necessary}
-Let $n$ be a security parameter and let $W$ be a distribution over $\mathcal{M}$
-If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that corrects is secure against nonuniform adversaries of size $\log \mathcal{M} + |\rep|$ for negligible $\epsilon$~(and thus no fuzzy extractor) if $\kappa =\omega(\log n)$.
+Let $n$ be a security parameter and let $W$ be a distribution over $(\mathcal{M}, \dis)$
+If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that corrects is secure against nonuniform adversaries of size $\log \mathcal{M} + |\rep|$ for negligible $\epsilon$~(and thus no fuzzy extractor) for $\kappa =\omega(\log n)$.
 \end{lemma}
 \begin{proof}
 Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m\mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
@@ -925,7 +928,7 @@ First note that $|D|$ is of size $\log |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(
 \]
 \end{proof}
 
-\lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is a necessary condition for an interactive solution as well.  The original fuzzy extractors paper of Dodis et al.~\cite{DBLP:journals/siamcomp/DodisORS08} separated the starting entropy of $W$ and the desired error tolerance.  When $gap<0$ there is some distribution such that $\Hfuzz(W)=0$.  This means we inherently must talk about the security and errors together.  
+\lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is a necessary condition for an interactive solution as well.  The original fuzzy extractors paper of Dodis et al.~\cite{DBLP:journals/siamcomp/DodisORS08} separated the starting entropy of $W$ and the desired error tolerance.  When $H_{usable}<0$ there is some distribution such that $\Hfuzz(W)=0$~(consider some fixed point $m\in\mathcal{M}$ and let $W$ be the uniform distribution of all points within distance $t$).  This means we inherently must talk about the security and errors together.  
 
 For the Hamming distance having $\Hfuzz(W)\geq \omega(\log n)$ means that there are more entropic dimensions that the desired error-tolerance.  There are two minimal types of distributions that provide $\Hfuzz(W)\geq \omega(\log n)$, the first is where the $(t+1)$-st least entropic block has super-logarithmic entropy~(the $t$ most entropic blocks are essentially free to the adversary).  The other is that there $t+\omega(\log n)$ blocks that contribute some constant amount of entropy.  Definitions~\ref{def:block guessable} and~\ref{def:unordered source} are geared towards this type of source, achieving security when the number of entropic blocks is only one greater than the desired error correction is an open problem.
 
