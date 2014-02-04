@@ -807,7 +807,7 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 Combining the last two sections, we have that \consref{cons:sampling} is secure and correct:
 \begin{theorem}
 Let $n$ be a security parameter.
-Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon = \ngl(n)$ such that \cons{sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ for
+Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon, s_{sec})$-hard with error $\delta$ for
 \begin{align*}
 t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
 \tilde{m} &=|C|\\
