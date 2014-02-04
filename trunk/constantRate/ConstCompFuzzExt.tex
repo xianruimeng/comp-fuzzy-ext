@@ -256,25 +256,25 @@ We consider the Hamming metric.  For the Hamming metric, there exists a distribu
 
  %let $|B_t|$ be the number of points within distance $t$.  The length of the key $|r| < \Hoo(W) - \log |B_t|$~(see~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08} for the precise conditions).  For the remainder of this paper, we denote this quantity by $gap = \Hoo(W) - \log |B_t|$.
 
-To achieve security when $gap<0$, some restriction on the source distribution $W$ is necessary~(minimal conditions are discussed in~\apref{sec:minimal conditions}).  However, the tools for constructing information-theoretic fuzzy extractors have not admitted natural and meaningful restrictions.  Fuller, Meng, and Reyzin define a computationally-secure version of fuzzy extractors~\cite{fuller2013computational}.  Computational fuzzy extractors produce pseudorandom instead of truly random keys.  Building a computational fuzzy extractor with $gap<0$ may be possible for a broader class of distributions than is possible in the information-theoretic realm.  
+To achieve security when $gap<0$, some restriction on the source distribution $W$ is necessary~(minimal conditions are discussed in~\apref{sec:minimal conditions}).  However, the tools for constructing information-theoretic fuzzy extractors have not admitted natural and meaningful restrictions.  Fuller, Meng, and Reyzin define a computationally-secure version of fuzzy extractors~\cite{fuller2013computational}.  Computational fuzzy extractors produce pseudorandom instead of truly random keys.  Building a computational fuzzy extractor with $gap<0$ may be possible for a broader class of distributions than is possible in the information-theoretic realm.
 
-In this work, we show that constructing a computational fuzzy extractor is possible for a large class of distributions with $gap<0$.  
+In this work, we show that constructing a computational fuzzy extractor is possible for a large class of distributions with $gap<0$.
 %We resolve this question and construct a computational fuzzy extractor when $gap<0$.  This is impossible for an arbitrary min-entropy distribution as every point could be within distance $t$.  A necessary condition for security is that a negligible portion of the source's probability distribution lies within any Hamming ball of radius $t$.  We require a stronger condition that many blocks are unpredictable~(\defref{def:block guessable}).
 %The goal of an information-theoretic fuzzy extractor is to output a maximal length key for a source $W$.
 In the computational setting, a key may be expanded once it is long enough to serve as input to a pseudorandom generator.  We focus on providing a reasonable length key when $gap<0$.
-Fuller, Meng, and Reyzin show that replacing an information-theoretic information-reconciliation component with a computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, the authors suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent high-entropy secret instead of recovering $w$.  This is known as a fuzzy conductor~(the entropy is ``conducted'' from $w$ to a new distribution) and was introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.  Here, we follow the second approach and use a \emph{computational} fuzzy conductor.  We present two constructions of computational fuzzy conductors for different types of source distributions $W$.  These constructions may be converted to a computational fuzzy extractor by either information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).  
+Fuller, Meng, and Reyzin show that replacing an information-theoretic information-reconciliation component with a computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, the authors suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent high-entropy secret instead of recovering $w$.  This is known as a fuzzy conductor~(the entropy is ``conducted'' from $w$ to a new distribution) and was introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.  Here, we follow the second approach and use a \emph{computational} fuzzy conductor.  We present two constructions of computational fuzzy conductors for different types of source distributions $W$.  These constructions may be converted to a computational fuzzy extractor by either information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).
 
 Both of constructions are based on the obfuscation of point programs.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.  Obfuscation for this class of functions is achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.
 
 
 
 \textbf{\consref{cons:first construction}: }
-Consider a source $W = W_1,..., W_\ell$ that is split into blocks~(over a large alphabet).  We would like to tolerate errors in $t$ individual blocks.  For each block $i$, we flip a coin $c_i$ and either obfuscate $I_{w_i}$ or pick a random point $r_i$ and obfuscate $I_{r_i}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rec$ then runs the obfuscated program $P_i$ on $w_i'$ and checks whether $P_i(w_i')=1$.  For most locations $i$, \rep can determine whether $w_i$ or a random value was the point obfuscated.  Thus, most bits of $c_i$ are recoverable. To tolerate errors we choose the coins $c$ from an error-correcting code.  The set of possible codewords forms a high entropy distribution.  This construction conducts entropy from $w$ to $c$ and is a computational fuzzy conductor.  
+Consider a source $W = W_1,..., W_\ell$ that is split into blocks~(over a large alphabet).  We would like to tolerate errors in $t$ individual blocks.  For each block $i$, we flip a coin $c_i$ and either obfuscate $I_{w_i}$ or pick a random point $r_i$ and obfuscate $I_{r_i}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rec$ then runs the obfuscated program $P_i$ on $w_i'$ and checks whether $P_i(w_i')=1$.  For most locations $i$, \rep can determine whether $w_i$ or a random value was the point obfuscated.  Thus, most bits of $c_i$ are recoverable. To tolerate errors we choose the coins $c$ from an error-correcting code.  The set of possible codewords forms a high entropy distribution.  This construction conducts entropy from $w$ to $c$ and is a computational fuzzy conductor.
 
-In \consref{cons:first construction}, each block of $W$ is individually obfuscated.  This has two drawbacks, first an adversary may learn the value of some blocks which may be sensitive information.  Second, security only holds for sources where a large number of blocks have super-logarithmic entropy~(\defref{def:block guessable}).  Our second construction addresses these problems.  
+In \consref{cons:first construction}, each block of $W$ is individually obfuscated.  This has two drawbacks, first an adversary may learn the value of some blocks which may be sensitive information.  Second, security only holds for sources where a large number of blocks have super-logarithmic entropy~(\defref{def:block guessable}).  Our second construction addresses these problems.
 
-\textbf{\consref{cons:sampling}: }  
-As before we consider a source $W=W_1,...,W_\ell$ that is split into blocks.  However, instead of obfuscating individually  
+\textbf{\consref{cons:sampling}: }
+As before we consider a source $W=W_1,...,W_\ell$ that is split into blocks.  However, instead of obfuscating individually
 blocks individually, for each bit $c_i$ we randomly select a subset of blocks.  These blocks are concatenated and obfuscated together.  By sampling, we can significantly decrease the entropy requirement on individual blocks.  This paradigm is similar to the \emph{sample-then-extract} paradigm in the locally-computable extractor literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason, we call \consref{cons:sampling} \emph{sample-then-obfuscate}.
 
 %Our construction provides several advantages over previous constructions of computational fuzzy extractors:
@@ -322,34 +322,23 @@ Let $C$ be a binary code and let $\mathcal{I}^c$ be a set of indices of $C$.  Th
 \end{claim}
 
 \subsection{Obfuscation}
-Our construction uses virtual black-box obfuscation of point functions.  This is the following family of functions:
+Our construction uses obfuscation of point functions. This is the following family of functions:
 \[
 I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
 \]
-Here we present the virtual black-box definition of obfuscation.  See \secref{sec:obfuscation} for a more detailed introduction to obfuscation.  This definition is known to be achievable for point functions under various assumptions~\cite{canetti1997towards, wee2005obfuscating}.  We also need the obfuscation to be $\ell$-composable~(\defref{def:obf comp}).
-\onote{if we need it, should put the def here not in the appendix. Also say that we need an AI definition}\onote{should discuss assumptions for composable AI point obfuscation. Here it make a lot of difference it we can get by with VGB}\onote{might be simpler to just define a set function instead of a point function and skip the composability stuff}
-We present the notion of virtual black-box obfuscation with the weakening that the quality of the simulator is an arbitrarily small $1/\poly$ as all known point obfuscations satisfy this definition.
+The notion of obfuscation required is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the notion of virtual grey-box (\cite{barak2001possibility}) as it allows the simulator to run in unbounded time as long as it only makes polynomial number of oracle queries to the point function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Compassable auxiliary-input VGB obfuscators for point function are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Difﬁe Hellman assumption which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points.
 
-\begin{definition}~\cite{barak2001possibility, goldwasser2005impossibility}
-\label{def:obf} Let $\mathcal{C}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is an obfuscator for $\mathcal{C}$ with dependent \onote{remove dependent} auxiliary input if the following conditions are met:
+\begin{definition}[$t$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
+\label{def:obf} Let $\mathcal{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is a $t$-composable VGB obfuscator for $\mathcal{I}$ with auxiliary-input if the following conditions are met:
 \begin{enumerate}
-\item \emph{Approximate Functionality:}  There exists a negligible function $\epsilon$ such that for every $n\in \mathbb{N}$, every circuit $C\in \mathcal{C}_n$, and every $x\in\zo^n$,
+\item \emph{Functionality:} for every $I \in \mathcal{I}$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$
+\item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^t \in \mathcal{I}_n$, (where $t=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
 \[
-\Pr[\mathcal{O}(C; r)(x) = C(x)] > 1-\epsilon(n),
+|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^t)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^t)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^t|}) = 1] | < \frac{1}{p(n)} \enspace,
 \]
-\bnote{We need a different name for the circuit, $C$ is our error-correcting code.}
-where the probability is taken over the randomness $r$.  \emph{Almost exact functionality} is a stronger condition that requires $\mathcal{O}(C;r)\equiv C$ with overwhelming probability over the random coin tosses $r$.  Finally, if this probability always equals $1$, then $\mathcal{O}$ has \emph{exact functionality}. \onote{consider removing the notions you do not use}
-\item \emph{Polynomial Slowdown:}  There exists a polynomial $\psi$ such that for every $n$, every circuit $C\in \mathcal{C}_n$, and every possible $r$, the circuit $\mathcal{O}(C; r)$ run-in time at most $\psi(n)$. \onote{this follows from the fact that O is PPT}
-\item \emph{Virtual Black-box:}  For every PPT adversary $A$ and polynomial $\rho$, there exists a PPT simulator $S$ such that for all sufficiently large $n$, for all $C\in \mathcal{C}_n$, for all auxiliary inputs $z\in \zo^*$,
-and for all binary predicates $\pi$,
-\[
-|\Pr[A(\mathcal{O}(C), z) = \pi(C, z)] - \Pr[S^C(1^n, z) = \pi(C, z)] | < \frac{1}{\rho(n)}
-\]
-where the first probability is taken over the coin tosses of $A$ and $\mathcal{O}$, and the second probability is taken over the coin tosses of $S$.  Furthermore, the runtime of $A$ and $S$ must be polynomial in the length of their first input.
-\bnote{We never need to run our simulator so I think we can use virtual gray-box.}
+where $(I^1,\dots,I^t)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
 \end{enumerate}
 \end{definition}
-
 
 \section{Computational Fuzzy Extractors}
 \label{sec:fuzzy extractors}
@@ -452,7 +441,7 @@ Then $\gen, \rep$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuz
 \section{A Constant Error-Tolerance Computational Fuzzy Extractor}
 \label{sec:construction}
 For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys when the number of possible error patterns is larger than the starting entropy of source.  That is we want to provide some security when $0>gap = \Hoo(W) - \log|B_t|$.
-In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  Thus, we focus on building a computational fuzzy conductor with meaningful output entropy.  Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.  
+In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  Thus, we focus on building a computational fuzzy conductor with meaningful output entropy.  Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
 
 \begin{construction}
 \label{cons:first construction}
@@ -513,7 +502,7 @@ Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that returns \[\mathcal{O}_{w_1
 0 & \text{otherwise}.
 \end{cases}
 \]
-A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries  
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries
 \[
 \forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
@@ -537,7 +526,7 @@ It is sufficient to show that there exists a distribution $C'$ with conditional 
 The outline for the rest of the proof is as follows:
 \begin{itemize}
 \item Let $D$ be a distinguisher between $(C, P)$ and $(C', P)$, since $P$ is a collection of obfuscated programs there exists a simulator, $S$~(outputting a single bit), such that $D(C, P) \approx_c S^{\mathcal{O}}(C)$.
-\item Show that even an unbounded $S$ making a polynomial number of queries to the stored points cannot distinguish between $C$ and $C'$.  That is, $S^{\mathcal{O}}(C) \approx S^{\mathcal{O}}(C')$. 
+\item Show that even an unbounded $S$ making a polynomial number of queries to the stored points cannot distinguish between $C$ and $C'$.  That is, $S^{\mathcal{O}}(C) \approx S^{\mathcal{O}}(C')$.
 \item By the security of obfuscation, $S^{\mathcal{O}}(C') \approx_c D(C', P)$.
 \end{itemize}
 
@@ -671,7 +660,7 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-unordered block s
 \]
 \end{definition}
 
-\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) where blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy.  However, we achieve security for significantly lower entropy levels than were needed for block unguessable distributions.  
+\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) where blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy.  However, we achieve security for significantly lower entropy levels than were needed for block unguessable distributions.
 
 We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\}$.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample_{\gamma, \eta}$.
 \begin{construction}
@@ -766,7 +755,7 @@ Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
 \end{proof}
 
 \subsection{Correctness of \consref{cons:sampling}}
-The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.  We now show that there are few enough $0\rightarrow 1$ flips with overwhelming probability.  Let $t'$ be the capacity of $C$.  We show that $\Pr_{(v, v')\leftarrow (V, V')}[\dis(v, v')\ge t'] <\ngl(n)$.  
+The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.  We now show that there are few enough $0\rightarrow 1$ flips with overwhelming probability.  Let $t'$ be the capacity of $C$.  We show that $\Pr_{(v, v')\leftarrow (V, V')}[\dis(v, v')\ge t'] <\ngl(n)$.
 
 \begin{lemma}
 Let $n, W$ be as above and Let $C$ be a code that corrects $t'$ $0\rightarrow 1$ bit errors where $t' =\Theta(\ell)$.  Let $\mu = -\log(1-t'/(2\ell))/2 = \Theta(1)$, if $t \leq \mu(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\ell})$ where the probability is over the coins of $\gen$.  %That is, for any $t\leq \mu(\gamma-\eta)/\eta$, \consref{cons:sampling} is correct with overwhelming probability.
@@ -774,7 +763,7 @@ Let $n, W$ be as above and Let $C$ be a code that corrects $t'$ $0\rightarrow 1$
 
 \begin{proof}
 Let $t$ be as stated in the lemma.
-We first consider calculate $\expe[\dis(V, V')]$ and then show that the distance between $v$ and $v'$ is rarely much more than this value.  
+We first consider calculate $\expe[\dis(V, V')]$ and then show that the distance between $v$ and $v'$ is rarely much more than this value.
 Let $\mu = -\log(1-t'/(2\ell))/2$ then one has:
 \begin{align*}
 \expe \Pr[v_i = v_i'] &=\Pr[j_{i,1},..., j_{i,\eta}\text{ have no errors}]\\
@@ -894,7 +883,7 @@ The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor im
 
 \section{$gap<0$ for Irises}
 \label{sec:iris no key}
-The iris is the biometric believed to have the most entropy.  The best estimate for iris entropy is $250$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  The transform computes a phase angle at $1024$ locations, this angle is then quantized into a positive/negative value in the two dimensions.  This transform is designed for the process of identification, achieving the best possible true accept/false accept tradeoff.  
+The iris is the biometric believed to have the most entropy.  The best estimate for iris entropy is $250$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  The transform computes a phase angle at $1024$ locations, this angle is then quantized into a positive/negative value in the two dimensions.  This transform is designed for the process of identification, achieving the best possible true accept/false accept tradeoff.
 
 The precise number of errors that must be tolerated depends on the desired true accept rate (how often the correct key is produced).  For a true accept rate of $20\%$, a $t$ of approximately $205$ is required.\footnote{Daugman considerably improves his true accept rate using a masking vector, where bits that are not considered ``trustworthy'' are excluded from the comparison.  The comparison between the two readings is then made using bits not excluded by either image.  It is not clear how to extend into the fuzzy extractor setting.}  We have the following calculation for $gap$:
 \begin{align*}
@@ -1052,7 +1041,7 @@ Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.
 \label{app:security of main cons}
 \begin{proof}
 
-Let $\mathcal{O}$ be a $\ell$-composable virtual grey box obfuscator with auxiliary input for point programs over $\zo^n$ that is $(s_{obf}, \epsilon_{obf})$-hard.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to how that $H^{\hill}_{\epsilon', s_{obf}}(C|P)\geq |C|- \beta$ for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.  
+Let $\mathcal{O}$ be a $\ell$-composable virtual grey box obfuscator with auxiliary input for point programs over $\zo^n$ that is $(s_{obf}, \epsilon_{obf})$-hard.  Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to how that $H^{\hill}_{\epsilon', s_{obf}}(C|P)\geq |C|- \beta$ for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
 
 By \defref{def:block guessable} there exists a set of indices $\mathcal{I}$ such that all blocks within $\mathcal{I}$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $\mathcal{I}$ are fixed.  Then $C | C_{\mathcal{I}^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{\mathcal{I}^c} )= |C| -\beta$ and thus $\Hav(C'| C_{\mathcal{I}^c}) = |C| -\beta$.  Define the distribution $X$ as follows:
 \[X_i =
@@ -1113,7 +1102,7 @@ Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
 By averaging over all points in $C'$ we conclude that $\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
 
-\noindent Now by the security of obfuscation we have that 
+\noindent Now by the security of obfuscation we have that
 \begin{align}
 \label{eq:dist after}
 |\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C')] |\leq \epsilon_{obf}.
