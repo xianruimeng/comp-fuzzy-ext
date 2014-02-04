@@ -233,7 +233,7 @@ are not necessarily endorsed by the United States Government.} \and Omer Paneth 
 Fuzzy extractors derive strong keys from noisy sources.  The goal is to reliably convert a high entropy source~(which may have different values on repeated readings) to the same uniformly distributed key.  Traditionally, their security is defined information-theoretically.  Fuzzy extractors have upper bounds on the length of the derived key~(Dodis et al., J. of Comp 2008).  In particular, the starting entropy of the source must be significantly higher than the logarithm of number of error patterns corrected.  For many practical noisy sources, like biometrics, this condition is not fulfilled, leaving reliable key derivation from these sources as an open problem.
 
 For an arbitrary source it is impossible to provide meaningful security~(even with interaction solutions) when the starting entropy is smaller than the logarithm of the number of error patterns.  Some restriction on the type of source is necessary.  Meaningful restrictions (and accompanying constructions) have proved elusive for information-theoretic fuzzy extractors.
-Fuller, Meng, and Reyzin (Asiacrypt 2013) define a computationally-secure version of a fuzzy extractor.  It may be easier to construct computational fuzzy extractors for meaningful sources.  
+Fuller, Meng, and Reyzin (Asiacrypt 2013) define a computationally-secure version of a fuzzy extractor.  It may be easier to construct computational fuzzy extractors for meaningful sources.
 
 In this work, we construct the first (computational) fuzzy extractors that are secure for a large class of distributions where the starting entropy is smaller than the logarithm of the number of correctable error patterns.
 
@@ -322,16 +322,16 @@ Let $C$ be a binary code and let $\mathcal{I}^c$ be a set of indices of $C$.  Th
 \end{claim}
 
 \subsection{Obfuscation}
-Our construction uses obfuscation of point functions. This is the following family of functions:
+Our construction uses obfuscation for a family of point function $\mathcal{I} = \{I_w\}_{w \in \zo^*}$ defined as follows:
 \[
 I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
 \]
-The notion of obfuscation required is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the notion of virtual grey-box (\cite{barak2001possibility}) as it allows the simulator to run in unbounded time as long as it only makes polynomial number of oracle queries to the point function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Compassable auxiliary-input VGB obfuscators for point function are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Difﬁe Hellman assumption which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points.
+The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}) as it allows the simulator to run in unbounded time while making at most polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Compassable auxiliary-input VGB obfuscators for point function are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Difﬁe Hellman assumption which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points.
 
 \begin{definition}[$t$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
 \label{def:obf} Let $\mathcal{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is a $t$-composable VGB obfuscator for $\mathcal{I}$ with auxiliary-input if the following conditions are met:
 \begin{enumerate}
-\item \emph{Functionality:} for every $I \in \mathcal{I}$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$
+\item \emph{Functionality:} for every $I \in \mathcal{I}$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.
 \item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^t \in \mathcal{I}_n$, (where $t=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
 \[
 |\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^t)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^t)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^t|}) = 1] | < \frac{1}{p(n)} \enspace,
