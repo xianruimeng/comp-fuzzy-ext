@@ -577,7 +577,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 
 Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correct for block unguessable distributions:
 \begin{theorem}
-Let $\mathcal{W}$ be the family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
+Let $\mathcal{W}$ be the family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\mathcal{Z}^\ell$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
 \begin{proof}
 Security is a result of \thref{thm:security of cons}.  Correctness follows from \lemref{lem:correct of cons}.
@@ -610,7 +610,7 @@ We consider what entropy is necessary for security.  The simplest type of block 
 \Huse = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t n) + \log {\ell \choose t}\right).
 \]
 When $t =\Theta(\ell)$, then $\Huse<0$ and the output entropy is $|C| -\beta$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
-Thus, \consref{cons:first construction} achieves negative $\Huse$ when $t = \Theta(\ell)$.  We achieve $\Huse<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
+Thus, \consref{cons:first construction} achieves for security for unguessable block distributions with negative $\Huse$ when $t = \Theta(\ell)$.  %We achieve security when $\Huse<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters.
 
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks.  To compensate for this leakage, we need most blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
