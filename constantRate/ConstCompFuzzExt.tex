@@ -361,7 +361,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\kappa, P))\leq \epsilon$.
 \end{itemize}
 \end{definition}
-In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$ there is no guarantee about the probability of correctness~(this will be crucial in our second construction).
+In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$ there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
 The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $\Huse<0$ this is necessary for any meaningful security~(see \apref{sec:minimal conditions}).
 
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.
@@ -376,7 +376,7 @@ denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distr
 We now define a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 \begin{definition}
 \label{def:comp fuzzy cond}
-Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(s_{cond}, \epsilon_{cond})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
 \begin{itemize}
 \item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $X\in\{0,1\}^\ell$ and a helper string $SS\in\{0,1\}^*$.
 \item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $SS\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(X, SS)\leftarrow \gen'(w)$, then $\Pr[\rep'( w', SS) = X] \geq 1-\delta$ where the probability is over the randomness of $(\gen', \rep')$.
@@ -387,7 +387,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep'$.
 A computational extractor is the adaption of a randomness extractor to the computational setting.  We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average-case:
 \begin{definition}
 Let $\chi$ be a finite set.
-A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, s_{ext}, \epsilon_{ext})$-average-case computational extractor} if for all pairs
+A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon_{ext}, s_{ext})$-average-case computational extractor} if for all pairs
 of random variables $X, Y$ over $\zo^\ell, \chi$ such that
 $\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{ext}}}((\cext(X, U_d), U_d, Y), U_\kappa\times
 U_d \times Y) \le \epsilon_{ext}$.
@@ -397,23 +397,23 @@ Combining a computational fuzzy conductor and an appropriate computational extra
 
 \begin{lemma}
 \label{lem:cond and cext}
-Let $\gen'$, $\rep'$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{cond},\epsilon_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, s_{ext}, \epsilon_{ext})$-average case computational extractor.  Define $\gen, \rep$ as:
+Let $\gen'$, $\rep'$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, \epsilon_{ext}, s_{ext})$-average case computational extractor.  Define $(\gen, \rep)$ as:
 \begin{itemize}
 \item $\gen(w; seed):$ run $(x, ss)= \gen'(w)$ and set $r = \cext(x; seed)$, $p = (ss, seed)$.  Output $(r, p)$.
 \item $\rep(w, (ss, seed)):$ recover $x = \rec'(w'; p')$ and output $r = \cext(x; seed)$.
 \end{itemize}
-Then $\gen, \rep$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{cond}+\epsilon_{ext}, s')$-hard with error $\delta$ where $s' = \min\{s_{cond} - |\cext| -d, s_{ext}\}$.
+Then $(\gen, \rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{cond}+\epsilon_{ext}, s')$-hard with error $\delta$ where $s' = \min\{s_{cond} - |\cext| -d, s_{ext}\}$.
 \end{lemma}
 
 
 \section{A Constant Error-Tolerance Computational Fuzzy Extractor}
 \label{sec:construction}
-For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys when the number of possible error patterns is larger than the starting entropy of source.  That is we want to provide some security when $0>\Huse = \Hoo(W) - \log|B_t|$.
-In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  Thus, we focus on building a computational fuzzy conductor with meaningful output entropy.  Our construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
+For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys for a large class of sources where $0>\Huse = \Hoo(W) - \log|B_t|$.
+In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  We focus on building a computational fuzzy conductor with meaningful output entropy.  Our first construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
 
 \begin{construction}
 \label{cons:first construction}
-Let $n$ be a security parameter and let $W = W_1,..., W_\ell$ be a distribution over $\zo^{\ell n}$.  Let $\mathcal{O}$ be a $\ell$-composable obfuscator for the family of point functions over $\zo^n$.  Let $t$ be the desired error-tolerance and let $C\subset \zo^\ell$ be a
+Let $n$ be a security parameter, let $\mathcal{Z}$ be an alphabet with $|\mathcal{Z}| \ge 2^n$ and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $\mathcal{Z}$.  Let $t$ be the desired error-tolerance and let $C\subset \zo^\ell$ be a
 $(\neigh_t, \delta_{code})$-error-correcting code.
 We describe $\gen, \rep$ as follows:
 
@@ -427,7 +427,7 @@ We describe $\gen, \rep$ as follows:
 \item For $i=1,..., \ell$:
 \begin{enumerate}[(i)]
 \item If $c_i = 0$: $p_i = \mathcal{O}(I_{w_i})$.
-\item Else: Sample $r_i \leftarrow U_n$.
+\item Else: Sample $r_i \overset{\$}\leftarrow \mathcal{Z}$.
 \subitem Let $p_i = \mathcal{O}(I_{r_i})$.
 \end{enumerate}
 \item Output $(c, p)$.
@@ -451,12 +451,10 @@ We describe $\gen, \rep$ as follows:
 \end{center}
 \end{construction}
 
-\textbf{Notes:}  We make several observations about the above construction:
-\begin{itemize}
-\item The input $w$ is hidden in two different ways.  In locations where $c_i=1$ the block $w_i$ is information-theoretically unknown.
-In locations where $c_i=0$ it is hard to find $w_i$ given the point obfuscation.  As described in~\cite[Section 3.3]{fuller2013computational} some type of lossiness is necessary to avoid coding bounds.
-\item There are two possible reasons for a bit $c_i'$ to be $1$.  Because the true value was $1$~(there is little chance of $1$ being incorrectly decoded as $0$ assuming $w_i'$ is independent of the sketch) and because $w_i \neq w_i'$.  However if a bit $c_i'$ is $0$ this likely means that $w_i=w_i'$ because collisions when the $c_i=0$ are unlikely~(occurring with probability roughly $2^{-n}$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips, instead of a code that corrects all Hamming weight $t$ errors.
-\end{itemize}
+The input $w$ is hidden in two different ways.  In locations where $c_i=1$ the block $w_i$ is information-theoretically unknown.
+In locations where $c_i=0$ it is hard to find $w_i$ given the point obfuscation.  %As described in~\cite[Section 3.3]{fuller2013computational} some type of lossiness is necessary to avoid coding bounds.
+
+There are two possible reasons for a bit $c_i'$ to be $1$.  Because the true value was $1$~(there is little chance of $1$ being incorrectly decoded as $0$ assuming $w_i'$ is independent of the sketch) and because $w_i \neq w_i'$.  However if a bit $c_i'$ is $0$ this likely means that $w_i=w_i'$ because collisions when the $c_i=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips, instead of a code that corrects all Hamming weight $t$ errors.
 
 \subsection{Security of Construction}
 \label{sec:sec of construction}
@@ -480,7 +478,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 We discuss  block unguessable distributions in \apref{sec:characterize}.  \consref{cons:first construction} is secure for block unguessable distributions:
 \begin{theorem}
 \label{thm:security of cons}
-Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\zo^n$. %that is $(s_{obf}, \epsilon_{obf})$-hard.  
+Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\mathcal{Z}$. 
 Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{theorem}
 
@@ -494,9 +492,9 @@ It is sufficient to show that there exists a distribution $C'$ with conditional 
 %\end{cases}\]
 The outline for the rest of the proof is as follows:
 \begin{itemize}
-\item Let $D$ be a distinguisher between $(C, P)$ and $(C', P)$, since $P$ is a collection of obfuscated programs there exists a simulator, $S$~(outputting a single bit), such that $D(C, P) \approx_c S^{\mathcal{O}}(C)$.
-\item Show that even an unbounded $S$ making a polynomial number of queries to the stored points cannot distinguish between $C$ and $C'$.  That is, $S^{\mathcal{O}}(C) \approx S^{\mathcal{O}}(C')$.
-\item By the security of obfuscation, $S^{\mathcal{O}}(C') \approx_c D(C', P)$.
+\item Let $D$ be a distinguisher between $(C, P)$ and $(C', P)$, since $P$ is a collection of obfuscated programs there exists a simulator, $S$~(outputting a single bit), such that $\Pr[D(C, P)=1]$ is close to $\Pr[S^{\mathcal{O}}(C)=1]$.
+\item Show that even an unbounded $S$ making a polynomial number of queries to the stored points cannot distinguish between $C$ and $C'$.  That is, $\delta(S^{\mathcal{O}}(C),S^{\mathcal{O}}(C'))$ is small.
+\item By the security of obfuscation, $\Pr[S^{\mathcal{O}}(C')=1]$ is close to $\Pr[D(C', P)=1]$.
 \end{itemize}
 
 %The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
@@ -579,7 +577,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 
 Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correct for block unguessable distributions:
 \begin{theorem}
-Let $\mathcal{W}$ be the family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{sec}, \epsilon_{sec})$-hard with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
+Let $\mathcal{W}$ be the family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\zo^{n\times \ell}$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\zo^{n\times \ell}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
 \begin{proof}
 Security is a result of \thref{thm:security of cons}.  Correctness follows from \lemref{lem:correct of cons}.
@@ -652,7 +650,7 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \subitem Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
 \subitem Set $\rho_i = \mathcal{O}(I_{v_i})$.
 \subitem Set $p_i = \rho_i, \lambda_i$.
-\item If $c_i = 1$: Sample $r_i \leftarrow U_{\mathcal{Z}^{\eta}}$.
+\item If $c_i = 1$: Sample $r_i \overset{\$}\leftarrow \mathcal{Z}^{\eta}$.
 \subitem Let $p_i = \mathcal{O}(I_{r_i}), \lambda_i$.
 \end{enumerate}
 \item Output $(c, p)$.
@@ -766,7 +764,7 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 Combining the last two sections, we have that \consref{cons:sampling} is secure and correct:
 \begin{theorem}
 Let $n$ be a security parameter.
-Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(s_{sec}, \epsilon_{sec})$-hard with error $\delta$ for
+Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
 \begin{align*}
 t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
 \tilde{m} &=|C|\\
