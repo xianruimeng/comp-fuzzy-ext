@@ -906,57 +906,35 @@ We can prove a slightly weaker claim when the correlation between the coordinate
 
 \begin{claim}
 \label{cl:all blocks entropy}
-Let $W = W_1,..., W_\ell$ be a source.  Let $\alpha =\omega(\log n)$ and suppose that for all $i$, $\Hoo(W_i)\geq \alpha$. Then for $q = \poly(n)$, there exists an $\alpha ' = \omega(\log n)$ such that $W$ is a $(q, \alpha', \ell)$-block unguessable distribution.
+Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $i$, $\Hoo(W_i)\geq \alpha$, and that $q 2^{-\alpha}\leq1/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is superlogarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-block unguessable distribution.
 \end{claim}
+
 \begin{proof}
-Intuitively, the claim is true because the oracle is negligibly like to return 1 on any query. Formally, we proceed by induction on oracle queries. 
-For a random variable $X$, let $\guess(X) = \max_x \Pr[X=x]$.
-Using the same notation as in the proof of Claim  \clref{cl:independent high ent}),  fix $i$ and $j$. Our inductive hypothesis is
-that $\Hav(W_i | A_1 \dots A_{j-1}) \ge \alpha_{j-1}$, where $\alpha_{j-1}=\omega(\log n)$.
-Recall that $\Hav(W_i | A_1 \dots A_j) =  -\log \expe_{a_1 \dots a_j} \guess (W_i|A_1 \dots, A_j=a_1\dots a_j)$.
+Intuitively, the claim is true because the oracle is not likely to return 1 on any query. Formally, we proceed by induction on oracle queries,
+using the same notation as in the proof of   \clref{cl:independent high ent}. Our inductive hypothesis is
+that $\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0] \leq (j-1)2^{1-\alpha}$.  If the inductive hypothesis holds, then, for each $i$,  
+\begin{equation}
+\label{eq:cond-entropy}
+\Hoo(W_i | A_1= \dots= A_{j-1}=0) \ge \alpha-1\,.
+\end{equation}
+This is true for $j=1$ by the condition of the theorem. It is true for $j>1$ because, as a consequence of the definition of $\Hoo$,
+for any random variable $X$ and event $E$, $\Hoo(X|E)\ge \Hoo(X)+\log\Pr[E]$; and $(j-1) 2^{1-\alpha}\leq 2 q 2^{-\alpha} \leq 1/2$.  We prove the base case and the inductive step as follows:
 \begin{align*}
-\expe_{a_1 \dots a_j} \guess (W_i|A_1 \dots, A_j=a_1\dots a_j)
- = {} & \sum_{a_1 \dots a_{j-1}} \guess(W_i |A_1\dots A_j=a_1\dots a_{j-1}0) \Pr[A_1\dots A_j=a_1\dots a_{j-1}0] \\
-&+  \sum_{a_1 \dots a_{j-1}} \guess(W_i | A_1\dots A_j=a_1\dots a_{j-1}1) \Pr [A_1\dots A_j=a_1\dots a_{j-1}1] ) \\
+\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0 \vee A_j\neq 0] & = 
+\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0]+\Pr[A_1=\dots = A_{j-1}=0 \wedge A_j=1]\\
+& \le  (j-1)2^{1-\alpha}+\Pr[A_j=1\,|\,A_1=\dots = A_{j-1}=0]\\
+& \le  (j-1)2^{1-\alpha}+\max_k 2^{-\Hoo(W_k | A_1=\dots =A_{j-1}=0)}\\
+& \le  (j-1)2^{1-\alpha}+ 2^{1-\alpha}\\
+& = j 2^{1-\alpha}
 \end{align*}
-
-We first deal with the second term. 
+(where the third line follows by considering that to get $A_j=1$, the adversary needs to guess some $W_k$, and the fourth line follows by \eqref{eq:cond-entropy}).
+Thus, using $j=q+1$ in \eqref{eq:cond-entropy},
+ we know $\Hoo(W_i | A_1= \dots= A_q=0) \ge \alpha-1$.
 \begin{align*}
-\sum_{a_1 \dots a_{j-1}}
-\Pr [A_1\dots A_j=a_1\dots a_{j-1}1] & \le
-\sum_{a_1 \dots a_{j-1}}
-\max_k \guess[W_k | A_1\dots A_{j-1}=a_1\dots a_{j-1}] \cdot \Pr[A_1\dots A_{j-1}=a_1\dots a_{j-1}] 
-\\ & \le
-\sum_k \sum_{a_1\dots a_{j-1}} \guess[W_k | A_1\dots A_{j-1}=a_1\dots a_{j-1}] \cdot \Pr[A_1\dots A_{j-1}=a_1\dots a_{j-1}] \\
-& =
-\sum_k 2^{-\Hav(W_k | A_1\dots A_{j-1})}\\
-&\le k 2^{-\alpha_{j-1}} = \ngl(n)\,.
+\Hav[W_i | A_1,\dots, A_q] &\ge -\log \left( 2^{-\Hoo(W_i | A_1= \dots= A_q=0)}\Pr[A_1=\dots=A_q=0]+1\cdot \Pr[A_1\neq 0 \vee \dots \vee  A_q\neq 0] \right)\\
+& \ge -\log \left(  2^{-\Hoo(W_i | A_1= \dots= A_q=0)}+q2^{1-\alpha} \right)\\
+& \ge -\log   (q+1) 2^{1-\alpha}) = \alpha-1-\log(q+1)\,.
 \end{align*}
-
-
-\lnote{working here}
-
-
-, it suffices to show that $\Hav(W_i | Q_1,A_1,..., Q_q, A_q) \geq \omega(\log n)$.  By the definition of conditional min-entropy:
-\begin{align*}
-\Hav(W_i | Q_1, A_1,..., Q_q, A_q) &= -\log (\Pr[\text{some non zero response}] \max_{w\in W_i} \Pr[W_i | \text{non zero response}) \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i| \text{all zero responses}]\\
-&\geq-\log (\Pr[\text{some non zero response}]\times 1 \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i | \text{all zero responses}]).
-\end{align*}
-It suffices to show that $\Pr[\text{some non zero response}] = \ngl(n)$ and that $\max_{w\in W_i} \Pr[W_i | \text{all zero responses}] = \ngl(n)$.  We show each of these is turn.
-
-First note that clearly the 1st query returns $1$ with $2^{-\alpha}$ probability~(due to the min-entropy condition).  Conditioned on this response being $0$ the probability of all other events increases by at most negligible amount~(the statistical distance between the original distribution and the distribution conditioned on the first response being $0$ is $\ngl(n)$).  Thus, the total probability of a $1$ is at most:
-\[
-\Pr[\text{some non zero response}] \leq 2^{-\alpha} + (2^{-\alpha}+\ngl(n)) + ... +(2^{-\alpha}+q\times \ngl(n)) = \ngl(n).
-\]
-Now consider $\max_{w\in W_i} \Pr[W_i | \text{all zero responses}]$.  For each zero response, the probability of any $w_i$ increases by at most a negligible amount, this means that
-\[\max_{w\in W_i} \Pr[W_i | \text{all zero responses}] = 2^{-\alpha} + q\times \ngl(n) = \ngl(n).\]
-
-Thus, we have the following:
-\begin{align*}
-\Hav(W_i | Q_1, A_1,..., Q_q, A_q) &\geq-\log (\Pr[\text{some non zero response}]\times 1 \\&+ \Pr[\text{all zero responses}]\max_{w\in W_i} \Pr[W_i = w_i | \text{all zero responses}])\\
-& \geq -\log (\ngl(n) + (1-\ngl(n))\ngl(n)) = -\log (\ngl(n)) = \omega(\log (n)).
-\end{align*}
-This completes the proof.\bnote{someone check this proof!!!! also make it more precise and better}
 \end{proof}
 
 Claims~\ref{cl:each block from single seed} and~\ref{cl:all blocks entropy} rest on there being no easy ``entry'' point to the distribution.  This is not always the case.  Indeed it is possible for some blocks to have very high entropy but lose all of it after equality queries.
