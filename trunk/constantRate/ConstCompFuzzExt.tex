@@ -601,7 +601,7 @@ To show that $\Huse$ can be negative for \consref{cons:first construction}, we f
 \begin{align*}
 \log |B_t| &= \log \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i\\
 &> \log {\ell \choose t} (2^n-1)^t\\
-&=\Theta(tn) + \log {\ell\choose t}
+& =\Theta(tn) + \log {\ell\choose t}
 % \log (2^n)^{H_{2^n}(t/\ell)\ell - o(\ell)} =n( H_{2^n}(t/\ell)\ell -o(\ell) )
 \end{align*}
 
@@ -868,32 +868,31 @@ The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor im
 \label{sec:characterize}
 
 \defref{def:block guessable} is an inherently adaptive definition and thus a little unwieldy for a distribution.  In this section, we partially characterize sources that satisfy \defref{def:block guessable}.
-The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent, so an equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.
+The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent, so an equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.  In all of the examples that follow we denote the adversary by $S$ as we need security against the computationally unbounded adversary defined in VGB obfuscation~(\defref{def:obf}).
 
 \begin{claim}
 \label{cl:independent high ent}
 Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_i$  are mutually independent.  Let $\alpha$ be a parameter.  Let $\mathcal{I}\subset \{1,..., \ell\}$ be a set of indices such that for all $i\in\mathcal{I}$, $\Hoo(W_i ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-block unguessable distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-block unguessable distribution.
 \end{claim}
 \begin{proof}
-It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) = \alpha -\log q$.
-We can ignore queries for all blocks but the $i$th, as the blocks are independent. Furthermore, without loss of generality, we can assume that no duplicate queries are asked, and that the adversary is deterministic (we can hardwire the best coins as nonuniform advice). Let $A_1, A_2, \dots A_q$ be the random variables representing the oracle answers for an  adversary $\mathcal{A}$ \lnote{is the adversary $S$, $\mathcal{A}$, or $A$?} making $q$  queries about the $i$th block. Each $A_j$ is just a bit, and at most one of them  is equal to 1 (because duplicate queries are disallowed). Thus, the total number of possible responses is $q+1$. Thus, we have the following,
+It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
+We can ignore queries for all blocks but the $i$th, as the blocks are independent. Furthermore, without loss of generality, we can assume that no duplicate queries are asked, and that the adversary is deterministic (we can hardwire the best coins as nonuniform advice). Let $A_1, A_2, \dots A_q$ be the random variables representing the oracle answers for an  adversary $S$ making $q$  queries about the $i$th block. Each $A_j$ is just a bit, and at most one of them  is equal to 1 (because duplicate queries are disallowed). Thus, the total number of possible responses is $q+1$. Thus, we have the following,
 \begin{align*}
 \Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) &= \Hav(W_i| A_1, \dots, A_q)\\
-&=\Hoo(W_i) - H_0(A_1, \dots, A_q)\\
+&=\Hoo(W_i) - |A_1, \dots, A_q|\\
 &=\alpha - \log (q+1)\,,
 \end{align*}
 where the second line follows from the first by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
 \end{proof}
-\noindent In their work on computational fuzzy extractors, Fuller, Meng, and Reyzin~\cite{fuller2013computational} show a construction for block-fixing sources, where each block is either uniform or a fixed symbol~(block fixing sources were introduced by Kamp and Zuckerman~\cite{KZ07}).  \clref{cl:independent high ent} captures, in particular, this class of distributions.
-
-However, \defref{def:block guessable} captures considerably more distributions.  We now consider more complicated distributions where blocks are not independent.
+\noindent In their work on computational fuzzy extractors, Fuller, Meng, and Reyzin~\cite{fuller2013computational} show a construction for block-fixing sources, where each block is either uniform or a fixed symbol~(block fixing sources were introduced by Kamp and Zuckerman~\cite{KZ07}).  \clref{cl:independent high ent} shows that \defref{def:block guessable} captures, in particular, this class of distributions.
+However, \defref{def:block guessable} captures more distributions.  We now consider more complicated distributions where blocks are not independent.
 
 \begin{claim}
 \label{cl:each block from single seed}
 Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to its $i$th coordinate.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-block unguessable distribution.
 \end{claim}
 \begin{proof}
-Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $A$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
+Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
 proof of \clref{cl:independent high ent}),
  and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $i$, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) \geq \Hoo(W_i) -\log (q+1)$.
 \end{proof}
@@ -916,22 +915,24 @@ that $\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0] \leq (j-1)2^{1-\alpha}$.  If 
 \Hoo(W_i | A_1= \dots= A_{j-1}=0) \ge \alpha-1\,.
 \end{equation}
 This is true for $j=1$ by the condition of the theorem. It is true for $j>1$ because, as a consequence of the definition of $\Hoo$,
-for any random variable $X$ and event $E$, $\Hoo(X|E)\ge \Hoo(X)+\log\Pr[E]$; and $(j-1) 2^{1-\alpha}\leq 2 q 2^{-\alpha} \leq 1/2$.  We prove the base case and the inductive step as follows:
+for any random variable $X$ and event $E$, $\Hoo(X|E)\ge \Hoo(X)+\log\Pr[E]$; and $(j-1) 2^{1-\alpha}\leq 2 q 2^{-\alpha} \leq 1/2$.  
+
+We now show that $\Pr[A_1\neq 0 \vee \dots \vee A_{j}\neq 0] \leq j2^{1-\alpha}$, assuming that $\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0] \leq (j-1)2^{1-\alpha}$.
 \begin{align*}
 \Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0 \vee A_j\neq 0] & = 
 \Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0]+\Pr[A_1=\dots = A_{j-1}=0 \wedge A_j=1]\\
 & \le  (j-1)2^{1-\alpha}+\Pr[A_j=1\,|\,A_1=\dots = A_{j-1}=0]\\
-& \le  (j-1)2^{1-\alpha}+\max_k 2^{-\Hoo(W_k | A_1=\dots =A_{j-1}=0)}\\
+& \le  (j-1)2^{1-\alpha}+\max_i 2^{-\Hoo(W_i | A_1=\dots =A_{j-1}=0)}\\
 & \le  (j-1)2^{1-\alpha}+ 2^{1-\alpha}\\
 & = j 2^{1-\alpha}
 \end{align*}
-(where the third line follows by considering that to get $A_j=1$, the adversary needs to guess some $W_k$, and the fourth line follows by \eqref{eq:cond-entropy}).
-Thus, using $j=q+1$ in \eqref{eq:cond-entropy},
- we know $\Hoo(W_i | A_1= \dots= A_q=0) \ge \alpha-1$.
+(where the third line follows by considering that to get $A_j=1$, the adversary needs to guess some $W_i$, and the fourth line follows by~\eqref{eq:cond-entropy}).
+Thus, using $j=q+1$ in~\eqref{eq:cond-entropy},
+ we know $\Hoo(W_i | A_1= \dots= A_q=0) \ge \alpha-1$.  Finally this means that
 \begin{align*}
-\Hav[W_i | A_1,\dots, A_q] &\ge -\log \left( 2^{-\Hoo(W_i | A_1= \dots= A_q=0)}\Pr[A_1=\dots=A_q=0]+1\cdot \Pr[A_1\neq 0 \vee \dots \vee  A_q\neq 0] \right)\\
+\Hav(W_i | A_1,\dots, A_q) &\ge -\log \left( 2^{-\Hoo(W_i | A_1= \dots= A_q=0)}\Pr[A_1=\dots=A_q=0]+1\cdot \Pr[A_1\neq 0 \vee \dots \vee  A_q\neq 0] \right)\\
 & \ge -\log \left(  2^{-\Hoo(W_i | A_1= \dots= A_q=0)}+q2^{1-\alpha} \right)\\
-& \ge -\log   (q+1) 2^{1-\alpha}) = \alpha-1-\log(q+1)\,.
+& \ge -\log \left(  (q+1) 2^{1-\alpha}\right) = \alpha-1-\log(q+1)\,.
 \end{align*}
 \end{proof}
 
