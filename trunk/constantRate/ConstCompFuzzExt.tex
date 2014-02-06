@@ -385,7 +385,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep'$.
 \item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $X$ has high HILL entropy conditioned on $P$, that is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(X |P)\geq \tilde{m}$.
 \end{itemize}
 \end{definition}
-A computational extractor is the adaption of a randomness extractor to the computational setting.  We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average-case:
+A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average-case:
 \begin{definition}
 Let $\chi$ be a finite set.
 A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon_{ext}, s_{ext})$-average-case computational extractor} if for all pairs
@@ -407,15 +407,14 @@ Then $(\gen, \rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational f
 \end{lemma}
 
 
-\section{A Computational Fuzzy Extractor when $\Huse<0$}
+\section{A Computational Fuzzy Conductor when $\Huse<0$}
 \label{sec:construction}
 For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys for a large class of sources where $0>\Huse = \Hoo(W) - \log|B_t|$.
 In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  We focus on building a computational fuzzy conductor with meaningful output entropy.  Our first construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
 
 \begin{construction}
 \label{cons:first construction}
-Let $n$ be a security parameter, let $\mathcal{Z}$ be an alphabet with $|\mathcal{Z}| = \omega(\poly(n))$ and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $\mathcal{Z}$.  Let $t$ be the desired error-tolerance and let $C\subset \zo^\ell$ be a
-$(\neigh_t, \delta_{code})$-error-correcting code.
+Let $n$ be a security parameter, let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an obfuscator for the family of point functions $\mathtt{I}_{\mathcal{Z}}$.  Let  $C\subset \zo^\ell$ be an error-correcting code.
 We describe $\gen, \rep$ as follows:
 
 \begin{center}
@@ -453,13 +452,10 @@ We describe $\gen, \rep$ as follows:
 \end{construction}
 
 The input $w$ is hidden in two different ways.  In locations where $c_i=1$ the block $w_i$ is information-theoretically unknown.
-In locations where $c_i=0$ it is hard to find $w_i$ given the point obfuscation.  %As described in~\cite[Section 3.3]{fuller2013computational} some type of lossiness is necessary to avoid coding bounds.
+In locations where $c_i=0$ it is hard to find $w_i$ given access to the point obfuscation.  
+There are two possible reasons for a bit $c_i'$ to be $1$.  Because the true value was $1$ and because $w_i \neq w_i'$.  However if a bit $c_i'$ is $0$ this likely means that $w_i=w_i'$ because collisions when $c_i=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
 
-There are two possible reasons for a bit $c_i'$ to be $1$.  Because the true value was $1$ and because $w_i \neq w_i'$.  However if a bit $c_i'$ is $0$ this likely means that $w_i=w_i'$ because collisions when the $c_i=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips, instead of a code that corrects all Hamming weight $t$ errors.
-
-\subsection{Security of Construction}
-\label{sec:sec of construction}
-\consref{cons:first construction} is secure if no distinguisher can tell whether they are working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  Our construction is secure as long as enough blocks are unpredictable after adaptive queries:
+\consref{cons:first construction} is secure if no distinguisher can tell whether they are working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  More formally, our construction is secure as long as enough blocks are unpredictable after adaptive queries:
 
 \begin{definition}
 \label{def:block guessable}
@@ -475,15 +471,23 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 \]
 \end{definition}
 
-%\noindent We argue security assuming that the adversary knows the value of all blocks outside of $\mathcal{I}$.
-We discuss unguessable block distributions in \apref{sec:characterize}.  \consref{cons:first construction} is secure for unguessable block distributions:
+We discuss unguessable block distributions in \apref{sec:characterize}.  
+
 \begin{theorem}
-\label{thm:security of cons}
-Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\mathcal{Z}$. 
-Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
+\label{thm:main thm first cons}
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
+\begin{proof}
+We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{lem:correct of cons}.
+\end{proof}
+
+\begin{lemma}
+\label{lem:security of cons}
+Let $W, \mathcal{O}, C$ be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
+\end{lemma}
 
 We give a brief outline of the proof here, the proof is in \apref{app:security of main cons}.
+\begin{proof}[Outline]
 It is sufficient to show that there exists a distribution $C'$ with conditional min-entropy and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))\le \ngl(n)$.  Let $\mathcal{I}$ be the set of indices that exists in \defref{def:block guessable}, the distribution $C'$ is defined as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $\mathcal{I}$.  We first note that $C'$ has sufficient entropy.  That is, $\Hav(C' |P) =\Hav(C' | C_{\mathcal{I}^c} = C'_{\mathcal{I}^c}) = |C| - |\mathcal{I}^c|$.  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P)) \le \ngl(n)$.
 %Define the distribution $X$ as follows:
 %\[X_i =
@@ -497,46 +501,10 @@ The outline for the rest of the proof is as follows:
 \item Show that even an unbounded $S$ making a polynomial number of queries to the stored points cannot distinguish between $C$ and $C'$.  That is, $\Delta(S^{\mathcal{O}}(C),S^{\mathcal{O}}(C'))$ is small.
 \item By the security of obfuscation, $\Pr[S^{\mathcal{O}}(C')=1]$ is close to $\Pr[D(C', P)=1]$.
 \end{itemize}
+\end{proof}
 
-%The prior lemma implies that the $View$ does not increase the probability of any codeword by much.
-%\begin{lemma}
-%\label{lem:no codeword high prob}
-%For all $c\in C|C_{\mathcal{I}^c}$,
-%\[
-%\expe_{View(S)} \Pr[C=c | C_{\mathcal{I}^c} \wedge View(S)] \leq \Pr[C=c | C_{\mathcal{I}^c}]+2^{-(\alpha-1)}.
-%\]
-%\end{lemma}
-%\begin{proof}
-%We begin by noting there must exist some $c\in C|C_{\mathcal{I}^c}$ such that
-%\[
-%\expe_{view\leftarrow View}\Pr[C = c | C_{\mathcal{I}^c}] \le \frac{1}{| C| C_{\mathcal{I}^c}|}.
-%\]
-%Otherwise the sum of the probabilities of $c\in C | C_{\mathcal{I}^c}$ will be greater than $1$.  Let $c_{min}$ be one such value.
-%Let $c^*$ be an arbitrary $c^*$ in the support of $C|C_{\mathcal{I}^c}$.  Suppose that
-%\begin{align*}
-%\expe_{view \leftarrow View(A^{\mathcal{O}_{(X_1,..., X_\ell)}})}\Pr[C=c^* | C_{\mathcal{I}^c} \wedge view ] &\geq \Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-(\alpha-1)} \\
-%\end{align*}
-%This means that the difference between the expected probability of $c_{min}$ and $c^*$ is at least $2^{-\alpha+1}$.  Thus, there is an unbounded distinguisher that can tell between the two cases, violating the statistical distance property of   \lemref{lem:codewords in I close}.  This is a contradiction and completes the proof.
-%\end{proof}
-%\begin{corollary}
-%\label{cor:avg min after view}
-%$\Hav(C| View(S))\geq \Hav(C | View (A) \wedge C_{\mathcal{I}^c}) \geq \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\} -1= \min\{ |C| - |\mathcal{I}^c|, \alpha-1\} -1$.
-%\end{corollary}
-%\begin{proof}
-%%Let $e$ be the exponent of the particular negligible value above~(note $e = \omega(1)$).
-%Taking the negative log of \lemref{lem:no codeword high prob} one has:
-%\begin{align*}
-%\Hav(C_i |  View(A^{\mathcal{O}_{(X_1,..., X_\ell)}(\cdot)}))
-% &= \\
-% -\log \left(\expe_{view \leftarrow View}\max_{c\in C|C_{\mathcal{I}^c}}\Pr[C =c | view \wedge C_{\mathcal{I}^c} ]  \right) &\geq -\log (\Pr[C=c^* | C_{\mathcal{I}^c} ]+ 2^{-\alpha+1}) \\
-% &\geq \min \{-\log P_c, -\log 2^{-\alpha+1}\} -1\\
-% &= \min \{ \Hav(C | C_{\mathcal{I}^c}), \alpha-1\}-1
-%\end{align*}
-%\end{proof}
-
-\subsection{Correctness of \consref{cons:first construction}}
-\label{sec:correct first cons}
-We begin by showing that the probability of a single $1\rightarrow 0$ bit flip in $c$ is negligible.
+We now argue correctness of \consref{cons:first construction}. 
+We begin by showing that the probability of a single $1\rightarrow 0$ bit flip in $c$ is negligible.  
 %Most of the effort in showing the correctness of \consref{cons:first construction} is showing that $\dis(w, w')\leq t$ implies $\dis(c, c')\leq t$.  However, we start by justifying our use of unidirectional codes.
 \begin{lemma}
 \label{lem:no 1 to 0 flips}
@@ -553,7 +521,7 @@ We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\
 
 \begin{lemma}
 \label{lem:correct of cons}
-Let $C$ be a $(\neigh_t, \delta_{code})$-code.  When $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$
+When $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$
 \[
 \Pr[\rep( w', P) = R] \geq 1-\left(\frac{\ell}{|\mathcal{Z}|}+\delta_{code}\right).
 \]
@@ -575,27 +543,11 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/|
 %\bnote{This analysis is done assuming that the two sets are the same size.  Need to worry about variation in the number of $1$s and $0$s in $c$.  Need to show that for most codes (linear?) the variance in Hamming weight is small.}
 %\textbf{Note:} If $t = O(\log n)$ the only error tolerance for $C$ that results in decoding with overwhelming probability is $t$.  However, in most use cases, we expect $t=\omega(\log n)$.
 
-Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correct for unguessable block distributions:
-\begin{theorem}
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$~(over $\mathcal{Z}^\ell$ where $|\mathcal{Z}| = \omega(\poly(n))$).  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
-\end{theorem}
-\begin{proof}
-Security is a result of \thref{thm:security of cons}.  Correctness follows from \lemref{lem:correct of cons}.
-\end{proof}
-
-
-%\subsection{Supported Sources}
-%\label{sec:supported sources}
-%\bnote{need to complete this section and redo the proof in  \secref{sec:sec of construction} with this type of source.}
-%
-%We now describe a set of high entropy sources appropriate for which the proof outline given in \secref{sec:sec of construction} holds.  We need a distribution where after $q$-equality queries, a large number of blocks still have super-logarithmic entropy.
-%
-%As long as $\beta$ is small enough, we can show security of \consref{cons:first construction}~(replace \lemref{lem:blocks unguessable after queries} with an unguessable source, the remaining arguments follow).
 
 
 \subsection{Discussion}
 \label{sec:discussion}
-Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:sec of construction}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries.
+Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries.
 
 To show that $\Huse$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
 \begin{align*}
@@ -617,7 +569,7 @@ When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$,
 
 \section{Sample-then-Obfuscate}
 \label{sec:sampling}
-\consref{cons:first construction} is a computational fuzzy extractor \lnote{conductor?} with $\Huse<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler). \lnote{The previous sentence explains how we achieve something without explaining what we achieve or why it improve the prev section. We need to rework this paragraph.} The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where a constant fraction of blocks are likely to contribute some entropy.
+\consref{cons:first construction} is a computational fuzzy conductor with $\Huse<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler). \lnote{The previous sentence explains how we achieve something without explaining what we achieve or why it improve the prev section. We need to rework this paragraph.} The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where a constant fraction of blocks are likely to contribute some entropy.
 
 \begin{definition}
 \label{def:unordered source}
@@ -688,7 +640,7 @@ We now show security and correctness of \consref{cons:sampling}.  For security, 
 
 \subsection{Security of \consref{cons:sampling}}
 In order to show security \consref{cons:sampling}, we 
-show that with overwhelming probability, at each of the $\ell$ iterations, the sampler will choose enough coordinates of $W$ that have high entropy, making $V_i$ have sufficient entropy.   We can then argue that $V_1,..., V_\ell$ forms a block-unguessable distribution.  Then \consref{cons:sampling} is just \consref{cons:first construction} applied to $V_1,.., V_\ell$, and security follows by \thref{thm:security of cons}.  We begin by showing that each $V_i$ is statistically close to a high entropy distribution~(proof in \apref{sec:proof of sampling lemma}).   Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda=\lambda_1 \dots \lambda_\ell$
+show that with overwhelming probability, at each of the $\ell$ iterations, the sampler will choose enough coordinates of $W$ that have high entropy, making $V_i$ have sufficient entropy.   We can then argue that $V_1,..., V_\ell$ forms a block-unguessable distribution.  Then \consref{cons:sampling} is just \consref{cons:first construction} applied to $V_1,.., V_\ell$, and security follows by \lemref{lem:security of cons}.  We begin by showing that each $V_i$ is statistically close to a high entropy distribution~(proof in \apref{sec:proof of sampling lemma}).   Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda=\lambda_1 \dots \lambda_\ell$
 be some particular outcome.
 
 %\bnote{think about how to make this work when $\eta = \Theta(1)$.  Will make probabilities gross.  Probably not for submission.}
@@ -733,7 +685,7 @@ Finally, since $V_1,..., V_\ell$ is statistically close~(conditioned on the rand
 Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} \lnote{why as in \corref{cor:samp sec} and not in the construction?} and let $\mathcal{O}$ is an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\mathcal{Z}^\eta$, then for every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq |C|$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
-Result of \corref{cor:v are unguessable} and \thref{thm:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
+Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
 \end{proof}
 
 \subsection{Correctness of \consref{cons:sampling}}
@@ -982,7 +934,7 @@ Then define $D$ as follows.  On input $(y, ss)$ sample $seed\leftarrow U_d$, com
 Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.  This is a contradiction.
 \end{proof}
 
-\section{Proof of \thref{thm:security of cons}}
+\section{Proof of \lemref{lem:security of cons}}
 \label{app:security of main cons}
 \begin{proof}
 
@@ -1063,7 +1015,7 @@ Combining Equations~\ref{eq:dist before} and~\ref{eq:dist after} and \lemref{lem
 &\leq \epsilon_{sec}/3+ (\ell-\beta)2^{-(\alpha-1)}+\epsilon_{sec}/3 \\
 &\leq 2\epsilon_{sec}/3 + \ngl(n) < \epsilon_{sec}.
 \end{align*}
-This is a contradiction and completes the proof of \thref{thm:security of cons}.
+This is a contradiction and completes the proof of \lemref{lem:security of cons}.
 \end{proof}
 
 \section{Proof of \lemref{lem:sampling works}}
@@ -1077,7 +1029,7 @@ For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal
 \lnote{this needs a proof}
 
 We note that $X$ is distributed according to the hypergeometric distribution,
-and that $\expe[X]=\eta(\gamma-\beta)/\gamma$. Using the tail bounds from~\cite{chvatal1979tail,skala2009hypergeometric}, we can conclude that $\Pr[X\le \expe[X]/2]\le e^{-2((\gamma-\beta)/2\gamma)^2 \eta}=O(e^{-\eta})$.
+and that $\expe[X]=\eta(\gamma-\beta)/\gamma$. Using the tail bounds from~\cite{chvatal1979tail,scala2009hypergeometric}, we can conclude that $\Pr[X\le \expe[X]/2]\le e^{-2((\gamma-\beta)/2\gamma)^2 \eta}=O(e^{-\eta})$.
 
 Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$, we conclude that 
  \[
