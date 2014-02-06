@@ -777,10 +777,10 @@ That is, \consref{cons:sampling} achieves $\Huse<0$ when the starting alphabet i
 \appendix
 
 \section{Use of Fuzzy Extractors for Biometrics}
-Fuzzy extractors were developed to derive stable from noisy sources.  Biometrics represent an important noisy physical source.  Unlike physical unclonable functions, biometrics are fixed distributions.  Biometrics cannot be redesigned to  increase their entropy or reduce their error rates.  Many biometric systems have incorporated fuzzy extractors to improve system security~(see the work of Jain, Nadakumar, and Nagar for a survey~\cite{jain2008biometric}).  Unfortunately, most work measures system security using false accept rate vs. false reject rate.  This assumes an adversary that creates inputs to the \rec algorithm without looking at the public helper data.  False accept rate provides no bound on helper data information-leakage.  Indeed the helper data may completely reveal the original input.  In high security applications, measuring false accept rate vs. false reject rate is insufficient to argue system security.  
+Fuzzy extractors derive stable from noisy sources.  Biometrics represent an important noisy physical source.  Unlike physical unclonable functions, biometrics are fixed distributions.  Biometrics cannot be redesigned to  increase their entropy or reduce their error rates.  Many biometric systems have incorporated fuzzy extractors to improve system security~(see the work of Jain, Nadakumar, and Nagar for a survey~\cite{jain2008biometric}).  Unfortunately, most work measures system security using false accept rate vs. false reject rate.  This assumes an adversary that creates inputs to the \rec algorithm without looking at the public helper data.  False accept rate provides no bound on the information leaked by the helper data.  Indeed the helper data may completely reveal the original input.  In high security applications, measuring false accept rate vs. false reject rate is insufficient to argue system security.  
 
 \label{sec:iris no key}
-As an example, we focus on the human iris.  The iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  The best estimate for iris entropy is $250$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  The transform computes a phase angle at $1024$ locations, this angle is then quantized into a positive/negative value in the two dimensions. There has been considerable research since the work of Daugman~\cite{daugman2004}.  These works do not dramatically alter the entropy measurement or error rate necessary for a reasonable false reject rate.  We use the Daugman's parameters for our calculations.
+As an example, we focus on the human iris.  The iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  The best estimate for iris entropy is $250$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  There has been considerable research since the work of Daugman~\cite{daugman2004}.  However, These works do not dramatically alter the entropy estimate or error rate necessary for a reasonable false reject rate.  We use the Daugman's parameters for our calculations.
 
 The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.%\footnote{Daugman  improves his true accept rate using a masking vector, where bits that are not considered ``trustworthy'' are excluded from the comparison.  The comparison between the two readings is then made using bits not excluded by either image.  It is not clear how to extend into the fuzzy extractor setting.  Even with the masking vector $\Huse$ is negative for irises.}  
 We have the following calculation for $\Huse$:
@@ -788,13 +788,13 @@ We have the following calculation for $\Huse$:
 \Huse &= \Hoo(W) - \log |B_t|\\
 &= 249 - \log \sum_{i=0}^{205} {2048 \choose i} = -707.
 \end{align*}
-Thus, if we were to use a fuzzy extractor that worked for all distributions with the same entropy and error characteristics no key is possible~(see \apref{sec:minimal conditions} for minimal conditions for fuzzy extractor security).
-Although irises are believed to be the strongest biometric a fuzzy extractor can provide no security without using some additional property of the iris distribution.
+Thus, it is impossible to output a key using a fuzzy extractor that outputs the same strength key for all distributions with the same entropy and error tolerance~(see \apref{sec:minimal conditions} for minimal conditions for fuzzy extractor security).
+Irises are believed to be the strongest biometric but applying current fuzzy extractors to irises yields no meaningful security.
 
 \section{Minimal Conditions for Fuzzy Extractor Security}
 \label{sec:minimal conditions}
 
-A necessary condition for fuzzy extractor security is that an adversary should not be able to learn the key simply by inputting any point into the \rep algorithm.  This means a negligible portion of the source distribution $W$ lies within any Hamming ball.  We make this intuition formal here:
+A necessary condition for fuzzy extractor security is that an adversary should not be able to learn the key simply by inputting a point into the \rep algorithm.  This means a negligible portion of the source distribution $W$ lies within any Hamming ball.  We make this intuition formal here:
 
 \begin{definition}
 \label{def:fuzzy min-ent}
@@ -803,21 +803,22 @@ A distribution $W$ in a metric space $(\mathcal{M}, \dis)$ has $(t, k)$-fuzzy mi
 \forall m\in \mathcal{M}, Pr_{w\in W}[\dis(w, m) \leq t] \leq 2^{-k}.
 \]
 \end{definition}
+For a metric space $\mathcal{M}$, let $\max |\mathcal{M}|$ the maximum length required to describe an element $m\in\mathcal{M}$~(for most natural metric spaces this is $\log |\mathcal{M}|$).
 \begin{lemma}
 \label{lem:fuzz necessary}
 Let $n$ be a security parameter and let $W$ be a distribution over $(\mathcal{M}, \dis)$.
-If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that corrects is secure against nonuniform adversaries of size $\log \mathcal{M} + |\rep|$ for negligible $\epsilon$~(and thus no fuzzy extractor) for $\kappa =\omega(\log n)$.
+If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that is $(\max |\mathcal{M}| +  |\rep|, \epsilon)$-hard for $\epsilon = \ngl(n)$ with error $\delta = \ngl(n)$~(and thus no fuzzy extractor) for $\kappa =\omega(\log n)$.
 \end{lemma}
 \begin{proof}
-Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m\mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
+Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m\in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
 \begin{itemize}
 \item On input $r, p$.
 \item If $\rep(m, p) = r$, output $1$.
 \item Else output $0$.
 \end{itemize}
-First note that $|D|$ is of size $\log |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(R, P) = 1]\geq 1/\poly(n)$, while $\Pr[D(U_\kappa, P)=1 ]\leq 1/2^{-\kappa}$.  Thus, when $\kappa = \omega(\log n)$:
+First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(R, P) = 1]\geq 1/\poly(n) - \delta$, while $\Pr[D(U_\kappa, P)=1 ]\leq 1/2^{-\kappa}$.  Thus, when $\kappa = \omega(\log n)$:
 \[
-\delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} - \frac{1}{2^{-\kappa}} = 1/\poly(n).
+\delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
 \]
 \end{proof}
 \lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  %The original fuzzy extractors paper of Dodis et al.~\cite{DBLP:journals/siamcomp/DodisORS08} separated the starting entropy of $W$ and the desired error tolerance.  
@@ -829,7 +830,7 @@ In this work we consider the Hamming distance over some alphabet $\mathcal{Z}$. 
 \section{Fuzzy Conductors}
 
 \label{sec:conductors}
-Fuzzy extractors are known to have strong upper bounds on remaining entropy based on the best error correcting codes~(if they provide the same guarantee for all input distributions with the same entropy and error tolerance).  Fuller, Meng, and Reyzin show that computational information-reconciliation techniques are subject to similar bounds~\cite{fuller2013computational}.  They suggest these bounds may be avoided by outputting a fresh random variable.  This is known as a fuzzy conductor~\cite{KanukurthiR09}.
+Fuzzy extractors  have strong upper bounds on remaining entropy based on the best error correcting codes~(if they provide the same guarantee for all input distributions with the same entropy and error tolerance).  Fuller, Meng, and Reyzin show that computational information-reconciliation techniques are subject to similar bounds~\cite{fuller2013computational}.  They suggest these bounds may be avoided by outputting a fresh random variable.  This is known as a fuzzy conductor~\cite{KanukurthiR09}.
 \begin{definition}
 A $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-\emph{fuzzy conductor} with error $\delta$ is a pair of randomized procedures, ``generate''~(\gen') and ``reproduce''~(\rep'), with the following properties:
 \begin{enumerate}
@@ -851,7 +852,7 @@ Intuitively, $K(\mathcal{M}, t, S)$ is the size of the best code that covers a g
 \begin{lemma}
 The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor implies that $\tilde{m}\leq L(\mathcal{M}, t, m) +1 -\log (1-2\epsilon)$.
 \end{lemma}
-\begin{proof}  Assume $(\gen', \rep')$ is a fuzzy conductor with the parameters stated.  Let $A$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $A$.  Define $(X,SS) \leftarrow \gen'(W)$.  Then there must exist a distribution $Y$ with $\Hav(Y|SS) \geq \tilde{m}$ such that $\Delta((X,SS), (Y, SS))\leq \epsilon$.  By Markov's inequality, there exists some set $B_{SS}$ such that $\Pr[ss\in B_{SS}] \geq 1/2$ and $\forall s\in B_{SS}$ one has $\Delta(X | SS = s, s ), (Y | SS = s, s)<2\epsilon$.  Now applying Markov's inequality of $\max_{Y} \Pr[Y=y | SS=s]$, there exists a set $B_{SS'}$ such that $\Pr[SS\in B_{SS'}]>1/2$, and for all $s\in B_{SS'}$, $\Hoo(Y| SS =s ) \geq \tilde{m}-1$.  Denote by $s^*$ a value in $B_{SS}\cap B_{SS'}$~(one value must exist).  Then $\Delta((X | SS =s^* , s^*), (Y| SS = s^*, s^*))\leq 2\epsilon$ and $\Hoo(Y|SS=s^*)\geq \tilde{m}-1$.  Denote by the set $A'$ the possible values of $X$ when $SS=s^*$.  For the statistical distance property to hold, $|A'| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $x\in A'$ some $w\in S$ which could have produced $x$ with nonzero probability given $SS=s^*$, and call this map $C$.  $C$ defines an error correcting code with the required parameters.
+\begin{proof}  Assume $(\gen', \rep')$ is a fuzzy conductor with the parameters stated.  Let $A$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $A$.  Define $(X,SS) \leftarrow \gen'(W)$.  Then there must exist a distribution $Y$ with $\Hav(Y|SS) \geq \tilde{m}$ such that $\Delta((X,SS), (Y, SS))\leq \epsilon$.  By Markov's inequality, there exists some set $B_{SS}$ such that $\Pr[ss\in B_{SS}] \geq 1/2$ and $\forall s\in B_{SS}$ one has $\Delta(X | SS = s, s ), (Y | SS = s, s)<2\epsilon$.  Now applying Markov's inequality to $\max_{Y} \Pr[Y=y | SS=s]$, there exists a set $B_{SS'}$ such that $\Pr[SS\in B_{SS'}]>1/2$, and for all $s\in B_{SS'}$, $\Hoo(Y| SS =s ) \geq \tilde{m}-1$.  Denote by $s^*$ a value in $B_{SS}\cap B_{SS'}$~(one value must exist).  Then $\Delta((X | SS =s^* , s^*), (Y| SS = s^*, s^*))\leq 2\epsilon$ and $\Hoo(Y|SS=s^*)\geq \tilde{m}-1$.  Denote by the set $A'$ the possible values of $X$ when $SS=s^*$.  For the statistical distance property to hold, $|A'| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $x\in A'$ some $w\in S$ which could have produced $x$ with nonzero probability given $SS=s^*$, and call this map $C$.  $C$ defines an error correcting code with the required parameters.
 \end{proof}
 
 \section{Characterizing unguessable block distributions}
