@@ -633,7 +633,7 @@ We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $\ell = O(\poly(n)) = \omega(\log n)$ and let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.   Let $\eta = \omega(\log n)$ and let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $ \mathcal{Z}^\eta$.  Define $\gen, \rep$ as:
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $\ell = O(\poly(n)) = \omega(\log n)$ and let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.   Let $\eta = \omega(\log n) = o(\gamma)$ and let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $ \mathcal{Z}^\eta$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -677,39 +677,70 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated blocks symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  There is a crucial difference, our use of a computational primitive~(obfuscation) allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  Our construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers.  Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated blocks symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is the use of a computational primitive~(obfuscation) allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  Our construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers.  Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
 
 As before we show security and correctness of \consref{cons:sampling}.  For security, we argue that each of the $v_i$ is unguessable.  For correctness we show that the induced error rate in $v$ and $v'$ is a small constant~(with overwhelming probability) so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
-\bnote{this whole chain of arguments needs to be cleaned up}
-\bnote{went through the surrounding text, need to look at all the theorem statements}
 In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $V_i$ has super-logarithmic entropy on its own~(samplers will select ``enough'' of the good blocks of $W$ each time).  We can then argue that $V_1,..., V_\ell$ forms a block-unguessable distribution.  Then \consref{cons:sampling} is just the first construction applied to $V_1,.., V_\ell$ and security follows by \thref{thm:security of cons}.  We begin by showing that each $V_i$ is statistically close to a high entropy distribution.
 
+\bnote{think about how to make this work when $\eta = \Theta(1)$.  Will make probabilities gross.  Probably not for submission.}
 \begin{lemma}
 \label{lem:sampling works}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1/2-\Theta(1)))$-unordered block source.  Let $\eta = \Omega(\log n)$. Consider some fixed $i$, the distribution $V_{i}, \Lambda_i$ is $(\ngl(n)+ 2^{-\Omega(n)})$-close to a distribution $V', U_{r_{sam}}$ where for all $u\in U_{r_{sam}}$ $V' | U_{r_{sam}}=u$, $\Hoo(V' | U_{r_{sam}}=u) \geq \Omega(\alpha\times (1-2\times \beta) \times \eta) = \omega(\log n) = \alpha'$.
+Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta\le \gamma(1- \Theta(1)))$-unordered block source and let $\eta = \omega(\log n) \le  o(\gamma)$.  Consider some fixed $i$, there exists a value $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ such that 
+\[
+\Pr[\Hoo(V_i | \Lambda) \geq  \omega(\log n) = \alpha'] \geq 1- O(e^{-\eta}).
+\]
 \end{lemma}
 \begin{proof}
-By~\cite[Lemma 9]{vadhan2003constructing}, noting that the na\"{i}ve sampler is optimum in necessary samples and we use $\eta = \omega(\log n)$ samples.  \bnote{need someone to check parameters, in the abstract, I am fairly sure the statement makes sense, but I could easily have messed something up}\bnote{even if this is right it needs to be expanded.  too much for a reader to digest.}
+Consider some fixed $i$.  
+For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ of size $\gamma - \beta = \gamma(1/2+\Theta(1))$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, 
+\[
+\Hoo(V_i |\Lambda ) \geq \alpha \times |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|.
+\]
+
+Denote by $X = |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|$.  We now calculate $\expe[X]$.  Let $j_1,.., j_\eta$ be the elements selected by sampling algorithm.  Note that the first element $j_1\in\mathcal{I}$ with probability $(\gamma-\beta)/\gamma$.  Consider some choice $j_k$ there are least $\gamma-\beta-k$ samples in $\mathcal{I}$ remaining, so it the $\Pr[j_k\in\mathcal{I}]>(\gamma-\beta-\eta)/\gamma$.  We can associate with each $j_k$ a Bernoulli random variable $X_i$ with success probability $(\gamma-\beta-\eta)/\gamma$ and note that 
+\[
+\expe[X] \geq \eta \expe[X_i] \geq \eta\frac{\gamma-\beta-\eta}{\gamma}.
+\]
+
+Using the Chernoff bound the probability that $X$ is rarely far from its expected value:
+\[
+\Pr\left[ \frac{1}{\eta} \sum_{k=1}^\eta X_i \leq 1/2 \expe[X_i]\right]\leq 2e^{-\expe[X_i] \eta} = O(e^{-\eta})
+\]
+Where the last equality follows because 
+\[
+\expe[ X_i] = \frac{\gamma-\beta-\eta}{\gamma} \geq \frac{\Theta(\gamma) - \eta}{\gamma} = \frac{\Theta(\gamma) - o(\gamma)}{\gamma} = O(1).
+\]
+That is $\Pr[\Hoo(V_i ) \geq \alpha \times \frac{\eta(\gamma-\beta-\eta)}{2\gamma} = \omega(\log n)] \geq 1- O(e^{-\eta})$.
 \end{proof}
+
+%
+%\begin{lemma}
+%
+%Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1/2-\Theta(1)))$-unordered block source.  Let $\eta = \Omega(\log n)$. Consider some fixed $i$, the distribution $V_{i}, \Lambda_i$ is $(\ngl(n)+ 2^{-\Omega(n)})$-close to a distribution $V', U_{r_{sam}}$ where for all $u\in U_{r_{sam}}$ $V' | U_{r_{sam}}=u$, $\Hoo(V' | U_{r_{sam}}=u) \geq \Omega(\alpha\times (1-2\times \beta) \times \eta) = \omega(\log n) = \alpha'$.
+%\end{lemma}
+%\begin{proof}
+%By~\cite[Lemma 9]{vadhan2003constructing}, noting that the na\"{i}ve sampler is optimum in necessary samples and we use $\eta = \omega(\log n)$ samples.  \bnote{need someone to check parameters, in the abstract, I am fairly sure the statement makes sense, but I could easily have messed something up}\bnote{even if this is right it needs to be expanded.  too much for a reader to digest.}
+%\end{proof}
 
 \noindent
 We can then argue that all $V_i$ simultaneously have individual entropy with good probability:
 \begin{corollary}
 \label{cor:samp sec}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma /2-\Omega(1))$-unordered block source.  Let $\eta = \Omega(\log n)$.  Denote by $\epsilon_{sam} = \ngl(n) + 2^{-\Omega(n)} = \ngl(n)$ the value from \lemref{lem:sampling works}.
-Then, the distribution $(V, \Lambda)$ is $(\ell\epsilon_{sam})$-close to a distribution $(V', U_{\ell\times r_{sam}})$ where for $u\in U_{\ell\times r_{sam}}$ for all $i$, $\Hoo(V_i' | U_{\ell\times r_{sam}} =u)\geq \alpha'$.
+Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1-\Theta(1)))$-unordered block source.  Let $\eta = \omega(\log n) = o(\gamma)$ and let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works}.  Then $\Pr[\exists i, \Hoo(V_i | \Lambda) \not \ge \alpha'] \leq 1-\ell\epsilon_{sam}$.
+%[V_i(V, \Lambda)$ is $(\ell\epsilon_{sam})$-close to a distribution $(V', U_{\ell\times r_{sam}})$ where for $u\in U_{\ell\times r_{sam}}$ for all $i$, $\Hoo(V_i' | U_{\ell\times r_{sam}} =u)\geq \alpha'$.
 \end{corollary}
 \begin{proof}
-Hybrid argument over the statistical distance in \lemref{lem:sampling works}.
+Union bound over the probability in \lemref{lem:sampling works}.
+%Hybrid argument over the statistical distance in \lemref{lem:sampling works}.
 \end{proof}
 
 In the \apref{sec:characterize} we show that any distribution where each individually block has super-logarithmic min-entropy forms a block unguessable distribution~\clref{cl:all blocks entropy}.  This allows us to conclude:
 \begin{corollary}
 \label{cor:v are unguessable}
-Let $W, V, \Lambda, V', U_{\ell\times r_{sam}}$ be as in \corref{cor:samp sec}.
-Let $q = \poly(n)$, there exists some $\alpha'' = \omega(\log n)$ such that distribution $V' , U_{\ell\times r_{sam}}$ is a $(q, \alpha'', 0)$-block unguessable distribution.
+Let $W, V, \Lambda$ be as in \corref{cor:samp sec}.
+Let $q = \poly(n)$, there exists some $\alpha'' = \omega(\log n)$ such that distribution $V , \Lambda$ is $\ell \epsilon_{sam}$ statistically close to a $(q, \alpha'', 0)$-block unguessable distribution.
 \end{corollary}
 
 Finally, since $V_1,..., V_\ell$ is statistically close~(conditioned on the randomness of $\sample$) to a block unguessable distribution, \consref{cons:sampling} is just \consref{cons:first construction} applied to $V_1,..., V_\ell$.
@@ -718,7 +749,7 @@ Finally, since $V_1,..., V_\ell$ is statistically close~(conditioned on the rand
 Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$, then for every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq |C|$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
-Result of \corref{cor:v are unguessable} and \thref{thm:security of cons}.
+Result of \corref{cor:v are unguessable} and \thref{thm:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
 \end{proof}
 
 \subsection{Correctness of \consref{cons:sampling}}
@@ -764,7 +795,7 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 Combining the last two sections, we have that \consref{cons:sampling} is secure and correct:
 \begin{theorem}
 Let $n$ be a security parameter.
-Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
+Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n) = o(\gamma)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
 \begin{align*}
 t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
 \tilde{m} &=|C|\\
