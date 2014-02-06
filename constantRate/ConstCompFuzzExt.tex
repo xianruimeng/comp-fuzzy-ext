@@ -484,7 +484,7 @@ We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{le
 
 \begin{lemma}
 \label{lem:security of cons}
-Let $W, \mathcal{O}, C$ be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
+Let all variables be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{lemma}
 
 We give a brief outline of the proof here, the proof is in \apref{app:security of main cons}.
@@ -509,6 +509,7 @@ We begin by showing that the probability of a single $1\rightarrow 0$ bit flip i
 %Most of the effort in showing the correctness of \consref{cons:first construction} is showing that $\dis(w, w')\leq t$ implies $\dis(c, c')\leq t$.  However, we start by justifying our use of unidirectional codes.
 \begin{lemma}
 \label{lem:no 1 to 0 flips}
+Let all variables be as in \thref{thm:main thm first cons}.  
 The probability of at least one $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $ \ell/|\mathcal{Z}| = \ngl(n)$.
 \end{lemma}
 \begin{proof}
@@ -522,7 +523,8 @@ We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\
 
 \begin{lemma}
 \label{lem:correct of cons}
-When $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$
+Let all variables be as in \thref{thm:main thm first cons}.  
+For $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$
 \[
 \Pr[\rep( w', P) = R] \geq 1-\left(\frac{\ell}{|\mathcal{Z}|}+\delta_{code}\right).
 \]
@@ -569,8 +571,12 @@ When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$,
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks.  To compensate for this leakage, we need most blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
 
 \section{Sample-then-Obfuscate}
+\bnote{Reducing required entropy as title?}
 \label{sec:sampling}
-\consref{cons:first construction} is a computational fuzzy conductor with $\Huse<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler). \lnote{The previous sentence explains how we achieve something without explaining what we achieve or why it improve the prev section. We need to rework this paragraph.} The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where a constant fraction of blocks are likely to contribute some entropy.
+\bnote{Leo didn't like this linking.  How about now?}
+\consref{cons:first construction} is a computational fuzzy conductor with $\Huse<0$.  Unfortunately, \consref{cons:first construction} required most blocks of $W$ to have super-logarithmic min-entropy.  This may be an unreasonable requirement.  In this section, we reduce the required entropy of blocks by obfuscating several blocks simultaneously.
+%In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler). 
+Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between entropy and error tolerance.  The main idea is to sample a random subset of blocks $W_{i_1},..., W_{i_\eta}$ and obfuscate the concatenation of these blocks.  Denote this concatenated value by $V_1$.  This process is repeated to produce $V_1,..., V_\ell$ and the construction proceeds by either obfuscating $V_i$ or a random point as before. For security each value $V_i$ needs to be unguessable.  This will hold as long as enough blocks we sample contribute some entropy:
 
 \begin{definition}
 \label{def:unordered source}
@@ -587,7 +593,8 @@ We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$. Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $ \mathcal{Z}^\eta$.  Define $\gen, \rep$ as:
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$. %and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$. 
+Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\mathcal{O}$ be an obfuscator for the family of point functions over $\mathtt{I}_{\mathcal{Z}^\eta}$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -595,16 +602,16 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \textbf{\gen}
 \begin{enumerate}
 \item \underline{Input}: $w = w_1,..., w_\gamma$
-\item Sample $c\leftarrow C$.
+\item Select $c\overset{\$}\leftarrow C$.
 \item For $i=1,..., \ell$:
 \begin{enumerate}[(i)]
-\item Sample $\lambda_i\overset{\$}\leftarrow \zo^{r_{sam}}$.
+\item Select $\lambda_i\overset{\$}\leftarrow \zo^{r_{sam}}$.
 \item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\eta,\gamma}( \lambda_i)$
 \item If $c_i = 0$:
 \subitem Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
 \subitem Set $\rho_i = \mathcal{O}(I_{v_i})$.
 \subitem Set $p_i = \rho_i, \lambda_i$.
-\item If $c_i = 1$: Sample $r_i \overset{\$}\leftarrow \mathcal{Z}^{\eta}$.
+\item If $c_i = 1$: Select $r_i \overset{\$}\leftarrow \mathcal{Z}^{\eta}$.
 \subitem Let $p_i = \mathcal{O}(I_{r_i}), \lambda_i$.
 \end{enumerate}
 \item Output $(c, p)$, where $p=p_1\dots p_\ell$.
@@ -631,14 +638,10 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \end{center}
 \end{construction}
 
-\lnote{the word sample is kind of overloaded}
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we only need to argue each $v_i$ has only individual entropy, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of $v_i$s. 
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated blocks symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we need to argue each $v_i$ has only individual entropy, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of $v_i$s. 
+This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers in~\cite{goldreich1997sample}.
 
-This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
-
-
-We now show security and correctness of \consref{cons:sampling}. 
 
 \begin{theorem}
 \label{thm:sampling}
@@ -654,7 +657,6 @@ t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
 
 
 The next two sections are dedicated to proving this theorem.
-
  For security we argue that each of the $v_i$ values is unguessable.  For correctness we show that the induced error rate in $v$ and $v'$ is a small constant~(with overwhelming probability), so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
@@ -665,7 +667,7 @@ be some particular outcome.
 %\bnote{think about how to make this work when $\eta = \Theta(1)$.  Will make probabilities gross.  Probably not for submission.}
 \begin{lemma}
 \label{lem:sampling works}
-Let all the variables be as in \thref{thm:sampling}.
+Let all variables be as in \thref{thm:sampling}.
 There exists $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ and $\alpha' = \alpha\eta(\gamma-\beta-\eta)/\gamma = \omega(\log n)$ such that for each $i$,
 \[
 \Pr_{\lambda\leftarrow \Lambda}[\Hoo(V_i | \Lambda= \lambda) \geq \alpha'] \geq 1- \epsilon_{sam}.
@@ -700,7 +702,7 @@ Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works},  and all the
 
 
 Thus, unless the choice of $\lambda$ is very unlucky,
-\consref{cons:sampling} is \consref{cons:first construction} applied to $V_1,..., V_\ell$. This allows us to conclude the following.
+\consref{cons:sampling} is \consref{cons:first construction} applied to an unguessable block distribution $V_1,..., V_\ell$. This allows us to conclude the following.
 \begin{corollary}
 \label{cor:samp unguess}
 Let all the variables be as in \thref{thm:sampling}.
@@ -712,7 +714,7 @@ Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} notin
 
 \subsection{Correctness of \consref{cons:sampling}}
 \label{sec:correct sampling}
-The argument that $1\rightarrow 0$ flips from $c$ to $c'$ are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.   Recall that the code $C$ can correct up to $t'$ flips from $0$ to $1$. We now show that $C$ is up to the task with overwhelming probability, i.e., that  $\Pr_{(v, v')\leftarrow (V, V')}[v'\not\in\neigh_{t'}(v)] <\ngl(n)$.  The proof is in \apref{sec:sampling errors}.
+The argument that $1\rightarrow 0$ flips from $c$ to $c'$ are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.   Recall that the code $C$ corrects up to $t'$ flips from $0$ to $1$. We now show that $C$ is up to the task with overwhelming probability, i.e., that  $\Pr_{(v, v')\leftarrow (V, V')}[v'\not\in\neigh_{t'}(v)] <\ngl(n)$.  The proof is in \apref{sec:sampling errors}.
 
 
 \begin{lemma}
@@ -1036,10 +1038,29 @@ This is a contradiction and completes the proof of \lemref{lem:security of cons}
 \begin{proof}
 Consider some fixed $i$.
 Recall that there a set $\mathcal{I}$  of size $\gamma - \beta = \Theta(\gamma)$ such that each $w$ and  block $j\in \mathcal{I}$, $\Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, the entropy of $V_i$ can be deduced from the number of symbols in $V_i$ that come from $\cal{I}$. Namely, Denote by $X= |\{j_{i, 1},..., j_{i, \eta}\}\cap \mathcal{I}|$.
+
+\begin{claim}
 \[
 \Hoo(V_i |\lambda ) \geq \alpha X.
 \]
-\lnote{this needs a proof}
+\end{claim}
+\begin{proof}
+We begin by noting that $\Hoo(V_i |\Lambda = \lambda ) = -\log \max_{v\in V_i} \Pr[ V_i =v | \Lambda =\lambda]$.  Denote by $j_1,..., j_\eta$ the indices selected by the randomness $\lambda_i$.  Then 
+\begin{align*}
+\max_{v\in V_i}\Pr[V_i = v | \Lambda = \lambda ]&= \max_{w_{j_1},..., w_{j_\eta}} \Pr[ W_{j_1}=w_{j_1} \wedge \dots \wedge W_{j_\eta} = w_{j_\eta}]\\
+%&=\max_{w_{j_1},..., w_{j_\eta}} \Pr[W_{j_\eta} = w_{j_\eta} | W_{j_{\eta-1}} =w _{j_{\eta-1}} \wedge ... \wedge W_{j_1} =w_{j_1}]\\
+%&\times \Pr[W_{j_{\eta-1}} = w_{j_{\eta-1}} \wedge ... \wedge W_{j_1} = w_{j_1}]\\
+&= \max_{w_{j_1},..., w_{j_\eta}} \prod_{k=1}^\eta \Pr[W_{j_k} = w_{j_k} | W_{j_{k-1}} = w_{j_{k-1}} \wedge ... \wedge W_{j_1} = w_{j_1}]\\
+&\le \prod_{k=1}^\eta \max_{w_{j_1},..., w_{j_\eta}} \Pr[W_{j_k} = w_{j_k} | W_{j_{k-1}} = w_{j_{k-1}} \wedge ... \wedge W_{j_1} = w_{j_1}]\\
+&\le\prod_{k=1}^\eta \max_{w_1,..., w_\gamma} \Pr[W_{j_k} = w_{j_k} | W_1 = w_1 \wedge ... \wedge W_{{j_k}-1} = w_{{j_k}-1} ]\\
+\end{align*}
+Taking the negative logarithm of both sides we have that 
+\begin{align*}
+\Hoo(V_i | \Lambda = \lambda) &\ge \sum_{k=1}^\eta \min_{w_1,..., w_\gamma} \Hoo(W_{j_k} | W_1 = w_1 \wedge ... \wedge W_{{j_k}-1} = w_{{j_k}-1})\\
+&\ge \sum_{j_k\in \mathcal{I}} \alpha = \alpha X
+\end{align*}
+\end{proof}
+
 
 We note that $X$ is distributed according to the hypergeometric distribution,
 and that $\expe[X]=\eta(\gamma-\beta)/\gamma$. Using the tail bounds from~\cite{chvatal1979tail,scala2009hypergeometric}, we can conclude that $\Pr[X\le \expe[X]/2]\le e^{-2((\gamma-\beta)/2\gamma)^2 \eta}=O(e^{-\eta})$.
