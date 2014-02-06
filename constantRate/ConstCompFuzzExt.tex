@@ -1070,26 +1070,18 @@ This is a contradiction and completes the proof of \thref{thm:security of cons}.
 \label{sec:proof of sampling lemma}
 \begin{proof}
 Consider some fixed $i$.
-For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ \lnote{the definition is stronger and requires a single $\mathcal{I}$ for all $w$} of size $\gamma - \beta = \Theta(\gamma)$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, the entropy of $V_i$ can be deduced from the number of symbols in $V_i$ that come from $\cal{I}$. Namely, Denote by $X |\{j_{i, 1},..., j_{i, \eta}\}\cap \mathcal{I}|$.
+For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ \lnote{the definition is stronger and requires a single $\mathcal{I}$ for all $w$} of size $\gamma - \beta = \Theta(\gamma)$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, the entropy of $V_i$ can be deduced from the number of symbols in $V_i$ that come from $\cal{I}$. Namely, Denote by $X= |\{j_{i, 1},..., j_{i, \eta}\}\cap \mathcal{I}|$.
 \[
 \Hoo(V_i |\lambda ) \geq \alpha X.
 \]
 \lnote{this needs a proof}
 
-We now calculate $\expe[X]$. The ``first'' element $j_{i,1}$ lands in $\mathcal{I}$ with probability $(\gamma-\beta)/\gamma$.  For each subsequent index $j_{i,k}$ there are at least remaining $\gamma-\beta-k$ samples in $\mathcal{I}$, so $\Pr[j_k\in\mathcal{I}\,|\,j_{i,1}\dots j_{i,k-1}]>(\gamma-\beta-\eta)/\gamma$.  We can associate with each $j_k$ a Bernoulli random variable $X_k$ with success probability at least $(\gamma-\beta-\eta)/\gamma$ and note that 
-\[
-\expe[X] = \sum_{k=1}^\eta\expe[X_k] \geq \eta \expe[X_\eta]\geq \eta\frac{\gamma-\beta-\eta}{\gamma}.
-\]
-Using the Chernoff bound \lnote{Chernoff requires independence of $X_i$!}, $X$ rarely is far from its expected value:
-\[
-\Pr\left[ \frac{1}{\eta} \sum_{k=1}^\eta X_i \leq 1/2 \expe[X_i]\right]\leq 2e^{-\expe[X_i] \eta} = O(e^{-\eta})
-\]
-Where the last equality follows because 
-\[
-\expe[ X_i] = \frac{\gamma-\beta-\eta}{\gamma} \geq \frac{\Theta(\gamma) - \eta}{\gamma} = \frac{\Theta(\gamma) - o(\gamma)}{\gamma} = O(1).
-\]
-That is \[
-\Pr[\Hoo(V_i ) \geq \alpha \times \frac{\eta(\gamma-\beta-\eta)}{2\gamma} = \alpha'] \geq 1- O(e^{-\eta}).
+We note that $X$ is distributed according to the hypergeometric distribution,
+and that $\expe[X]=\eta(\gamma-\beta)/\gamma$. Using the tail bounds from~\cite{chvatal1979tail,skala2009hypergeometric}, we can conclude that $\Pr[X\le \expe[X]/2]\le e^{-2((\gamma-\beta)/2\gamma)^2 \eta}=O(e^{-\eta})$.
+
+Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$, we conclude that 
+ \[
+\Pr[\Hoo(V_i ) \geq \alpha'] \geq 1- O(e^{-\eta}).
 \]
 \end{proof}
 
