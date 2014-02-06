@@ -482,7 +482,7 @@ Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary inputs f
 Let $W$ be a $(s_{obf}, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{theorem}
 
-We give a brief outline of the proof here, the full proof is in \apref{app:security of main cons}.
+We give a brief outline of the proof here, the proof is in \apref{app:security of main cons}.
 It is sufficient to show that there exists a distribution $C'$ with conditional min-entropy and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))\le \ngl(n)$.  Let $\mathcal{I}$ be the set of indices that exists in \defref{def:block guessable}, the distribution $C'$ is defined as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $\mathcal{I}$.  We first note that $C'$ has sufficient entropy.  That is, $\Hav(C' |P) =\Hav(C' | C_{\mathcal{I}^c} = C'_{\mathcal{I}^c}) = |C| - |\mathcal{I}^c|$.  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P)) \le \ngl(n)$.
 %Define the distribution $X$ as follows:
 %\[X_i =
@@ -543,10 +543,9 @@ The probability of at least one $1\rightarrow 0$ bit flip~(an obfuscation of a r
 \end{lemma}
 \begin{proof}
 Recall that $c$ contains at most $\ell$ $1$s.  Since $w'$ is chosen independently of the points $r_i$, this probability is the size of each block, that is $\Pr[r_i =w_i']  = 1/2^n$. Since the $r_i$ are chosen independently, one has,
-\begin{align*}
-\Pr[\text{no $1\rightarrow 0$ flips}] &\geq 1-\Pr[\text{some }r_i = w_i']\\
-&\geq 1-\ell \frac{1}{2^n} = 1-\frac{\poly(n)}{2^n} = \ngl(n)
-\end{align*}
+\[
+\Pr[\text{no $1\rightarrow 0$ flips}] \geq 1-\Pr[\text{some }r_i = w_i']\geq 1-\sum_{i=1}^\ell \Pr[r_i = w_i'] \geq 1-\ell \frac{1}{2^n}.
+\]
 \end{proof}
 
 We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\rightarrow 1$ flip on index $i$ occurs when two conditions are met $w_i\neq w_i'$ and $c_i = 0$.  Since the first conditioned is only fulfilled at most $t$ times, we have the following lemma:
@@ -595,7 +594,7 @@ Security is a result of \thref{thm:security of cons}.  Correctness follows from 
 
 \subsection{Discussion}
 \label{sec:discussion}
-Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:sec of construction}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries~(meaning they have min-entropy).
+Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  As described in \secref{sec:sec of construction}, \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries.
 
 To show that $\Huse$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
 \begin{align*}
@@ -609,15 +608,15 @@ We consider what entropy is necessary for security.  The simplest type of ungues
 \[
 \Huse = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t n) + \log {\ell \choose t}\right).
 \]
-When $t =\Theta(\ell)$, then $\Huse<0$ and the output entropy is $|C| -\beta$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
-Thus, \consref{cons:first construction} achieves for security for unguessable block distributions with negative $\Huse$ when $t = \Theta(\ell)$.  %We achieve security when $\Huse<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
+When $t =\Theta(\ell)$ and the entropy of each block is $o(n)$, then $\Huse<0$ and the output entropy is $|C| -\beta$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
+%Thus, \consref{cons:first construction} achieves for security for unguessable block distributions with negative $\Huse$ when $t = \Theta(\ell)$.  %We achieve security when $\Huse<0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters.
 
 \textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks.  To compensate for this leakage, we need most blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
 
 \section{Sample-then-Obfuscate}
 \label{sec:sampling}
-\consref{cons:first construction} is a computational fuzzy extractor with $\Huse<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).  The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where most blocks are likely to contribute some entropy.
+\consref{cons:first construction} is a computational fuzzy extractor with $\Huse<0$.  In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).  The main advantage of this approach is reduces the required entropy in each block of the source.  Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between individually required entropy and supported error tolerance.  In ordering for sampling to work properly, we need a source where a constant fraction of blocks are likely to contribute some entropy.
 
 \begin{definition}
 \label{def:unordered source}
@@ -627,7 +626,7 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-unordered block s
 \]
 \end{definition}
 
-\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) where blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy.  However, we achieve security for significantly lower entropy levels than were needed for unguessable block distributions.
+\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) where blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy.  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.
 
 We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\}$.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample_{\gamma, \eta}$.
 \begin{construction}
@@ -677,45 +676,21 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated blocks symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is the use of a computational primitive~(obfuscation) allows us to sample multiple times and only argue that each $v_i$ has sufficient has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  Our construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers.  Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated blocks symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is the use of a computational primitive~(obfuscation) allows us to sample multiple times and only argue that each $v_i$ has individual entropy.  In the information-theoretic setting, it would be necessary to argue about the joint entropy of the obfuscated values.  Our construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers.  Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
 
 As before we show security and correctness of \consref{cons:sampling}.  For security, we argue that each of the $v_i$ is unguessable.  For correctness we show that the induced error rate in $v$ and $v'$ is a small constant~(with overwhelming probability) so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
-In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $V_i$ has super-logarithmic entropy on its own~(samplers will select ``enough'' of the good blocks of $W$ each time).  We can then argue that $V_1,..., V_\ell$ forms a block-unguessable distribution.  Then \consref{cons:sampling} is just the first construction applied to $V_1,.., V_\ell$ and security follows by \thref{thm:security of cons}.  We begin by showing that each $V_i$ is statistically close to a high entropy distribution.
+In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $V_i$ has super-logarithmic entropy on its own~(samplers will select ``enough'' of the good blocks of $W$ each time).  We can then argue that $V_1,..., V_\ell$ forms a block-unguessable distribution.  Then \consref{cons:sampling} is just the first construction applied to $V_1,.., V_\ell$ and security follows by \thref{thm:security of cons}.  We begin by showing that each $V_i$ is statistically close to a high entropy distribution~(proof in \apref{sec:proof of sampling lemma}).
 
 %\bnote{think about how to make this work when $\eta = \Theta(1)$.  Will make probabilities gross.  Probably not for submission.}
 \begin{lemma}
 \label{lem:sampling works}
 Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta\le \gamma(1- \Theta(1)))$-unordered block source and let $\eta = \omega(\log n) \le  o(\gamma)$.  Consider some fixed $i$, there exists $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ and $\alpha' = \alpha\eta(\gamma-\beta-\eta)/\gamma = \omega(\log n)$ such that 
 \[
-\Pr[\Hoo(V_i | \Lambda) \geq \alpha'] \geq 1- \epsilon_{sam}.
+\Pr_{\lambda\leftarrow \Lambda}[\Hoo(V_i | \Lambda= \lambda) \geq \alpha'] \geq 1- \epsilon_{sam}.
 \]
 \end{lemma}
-\begin{proof}
-Consider some fixed $i$.  Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda$ be some particular outcome.
-For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ of size $\gamma - \beta = \Theta(\gamma)$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee for all $\lambda$, 
-\[
-\Hoo(V_i |\lambda ) \geq \alpha \times |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|.
-\]
-
-Denote by $X = |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|$.  We now calculate $\expe[X]$.  Let $j_1,.., j_\eta$ be the elements selected by sampling algorithm.  The ``first'' element $j_1$ lands in $\mathcal{I}$ with probability $(\gamma-\beta)/\gamma$.  For each selected index $j_k$ there are least remaining $\gamma-\beta-k$ samples in $\mathcal{I}$, so $\Pr[j_k\in\mathcal{I}]>(\gamma-\beta-\eta)/\gamma$.  We can associate with each $j_k$ a Bernoulli random variable $X_k$ with success probability at least $(\gamma-\beta-\eta)/\gamma$ and note that 
-\[
-\expe[X] = \sum_{k=1}^\eta\expe[X_k] \geq \eta \expe[X_\eta]\geq \eta\frac{\gamma-\beta-\eta}{\gamma}.
-\]
-Using the Chernoff bound, $X$ rarely is far from its expected value:
-\[
-\Pr\left[ \frac{1}{\eta} \sum_{k=1}^\eta X_i \leq 1/2 \expe[X_i]\right]\leq 2e^{-\expe[X_i] \eta} = O(e^{-\eta})
-\]
-Where the last equality follows because 
-\[
-\expe[ X_i] = \frac{\gamma-\beta-\eta}{\gamma} \geq \frac{\Theta(\gamma) - \eta}{\gamma} = \frac{\Theta(\gamma) - o(\gamma)}{\gamma} = O(1).
-\]
-That is \[
-\Pr[\Hoo(V_i ) \geq \alpha \times \frac{\eta(\gamma-\beta-\eta)}{2\gamma} = \alpha'] \geq 1- O(e^{-\eta}).
-\]
-\end{proof}
-
 %
 %\begin{lemma}
 %
@@ -729,7 +704,7 @@ That is \[
 We can then argue that all $V_i$ simultaneously have individual entropy with good probability:
 \begin{corollary}
 \label{cor:samp sec}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1-\Theta(1)))$-unordered block source.  Let $\eta = \omega(\log n) = o(\gamma)$ and let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works}.  Then $\Pr[\exists i, \Hoo(V_i | \Lambda) \not \ge \alpha'] \leq 1-\ell\epsilon_{sam}$.
+Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1-\Theta(1)))$-unordered block source.  Let $\eta = \omega(\log n) = o(\gamma)$ and let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works}.  Then $\Pr_{\lambda\leftarrow \Lambda}[\exists i, \Hoo(V_i | \Lambda = \lambda) \not \ge \alpha'] \leq 1-\ell\epsilon_{sam}$.
 %[V_i(V, \Lambda)$ is $(\ell\epsilon_{sam})$-close to a distribution $(V', U_{\ell\times r_{sam}})$ where for $u\in U_{\ell\times r_{sam}}$ for all $i$, $\Hoo(V_i' | U_{\ell\times r_{sam}} =u)\geq \alpha'$.
 \end{corollary}
 \begin{proof}
@@ -755,30 +730,12 @@ Result of \corref{cor:v are unguessable} and \thref{thm:security of cons} noting
 
 \subsection{Correctness of \consref{cons:sampling}}
 \label{sec:correct sampling}
-The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.  We now show that there are few enough $0\rightarrow 1$ flips with overwhelming probability.  Let $t'$ be the capacity of $C$.  We show that $\Pr_{(v, v')\leftarrow (V, V')}[\dis(v, v')\ge t'] <\ngl(n)$.
+The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.  We now show that there are few enough $0\rightarrow 1$ flips with overwhelming probability.  Let $t'$ be the capacity of $C$.  We show $\Pr_{(v, v')\leftarrow (V, V')}[\dis(v, v')\ge t'] <\ngl(n)$.  The proof is in \apref{sec:sampling errors}.
 
 \begin{lemma}
+\label{lem:sampling errors}
 Let $n, W$ be as above and Let $C$ be a code that corrects $t'$ $0\rightarrow 1$ bit errors where $t' =\Theta(\ell)$.  Let $\mu = -\log(1-t'/(2\ell))/2 = \Theta(1)$, if $t \leq \mu(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\ell})$ where the probability is over the coins of $\gen$.  %That is, for any $t\leq \mu(\gamma-\eta)/\eta$, \consref{cons:sampling} is correct with overwhelming probability.
 \end{lemma}
-
-\begin{proof}
-Let $t$ be as stated in the lemma.
-We first consider calculate $\expe[\dis(V, V')]$ and then show that the distance between $v$ and $v'$ is rarely much more than this value.
-Let $\mu = -\log(1-t'/(2\ell))/2$ then one has:
-\begin{align*}
-\expe \Pr[v_i = v_i'] &=\Pr[j_{i,1},..., j_{i,\eta}\text{ have no errors}]\\
-&\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu(\gamma-\eta)/\eta}{\gamma-i}\right)\\
-&\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\right) \\
-&\geq \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \frac{1}{4}^\mu\\
-& = \left(\frac{1}{4}\right)^{-\log(1-\frac{t'}{2\ell})/2} = 1-\frac{t'}{2\ell}
-\end{align*}
-
-With each $i$ we can associate a Bernoulli random variable $X_i \overset{def}= V_i \overset{?}\neq V_i'$.  As stated above, we have that $\expe[X_i] \leq  t'/(2\ell)$. By the Chernoff bound, we have
-\begin{align*}
-\Pr\left[\frac{1}{\ell} \sum_{i=1}^\ell X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\ell} = O(e^{- \ell}).
-\end{align*}
-Where the last equality holds because $t'/(2\ell) = \Theta(1)$.
-\end{proof}
 
 \begin{corollary}
 Let $\eta= \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$ let $C\subset\zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$ for $t' = \Theta(\ell)$ and $\delta_{code} = \ngl(n)$.  Then when
@@ -1099,6 +1056,56 @@ Combining Equations~\ref{eq:dist before} and~\ref{eq:dist after} and \lemref{lem
 \end{align*}
 This is a contradiction and completes the proof of \thref{thm:security of cons}.
 \end{proof}
+
+\section{Proof of \lemref{lem:sampling works}}
+\label{sec:proof of sampling lemma}
+\begin{proof}
+Consider some fixed $i$.  Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda$ be some particular outcome.
+For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ of size $\gamma - \beta = \Theta(\gamma)$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee for all $\lambda$, 
+\[
+\Hoo(V_i |\lambda ) \geq \alpha \times |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|.
+\]
+
+Denote by $X = |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|$.  We now calculate $\expe[X]$.  Let $j_1,.., j_\eta$ be the elements selected by sampling algorithm.  The ``first'' element $j_1$ lands in $\mathcal{I}$ with probability $(\gamma-\beta)/\gamma$.  For each selected index $j_k$ there are least remaining $\gamma-\beta-k$ samples in $\mathcal{I}$, so $\Pr[j_k\in\mathcal{I}]>(\gamma-\beta-\eta)/\gamma$.  We can associate with each $j_k$ a Bernoulli random variable $X_k$ with success probability at least $(\gamma-\beta-\eta)/\gamma$ and note that 
+\[
+\expe[X] = \sum_{k=1}^\eta\expe[X_k] \geq \eta \expe[X_\eta]\geq \eta\frac{\gamma-\beta-\eta}{\gamma}.
+\]
+Using the Chernoff bound, $X$ rarely is far from its expected value:
+\[
+\Pr\left[ \frac{1}{\eta} \sum_{k=1}^\eta X_i \leq 1/2 \expe[X_i]\right]\leq 2e^{-\expe[X_i] \eta} = O(e^{-\eta})
+\]
+Where the last equality follows because 
+\[
+\expe[ X_i] = \frac{\gamma-\beta-\eta}{\gamma} \geq \frac{\Theta(\gamma) - \eta}{\gamma} = \frac{\Theta(\gamma) - o(\gamma)}{\gamma} = O(1).
+\]
+That is \[
+\Pr[\Hoo(V_i ) \geq \alpha \times \frac{\eta(\gamma-\beta-\eta)}{2\gamma} = \alpha'] \geq 1- O(e^{-\eta}).
+\]
+\end{proof}
+
+\section{Proof of \lemref{lem:sampling errors}}
+\label{sec:sampling errors}
+
+\begin{proof}
+Let $t$ be as stated in the lemma.
+We first consider calculate $\expe[\dis(V, V')]$ and then show that the distance between $v$ and $v'$ is rarely much more than this value.
+Let $\mu = -\log(1-t'/(2\ell))/2$ then one has:
+\begin{align*}
+\expe \Pr[v_i = v_i'] &=\Pr[j_{i,1},..., j_{i,\eta}\text{ have no errors}]\\
+&\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu(\gamma-\eta)/\eta}{\gamma-i}\right)\\
+&\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\right) \\
+&\geq \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \frac{1}{4}^\mu\\
+& = \left(\frac{1}{4}\right)^{-\log(1-\frac{t'}{2\ell})/2} = 1-\frac{t'}{2\ell}
+\end{align*}
+
+With each $i$ we can associate a Bernoulli random variable $X_i \overset{def}= V_i \overset{?}\neq V_i'$.  As stated above, we have that $\expe[X_i] \leq  t'/(2\ell)$. By the Chernoff bound, we have
+\begin{align*}
+\Pr\left[\frac{1}{\ell} \sum_{i=1}^\ell X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\ell} = O(e^{- \ell}).
+\end{align*}
+Where the last equality holds because $t'/(2\ell) = \Theta(1)$.
+\end{proof}
+
+
 
 
 \end{document} 
