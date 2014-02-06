@@ -270,7 +270,7 @@ In the computational setting, a key may be expanded once it is long enough to se
 
 Fuller, Meng, and Reyzin show that replacing an information-theoretic information-reconciliation component with a computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, the authors suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent high-entropy secret instead of recovering $w$.  This is known as a fuzzy conductor~(the entropy is ``conducted'' from $w$ to a new distribution) and was introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.  Here, we follow the second approach and use a \emph{computational} fuzzy conductor.  We present two constructions of computational fuzzy conductors for different types of source distributions $W$.  These constructions may be converted to computational fuzzy extractors using information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).
 
-Both of constructions are based on the obfuscation of point programs.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.  Obfuscation for this class of functions is achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.
+Both of constructions are based on the obfuscation of point programs.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.  Obfuscation for this class of functions is achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  We need a strong version of point obfuscation secure under composition, this is achievable under a particular number-theoretic assumption~\cite{bitansky2010strong}.  Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  
 
 
 
@@ -362,7 +362,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$ there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
-The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $\Huse<0$ this is necessary for any meaningful security~(see \apref{sec:minimal conditions}).
+The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  With $\Huse<0$ some restriction is necessary for any meaningful security~(see \apref{sec:minimal conditions}).  Instead of restricting the class of source distributions~(for which security is achieved), the definition could restrict the error model to errors that are ``likely'' to occur in the source.  We leave this as an open problem.
 
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.
 In \apref{sec:conductors}, we show that fuzzy conductors are subject to the same lower bounds on entropy loss as fuzzy extractors.  To overcome these bounds, we use a computational version of a fuzzy conductor.
@@ -406,7 +406,7 @@ Then $(\gen, \rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational f
 \end{lemma}
 
 
-\section{A Constant Error-Tolerance Computational Fuzzy Extractor}
+\section{A Computational Fuzzy Extractor when $\Huse<0$}
 \label{sec:construction}
 For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys for a large class of sources where $0>\Huse = \Hoo(W) - \log|B_t|$.
 In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  We focus on building a computational fuzzy conductor with meaningful output entropy.  Our first construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
@@ -468,14 +468,14 @@ Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that returns \[\mathcal{O}_{w_1
 0 & \text{otherwise}.
 \end{cases}
 \]
-A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} \lnote{is it ''block unguessable'' or ''unguessable block''? the usage is inconsistent}if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries
 \[
 \forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
 \end{definition}
 
 %\noindent We argue security assuming that the adversary knows the value of all blocks outside of $\mathcal{I}$.
-We discuss  block unguessable distributions in \apref{sec:characterize}.  \consref{cons:first construction} is secure for block unguessable distributions:
+We discuss unguessable block distributions in \apref{sec:characterize}.  \consref{cons:first construction} is secure for unguessable block distributions:
 \begin{theorem}
 \label{thm:security of cons}
 Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\mathcal{Z}$. 
@@ -575,7 +575,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/2
 %\bnote{This analysis is done assuming that the two sets are the same size.  Need to worry about variation in the number of $1$s and $0$s in $c$.  Need to show that for most codes (linear?) the variance in Hamming weight is small.}
 %\textbf{Note:} If $t = O(\log n)$ the only error tolerance for $C$ that results in decoding with overwhelming probability is $t$.  However, in most use cases, we expect $t=\omega(\log n)$.
 
-Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correct for block unguessable distributions:
+Together, with the arguments in \secref{sec:sec of construction} we have the construction is secure and correct for unguessable block distributions:
 \begin{theorem}
 Let $\mathcal{W}$ be the family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable distributions over $\mathcal{Z}^\ell$ for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/2^n$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
 \end{theorem}
@@ -605,7 +605,7 @@ To show that $\Huse$ can be negative for \consref{cons:first construction}, we f
 % \log (2^n)^{H_{2^n}(t/\ell)\ell - o(\ell)} =n( H_{2^n}(t/\ell)\ell -o(\ell) )
 \end{align*}
 
-We consider what entropy is necessary for security.  The simplest type of block unguessable distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \ell\omega(\log n)$.  This yields:
+We consider what entropy is necessary for security.  The simplest type of unguessable block distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \ell\omega(\log n)$.  This yields:
 \[
 \Huse = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t n) + \log {\ell \choose t}\right).
 \]
@@ -627,7 +627,7 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-unordered block s
 \]
 \end{definition}
 
-\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) where blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy.  However, we achieve security for significantly lower entropy levels than were needed for block unguessable distributions.
+\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) where blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy.  However, we achieve security for significantly lower entropy levels than were needed for unguessable block distributions.
 
 We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\}$.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample_{\gamma, \eta}$.
 \begin{construction}
@@ -684,27 +684,26 @@ As before we show security and correctness of \consref{cons:sampling}.  For secu
 \subsection{Security of \consref{cons:sampling}}
 In order to show security \consref{cons:sampling}, we show that with overwhelming probability each of the selected $V_i$ has super-logarithmic entropy on its own~(samplers will select ``enough'' of the good blocks of $W$ each time).  We can then argue that $V_1,..., V_\ell$ forms a block-unguessable distribution.  Then \consref{cons:sampling} is just the first construction applied to $V_1,.., V_\ell$ and security follows by \thref{thm:security of cons}.  We begin by showing that each $V_i$ is statistically close to a high entropy distribution.
 
-\bnote{think about how to make this work when $\eta = \Theta(1)$.  Will make probabilities gross.  Probably not for submission.}
+%\bnote{think about how to make this work when $\eta = \Theta(1)$.  Will make probabilities gross.  Probably not for submission.}
 \begin{lemma}
 \label{lem:sampling works}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta\le \gamma(1- \Theta(1)))$-unordered block source and let $\eta = \omega(\log n) \le  o(\gamma)$.  Consider some fixed $i$, there exists a value $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ such that 
+Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta\le \gamma(1- \Theta(1)))$-unordered block source and let $\eta = \omega(\log n) \le  o(\gamma)$.  Consider some fixed $i$, there exists $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ and $\alpha' = \alpha\eta(\gamma-\beta-\eta)/\gamma = \omega(\log n)$ such that 
 \[
-\Pr[\Hoo(V_i | \Lambda) \geq  \omega(\log n) = \alpha'] \geq 1- O(e^{-\eta}).
+\Pr[\Hoo(V_i | \Lambda) \geq \alpha'] \geq 1- \epsilon_{sam}.
 \]
 \end{lemma}
 \begin{proof}
-Consider some fixed $i$.  
-For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ of size $\gamma - \beta = \gamma(1/2+\Theta(1))$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, 
+Consider some fixed $i$.  Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda$ be some particular outcome.
+For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ of size $\gamma - \beta = \Theta(\gamma)$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee for all $\lambda$, 
 \[
-\Hoo(V_i |\Lambda ) \geq \alpha \times |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|.
+\Hoo(V_i |\lambda ) \geq \alpha \times |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|.
 \]
 
-Denote by $X = |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|$.  We now calculate $\expe[X]$.  Let $j_1,.., j_\eta$ be the elements selected by sampling algorithm.  Note that the first element $j_1\in\mathcal{I}$ with probability $(\gamma-\beta)/\gamma$.  Consider some choice $j_k$ there are least $\gamma-\beta-k$ samples in $\mathcal{I}$ remaining, so it the $\Pr[j_k\in\mathcal{I}]>(\gamma-\beta-\eta)/\gamma$.  We can associate with each $j_k$ a Bernoulli random variable $X_i$ with success probability $(\gamma-\beta-\eta)/\gamma$ and note that 
+Denote by $X = |\{\text{indices in }\mathcal{I}\text{ sampled in }V_i\}|$.  We now calculate $\expe[X]$.  Let $j_1,.., j_\eta$ be the elements selected by sampling algorithm.  The ``first'' element $j_1$ lands in $\mathcal{I}$ with probability $(\gamma-\beta)/\gamma$.  For each selected index $j_k$ there are least remaining $\gamma-\beta-k$ samples in $\mathcal{I}$, so $\Pr[j_k\in\mathcal{I}]>(\gamma-\beta-\eta)/\gamma$.  We can associate with each $j_k$ a Bernoulli random variable $X_k$ with success probability at least $(\gamma-\beta-\eta)/\gamma$ and note that 
 \[
-\expe[X] \geq \eta \expe[X_i] \geq \eta\frac{\gamma-\beta-\eta}{\gamma}.
+\expe[X] = \sum_{k=1}^\eta\expe[X_k] \geq \eta \expe[X_\eta]\geq \eta\frac{\gamma-\beta-\eta}{\gamma}.
 \]
-
-Using the Chernoff bound the probability that $X$ is rarely far from its expected value:
+Using the Chernoff bound, $X$ rarely is far from its expected value:
 \[
 \Pr\left[ \frac{1}{\eta} \sum_{k=1}^\eta X_i \leq 1/2 \expe[X_i]\right]\leq 2e^{-\expe[X_i] \eta} = O(e^{-\eta})
 \]
@@ -712,7 +711,9 @@ Where the last equality follows because
 \[
 \expe[ X_i] = \frac{\gamma-\beta-\eta}{\gamma} \geq \frac{\Theta(\gamma) - \eta}{\gamma} = \frac{\Theta(\gamma) - o(\gamma)}{\gamma} = O(1).
 \]
-That is $\Pr[\Hoo(V_i ) \geq \alpha \times \frac{\eta(\gamma-\beta-\eta)}{2\gamma} = \omega(\log n)] \geq 1- O(e^{-\eta})$.
+That is \[
+\Pr[\Hoo(V_i ) \geq \alpha \times \frac{\eta(\gamma-\beta-\eta)}{2\gamma} = \alpha'] \geq 1- O(e^{-\eta}).
+\]
 \end{proof}
 
 %
@@ -736,14 +737,14 @@ Union bound over the probability in \lemref{lem:sampling works}.
 %Hybrid argument over the statistical distance in \lemref{lem:sampling works}.
 \end{proof}
 
-In the \apref{sec:characterize} we show that any distribution where each individually block has super-logarithmic min-entropy forms a block unguessable distribution~\clref{cl:all blocks entropy}.  This allows us to conclude:
+In the \apref{sec:characterize} we show that any distribution where each individually block has super-logarithmic min-entropy forms a unguessable block distribution~\clref{cl:all blocks entropy}.  This allows us to conclude:
 \begin{corollary}
 \label{cor:v are unguessable}
 Let $W, V, \Lambda$ be as in \corref{cor:samp sec}.
-Let $q = \poly(n)$, there exists some $\alpha'' = \omega(\log n)$ such that distribution $V , \Lambda$ is $\ell \epsilon_{sam}$ statistically close to a $(q, \alpha'', 0)$-block unguessable distribution.
+Let $q = \poly(n)$, for $\alpha'' =\alpha'-1-\log (q+1) =  \omega(\log n)$ the distribution $V , \Lambda$ is $\ell \epsilon_{sam}$ statistically close to a $(q, \alpha'', 0)$-unguessable block distribution.
 \end{corollary}
 
-Finally, since $V_1,..., V_\ell$ is statistically close~(conditioned on the randomness of $\sample$) to a block unguessable distribution, \consref{cons:sampling} is just \consref{cons:first construction} applied to $V_1,..., V_\ell$.
+Finally, since $V_1,..., V_\ell$ is statistically close~(conditioned on the randomness of $\sample$) to a unguessable block distribution, \consref{cons:sampling} is \consref{cons:first construction} applied to $V_1,..., V_\ell$.
 \begin{corollary}
 \label{cor:samp unguess}
 Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} and let $\mathcal{O}$ is an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\zo^{\beta\times \log |\mathcal{Z}|}$, then for every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq |C|$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
@@ -903,7 +904,7 @@ The majority of the difficulty in characterizing \defref{def:block guessable} is
 
 \begin{claim}
 \label{cl:independent high ent}
-Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_i$  are mutually independent.  Let $\alpha$ be a parameter.  Let $\mathcal{I}\subset \{1,..., \ell\}$ be a set of indices such that for all $i\in\mathcal{I}$, $\Hoo(W_i ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-block unguessable distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-block unguessable distribution.
+Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_i$  are mutually independent.  Let $\alpha$ be a parameter.  Let $\mathcal{I}\subset \{1,..., \ell\}$ be a set of indices such that for all $i\in\mathcal{I}$, $\Hoo(W_i ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-unguessable block distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
 It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
@@ -920,7 +921,7 @@ However, \defref{def:block guessable} captures more distributions.  We now consi
 
 \begin{claim}
 \label{cl:each block from single seed}
-Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to its $i$th coordinate.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-block unguessable distribution.
+Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to its $i$th coordinate.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
 Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
@@ -934,7 +935,7 @@ We can prove a slightly weaker claim when the correlation between the coordinate
 
 \begin{claim}
 \label{cl:all blocks entropy}
-Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $i$, $\Hoo(W_i)\geq \alpha$, and that $q 2^{-\alpha}\leq1/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is superlogarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-block unguessable distribution.
+Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $i$, $\Hoo(W_i)\geq \alpha$, and that $q 2^{-\alpha}\leq1/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is superlogarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
 \end{claim}
 
 \begin{proof}
