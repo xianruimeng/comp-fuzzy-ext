@@ -586,7 +586,7 @@ We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
-Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $\ell$ be such that $\ell = O(\poly(n))$ and $\ell = \omega(\log n)$ and let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.   Let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta = o(\gamma)$ and let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $ \mathcal{Z}^\eta$.  Define $\gen, \rep$ as:
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$ and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$. Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator with auxiliary input for the family of point functions over $ \mathcal{Z}^\eta$.  Define $\gen, \rep$ as:
 
 \begin{center}
 \begin{tabular}{c|c}
@@ -634,9 +634,27 @@ Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source wh
 
 The main change in \consref{cons:sampling} is that the obfuscated values are concatenated blocks symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we need to argue each $v_i$ has only individual entropy, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of $v_i$s. 
 
-Our construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
+This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers~\cite{goldreich1997sample}.
 
-We now show security and correctness of \consref{cons:sampling}.  For security, we argue that each of the $v_i$ values is unguessable.  For correctness we show that the induced error rate in $v$ and $v'$ is a small constant~(with overwhelming probability), so that $c'$ will be corrected to $c$ with overwhelming probability.
+
+We now show security and correctness of \consref{cons:sampling}. 
+
+\begin{theorem}
+\label{thm:sampling}
+Let $n$ be a security parameter.
+Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.   Let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta = o(\gamma)$,  and $\ell$ be such that $\ell = O(\poly(n))$ and
+$\ell = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
+\begin{align*}
+t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
+\tilde{m} &=|C|\\
+\delta &= O(\ell/|\mathcal{Z}|+2^{-\ell} +\delta_{code}).
+\end{align*}
+\end{theorem}
+
+
+The next two sections are dedicated to proving this theorem.
+
+ For security we argue that each of the $v_i$ values is unguessable.  For correctness we show that the induced error rate in $v$ and $v'$ is a small constant~(with overwhelming probability), so that $c'$ will be corrected to $c$ with overwhelming probability.
 
 \subsection{Security of \consref{cons:sampling}}
 In order to show security \consref{cons:sampling}, we 
@@ -646,7 +664,8 @@ be some particular outcome.
 %\bnote{think about how to make this work when $\eta = \Theta(1)$.  Will make probabilities gross.  Probably not for submission.}
 \begin{lemma}
 \label{lem:sampling works}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta\le \gamma(1- \Theta(1)))$-unordered block source and let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta =  o(\gamma)$.  There exists $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ and $\alpha' = \alpha\eta(\gamma-\beta-\eta)/\gamma = \omega(\log n)$ such that for each $i$,
+Let all the variables be as in \thref{thm:sampling}.
+There exists $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ and $\alpha' = \alpha\eta(\gamma-\beta-\eta)/\gamma = \omega(\log n)$ such that for each $i$,
 \[
 \Pr_{\lambda\leftarrow \Lambda}[\Hoo(V_i | \Lambda= \lambda) \geq \alpha'] \geq 1- \epsilon_{sam}.
 \]
@@ -664,7 +683,7 @@ Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta\le \gamma(1- \Theta
 We can then argue that all $V_i$ simultaneously have individual entropy with good probability:
 \begin{corollary}
 \label{cor:samp sec}
-Let $W = W_1,..., W_\gamma$ be a $(\alpha = \Omega(1), \beta \leq \gamma(1-\Theta(1)))$-unordered block source.  Let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta =  o(\gamma)$. Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works}.  Then $\Pr_{\lambda\leftarrow \Lambda}[\forall i, \Hoo(V_i | \Lambda = \lambda)  \ge \alpha'] \leq 1-\ell\epsilon_{sam}$.
+ Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works}, and all the other variables be as in \thref{thm:sampling}.  Then $\Pr_{\lambda\leftarrow \Lambda}[\forall i, \Hoo(V_i | \Lambda = \lambda)  \ge \alpha'] \leq 1-\ell\epsilon_{sam}$.
 %[V_i(V, \Lambda)$ is $(\ell\epsilon_{sam})$-close to a distribution $(V', U_{\ell\times r_{sam}})$ where for $u\in U_{\ell\times r_{sam}}$ for all $i$, $\Hoo(V_i' | U_{\ell\times r_{sam}} =u)\geq \alpha'$.
 \end{corollary}
 \begin{proof}
@@ -675,14 +694,16 @@ Union bound over the probability in \lemref{lem:sampling works}.
 In ~\clref{cl:all blocks entropy} we show that any distribution where each individual block has super-logarithmic min-entropy forms a unguessable block distribution.  This allows us to conclude:
 \begin{corollary}
 \label{cor:v are unguessable}
-Let $W, V, \Lambda$ be as in \corref{cor:samp sec}, and
-let $q = \poly(n)$.  For $\alpha'' =\alpha'-1-\log (q+1) =  \omega(\log n)$ the distribution $V , \Lambda$ is $\ell \epsilon_{sam}$ statistically close to a $(q, \alpha'', 0)$-unguessable block distribution.
+Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works},  and all the other variables be as in \thref{thm:sampling}. Take any $q=\poly(n)$.  For $\alpha'' =\alpha'-1-\log (q+1) =  \omega(\log n)$, with  probability $1-\ell \epsilon_{sam}$ over the choice of $\Lambda=\lambda$, the distribution $V| \Lambda=\lambda$ is a $(q, \alpha'', 0)$-unguessable block distribution.
 \end{corollary}
 
-Finally, since $V_1,..., V_\ell$ is statistically close~(conditioned on the randomness of $\sample$) to a unguessable block distribution, \consref{cons:sampling} is \consref{cons:first construction} applied to $V_1,..., V_\ell$.
+
+Thus, unless the choice of $\lambda$ is very unlucky,
+\consref{cons:sampling} is \consref{cons:first construction} applied to $V_1,..., V_\ell$. This allows us to conclude the following.
 \begin{corollary}
 \label{cor:samp unguess}
-Let $n, \mathcal{Z}, W, \epsilon_{sam}$ be as in \corref{cor:samp sec} \lnote{why as in \corref{cor:samp sec} and not in the construction?} and let $\mathcal{O}$ is an $\ell$-composable VGB obfuscator with auxiliary inputs for point programs over $\mathcal{Z}^\eta$, then for every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq |C|$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
+Let all the variables be as in \thref{thm:sampling}.
+For every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq |C|$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
 Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
@@ -690,36 +711,27 @@ Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} notin
 
 \subsection{Correctness of \consref{cons:sampling}}
 \label{sec:correct sampling}
-The argument that $1\rightarrow 0$ flips are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.  We now show that there are few enough $0\rightarrow 1$ flips with overwhelming probability.  Let $t'$ be the capacity of $C$.  We show $\Pr_{(v, v')\leftarrow (V, V')}[\dis(v, v')\ge t'] <\ngl(n)$.  The proof is in \apref{sec:sampling errors}.
+The argument that $1\rightarrow 0$ flips from $c$ to $c'$ are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.   Recall that the code $C$ can correct up to $t'$ flips from $0$ to $1$. We now show that $C$ is up to the task with overwhelming probability, i.e., that  $\Pr_{(v, v')\leftarrow (V, V')}[v'\not\in\neigh_{t'}(v)] <\ngl(n)$.  The proof is in \apref{sec:sampling errors}.
+
 
 \begin{lemma}
 \label{lem:sampling errors}
-Let $n, W$ be as above and Let $C$ be a code that corrects $t'$ $0\rightarrow 1$ bit errors where $t' =\Theta(\ell)$.  Let $\mu = -\log(1-t'/(2\ell))/2 = \Theta(1)$, if $t \leq \mu(\gamma - \eta)/\eta$, then $\Pr[\dis(v, v')\leq t']\geq 1-O(2^{-\ell})$ where the probability is over the coins of $\gen$.  %That is, for any $t\leq \mu(\gamma-\eta)/\eta$, \consref{cons:sampling} is correct with overwhelming probability.
+Let all the variables be as in \thref{thm:sampling}.
+ Then $\Pr[v'\in\neigh_{t'}(v]\geq 1-O(2^{-\ell})$, where the probability is over the coins of $\gen$.  %That is, for any $t\leq \mu(\gamma-\eta)/\eta$, \consref{cons:sampling} is correct with overwhelming probability.
 \end{lemma}
 
 \begin{corollary}
-Let $\eta= \omega(\log n)$ and $\ell = O(\poly(n)) = \omega(\log n)$ let $C\subset\zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$ for $t' = \Theta(\ell)$ and $\delta_{code} = \ngl(n)$.  Then when
+Let all the variables be as in \thref{thm:sampling}.
+When
 \[
-\dis(w, w')\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = \Theta(\frac{\gamma-\eta}{\eta}) = \Theta(\gamma/\eta)
+\dis(w, w')\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = \Theta(\gamma/\eta)
 \]
-and $(R, P)\leftarrow \gen(w)$, then
+and $(c, p)\leftarrow \gen(w)$, then
 \[
-\Pr[\rep( w', P) = R] \geq 1-\frac{\ell}{|\mathcal{Z}|^\eta} - O(2^{-\ell}) -\delta_{code}= 1-\ngl(n).
+\Pr[\rep(w', p) = c] \geq 1-\frac{\ell}{|\mathcal{Z}|^\eta} - O(2^{-\ell}) -\delta_{code}= 1-\ngl(n).
 \]
 That is, \consref{cons:sampling} is correct with overwhelming probability.
-
 \end{corollary}
-
-Combining the last two sections, we have that \consref{cons:sampling} is secure and correct:
-\begin{theorem}
-Let $n$ be a security parameter.
-Let $\mathcal{W}$ be the family of $(\alpha = \omega(1), \beta\leq \gamma(1/2-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.  Let $\eta = \omega(\log n) = o(\gamma)$ and $\ell = O(\poly(n)) = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
-\begin{align*}
-t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
-\tilde{m} &=|C|\\
-\delta &= O(\ell/|\mathcal{Z}|+2^{-\ell} +\delta_{code}).
-\end{align*}
-\end{theorem}
 
 \subsection{Discussion of \consref{cons:sampling}}
 We now show \consref{cons:sampling} can work for unordered block sources when $\Huse<0$.  The required entropy of  an unordered block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
@@ -1041,14 +1053,15 @@ Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$, we conclude t
 \label{sec:sampling errors}
 
 \begin{proof}
-Let $t$ be as stated in the lemma.
-We first consider calculate $\expe[\dis(V, V')]$ and then show that the distance between $v$ and $v'$ is rarely much more than this value.
-Let $\mu = -\log(1-t'/(2\ell))/2$ then one has:
+Define $\mu = -\log(1-t'/(2\ell))/2 = \Theta(1)$ and note that $t \leq \mu(\gamma - \eta)/\eta$.
+Let
+the Bernoulli random variable $X_i=1$ if and only if $v_i \neq v_i'$, and $X=\sum_{i=1}^{\ell} X_i$. We need to show that $\Pr[X>t']=O(2^{-\ell})$.
+
 \begin{align*}
-\expe \Pr[v_i = v_i'] &=\Pr[j_{i,1},..., j_{i,\eta}\text{ have no errors}]\\
-&\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu(\gamma-\eta)/\eta}{\gamma-i}\right)\\
+\expe [1-X_i] &=\Pr[w \text{ and } w' \text{ agree on positions } {j_{i,1}},..., j_{i,\eta}]\\
+&\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu(\gamma-\eta)/\eta}{\gamma-j}\right)\\
 &\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\right) \\
-&\geq \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \frac{1}{4}^\mu\\
+&= \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \frac{1}{4}^\mu\\
 & = \left(\frac{1}{4}\right)^{-\log(1-\frac{t'}{2\ell})/2} = 1-\frac{t'}{2\ell}
 \end{align*}
 
