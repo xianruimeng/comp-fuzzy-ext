@@ -253,6 +253,7 @@ Our constructions are inspired by the construction of digital lockers from point
 
 
 \section{Introduction}\label{sec:introduction}
+\lnote{What I want to do with this: make it clear that we are not the crazy obfuscation types, but are using something practically achievable; perhaps mention RO; perhaps compare with Dodis' RO analysis (was that for robustness only?); explain that we have two points on an entropy/error tolerance tradeoff; explain how switching to computational makes our construction possible and, in general, why our construction is cool. Section titles for 4 and 5!}
 Reliable key derivation is a cornerstone of authentication.  However, many sources with sufficient entropy for key derivation are noisy and provide similar but not identical values when the source is read multiple times~(examples include biometrics~\cite{daugman2004} and physically unclonable functions~\cite{pappu2002physical}). \bnote{add more examples here} To use noisy physical sources in applications, two problems must be addressed.  The first is ensuring the same value is obtained from every reading of the source.  This must be done in a way that does not eliminate all the entropy from the output~(known as information-reconciliation~\cite{bennett1988privacy}).  The second is converting the entropic source to a uniform random key~(privacy amplification~\cite{bennett1988privacy}).  Both of these problems have interactive and non-interactive versions.  For a single user trying to produce the same key from multiple readings of a physical source non-interactive solutions are needed.  We focus on this setting.  %If both of these tasks are achieved a noisy physical source can be used like a uniformly random private key.
 
 Fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08} perform both tasks non-interactively.  They consist of a pair of algorithms: \gen takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.  Traditionally, a secure sketch~\cite{DBLP:journals/siamcomp/DodisORS08} performs information-reconciliation and a randomness extractor~\cite{nisan1993randomness} performs privacy amplification.
@@ -582,7 +583,7 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-unordered block s
 \defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), in which blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy. \lnote{this comparison is unclear to me}  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.
 
 We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\}$.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample_{\gamma, \eta}$.
-\lnote{I am not sure spelling out all the parameters in the construction is the right thing to do -- perhaps in the theorem statement is better?} \lnote{we should make a clean statement about what this is a construction of (conductor, not extractor); the parameter should all go there, and not be repeated throughout all the claims}
+
 \begin{construction}
 \label{cons:sampling}
 Let $n$ be a security parameter.
@@ -1034,7 +1035,7 @@ This is a contradiction and completes the proof of \lemref{lem:security of cons}
 \label{sec:proof of sampling lemma}
 \begin{proof}
 Consider some fixed $i$.
-For each particular value of $w_1,..., w_\gamma$ there exists some set $\mathcal{I}$ \lnote{the definition is stronger and requires a single $\mathcal{I}$ for all $w$} of size $\gamma - \beta = \Theta(\gamma)$ such that each block $j\in \mathcal{I}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, the entropy of $V_i$ can be deduced from the number of symbols in $V_i$ that come from $\cal{I}$. Namely, Denote by $X= |\{j_{i, 1},..., j_{i, \eta}\}\cap \mathcal{I}|$.
+Recall that there a set $\mathcal{I}$  of size $\gamma - \beta = \Theta(\gamma)$ such that each $w$ and  block $j\in \mathcal{I}$, $\Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, the entropy of $V_i$ can be deduced from the number of symbols in $V_i$ that come from $\cal{I}$. Namely, Denote by $X= |\{j_{i, 1},..., j_{i, \eta}\}\cap \mathcal{I}|$.
 \[
 \Hoo(V_i |\lambda ) \geq \alpha X.
 \]
@@ -1053,7 +1054,8 @@ Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$, we conclude t
 \label{sec:sampling errors}
 
 \begin{proof}
-Define $\mu = -\log(1-t'/(2\ell))/2 = \Theta(1)$ and note that $t \leq \mu(\gamma - \eta)/\eta$.
+Define $\mu = -\frac{1}{2}\log(1-t'/(2\ell)) = \Theta(1)$ and note that $t \leq \mu(\gamma - \eta)/\eta$. Since $\eta = \omega(\log n)$, we will assume
+$\eta\ge 2\mu$.
 Let
 the Bernoulli random variable $X_i=1$ if and only if $v_i \neq v_i'$, and $X=\sum_{i=1}^{\ell} X_i$. We need to show that $\Pr[X>t']=O(2^{-\ell})$.
 
@@ -1061,15 +1063,16 @@ the Bernoulli random variable $X_i=1$ if and only if $v_i \neq v_i'$, and $X=\su
 \expe [1-X_i] &=\Pr[w \text{ and } w' \text{ agree on positions } {j_{i,1}},..., j_{i,\eta}]\\
 &\geq \prod_{j=0}^{\eta-1}\left(1 - \frac{t}{\gamma-j}\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu(\gamma-\eta)/\eta}{\gamma-j}\right)\\
 &\geq  \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\left(\frac{\gamma-\eta}{\gamma-j}\right)\right)\geq \prod_{j=0}^{\eta-1}\left( 1-\frac{\mu}{\eta}\right) \\
-&= \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \frac{1}{4}^\mu\\
-& = \left(\frac{1}{4}\right)^{-\log(1-\frac{t'}{2\ell})/2} = 1-\frac{t'}{2\ell}
+&= \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \left(\left(\frac{1}{2}\right)^2\right)^\mu\\
+& = \left(\frac{1}{2}\right)^{-\log\left(1-\frac{t'}{2\ell}\right)} = 1-\frac{t'}{2\ell}\,.
 \end{align*}
 
-With each $i$ we can associate a Bernoulli random variable $X_i \overset{def}= V_i \overset{?}\neq V_i'$.  As stated above, we have that $\expe[X_i] \leq  t'/(2\ell)$. By the Chernoff bound, we have
+Hence, $\expe[X_i]\le t'/(2\ell) = O(1)$, and $\expe[X]\le t'/2$.
+By the Chernoff bound, we have \lnote{this can be tightened}
 \begin{align*}
-\Pr\left[\frac{1}{\ell} \sum_{i=1}^\ell X_i\geq 2\expe[X_i]\right]\leq 2e^{-2\expe[X_i]\ell} = O(e^{- \ell}).
+\Pr\left[\sum_{i=1}^\ell X_i\geq t'\right]\leq 2e^{-2(t'-\expe[X])^2\ell} \le
+2e^{-2(t'/2)^2\ell} = O(e^{- \ell})\,.
 \end{align*}
-Where the last equality holds because $t'/(2\ell) = \Theta(1)$.
 \end{proof}
 
 
