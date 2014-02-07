@@ -931,7 +931,7 @@ Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  T
 \label{app:security of main cons}
 \begin{proof}
 
-Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\zo^n$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq |C|- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
+Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq |C|- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
 Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < |C|-\beta$.
 
 By \defref{def:block guessable} there exists a set of indices $\mathcal{I}$ such that all blocks within $\mathcal{I}$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $\mathcal{I}$ are fixed.  Then $C | C_{\mathcal{I}^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{\mathcal{I}^c} )= |C| -\beta$ and thus $\Hav(C'| C_{\mathcal{I}^c}) = |C| -\beta$.  
@@ -947,12 +947,12 @@ R_i & C_i = 1.
 \end{cases}\]  By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $q$ queries) such that
 \begin{align}
 \label{eq:dist before}
-|\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C)] |\leq \epsilon_{sec}/3.
+|\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|})] |\leq \epsilon_{sec}/3.
 \end{align}
 We now prove $S$ cannot distinguish between $C$ and $C'$.
 \begin{lemma}
 \label{lem:sim cannot distinguish}
-$\Delta(S^{I_X(\cdot, \cdot)}(C), S^{I_X(\cdot, \cdot)}(C')) \le (\ell-\beta) 2^{-(\alpha+1)}$.
+$\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})) \le (\ell-\beta) 2^{-(\alpha+1)}$.
 \end{lemma}
 
 \begin{proof}
@@ -961,7 +961,7 @@ $\Delta(S^{I_X(\cdot, \cdot)}(C), S^{I_X(\cdot, \cdot)}(C')) \le (\ell-\beta) 2^
 \label{lem:codewords in I close}
 Let $c^*$ be true value encoded in $X$ and let $c'$ a codeword in $C'$.  Then,
 \[
-\Delta( S^{I_X(\cdot, \cdot)}(c^*), S^{I_X(\cdot, \cdot)}(c')) \le ( \ell -\beta) 2^{-(\alpha+1)}.
+\Delta( S^{I_X(\cdot, \cdot)}(c^*, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(c', 1^{\ell \log |Z|})) \le ( \ell -\beta) 2^{-(\alpha+1)}.
 \]
 \end{lemma}
 \begin{proof}
@@ -992,19 +992,19 @@ Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
  \end{align*}
  When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in\mathcal{I}$ the total probability of a $1$ in $\mathcal{I}$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $\mathcal{I}$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
 \end{proof}
-By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C), S^{I_X(\cdot, \cdot)}(C')) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
+By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
 
 \noindent Now by the security of obfuscation we have that
 \begin{align}
 \label{eq:dist after}
-|\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{I_X(\cdot, \cdot)}(C')] |\leq \epsilon_{sec}/3.
+|\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})] |\leq \epsilon_{sec}/3.
 \end{align}
 Combining Equations~\ref{eq:dist before} and~\ref{eq:dist after} and \lemref{lem:sim cannot distinguish}, we have
 \begin{align*}
-\delta^{D}(( P, C), (P, C'))&\leq |\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C)]| \\
-&+|\expe[S^{I_X(\cdot, \cdot)}(C)] - \expe[S^{I_X(\cdot, \cdot)}(C')] |\\
-&+|\expe [S^{I_X(\cdot, \cdot)}(C')] - \expe [D(P_1,..., P_\ell, C') ]|\\
+\delta^{D}(( P, C), (P, C'))&\leq |\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|})]| \\
+&+|\expe[S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|})] - \expe[S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})] |\\
+&+|\expe [S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})] - \expe [D(P_1,..., P_\ell, C') ]|\\
 &\leq \epsilon_{sec}/3+ (\ell-\beta)2^{-(\alpha-1)}+\epsilon_{sec}/3 \\
 &\leq 2\epsilon_{sec}/3 + \ngl(n) < \epsilon_{sec}.
 \end{align*}
