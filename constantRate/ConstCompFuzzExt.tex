@@ -273,9 +273,9 @@ More generally, let $B_t$ denote the number of points in a ball of radius $t$. F
 Prime candidate sources for authentication have $\Huse\le 0$.  As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  The best estimate for iris entropy is $249$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.  We have the following calculation for $\Huse$:
 \[
 \Huse = \Hoo(W) - \log |B_t|
-= 249 - \log \sum_{i=0}^{205} {2048 \choose i} = -414.
+= 249 - \log \sum_{i=0}^{205} {2048 \choose i} \approx -707.
 \]
-Note there is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman's work but it affects the quantity not the quality of the above bound.  No current fuzzy extractor is known to work for irises.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but underestimates the number of possible error patterns; their calculation is $\Huse \approx 44$.}
+Note there is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman's, work but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  No current fuzzy extractor is known to work for irises.
 
 \paragraph{Our Contributions}
 We provide the first constructions of computational fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over $\mathcal{Z}^\ell$ for a large alphabet $\mathcal{Z}$.  As explained above, such constructions cannot work without some restrictions on the distribution. 
