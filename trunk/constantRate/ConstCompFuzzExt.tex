@@ -472,7 +472,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 \]
 \end{definition}
 
-We discuss unguessable block distributions in \apref{sec:characterize}.  
+We discuss unguessable block distributions in \apref{sec:characterize}.  \bnote{there should be probably be something here.  block-sources?}
 
 \begin{theorem}
 \label{thm:main thm first cons}
@@ -503,7 +503,6 @@ The outline for the rest of the proof is as follows:
 \item By the security of obfuscation, $\Pr[S^{\mathcal{O}}(C')=1]$ is close to $\Pr[D(C', P)=1]$.
 \end{itemize}
 \end{proof}
-
 We now argue correctness of \consref{cons:first construction}. 
 We begin by showing that the probability of a single $1\rightarrow 0$ bit flip in $c$ is negligible.  
 %Most of the effort in showing the correctness of \consref{cons:first construction} is showing that $\dis(w, w')\leq t$ implies $\dis(c, c')\leq t$.  However, we start by justifying our use of unidirectional codes.
@@ -697,7 +696,7 @@ The argument that $1\rightarrow 0$ flips from $c$ to $c'$ are unlikely carries o
 \begin{lemma}
 \label{lem:sampling errors}
 Let all the variables be as in \thref{thm:sampling}.
- Then $\Pr[v'\in\neigh_{t'}(v]\geq 1-O(2^{-\ell})$, where the probability is over the coins of $\gen$.  %That is, for any $t\leq \mu(\gamma-\eta)/\eta$, \consref{cons:sampling} is correct with overwhelming probability.
+ Then $\Pr[v'\in\neigh_{t'}(v)]\geq 1-O(2^{-\ell})$, where the probability is over the coins of $\gen$.  %That is, for any $t\leq \mu(\gamma-\eta)/\eta$, \consref{cons:sampling} is correct with overwhelming probability.
 \end{lemma}
 
 \begin{corollary}
@@ -721,7 +720,7 @@ This yields:
 &< \Theta(\gamma)- t \log |\mathcal{Z}|\\
 &= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|
 \end{align*}
-That is, \consref{cons:sampling} achieves $\Huse<0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$.  If we are willing to accept $\Huse\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.  However, in this setting $\Huse =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
+That is, \consref{cons:sampling} achieves $\Huse<0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$).  If we are willing to accept $\Huse\geq 0$ then \consref{cons:sampling} works for polynomial size alphabet $\mathcal{Z}$.  However, in this setting $\Huse =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
@@ -834,7 +833,7 @@ However, \defref{def:block guessable} captures more distributions.  We now consi
 Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to its $i$th coordinate.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
-Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
+Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
 proof of \clref{cl:independent high ent}),
  and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $i$, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) \geq \Hoo(W_i) -\log (q+1)$.
 \end{proof}
@@ -989,7 +988,7 @@ Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
 \begin{align*}
  \Pr[\text{non zero response location }i \wedge c_i=0] &>2^{-\alpha+1} - 2^{-(n-\log q)}=  2^{-\alpha}
  \end{align*}
- When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in\mathcal{I}$ the total probability of a $1$ in $\mathcal{I}$ is at most $(\ell-\beta)2^{-\alpha+1}$. Thus, for all $c_1, c_2\in C| C_{\mathcal{I}^c}$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
+ When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in\mathcal{I}$ the total probability of a $1$ in $\mathcal{I}$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $\mathcal{I}$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
 \end{proof}
 By averaging over all points in $C'$ we conclude that $\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
