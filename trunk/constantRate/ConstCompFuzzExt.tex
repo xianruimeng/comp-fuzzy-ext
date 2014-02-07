@@ -560,17 +560,18 @@ When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$,
 \bnote{Leo didn't like this linking.  Better?}
 \consref{cons:first construction} is a computational fuzzy conductor with $\Huse<0$.  Unfortunately, \consref{cons:first construction} required most blocks of $W$ to have super-logarithmic min-entropy.  This may be an unreasonable requirement.  In this section, we reduce the required entropy of blocks by obfuscating several blocks simultaneously.
 %In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler). 
-Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between entropy and error tolerance.  The main idea is to sample a random subset of blocks $W_{i_1},..., W_{i_\eta}$ and obfuscate the concatenation of these blocks.  Denote this concatenated value by $V_1$.  This process is repeated to produce $V_1,..., V_\ell$ and the construction proceeds by either obfuscating $V_i$ or a random point as before. For security each value $V_i$ needs to be unguessable.  This will hold as long as enough blocks we sample contribute some entropy:
+Unfortunately, obfuscating multiple blocks together decreases the effective error tolerance.  Thus, we have a tradeoff between entropy and error tolerance.  The main idea is to sample a random subset of blocks $W_{i_1},..., W_{i_\eta}$ and obfuscate the concatenation of these blocks.  Denote this concatenated value by $V_1$.  This process is repeated to produce $V_1,..., V_\ell$ and the construction proceeds by either obfuscating $V_i$ or a random point as before. For security each value $V_i$ needs to be unguessable.  This will hold as long as enough blocks contribute some entropy:
 
 \begin{definition}
-\label{def:unordered source}
-A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-unordered block source if there exists a set of indices $\mathcal{I}$ where $|\mathcal{I}| \geq \gamma - \beta$ such that the following holds:
+\label{def:partial source}
+A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block source if there exists a set of indices $\mathcal{I}$ where $|\mathcal{I}| \geq \gamma - \beta$ such that the following holds:
 \[
-\forall i\in \mathcal{I}, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_i | W_1 = w_1,..., W_{i-1}=w_{i-1}, W_{i+1}=w_{i+1},..., W_\gamma = w_\gamma) \geq \alpha.
+\forall i\in \mathcal{I}, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_i | W_1 = w_1,..., W_{i-1}=w_{i-1}) \geq \alpha.
 \]
 \end{definition}
 
-\defref{def:unordered source} is a generalization of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), in which blocks must have entropy conditioned on the value of previous blocks.  An unordered block source is also a strengthening of an unguessable block distribution~(\defref{def:block guessable}).  An unordered block source requires there to be worst case entropy while an unguessable block distribution only requires average conditional entropy. \lnote{this comparison is unclear to me}  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.
+\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) as only some blocks are required to have entropy conditioned on the past.  The need for remaining entropy conditioned on the past is arbitrary.  The precise requirement is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
+Note a partial block source requires worst case entropy while an unguessable block distribution only requires average conditional entropy. \lnote{this comparison is unclear to me}  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.  
 
 We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\}$.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample_{\gamma, \eta}$.
 
@@ -630,7 +631,7 @@ This construction uses a na\"{i}ve sampler that takes truly random samples, but 
 \begin{theorem}
 \label{thm:sampling}
 Let $n$ be a security parameter.
-Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-unordered block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.   Let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta = o(\gamma)$,  and $\ell$ be such that $\ell = O(\poly(n))$ and
+Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-partial block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.   Let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta = o(\gamma)$,  and $\ell$ be such that $\ell = O(\poly(n))$ and
 $\ell = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
 \begin{align*}
 t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
@@ -713,7 +714,7 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 \end{corollary}
 
 \subsection{Discussion of \consref{cons:sampling}}
-We now show \consref{cons:sampling} can work for unordered block sources when $\Huse<0$.  The required entropy of  an unordered block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
+We now show \consref{cons:sampling} can work for partial block sources when $\Huse<0$.  The required entropy of  an partial block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
 This yields:
 \begin{align*}
 \Huse &= \Hoo(W) -\log |B_t| \\
@@ -775,7 +776,7 @@ First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(
 If we wish to support parameter regimes where $\Huse<0$ there is some distribution with $\Hfuzz(W)=0$~(consider some fixed point $m\in\mathcal{M}$ and let $W$ be the uniform distribution over points within distance $t$).  Thus, if the analysis of a fuzzy extractor is for all input distributions with a particular $\Huse$, no key can be output when $\Huse<0$.   This motivates our restriction to meaningful classes of source distributions with $\Huse<0$.
 %This means we inherently must talk about the security and errors together.  
 
-In this work we consider the Hamming distance over some alphabet $\mathcal{Z}$.  There are two minimal types of distributions where $\Hfuzz(W)\geq \omega(\log n)$, the first is where the $(t+1)$-st least entropic block has super-logarithmic entropy~(the $t$ most entropic blocks are essentially free to the adversary).  The other is that there $t+\omega(\log n)$ blocks that contribute some entropy~(there is a continuum between these two types).  Definitions~\ref{def:block guessable} and~\ref{def:unordered source} were developed for these types of sources respectively.  However, we do not achieve security when $\Hfuzz(W)= \omega(\log n)$ for either definition, this is an open problem. 
+In this work we consider the Hamming distance over some alphabet $\mathcal{Z}$.  There are two minimal types of distributions where $\Hfuzz(W)\geq \omega(\log n)$, the first is where the $(t+1)$-st least entropic block has super-logarithmic entropy~(the $t$ most entropic blocks are essentially free to the adversary).  The other is that there $t+\omega(\log n)$ blocks that contribute some entropy~(there is a continuum between these two types).  Definitions~\ref{def:block guessable} and~\ref{def:partial source} were developed for these types of sources respectively.  However, we do not achieve security when $\Hfuzz(W)= \omega(\log n)$ for either definition, this is an open problem. 
 
 \section{Fuzzy Conductors}
 
@@ -1016,16 +1017,15 @@ Consider some fixed $i$.
 Recall that there a set $\mathcal{I}$  of size $\gamma - \beta = \Theta(\gamma)$ such that each $w$ and  block $j\in \mathcal{I}$, $\Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}, W_{j+1}=w_{j+1},..., W_\gamma = w_\gamma) \geq \alpha$.  Since this is a worst case guarantee, the entropy of $V_i$ can be deduced from the number of symbols in $V_i$ that come from $\cal{I}$. Namely, Denote by $X= |\{j_{i, 1},..., j_{i, \eta}\}\cap \mathcal{I}|$.
 
 \begin{claim}
+\label{cl:vi have entropy}
 \[
 \Hoo(V_i |\Lambda = \lambda ) \geq \alpha X.
 \]
 \end{claim}
 \begin{proof}
-We begin by noting that $\Hoo(V_i |\Lambda = \lambda ) = -\log \max_{v\in V_i} \Pr[ V_i =v | \Lambda =\lambda]$.  Denote by $j_1,..., j_\eta$ the indices selected by the randomness $\lambda_i$.  Then 
+Denote by $j_1,..., j_\eta$ the indices selected by the randomness $\lambda_i$.  We begin by noting that $\Hoo(V_i |\Lambda = \lambda ) = -\log \max_{v\in V_i} \Pr[ V_i =v | \Lambda =\lambda] = -\log \max_{w_{j_1}, ..., w_{j_\eta}} \Pr[W_{j_1} = w_{j_1} \wedge \dots \wedge W_{j_\eta} w_{j_\eta}] $.  Then 
 \begin{align*}
-\max_{v\in V_i}\Pr[V_i = v | \Lambda = \lambda ]&= \max_{w_{j_1},..., w_{j_\eta}} \Pr[ W_{j_1}=w_{j_1} \wedge \dots \wedge W_{j_\eta} = w_{j_\eta}]\\
-%&=\max_{w_{j_1},..., w_{j_\eta}} \Pr[W_{j_\eta} = w_{j_\eta} | W_{j_{\eta-1}} =w _{j_{\eta-1}} \wedge ... \wedge W_{j_1} =w_{j_1}]\\
-%&\times \Pr[W_{j_{\eta-1}} = w_{j_{\eta-1}} \wedge ... \wedge W_{j_1} = w_{j_1}]\\
+\max_{w_{j_1},..., w_{j_\eta}} \Pr[ W_{j_1}=w_{j_1} \wedge \dots \wedge W_{j_\eta} = w_{j_\eta}]
 &= \max_{w_{j_1},..., w_{j_\eta}} \prod_{k=1}^\eta \Pr[W_{j_k} = w_{j_k} | W_{j_{k-1}} = w_{j_{k-1}} \wedge ... \wedge W_{j_1} = w_{j_1}]\\
 &\le \prod_{k=1}^\eta \max_{w_{j_1},..., w_{j_\eta}} \Pr[W_{j_k} = w_{j_k} | W_{j_{k-1}} = w_{j_{k-1}} \wedge ... \wedge W_{j_1} = w_{j_1}]\\
 &\le\prod_{k=1}^\eta \max_{w_1,..., w_\gamma} \Pr[W_{j_k} = w_{j_k} | W_1 = w_1 \wedge ... \wedge W_{{j_k}-1} = w_{{j_k}-1} ]\\
@@ -1035,13 +1035,14 @@ Taking the negative logarithm of both sides we have that
 \Hoo(V_i | \Lambda = \lambda) &\ge \sum_{k=1}^\eta \min_{w_1,..., w_\gamma} \Hoo(W_{j_k} | W_1 = w_1 \wedge ... \wedge W_{{j_k}-1} = w_{{j_k}-1})\\
 &\ge \sum_{j_k\in \mathcal{I}} \alpha = \alpha X
 \end{align*}
+This completes the proof of \clref{cl:vi have entropy}.
 \end{proof}
 
 
 We note that $X$ is distributed according to the hypergeometric distribution,
 and that $\expe[X]=\eta(\gamma-\beta)/\gamma$. Using the tail bounds from~\cite{chvatal1979tail,scala2009hypergeometric}, we can conclude that $\Pr[X\le \expe[X]/2]\le e^{-2((\gamma-\beta)/2\gamma)^2 \eta}=O(e^{-\eta})$.
 
-Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$, we conclude that 
+Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$ and applying \clref{cl:vi have entropy}, we conclude that 
  \[
 \Pr[\Hoo(V_i ) \geq \alpha'] \geq 1- O(e^{-\eta}).
 \]
