@@ -272,7 +272,8 @@ In the computational setting, a key may be expanded once it is long enough to se
 
 Fuller, Meng, and Reyzin show that replacing an information-theoretic information-reconciliation component with a computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, the authors suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent high-entropy secret instead of recovering $w$.  This is known as a fuzzy conductor~(the entropy is ``conducted'' from $w$ to a new distribution) and was introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}.  Here, we follow the second approach and use a \emph{computational} fuzzy conductor.  We present two constructions of computational fuzzy conductors for different types of source distributions $W$.  These constructions may be converted to computational fuzzy extractors using information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).
 
-Both of constructions are based on the obfuscation of point programs.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.  Obfuscation for this class of functions is achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  We need a strong version of point obfuscation secure under composition, this is achievable under a particular number-theoretic assumption~\cite{bitansky2010strong}.  Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  
+Both of constructions are based on the obfuscation of point programs.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.  Obfuscation for this class of functions is achievable under particular number-theoretic assumptions~\cite{canetti1997towards} and from generic cryptographic hardness assumptions~\cite{wee2005obfuscating}.  We need a strong version of point obfuscation secure under composition, this is achievable under particular number-theoretic assumptions~\cite{bitansky2010strong}.%, DBLP:conf/innovations/GoldwasserKPV10}.  
+Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  
 
 
 
@@ -460,15 +461,15 @@ There are two possible reasons for a bit $c_i'$ to be $1$.  Because the true val
 
 \begin{definition}
 \label{def:block guessable}
-Let $\mathcal{O}_{w_1,..., w_\ell}$ be an oracle that returns \[\mathcal{O}_{w_1,..., w_\ell}(i, w_i')=
+Let $I_w = (I^1,\dots,I^\ell)[q(n)]_{w_1,..., w_\ell}(\cdot, \cdot)$ be an oracle that returns \[(I^1,\dots,I^\ell)[q(n)]_{w_1,..., w_\ell}(i, w_i')=
 \begin{cases}
 1 & w_i = w_i'\\
 0 & \text{otherwise}.
 \end{cases}
 \]
-A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $\mathcal{O}$ making at most $q$ queries
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $I$ making at most $q$ queries
 \[
-\forall i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))\geq \alpha.
+\forall i\in \mathcal{I}, \Hav(W_i |View(A^{I_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
 \end{definition}
 
@@ -810,14 +811,14 @@ The existence of a $(\mathcal{M}, m, \tilde{m}, t, \epsilon)$-fuzzy conductor im
 \label{sec:characterize}
 
 \defref{def:block guessable} is an inherently adaptive definition and thus a little unwieldy for a distribution.  In this section, we partially characterize sources that satisfy \defref{def:block guessable}.
-The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent, so an equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.  In all of the examples that follow we denote the adversary by $S$ as we need security against the computationally unbounded adversary defined in VGB obfuscation~(\defref{def:obf}).
+The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent, so an equality query on block $i$ may shape the distribution of block $j$.  Thus, we begin with the case of independent blocks.  In the examples that follow we denote the adversary by $S$ as we consider security against computationally unbounded adversaries defined in VGB obfuscation~(\defref{def:obf}).
 
 \begin{claim}
 \label{cl:independent high ent}
 Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_i$  are mutually independent.  Let $\alpha$ be a parameter.  Let $\mathcal{I}\subset \{1,..., \ell\}$ be a set of indices such that for all $i\in\mathcal{I}$, $\Hoo(W_i ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |\mathcal{I}|)$-unguessable block distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |\mathcal{I}|)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
-It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i |View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
+It suffices to show that for all $i\in \mathcal{I}, \Hav(W_i |View(S^{I_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
 We can ignore queries for all blocks but the $i$th, as the blocks are independent. Furthermore, without loss of generality, we can assume that no duplicate queries are asked, and that the adversary is deterministic (we can hardwire the best coins as nonuniform advice). Let $A_1, A_2, \dots A_q$ be the random variables representing the oracle answers for an  adversary $S$ making $q$  queries about the $i$th block. Each $A_j$ is just a bit, and at most one of them  is equal to 1 (because duplicate queries are disallowed). Thus, the total number of possible responses is $q+1$. Thus, we have the following,
 \begin{align*}
 \Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) &= \Hav(W_i| A_1, \dots, A_q)\\
@@ -834,9 +835,9 @@ However, \defref{def:block guessable} captures more distributions.  We now consi
 Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to its $i$th coordinate.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
-Since $f$ is injective on each block, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) = \Hav(U_e | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}))$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
+Since $f$ is injective on each block, $\Hav(W_i | View(S^{I_{W}(\cdot, \cdot)})) = \Hav(U_e | View(S^{I_{W}(\cdot, \cdot)}))$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the 
 proof of \clref{cl:independent high ent}),
- and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $i$, $\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)})) \geq \Hoo(W_i) -\log (q+1)$.
+ and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $i$, $\Hav(W_i | View(S^{I_{W}(\cdot, \cdot)})) \geq \Hoo(W_i) -\log (q+1)$.
 \end{proof}
 
 Note the total entropy of a source in \clref{cl:each block from single seed} is $e$, so this is a family of distributions with total entropy $\omega(\log n)$ for which \consref{cons:first construction} is secure.  For these distributions, all the coordinates are as dependent as possible: one determines all others.
@@ -881,10 +882,10 @@ Thus, using $j=q+1$ in~\eqref{eq:cond-entropy},
 Claims~\ref{cl:each block from single seed} and~\ref{cl:all blocks entropy} rest on there being no easy ``entry'' point to the distribution.  This is not always the case.  Indeed it is possible for some blocks to have very high entropy but lose all of it after equality queries.
 
 \begin{claim}
-Let $p = (\poly(n))$, let $X = U_{\log p\times \ell}$ be a distribution and let $f_1,..., f_{\ell}$ be injective functions where $f_i:\zo^{i\times \log p}\rightarrow \zo^n$.\footnote{Here we assume that $n\ge \ell \times \log p$, that is the source has a small number of blocks.}  Then define the distribution $W_1 = f_1(U_{1,...,\ell}), W_2 = f_2(U_{1,..., 2\ell}),...., W_\ell = f_\ell(U)$.  There is an adversary making $2^e\times \ell = \poly(n)$ queries such that $\Hav(W | View(A^{\mathcal{O}_W(\cdot, \cdot)})) = 0$.
+Let $p = (\poly(n))$, let $X = U_{\log p\times \ell}$ be a distribution and let $f_1,..., f_{\ell}$ be injective functions where $f_i:\zo^{i\times \log p}\rightarrow \zo^n$.\footnote{Here we assume that $n\ge \ell \times \log p$, that is the source has a small number of blocks.}  Then define the distribution $W_1 = f_1(U_{1,...,\ell}), W_2 = f_2(U_{1,..., 2\ell}),...., W_\ell = f_\ell(U)$.  There is an adversary making $2^e\times \ell = \poly(n)$ queries such that $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
 \end{claim}
 \begin{proof}
-We present an adversary $A$~(running in polynomial time) that completely determines the value $x$.  $A$ computes $y_1^1 = f_1(x_1^1),..., y_1^p = f(x_1^p)$.  Then $A$ queries on $y_1,..., y_p$ exactly one answer returns $1$.  Let this value be $y_1^*$ and its preimage $x_1^*$.  Then $A$ computes $y_2^1 = f_2(x_1^*,x_2^1), ..., y_2^p= f_2(x_1^*, x_2^p)$ and queries $y_2^1,..., y_2^p$.  Again, exactly one of these queries returns $1$.  This process is repeated until all of $x$ is recovered.  The total space complexity of this algorithm can be reduced to a single query~(by computing $y$ as necessary) as its total time is $O(p\times \ell)$.  Once $x$ has been recovered then $\Hav(W | View(A^{\mathcal{O}_W(\cdot, \cdot)})) = 0$.
+We present an adversary $S$~(running in polynomial time) that completely determines the value $x$.  $S$ computes $y_1^1 = f_1(x_1^1),..., y_1^p = f(x_1^p)$.  Then $S$ queries on $y_1,..., y_p$, exactly one answer returns $1$.  Let this value be $y_1^*$ and its preimage $x_1^*$.  Then $S$ computes $y_2^1 = f_2(x_1^*,x_2^1), ..., y_2^p= f_2(x_1^*, x_2^p)$ and queries $y_2^1,..., y_2^p$.  Again, exactly one of these queries returns $1$.  This process is repeated until all of $x$ is recovered.  The total space complexity of this algorithm can be reduced to a single query~(by computing $y$ as necessary) as its total time is $O(p\times \ell)$.  Once $x$ has been recovered then $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
 \end{proof}
 
 The previous example relied on an adversaries ability to completely determine a block from the previous blocks.  We formalize this notion next.  We defining the entropy jump of a block source as the remaining entropy when other blocks are known:
@@ -946,12 +947,12 @@ R_i & C_i = 1.
 \end{cases}\]  By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $q$ queries) such that
 \begin{align}
 \label{eq:dist before}
-|\expe [D(P_1,..., P_\ell, C)] - \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C)] |\leq \epsilon_{sec}/3.
+|\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C)] |\leq \epsilon_{sec}/3.
 \end{align}
 We now prove $S$ cannot distinguish between $C$ and $C'$.
 \begin{lemma}
 \label{lem:sim cannot distinguish}
-$\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) \le (\ell-\beta) 2^{-(\alpha+1)}$.
+$\Delta(S^{I_X(\cdot, \cdot)}(C), S^{I_X(\cdot, \cdot)}(C')) \le (\ell-\beta) 2^{-(\alpha+1)}$.
 \end{lemma}
 
 \begin{proof}
@@ -960,7 +961,7 @@ $\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C'))
 \label{lem:codewords in I close}
 Let $c^*$ be true value encoded in $X$ and let $c'$ a codeword in $C'$.  Then,
 \[
-\Delta( S^{\mathcal{O}_X(\cdot, \cdot)}(c^*), S^{\mathcal{O}_X(\cdot, \cdot)}(c')) \le ( \ell -\beta) 2^{-(\alpha+1)}.
+\Delta( S^{I_X(\cdot, \cdot)}(c^*), S^{I_X(\cdot, \cdot)}(c')) \le ( \ell -\beta) 2^{-(\alpha+1)}.
 \]
 \end{lemma}
 \begin{proof}
@@ -991,19 +992,19 @@ Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
  \end{align*}
  When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in\mathcal{I}$ the total probability of a $1$ in $\mathcal{I}$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $\mathcal{I}$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
 \end{proof}
-By averaging over all points in $C'$ we conclude that $\Delta(S^{\mathcal{O}_X(\cdot, \cdot)}(C), S^{\mathcal{O}_X(\cdot, \cdot)}(C')) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
+By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C), S^{I_X(\cdot, \cdot)}(C')) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
 
 \noindent Now by the security of obfuscation we have that
 \begin{align}
 \label{eq:dist after}
-|\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C')] |\leq \epsilon_{sec}/3.
+|\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{I_X(\cdot, \cdot)}(C')] |\leq \epsilon_{sec}/3.
 \end{align}
 Combining Equations~\ref{eq:dist before} and~\ref{eq:dist after} and \lemref{lem:sim cannot distinguish}, we have
 \begin{align*}
-\delta^{D}(( P, C), (P, C'))&\leq |\expe [D(P_1,..., P_\ell, C)] - \expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C)]| \\
-&+|\expe[S^{\mathcal{O}_X(\cdot, \cdot)}(C)] - \expe[S^{\mathcal{O}_X(\cdot, \cdot)}(C')] |\\
-&+|\expe [S^{\mathcal{O}_X(\cdot, \cdot)}(C')] - \expe [D(P_1,..., P_\ell, C') ]|\\
+\delta^{D}(( P, C), (P, C'))&\leq |\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C)]| \\
+&+|\expe[S^{I_X(\cdot, \cdot)}(C)] - \expe[S^{I_X(\cdot, \cdot)}(C')] |\\
+&+|\expe [S^{I_X(\cdot, \cdot)}(C')] - \expe [D(P_1,..., P_\ell, C') ]|\\
 &\leq \epsilon_{sec}/3+ (\ell-\beta)2^{-(\alpha-1)}+\epsilon_{sec}/3 \\
 &\leq 2\epsilon_{sec}/3 + \ngl(n) < \epsilon_{sec}.
 \end{align*}
@@ -1042,6 +1043,7 @@ This completes the proof of \clref{cl:vi have entropy}.
 We note that $X$ is distributed according to the hypergeometric distribution,
 and that $\expe[X]=\eta(\gamma-\beta)/\gamma$. Using the tail bounds from~\cite{chvatal1979tail,scala2009hypergeometric}, we can conclude that $\Pr[X\le \expe[X]/2]\le e^{-2((\gamma-\beta)/2\gamma)^2 \eta}=O(e^{-\eta})$.
 
+\bnote{this can also be tightened.}
 Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$ and applying \clref{cl:vi have entropy}, we conclude that 
  \[
 \Pr[\Hoo(V_i ) \geq \alpha'] \geq 1- O(e^{-\eta}).
