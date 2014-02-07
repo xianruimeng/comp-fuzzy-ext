@@ -491,7 +491,7 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 \]
 \end{definition}
 
-We discuss unguessable block distributions in \apref{sec:characterize}.  \bnote{there should be probably be something here.  block-sources?}
+We discuss unguessable block distributions in \apref{sec:characterize}.  In particular any source $W$ where for all $i$, $\Hoo(W_i) \geq \omega(\log n)$~(all blocks may arbitrarily correlated) is an unguessable block distribution~(\clref{cl:all blocks entropy}).
 
 \begin{theorem}
 \label{thm:main thm first cons}
@@ -587,8 +587,8 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block sou
 \]
 \end{definition}
 
-\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) as only some blocks are required to have entropy conditioned on the past.  The need for remaining entropy conditioned on the past is arbitrary.  The precise requirement is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
-Note a partial block source requires worst case entropy while an unguessable block distribution only requires average conditional entropy. \lnote{this comparison is unclear to me}  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.  
+\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) as only some blocks are required to have entropy conditioned on the past.  The need for remaining entropy conditioned on the past is arbitrary.  The actual requirement is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
+%Note a partial block source requires worst case entropy while an unguessable block distribution only requires average conditional entropy. \lnote{this comparison is unclear to me}  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.  
 
 We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\}$.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample_{\gamma, \eta}$.
 
@@ -651,11 +651,12 @@ Let $n$ be a security parameter.
 Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-partial block sources over $\mathcal{Z}^\gamma$ where $\gamma = \Omega(n)$.   Let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta = o(\gamma)$,  and $\ell$ be such that $\ell = O(\poly(n))$ and
 $\ell = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
 \begin{align*}
-t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} \\
+t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta}  = O(\gamma/\eta) = n /\omega(\log n)\\
 \tilde{m} &=|C|\\
 \delta &= O(\ell/|\mathcal{Z}|+2^{-\ell} +\delta_{code}).
 \end{align*}
 \lnote{we should explain what this t means -- the formula is too complex. Also, we seem to require large alphabet size -- is it only because of $\delta$?}
+\bnote{By increasing the size of $\gamma$ we can actually reduce the hit here.  For example if $\gamma = n^c$, then we only get $t \le \gamma / \omega(\log^{1/c} \gamma)$.}
 \end{theorem}
 
 
