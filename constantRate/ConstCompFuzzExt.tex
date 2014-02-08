@@ -996,30 +996,33 @@ Let $c^*$ be true value encoded in $X$ and let $c'$ a codeword in $C'$.  Then,
 \]
 \end{lemma}
 \begin{proof}
-Recall that for all $j\in J$, $\Hav(W_j | View(S))\geq \alpha$.  The only information about the correct value of $c_j^*$ is contained in the query responses.  When all responses are $0$ the view of $S$ is identical when presented with $c^*$ or $c'$.  We now show that for any value of $c^*$ all queries on $j \in J$ return $0$ with probability $1-2^{-\alpha+1}$.  Suppose not, that is suppose, the probability of at least one nonzero response on index $j$ is $> 2^{-(\alpha+1)}$.  Since $w, w'$ are independent of $r_j$, the probability of this happening when $c^*_j = 1$ is at most $q/2^n$ or equivalently $2^{-n+\log q}$.  Thus, it must occur with probability:
+Recall that for all $j\in J$, $\Hav(W_j | View(S))\geq \alpha$.  The only information about the correct value of $c_j^*$ is contained in the query responses.  When all responses are $0$ the view of $S$ is identical when presented with $c^*$ or $c'$.  We now show that for any value of $c^*$ all queries on $j \in J$ return $0$ with probability $1-2^{-\alpha+1}$.  Suppose not, that is suppose, the probability of at least one nonzero response on index $j$ is $> 2^{-(\alpha+1)}$.  Since $w, w'$ are independent of $r_j$, the probability of this happening when $c^*_j = 1$ is at most $q/\mathcal{Z}$ or  equivalently $2^{-\log |\mathcal{Z}|+\log q}$.  Thus, it must occur with probability:
 \begin{align}
 2^{-\alpha+1}&<\Pr[\text{non zero response location }j]\nonumber \\
  &= \Pr[c_j^* =1]\Pr[\text{non zero response location }j\wedge c_j^*=1]\nonumber \\&+ \Pr[c_j^*=0] \Pr[\text{non zero response location }j \wedge c_j^*=0]\nonumber \\
-&\le 1\times 2^{-n+\log q} + 1\times  \Pr[\text{non zero response location }j \wedge c_j^*=0] \label{eq:ways to remove ent}
+&\le 1\times 2^{-\log|\mathcal{Z}|+\log q} + 1\times  \Pr[\text{non zero response location }j \wedge c_j^*=0] \label{eq:ways to remove ent}
 \end{align}
-We now show that $n-\log q \geq \alpha$:
+We now show that for an unguessable block source the remaining entropy $\alpha\leq \log |\mathcal{Z}|-\log q $:
 \begin{claim}
 \label{cl:ent bounded away from n}
-$\alpha \le n-\log q$
+If $W$ is a $(q, \alpha, \beta)$-block unguessable distribution over $\mathcal{Z}$ then $\alpha \le \log |\mathcal{Z}|-\log q$.
 \end{claim}
 \begin{proof}
-It suffices to show that there exists a simulator $S$ making $q$ queries such that the remaining entropy in any block is at most $n-\log q$.  Let $W_j$ be a distribution. Consider $S$ that asks the $q$ most likely outcomes. The total probability\lnote{what does total probability mean?} of this block\lnote{symbol?} must be at least $2^{-n+\log q}$.  After these queries the remaining min-entropy is at most:
+\bnote{Leo I changed some of this under you.  It wasn't clear or probably right as written.}
+\bnote{better name for guess, creativity is running low.}
+Let $W$ be a $(q, \alpha, \beta)$-block unguessable distribution.  Let $J\subset\{1,..., \ell\}$ the set of good indices.
+It suffices to show that there exists an $S$ making $q$ queries such that for some $j\in J, \Hav(W_j | S^{I_{W}(\cdot, \cdot)})\le \log |\mathcal{Z}| - \log q$.  Denote by $guess_{1}, ..., guess_q$ the $q$ most likely outcomes of $W_j$~(breaking ties arbitrarily).  Note that $\sum_{i=1}^q \Pr[W_j = guess_i]\geq q/|\mathcal{Z}|$.  Suppose not, this means that there is some $guess_i$ with probability $\Pr[W_j = guess_i] < 1/|\mathcal{Z}|$.  Since there are $\mathcal{Z} - q $ remaining possible values of $W_j$ for their total probability to be at least $1-q/|\mathcal{Z}|$ at least of these values has probability at least $1/\mathcal{Z}$.  This contradicts the statement $guess_1,..., guess_q$ are the most likely values.  Consider $S$ that queries its oracle on $(j, guess_1),.., (j, guess_q)$.  Denote by $Guess$ the random variable when $W_j\in \{guess_1,.., guess_q\}$  After these queries the remaining min-entropy is at most:
 \begin{align*}
-\Hav(W_j | View(S)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
-&\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1\right)\\
-&=-\log\left( 2^{-n+\log q} \right) = n-\log q
+\Hav(W_j | S^{J_W(\cdot, \cdot)}) &=  -\log \left(\Pr[Guess=1]\times 1+ \Pr[Guess=0]\times \max_{w}\Pr[W_j = w|\not Guess =0]\right)\\
+&\leq  -\log \left(\Pr[Guess=1]\times 1\right)\\
+&=-\log\left( \frac{q}{|\mathcal{Z}|} \right) = \log|\mathcal{Z}|-\log q
 \end{align*}
 This completes the proof of \clref{cl:ent bounded away from n}.
 \end{proof}
 \noindent
 Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
 \begin{align*}
- \Pr[\text{non zero response location }j \wedge c_j=0] &>2^{-\alpha+1} - 2^{-(n-\log q)}=  2^{-\alpha}
+ \Pr[\text{non zero response location }j \wedge c_j=0] &>2^{-\alpha+1} - 2^{-(\log |\mathcal{Z}|-\log q)}=  2^{-\alpha}
  \end{align*}
  When there is a $1$ response and $c_j=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $j\in J$ the total probability of a $1$ in $J$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}.
 \end{proof}
