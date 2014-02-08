@@ -314,7 +314,7 @@ We need a strong version of point obfuscation that remains secure even when seve
 
 We note that fuzzy extractors for the setting where $\Huse\le 0$ can be trivially constructed from a strong form of obfuscation, specifically, virtual black-box obfuscation for the class {\em proximity point programs}, $I_w(x)$ that tests if $x$ is within distance $t$ of $w$. However, currently we do not know if such obfuscation exists. Recent works constructed candidates indistinguishability obfuscators \cite{GargGH0SW13,PassTS13} and virtual black-box obfuscators in idealized model \cite{BrakerskiR13,BarakGKPS13} for all programs. However, these notions of obfuscation do not imply virtual-black-box obfuscation for proximity point programs in the plain model. The work of \cite{BarakBCKPS13} suggest an average-case virtual-black-box obfuscator for the family of {\em evasive} functions that test if a low-degree multi-variant arithmetic circuit evaluates to zero. However, we do not know if these functions include proximity point programs.
 
-Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  Let $w=w_1 \dots w_\ell$, for $w_i\in \mathcal{Z}$. In the first construction (\consref{cons:first construction}), for each $i$, $\gen$ flips a coin $c_i$ and either obfuscates $I_{w_i}$ or picks a random point $r_i$ and obfuscates $I_{r_i}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rep$ then runs the obfuscated program $P_i$ on $w_i'$ and checks whether $P_i(w_i')=1$.  For most locations $i$, \rep can determine whether $w_i$ or a random value was obfuscated.  Thus, most bits of $c_i$ are recoverable. To tolerate errors,  the set of coins $c_1\dots c_\ell$  is chosen at random from the codewords of an error correcting code. This construction conducts entropy from $w$ to $c$.
+Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  Let $w=w_1 \dots w_\ell$, for $w_j\in \mathcal{Z}$. In the first construction (\consref{cons:first construction}), for each $j$, $\gen$ flips a coin $c_j$ and either obfuscates $I_{w_j}$ or picks a random point $r_j$ and obfuscates $I_{r_j}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rep$ then runs the obfuscated program $P_j$ on $w_j'$ and checks whether $P_j(w_j')=1$.  For most locations $j$, \rep can determine whether $w_j$ or a random value was obfuscated.  Thus, most bits of $c_j$ are recoverable. To tolerate errors,  the set of coins $c_1\dots c_\ell$  is chosen at random from the codewords of an error correcting code. This construction conducts entropy from $w$ to $c$.
 
 Obfuscation of point functions provides no security if a point can be guessed; thus, in order for the first construction to be secure, sufficiently many coordinates of $w$ have to be unguessable (even to an adversary who can make equality queries for the values of other coordinates). We relax this requirement in our second construction (\consref{cons:sampling}), called \emph{sample-then-obfuscate}: it transforms $w$ into to a string of blocks and then applies the first construction. $\gen$ randomly samples several coordinates of $w$ and concatenates them to form a block. This reduces the entropy requirement on the individual symbols, but lowers the error-tolerance. This approach is similar to the sample-then-extract paradigm for building locally computable extractors~\cite{lu2002hyper,vadhan2003constructing}.  Unlike in locally computable extractors, we can form multiple blocks sampling from the same value $w$ and only argue about their individual entropy, because correlations among blocks are allowed for the first construction. Computational, rather than information-theoretic, analysis seems crucial for achieving this property.
 
@@ -329,7 +329,7 @@ The remainder of this paper is organized as follows: we cover notation and backg
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote $X = X_1,..., X_\ell$ as the concatenation of $X_1$ to $X_\ell$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
+For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote by $X = X_1,..., X_\ell$  the tuple $(X_1,\dots, X_\ell)$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
 and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
 For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
@@ -346,11 +346,8 @@ For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where
 \end{definition}
 
 \begin{definition}
-Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that for all $c\in C, \forall c'\in \neigh_t(c), \Pr[\decode(c') \neq c] \leq \delta_{code}$.
+Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that $\Pr_{c\in C}[\exists c'\in \neigh_t(c) \text{ s.t. } \decode(c') \neq c] \leq \delta_{code}$.
 \end{definition}
-
-\lnote{since our construction takes random codewords, can't we afford to take the probability also over a random choice of $c$?}\bnote{I think so, what would need to change?  I think we might also be able to deal with just random neighbors?}\lnote{I don't see anything that else in the paper would change if we simply changed how probability is taken here (but please check if I am mistaken); I don't think we can deal with random neighbors, since errors in $w'$ translate to code errors, and errors in $w'$ can be adversarial}
-
 
 We note that for any code, learning a few bits of a codeword does not inform on the remainder of the bits~(the claim is a direct result of \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}).
 
@@ -460,23 +457,23 @@ We describe $\gen, \rep$ as follows:
 \begin{enumerate}
 \item \underline{Input}: $w = w_1,..., w_\ell$
 \item Sample $c\leftarrow C$.
-\item For $i=1,..., \ell$:
+\item For $j=1,..., \ell$:
 \begin{enumerate}[(i)]
-\item If $c_i = 0$: $p_i = \mathcal{O}(I_{w_i})$.
-\item Else: Sample $r_i \overset{\$}\leftarrow \mathcal{Z}$.
-\subitem Let $p_i = \mathcal{O}(I_{r_i})$.
+\item If $c_j = 0$: $p_j = \mathcal{O}(I_{w_j})$.
+\item Else: Sample $r_j \overset{\$}\leftarrow \mathcal{Z}$.
+\subitem Let $p_j = \mathcal{O}(I_{r_j})$.
 \end{enumerate}
-\item Output $(c, p)$.
+\item Output $(c, p)$, where $p=p_1\dots p_\ell$.
 \end{enumerate}
  \end{minipage} &
 \begin{minipage}{3in}
 \textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$
-\item For $i=1,..., \ell$:
+\item For $j=1,..., \ell$:
 \begin{enumerate}[(i)]
-\item If $p_i(w_i') = 1$: set $c_i' = 0$.
-\item Else: set $c_i' = 1$.
+\item If $p_j(w_j') = 1$: set $c_j' = 0$.
+\item Else: set $c_j' = 1$.
 \end{enumerate}
 \item Set $c = \decode(c')$.
 \item Output $c$.
@@ -487,11 +484,11 @@ We describe $\gen, \rep$ as follows:
 \end{center}
 \end{construction}
 
-The input $w$ is hidden in two different ways.  In locations where $c_i=1$, the block $w_i$ is information-theoretically unknown.
-In locations where $c_i=0$, it is hard to find $w_i$ given access to the point obfuscation.
-There are two possible reasons for a bit $c_i'$ to be $1$: because the true value was $1$ and because $w_i \neq w_i'$.  However, if a bit $c_i'$ is $0$, this likely means that $w_i=w_i'$ because collisions when $c_i=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
+The input $w$ is hidden in two different ways.  In locations where $c_j=1$, the block $w_j$ is information-theoretically unknown.
+In locations where $c_j=0$, it is hard to find $w_j$ given access to the point obfuscation.
+There are two possible reasons for a bit $c_j'$ to be $1$: because the true value was $1$ and because $w_j \neq w_j'$.  However, if a bit $c_j'$ is $0$, this likely means that $w_j=w_j'$ because collisions when $c_j=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
 
-\consref{cons:first construction} is secure if no distinguisher can tell whether it is working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  More formally, our construction is secure as long as enough blocks are unpredictable even after adaptive queries to equality oracles for individual symbols. This restriction on the distribution is captured in the following definition.
+\consref{cons:first construction} is secure if no distinguisher can tell whether it is working with random obfuscations or obfuscations of $W_j$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  More formally, our construction is secure as long as enough blocks are unpredictable even after adaptive queries to equality oracles for individual symbols. This restriction on the distribution is captured in the following definition.
 
 \begin{definition}
 \label{def:block guessable}
@@ -508,12 +505,12 @@ A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block
 \end{definition}
 \lnote{stopped going through section 4 here}
 
-We show some examples of unguessable block distributions in \apref{sec:characterize}.  In particular, any source $W$ where for all $i$, $\Hoo(W_i) \geq \omega(\log n)$~(but all blocks may arbitrarily correlated) is an unguessable block distribution~(\clref{cl:all blocks entropy}).
+We show some examples of unguessable block distributions in \apref{sec:characterize}.  In particular, any source $W$ where for all $j$, $\Hoo(W_j) \geq \omega(\log n)$~(but all blocks may arbitrarily correlated) is an unguessable block distribution~(\clref{cl:all blocks entropy}).
 
 \begin{theorem}
 \label{thm:main thm first cons}
 Let $n$ be a security parameter.
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$. Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =H_0(C) - \beta$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_j$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$. Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =H_0(C) - \beta$.
 \end{theorem}
 \begin{proof}
 We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{lem:correct of cons}.
@@ -549,13 +546,13 @@ Let all variables be as in \thref{thm:main thm first cons}.
 The probability of at least one $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $ \ell/|\mathcal{Z}| = \ngl(n)$.
 \end{lemma}
 \begin{proof}
-Recall that $c$ contains at most $\ell$ $1$s.  Since $w'$ is chosen independently of the points $r_i$, this probability is the size of each block, that is $\Pr[r_i =w_i']  = 1/|\mathcal{Z}|$. Since the $r_i$ are chosen independently, one has,
+Recall that $c$ contains at most $\ell$ $1$s.  Since $w'$ is chosen independently of the points $r_j$, this probability is the size of each block, that is $\Pr[r_j =w_j']  = 1/|\mathcal{Z}|$. Since the $r_j$ are chosen independently, one has,
 \[
-\Pr[\text{no $1\rightarrow 0$ flips}] \geq 1-\Pr[\text{some }r_i = w_i']\geq 1-\sum_{i=1}^\ell \Pr[r_i = w_i'] \geq 1-\ell \frac{1}{|\mathcal{Z}|}.
+\Pr[\text{no $1\rightarrow 0$ flips}] \geq 1-\Pr[\text{some }r_j = w_j']\geq 1-\sum_{j=1}^\ell \Pr[r_j = w_j'] \geq 1-\frac{\ell}{|\mathcal{Z}|}.
 \]
 \end{proof}
 
-We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\rightarrow 1$ flip on index $i$ occurs when two conditions are met $w_i\neq w_i'$ and $c_i = 0$.  Since the first conditioned is only fulfilled at most $t$ times, we have the following lemma:
+We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\rightarrow 1$ flip on index $j$ occurs when two conditions are met $w_j\neq w_j'$ and $c_j = 0$.  Since the first conditioned is only fulfilled at most $t$ times, we have the following lemma:
 
 \begin{lemma}
 \label{lem:correct of cons}
@@ -567,7 +564,7 @@ For $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$
 That is, \consref{cons:first construction} is correct with error at most $\ell/|\mathcal{Z}|+\delta_{code}$.
 \end{lemma}
 
-\textbf{Note: }By using a more structured type of code, the necessary error tolerance may be decreased from $t$ to  $(1/2+\Omega(1))t$ by arguing that roughly half of the mismatches between $w, w'$ occur where $c_i =1$.  This requires a code where most codewords have Hamming weight close to $1/2$.
+\textbf{Note: }By using a more structured type of code, the necessary error tolerance may be decreased from $t$ to  $(1/2+\Omega(1))t$ by arguing that roughly half of the mismatches between $w, w'$ occur where $c_j =1$.  This requires a code where most codewords have Hamming weight close to $1/2$.
 
 \subsection{Discussion of \consref{cons:first construction}}
 \label{sec:discussion}
@@ -605,7 +602,7 @@ We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\
 
 \begin{construction}[Sample-then-Obfuscate]
 \label{cons:sampling}
-Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$. %and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_j$ is over $\mathcal{Z}$. %and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.
 Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\mathcal{O}$ be an obfuscator for the family of point functions over $\mathtt{I}_{\mathcal{Z}^\eta}$.  Define $\gen, \rep$ as:
 
 \begin{center}
@@ -968,10 +965,10 @@ Let $D$ a distinguisher of size be some distinguisher of size at most $s_{sec}$ 
 | \expe[D(C, P)] - \expe[D(C', P)] > \epsilon_{sec} = 1/\poly(n).
 \]
 Define the distribution $X$ as follows:
-\[X_i =
+\[X_j =
 \begin{cases}
-W_i & C_i = 0\\
-R_i & C_i = 1.
+W_j & C_j = 0\\
+R_j & C_j = 1.
 \end{cases}\]  By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $q$ queries) such that
 \begin{align}
 \label{eq:dist before}
@@ -993,11 +990,11 @@ Let $c^*$ be true value encoded in $X$ and let $c'$ a codeword in $C'$.  Then,
 \]
 \end{lemma}
 \begin{proof}
-Recall that for all $i\in J$, $\Hav(W_i | View(S))\geq \alpha$.  The only information about the correct value of $c_i^*$ is contained in the query responses.  When all responses are $0$ the view of $S$ is identical when presented with $c^*$ or $c'$.  We now show that for any value of $c^*$ all queries on $i \in J$ return $0$ with probability $1-2^{-\alpha+1}$.  Suppose not, that is suppose, the probability of at least one nonzero response on index $i$ is $> 2^{-(\alpha+1)}$.  Since $w, w'$ are independent of $r_i$, the probability of this happening when $c^*_i = 1$ is at most $q/2^n$ or equivalently $2^{-n+\log q}$.  Thus, it must occur with probability:
+Recall that for all $j\in J$, $\Hav(W_j | View(S))\geq \alpha$.  The only information about the correct value of $c_j^*$ is contained in the query responses.  When all responses are $0$ the view of $S$ is identical when presented with $c^*$ or $c'$.  We now show that for any value of $c^*$ all queries on $j \in J$ return $0$ with probability $1-2^{-\alpha+1}$.  Suppose not, that is suppose, the probability of at least one nonzero response on index $j$ is $> 2^{-(\alpha+1)}$.  Since $w, w'$ are independent of $r_j$, the probability of this happening when $c^*_j = 1$ is at most $q/2^n$ or equivalently $2^{-n+\log q}$.  Thus, it must occur with probability:
 \begin{align}
-2^{-\alpha+1}&<\Pr[\text{non zero response location }i]\nonumber \\
- &= \Pr[c_i^* =1]\Pr[\text{non zero response location }i\wedge c_i^*=1]\nonumber \\&+ \Pr[c_i^*=0] \Pr[\text{non zero response location }i \wedge c_i^*=0]\nonumber \\
-&\le 1\times 2^{-n+\log q} + 1\times  \Pr[\text{non zero response location }i \wedge c_i^*=0] \label{eq:ways to remove ent}
+2^{-\alpha+1}&<\Pr[\text{non zero response location }j]\nonumber \\
+ &= \Pr[c_j^* =1]\Pr[\text{non zero response location }j\wedge c_j^*=1]\nonumber \\&+ \Pr[c_j^*=0] \Pr[\text{non zero response location }j \wedge c_j^*=0]\nonumber \\
+&\le 1\times 2^{-n+\log q} + 1\times  \Pr[\text{non zero response location }j \wedge c_j^*=0] \label{eq:ways to remove ent}
 \end{align}
 We now show that $n-\log q \geq \alpha$:
 \begin{claim}
@@ -1005,9 +1002,9 @@ We now show that $n-\log q \geq \alpha$:
 $\alpha \le n-\log q$
 \end{claim}
 \begin{proof}
-It suffices to show that there exists a simulator $S$ making $q$ queries such that the remaining entropy in any block is at most $n-\log q$.  Let $W_i$ be a distribution, consider $S$ that asks the $q$ most likely outcomes, the total probability of this block must be at least $2^{-n+\log q}$.  After these queries the remaining min-entropy is at most:
+It suffices to show that there exists a simulator $S$ making $q$ queries such that the remaining entropy in any block is at most $n-\log q$.  Let $W_j$ be a distribution. Consider $S$ that asks the $q$ most likely outcomes. The total probability\lnote{what does total probability mean?} of this block\lnote{symbol?} must be at least $2^{-n+\log q}$.  After these queries the remaining min-entropy is at most:
 \begin{align*}
-\Hav(W_i | View(S)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
+\Hav(W_j | View(S)) &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1+ \Pr[\text{no }q_i=1]\times \Pr[\text{most likely outcome}|q_1,...,q_q]\right)\\
 &\leq  -\log \left(\Pr[\text{some }q_i=1]\times 1\right)\\
 &=-\log\left( 2^{-n+\log q} \right) = n-\log q
 \end{align*}
@@ -1016,9 +1013,9 @@ This completes the proof of \clref{cl:ent bounded away from n}.
 \noindent
 Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
 \begin{align*}
- \Pr[\text{non zero response location }i \wedge c_i=0] &>2^{-\alpha+1} - 2^{-(n-\log q)}=  2^{-\alpha}
+ \Pr[\text{non zero response location }j \wedge c_j=0] &>2^{-\alpha+1} - 2^{-(n-\log q)}=  2^{-\alpha}
  \end{align*}
- When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in J$ the total probability of a $1$ in $J$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}.
+ When there is a $1$ response and $c_j=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $j\in J$ the total probability of a $1$ in $J$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}.
 \end{proof}
 By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
