@@ -595,10 +595,10 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block sou
 \]
 \end{definition}
 
-\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}) as only some blocks are required to have entropy conditioned on the past.  The need for remaining entropy conditioned on the past is arbitrary.  The actual requirement is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
+\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), as only some blocks are required to have entropy conditioned on the past.  The choice of conditioning on the past is arbitrary: a more general sufficient condition is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
 %Note a partial block source requires worst case entropy while an unguessable block distribution only requires average conditional entropy. \lnote{this comparison is unclear to me}  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.
 
-We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\}$.  Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ and let $r_{sam}$ the number of required coins for $\sample_{\gamma, \eta}$.
+Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that  outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ given let $r_{sam}$ bits of randomness.
 
 \begin{construction}[Sample-then-Obfuscate]
 \label{cons:sampling}
@@ -647,7 +647,7 @@ Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we need to argue only about individual entropy of $v_i$, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of the $v_i$ values.
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we need to argue only about individual entropy of $V_i$, as opposed to the information-theoretic setting, where it would be necessary to argue about the entropy of the joint variable $V$.
 
 This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers in~\cite{goldreich1997sample}.
 
@@ -739,6 +739,7 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 \end{corollary}
 
 \subsection{Discussion of \consref{cons:sampling}}
+\lnote{I need to check this}
 We now show \consref{cons:sampling} can work for partial block sources when $\Huse\le 0$.  The required entropy of partial block source is $\alpha (\gamma-\beta ) = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
 This yields:
 \begin{align*}
@@ -805,7 +806,7 @@ That is, \consref{cons:sampling} achieves $\Huse\le 0$ when the starting alphabe
 %In this work we consider the Hamming distance over some alphabet $\mathcal{Z}$.  There are two minimal types of distributions where $\Hfuzz(W)\geq \omega(\log n)$, the first is where the $(t+1)$-st least entropic block has super-logarithmic entropy~(the $t$ most entropic blocks are essentially free to the adversary).  The other is that there $t+\omega(\log n)$ blocks that contribute some entropy~(there is a continuum between these two types).  Definitions~\ref{def:block guessable} and~\ref{def:partial source} were developed for these types of sources respectively.  However, we do not achieve security when $\Hfuzz(W)= \omega(\log n)$ for either definition, this is an open problem.
 
 \section{Fuzzy Conductors}
-
+\lnote{I need to check this}
 \label{sec:conductors}
 Fuzzy extractors  have strong upper bounds on remaining entropy based on the best error correcting codes~(if they provide the same guarantee for all input distributions with the same entropy and error tolerance).  Fuller, Meng, and Reyzin show that computational information-reconciliation techniques are subject to similar bounds~\cite{fuller2013computational}.  They suggest these bounds may be avoided by outputting a fresh random variable.  This is known as a fuzzy conductor~\cite{KanukurthiR09}.
 \begin{definition}
@@ -932,6 +933,7 @@ For convenience relabel the ordering that violates the condition as $1,..., \ell
 
 \section{Proof of \lemref{lem:cond and cext}}
 \label{sec:cond and cext}
+\lnote{I need to check this}
 \begin{proof}
 It suffices to show if there is some distinguisher $D'$ of size $s'$ where
 \[\delta^{D'}((\cext(X; U_d), U_d, SS), (U_\kappa, U_d, SS))>\epsilon_{cond}+ \epsilon_{ext}\]
@@ -955,10 +957,9 @@ Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  T
 \section{Proof of \lemref{lem:security of cons}}
 \label{app:security of main cons}
 \begin{proof}
-
+\lnote{I need to check this}
 Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq H_0(C)- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
 Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < H_0(C)-\beta$.
-\lnote{some $i$s should be changed to $j$s below this line, but I ran out of time; will do}
 By \defref{def:block guessable} there exists a set of indices $J$ such that all blocks within $J$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $J$ are fixed.  Then $C | C_{J^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{J^c} )= H_0(C) -\beta$ and thus $\Hav(C'| C_{J^c}) = H_0(C) -\beta$.
 Let $D$ a distinguisher of size be some distinguisher of size at most $s_{sec}$ such that
 \[
