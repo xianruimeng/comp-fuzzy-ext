@@ -245,9 +245,9 @@ For many practical noisy sources, like biometrics, the minimum usable entropy is
 
 
 
-Traditionally, their security is defined information-theoretically.  %Fuzzy extractors have upper bounds on the length of the derived key.
+Traditionally, their security is defined information-theoretically.  %Fuzzy extractors have upper bounds on the length of the derived key.  
 
-Fuzzy extractors work for any distribution with enough entropy.  %In this setting, the entropy of the source must be significantly higher than the logarithm of number of error patterns corrected~(Dodis et al., J. of Comp 2008).
+Fuzzy extractors work for any distribution with enough entropy.  %In this setting, the entropy of the source must be significantly higher than the logarithm of number of error patterns corrected~(Dodis et al., J. of Comp 2008).  
 
 We call the difference between the starting entropy and the logarithm of the number of correctable error patterns the \emph{minimum usable entropy}.  Dodis et al.~(J. of Comp. 2008) show there is some source where the key length cannot exceed the minimum usable entropy.  Therefore, fuzzy extractors that output the same length key for any source with enough entropy cannot output a key longer than the minimum usable entropy.
 
@@ -287,7 +287,7 @@ Prime candidate sources for authentication have $\Huse\le 0$.  As an example, th
 \Huse = \Hoo(W) - \log |B_t|
 = 249 - \log \sum_{i=0}^{205} {2048 \choose i} \approx -707.
 \]
-There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}
+There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
 \paragraph{Our Contributions}
 We provide the first constructions of computational fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over $\mathcal{Z}^\ell$ for a large alphabet $\mathcal{Z}$.  As explained above, such constructions cannot work without some restriction on the distribution.
@@ -301,7 +301,7 @@ However, this improvement comes at a price to error-tolerance: whereas the first
 
 
 \paragraph{Our Approach}
-Our constructions are computationally secure.  Known techniques for proving security of information-theoretic  fuzzy extractors work for all distributions for a given $m, t$, and thus cannot be used with $\Huse\le 0$ (because they would prove security for distributions contained within a single ball of radius of $t$).
+Our constructions are computationally secure.  Known techniques for proving security of information-theoretic  fuzzy extractors work for all distributions for a given $m, t$, and thus cannot be used with $\Huse\le 0$ (because they would prove security for distributions contained within a single ball of radius of $t$). 
 
 Most known constructions of fuzzy extractors put sufficient information in $p$ to recover the original $w$ from a nearby $w'$ during $\rep$ (this procedure is called a \emph{secure sketch}), and then apply a randomness extractor to $w$ to get $r$.
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} show that replacing secure sketches with a similar computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, they suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent secret with computational entropy instead of recovering $w$.  We take the second approach.
@@ -310,9 +310,9 @@ Any procedure that converts a high-entropy input to a high-entropy output is kno
 These constructions may be converted to computational fuzzy extractors using information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).
 
 Both constructions are based on  obfuscation of point programs~\cite{canetti1997towards}.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.
-We need a strong version of point obfuscation that remains secure even when several obfuscations of correlated points are composed. While the standard definition of obfuscation \cite{barak2001possibility} does not imply security under composition, we can base our construction on the relaxed notion of \emph{virtual grey-box} obfuscation introduced in~\cite{bitansky2010strong}. For this notion, \cite{bitansky2010strong} construct composable obfuscation of point programs under particular number-theoretic assumptions. Additionally, such obfuscation can be made very efficient under a strong assumption on cryptographic hash functions~\cite{canetti1997towards}.
+We need a strong version of point obfuscation that remains secure even when several obfuscations of correlated points are composed. While the standard definition of obfuscation \cite{barak2001possibility} does not imply security under composition, we can base our construction on the relaxed notion of \emph{virtual grey-box} obfuscation introduced in~\cite{bitansky2010strong}. For this notion, \cite{bitansky2010strong} construct composable obfuscation of point programs under particular number-theoretic assumptions. Additionally, such obfuscation can be made very efficient under a strong assumption on cryptographic hash functions~\cite{canetti1997towards}. We note that the problem of fuzzy extractors remains non-trivial even given the recent progress on general purpose obfuscation \cite{GargGH0SW13,BrakerskiR13,BarakGKPS13}, as the achieved notions of obfuscation seem to be insufficient.
 
-We note that fuzzy extractors for the setting where $\Huse\le 0$ can be trivially constructed from a strong form of obfuscation, specifically, virtual black-box obfuscation for the class {\em proximity point programs}, $I_w(x)$ that tests if $x$ is within distance $t$ of $w$. However, currently we do not know if such obfuscation exists. Recent works constructed candidates indistinguishability obfuscators \cite{GargGH0SW13,PassTS13} and virtual black-box obfuscators in idealized model \cite{BrakerskiR13,BarakGKPS13} for all programs. However, these notions of obfuscation do not imply virtual-black-box obfuscation for proximity point programs in the plain model. The work of \cite{BarakBCKPS13} suggest an average-case virtual-black-box obfuscator for the family of {\em evasive} functions that test if a low-degree multi-variant arithmetic circuit evaluates to zero. However, we do not know if these functions include proximity point programs.
+We note that the problem of fuzzy extractors remains non-trivial even given the recent construction of general purpose indistinguishably obfuscation \cite{GargGH0SW13,PST13}, as the weaker notion of indistinguishably obfuscation seems insufficient for our application.\bnote{this sentence needs to be cleaned up} \bnote{what is PST?}
 
 Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  Let $w=w_1 \dots w_\ell$, for $w_i\in \mathcal{Z}$. In the first construction (\consref{cons:first construction}), for each $i$, $\gen$ flips a coin $c_i$ and either obfuscates $I_{w_i}$ or picks a random point $r_i$ and obfuscates $I_{r_i}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rep$ then runs the obfuscated program $P_i$ on $w_i'$ and checks whether $P_i(w_i')=1$.  For most locations $i$, \rep can determine whether $w_i$ or a random value was obfuscated.  Thus, most bits of $c_i$ are recoverable. To tolerate errors,  the set of coins $c_1\dots c_\ell$  is chosen at random from the codewords of an error correcting code. This construction conducts entropy from $w$ to $c$.
 
@@ -655,7 +655,7 @@ Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we only need to argue each $v_i$ has only individual entropy, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of $v_i$s.
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we only need to argue each $v_i$ has only individual entropy, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of the $v_i$'s.
 
 This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers in~\cite{goldreich1997sample}.
 
@@ -854,7 +854,7 @@ It suffices to show that for all $i\in J, \Hav(W_i |View(S^{I_{W}(\cdot, \cdot)}
 We can ignore queries for all blocks but the $i$th, as the blocks are independent. Furthermore, without loss of generality, we can assume that no duplicate queries are asked, and that the adversary is deterministic (we can hardwire the best coins as nonuniform advice). Let $A_1, A_2, \dots A_q$ be the random variables representing the oracle answers for an  adversary $S$ making $q$  queries about the $i$th block. Each $A_j$ is just a bit, and at most one of them  is equal to 1 (because duplicate queries are disallowed). Thus, the total number of possible responses is $q+1$. Thus, we have the following,
 \begin{align*}
 \Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) &= \Hav(W_i| A_1, \dots, A_q)\\
-&=\Hoo(W_i) - |A_1, \dots, A_q|\\
+&=\Hoo(W_i) - H_0(A_1, \dots, A_q)\\
 &=\alpha - \log (q+1)\,,
 \end{align*}
 where the second line follows from the first by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
@@ -1022,7 +1022,7 @@ Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
 \begin{align*}
  \Pr[\text{non zero response location }i \wedge c_i=0] &>2^{-\alpha+1} - 2^{-(n-\log q)}=  2^{-\alpha}
  \end{align*}
- When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in J$ the total probability of a $1$ in $J$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}
+ When there is a $1$ response and $c_i=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $i\in J$ the total probability of a $1$ in $J$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}.
 \end{proof}
 By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
