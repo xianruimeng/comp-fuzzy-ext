@@ -329,7 +329,7 @@ The remainder of this paper is organized as follows: we cover notation and backg
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote $X = X_1,..., X_\ell$ as the concatenation of $X_1$ to $X_\ell$.  For a set of indices $\mathcal{I}$,  $X_{\mathcal{I}}$ is the restriction of $X$ to the indices in $\mathcal{I}$.  The set $\mathcal{I}^c$ is the complement of $\mathcal{I}$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
+For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote $X = X_1,..., X_\ell$ as the concatenation of $X_1$ to $X_\ell$.  For a set of indices $\mathcal{I}$ \lnote{I suggest replacing $\mathcal{I}$ with something else, since we use $I$ also in obfuscation and it gets really confusing},  $X_{\mathcal{I}}$ is the restriction of $X$ to the indices in $\mathcal{I}$.  The set $\mathcal{I}^c$ is the complement of $\mathcal{I}$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
 and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ \lnote{I decided, after all, that $H_0(W)$ is less ambiguous and probably more commonly used than $|\cdot |$} be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
 For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
@@ -349,7 +349,7 @@ For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where
 Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\rec$ such that for all $c\in C, \forall c'\in \neigh_t(c), \Pr[\rec(c') \neq c] \leq \delta_{code}$.
 \end{definition}
 
-\lnote{since our construction takes random codewords, can't we afford to take the probability also over a random choice of $c$}
+\lnote{since our construction takes random codewords, can't we afford to take the probability also over a random choice of $c$?}
 
 
 We note that for any code, learning a few bits of a codeword does not inform on the remainder of the bits~(the claim is a direct result of \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}).
@@ -491,21 +491,22 @@ The input $w$ is hidden in two different ways.  In locations where $c_i=1$, the 
 In locations where $c_i=0$, it is hard to find $w_i$ given access to the point obfuscation.
 There are two possible reasons for a bit $c_i'$ to be $1$: because the true value was $1$ and because $w_i \neq w_i'$.  However, if a bit $c_i'$ is $0$, this likely means that $w_i=w_i'$ because collisions when $c_i=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
 
-\consref{cons:first construction} is secure if no distinguisher can tell whether it is working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  More formally, our construction is secure as long as enough blocks are unpredictable after adaptive queries:
+\consref{cons:first construction} is secure if no distinguisher can tell whether it is working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  More formally, our construction is secure as long as enough blocks are unpredictable even after adaptive queries to equality oracles for individual symbols. This restriction on the distribution is captured in the following definition.
 
 \begin{definition}
 \label{def:block guessable}
-Let $I_w = (I^1,\dots,I^\ell)[q(n)]_{w_1,..., w_\ell}(\cdot, \cdot)$ be an oracle that returns \[(I^1,\dots,I^\ell)[q(n)]_{w_1,..., w_\ell}(i, w_i')=
+Let $I_w (\cdot, \cdot)= (I^1,\dots,I^\ell)[q(n)]_{w_1,..., w_\ell}(\cdot, \cdot)$ \lnote{why do we need such a long oracle name -- it's intimidating. Can't we call it just $I_w$?} be an oracle that returns \[I_w(i, w_i')=
 \begin{cases}
 1 & w_i = w_i'\\
 0 & \text{otherwise}.
 \end{cases}
 \]
-A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $I$ making at most $q$ queries
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $\mathcal{I}\subset\{1,..., \ell\}$ \lnote{$\mathcal{I}$ confusingly interacts with the oracle name while it has nothing to do with it} of size at least $\ell -\beta$ such that for any unbounded adversary $A$ with oracle access to $I$ making at most $q$ queries
 \[
 \forall i\in \mathcal{I}, \Hav(W_i |View(A^{I_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
 \end{definition}
+\lnote{stopped going through section 4 here}
 
 We discuss unguessable block distributions in \apref{sec:characterize}.  In particular any source $W$ where for all $i$, $\Hoo(W_i) \geq \omega(\log n)$~(all blocks may arbitrarily correlated) is an unguessable block distribution~(\clref{cl:all blocks entropy}).
 
