@@ -220,7 +220,7 @@
 \newcommand{\M}{\mathcal{M}}
 \newcommand{\Vol}{\mathsf{Vol}}
 
-\title{Constant Error Tolerance Computational Fuzzy Extractors}
+\title{Key Derivation From Noisy Sources With More Errors Than Entropy}
 %\author{Ran Canetti \and Benjamin Fuller\footnote{The Lincoln Laboratory portion of this
 %work was sponsored by the Department of the Air Force under Air Force
 %Contract
@@ -234,11 +234,22 @@
 
 
 \begin{abstract}
-Fuzzy extractors derive strong keys from noisy sources.  The goal is to reliably convert a high entropy source~(which may differ on repeated readings) to the same uniformly distributed key.  Traditionally, their security is defined information-theoretically.  %Fuzzy extractors have upper bounds on the length of the derived key.
+Fuzzy extractors convert a noisy source of entropy into a consistent uniformly distributed key.  In the process of eliminating noise, they necessarily lose some of the entropy of the original source. We call the difference between the starting entropy and the logarithm of the number of correctable error patterns the \emph{minimum usable entropy}.  Unfortunately, this quantity is negative for some sources that are important in practice.
 
-Fuzzy extractors work for any distribution with enough entropy.  %In this setting, the entropy of the source must be significantly higher than the logarithm of number of error patterns corrected~(Dodis et al., J. of Comp 2008).
-We call the difference between the starting entropy and the logarithm of the number of correctable error patterns the \emph{minimum usable entropy}.  Dodis et al.~(J. of Comp. 2008) show there is some source where the key length cannot exceed the minimum usable entropy.  Therefore, fuzzy extractors that output the same length key for any source with enough entropy cannot output a key longer than the minimum usable entropy.
+We construct fuzzy extractors that work for distributions in which the minimum usable entropy is \emph{negative}. Such constructions must, necessarily, put additional limits on the distribution beyond its starting entropy. We show two constructions that have computational security for Hamming distance over large alphabets. The first requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  The second requires  a constant fraction  symbols to have a constant amount of entropy conditioned on prior symbols. Our constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
+
+\iffalse
 For many practical noisy sources, like biometrics, the minimum usable entropy is negative, leaving reliable key derivation from these sources as an open problem.
+
+
+
+
+
+Traditionally, their security is defined information-theoretically.  %Fuzzy extractors have upper bounds on the length of the derived key.  
+
+Fuzzy extractors work for any distribution with enough entropy.  %In this setting, the entropy of the source must be significantly higher than the logarithm of number of error patterns corrected~(Dodis et al., J. of Comp 2008).  
+
+We call the difference between the starting entropy and the logarithm of the number of correctable error patterns the \emph{minimum usable entropy}.  Dodis et al.~(J. of Comp. 2008) show there is some source where the key length cannot exceed the minimum usable entropy.  Therefore, fuzzy extractors that output the same length key for any source with enough entropy cannot output a key longer than the minimum usable entropy.
 
 %Traditional fuzzy extractors output a key roughly of length minimum usable entropy.
 To achieve meaningful security when the minimum usable entropy is negative, some restriction on the source is necessary.  Meaningful restrictions (and accompanying constructions) have proved elusive for information-theoretic fuzzy extractors.
@@ -250,6 +261,7 @@ In this work, we construct the first (computational) fuzzy extractors that are s
 Our constructions are inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~(Eurocrypt 2008).
 \bnote{this whole paragraph needs work} Our two constructions are similar in spirit but optimize different parameters.  The first requires individual blocks of the source to have super-logarithmic entropy and corrects a constant fraction of errors.  The second construction uses sampling to reduce the required entropy of the source.  Unfortunately, sampling also reduces the effective error tolerance of the construction.  %The first construction works for high-entropy and high-error sources, while the second construction works for distributions with lower entropy and error.
 \bnote{need something else to say here}
+\fi
 \end{abstract}
 
 
@@ -275,7 +287,7 @@ Prime candidate sources for authentication have $\Huse\le 0$.  As an example, th
 \Huse = \Hoo(W) - \log |B_t|
 = 249 - \log \sum_{i=0}^{205} {2048 \choose i} \approx -707.
 \]
-There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  No current fuzzy extractor is known to work for irises.
+There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  No current fuzzy extractor is known to work for irises. \lnote{I want to remove this last sentence because we don't solve this problem}
 
 \paragraph{Our Contributions}
 We provide the first constructions of computational fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over $\mathcal{Z}^\ell$ for a large alphabet $\mathcal{Z}$.  As explained above, such constructions cannot work without some restrictions on the distribution.
@@ -289,7 +301,7 @@ However, this improvement comes at a price to error-tolerance: whereas the first
 
 
 \paragraph{Our Approach}
-Our constructions are computationally secure.  Known techniques for proving security of information-theoretic  fuzzy extractors work for all distributions of a given entropy, and thus cannot be used with $\Huse\le 0$ (because then they would prove security for all distributions with $\Huse \le 0$, which we know is impossible.) \bnote{something about the parenthetical statement I don't like}
+Our constructions are computationally secure.  Known techniques for proving security of information-theoretic  fuzzy extractors work for all distributions for a given $m, t$, and thus cannot be used with $\Huse\le 0$ (because then they would prove security, in particular, for the distribution that is contained withing a single ball of radius of $t$). \bnote{something about the parenthetical statement I don't like} \lnote{better?}
 
 Most known constructions of fuzzy extractors put sufficient information in $p$ to recover $w$ from a nearby $w'$ during $\rep$ (this procedure is called a \emph{secure sketch}), and then apply a randomness extractor to $w$ to get $r$.
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} show that replacing secure sketches with a similar computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, they suggest two alternatives: combine the information-reconciliation and privacy amplification components~(their approach) or produce a new consistent secret with computational entropy instead of recovering $w$.  We take the second approach.
@@ -298,11 +310,11 @@ Any procedure that converts a high-entropy input to a high-entropy output is kno
 These constructions may be converted to computational fuzzy extractors using information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractors~(\lemref{lem:cond and cext}).
 
 Both constructions are based on  obfuscation of point programs~\cite{canetti1997towards}.  A point program $I_w(x)$ outputs $1$ if $x=w$ and $0$ otherwise.  Intuitively, an obfuscated version of a program reveals nothing past its input and output behavior.  For a point program, this means hiding all partial information about the point $w$.
-We need a strong version of point obfuscation that remains secure even when several obfuscations of correlated points are composed. While the standard definition of obfuscation \cite{barak2001possibility} does not imply security under composition, we can base our construction on the relaxed notion of \emph{virtual grey-box} obfuscation introduced in~\cite{bitansky2010strong}. For this notion, \cite{bitansky2010strong} construct composable obfuscation of point programs under particular number-theoretic assumptions. Additionally, such obfuscation can be made very efficient under a strong assumption on cryptographic hash functions~\cite{canetti1997towards}. We note that the problem of fuzzy extractors remains non-trivial even given the recent progress on general purpose obfuscation \cite{GargGH0SW13,BrakerskiR13,BarakGKPS13}, as the achieve notions of obfuscation seem to be insufficient.
+We need a strong version of point obfuscation that remains secure even when several obfuscations of correlated points are composed. While the standard definition of obfuscation \cite{barak2001possibility} does not imply security under composition, we can base our construction on the relaxed notion of \emph{virtual grey-box} obfuscation introduced in~\cite{bitansky2010strong}. For this notion, \cite{bitansky2010strong} construct composable obfuscation of point programs under particular number-theoretic assumptions. Additionally, such obfuscation can be made very efficient under a strong assumption on cryptographic hash functions~\cite{canetti1997towards}. We note that the problem of fuzzy extractors remains non-trivial even given the recent progress on general purpose obfuscation \cite{GargGH0SW13,BrakerskiR13,BarakGKPS13}, as the achieved notions of obfuscation seem to be insufficient.
 
 Both constructions are inspired by Canetti and Dakdouk's construction of digital lockers from point obfuscation~\cite{canetti2008obfuscating}.  Let $w=w_1 \dots w_\ell$, for $w_i\in \mathcal{Z}$. In the first construction (\consref{cons:first construction}), for each $i$, $\gen$ flips a coin $c_i$ and either obfuscates $I_{w_i}$ or picks a random point $r_i$ and obfuscates $I_{r_i}$.  This produces $\ell$ obfuscated programs $P_1,..., P_\ell$.  With a close value $w'$, $\rep$ then runs the obfuscated program $P_i$ on $w_i'$ and checks whether $P_i(w_i')=1$.  For most locations $i$, \rep can determine whether $w_i$ or a random value was obfuscated.  Thus, most bits of $c_i$ are recoverable. To tolerate errors,  the set of coins $c_1\dots c_\ell$  is chosen at random from the codewords of an error correcting code. This construction conducts entropy from $w$ to $c$.
 
-Obfuscation of point functions provides no security if a point can be guessed; thus, in order for the first construction to be secure, sufficiently many coordinates of $w$ have to be unguessable (even to an adversary who can make equality queries for the values of other coordinates). We relax this requirement in our second construction (\consref{cons:sampling}), called \emph{sample-then-obfuscate}:\bnote{I thought you didn't like this name?} it converts $w$ to a string of blocks and then applies the first construction. $\gen$ randomly samples several coordinates of $w$ and concatenates them to form a block.\bnote{$w$ isn't converted as there is a reasonable prob that some blocks are not used at all.} This reduces the entropy requirement on the individual symbols, but lowers the error-tolerance. This approach is similar to the sample-then-extract paradigm for building locally computable extractors~\cite{lu2002hyper,vadhan2003constructing}.  Unlike in locally computable extractors, we can form multiple blocks sampling from the same value $w$ and only argue about their individual entropy, because correlations among blocks are allowed for the first construction. Computational, rather than information-theoretic, analysis seems crucial for achieving this property.
+Obfuscation of point functions provides no security if a point can be guessed; thus, in order for the first construction to be secure, sufficiently many coordinates of $w$ have to be unguessable (even to an adversary who can make equality queries for the values of other coordinates). We relax this requirement in our second construction (\consref{cons:sampling}), called \emph{sample-then-obfuscate}:\bnote{I thought you didn't like this name?}  \lnote{I found a way to work it in that is less self-conscious, so I am ok with it now; in general, I remembered that naming constructions is a good idea} it converts $w$ to a string of blocks and then applies the first construction. $\gen$ randomly samples several coordinates of $w$ and concatenates them to form a block.\bnote{$w$ isn't converted as there is a reasonable prob that some blocks are not used at all.} This reduces the entropy requirement on the individual symbols, but lowers the error-tolerance. This approach is similar to the sample-then-extract paradigm for building locally computable extractors~\cite{lu2002hyper,vadhan2003constructing}.  Unlike in locally computable extractors, we can form multiple blocks sampling from the same value $w$ and only argue about their individual entropy, because correlations among blocks are allowed for the first construction. Computational, rather than information-theoretic, analysis seems crucial for achieving this property.
 
 \paragraph{Open Problems}
 Both constructions require a large alphabet $\mathcal{Z}$---one whose size is more than polynomial in the security parameter.\footnote{Alternatively, in case of burst errors~\cite{gilbert1960capacity}, multiple symbols from a small alphabet can be combined into a single symbol from a large alphabet.}  It is possible to tweak the sample-then-obfuscate construction for use with a small alphabet.  However, distributions with $\Huse \le 0$ are supported only for large alphabets.  For small alphabets, $\Huse>0$ and there are good information-theoretic constructions known~\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08}.
