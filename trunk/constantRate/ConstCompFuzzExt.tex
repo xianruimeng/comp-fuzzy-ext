@@ -330,7 +330,7 @@ The remainder of this paper is organized as follows: we cover notation and backg
 \section{Preliminaries}
 \label{sec:preliminaries}
 For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote $X = X_1,..., X_\ell$ as the concatenation of $X_1$ to $X_\ell$.  For a set of indices $\mathcal{I}$,  $X_{\mathcal{I}}$ is the restriction of $X$ to the indices in $\mathcal{I}$.  The set $\mathcal{I}^c$ is the complement of $\mathcal{I}$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
-and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ \lnote{I decided, after all, that $H_0(W)$ is less ambiguous and probably more commonly used} be the size of the support of $W$,  that is $H_0(W) = |\{w | \Pr[W=w]>0\}|$.
+and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ \lnote{I decided, after all, that $H_0(W)$ is less ambiguous and probably more commonly used than $|\cdot |$} be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
 For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s_{sec}}$ the class of randomized circuits which output a single bit and have size at most $s_{sec}$.
 
@@ -356,7 +356,7 @@ We note that for any code, learning a few bits of a codeword does not inform on 
 
 \begin{claim}
 \label{cl:many locations ent}
-Let $C$ be a subset of $\{0,1\}^\ell$ with a uniform distribution, and let $\mathcal{I}\subset \{1,\dots,\ell\}$.  Then $\Hav(C | C_{\mathcal{I}^c}) = \log |C| - |\mathcal{I}^c|$.
+Let $C$ be a subset of $\{0,1\}^\ell$ with a uniform distribution, and let $\mathcal{I}\subset \{1,\dots,\ell\}$.  Then $\Hav(C | C_{\mathcal{I}^c}) =  H_0(C) - |\mathcal{I}^c|$.
 \end{claim}
 
 \textbf{Notes:}
@@ -372,12 +372,12 @@ I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
 The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at most a polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. They can also be constructed by assuming strong properties of cryptographic hash functions!\cite{canetti1997towards}
 
 \begin{definition}[$\ell$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
-\label{def:obf} Let $\mathtt{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is a $\ell$-composable VGB obfuscator for $\mathtt{I}$ with auxiliary-input if the following conditions are met:
+\label{def:obf} Let $\mathtt{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is an $\ell$-composable VGB obfuscator for $\mathtt{I}$ with auxiliary-input if the following conditions are met:
 \begin{enumerate}
 \item \emph{Functionality:} for every $ I \in \mathtt{I}$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.
 \item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^\ell \in \mathtt{I}_n$, (where $\ell=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
 \[
-|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^t)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | < \frac{1}{p(n)} \enspace,
+|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | < \frac{1}{p(n)} \enspace,
 \]
 where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
 \end{enumerate}
@@ -398,18 +398,18 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\kappa, P))\leq \epsilon$.
 \end{itemize}
 \end{definition}
-In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$ there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
+In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
 The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  As discussed in the introduction, when $\Huse\le 0$ some restriction on the source is necessary.  Instead of restricting the class of source distributions, the definition could restrict the correctable errors to errors that are ``likely'' to occur in the source.  We leave this as an open problem.
 
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.
-In \apref{sec:conductors}, we show that fuzzy conductors are subject to the same lower bounds on entropy loss as fuzzy extractors.  To overcome these bounds, we use a computational version of a fuzzy conductor.
+In \apref{sec:conductors}, we show that information-theoretic fuzzy conductors are subject to the same lower bounds on entropy loss as information-theoretic  fuzzy extractors.  To overcome these bounds, we use a computational version of a fuzzy conductor.
 We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} extended to the conditional case:
 \begin{definition}\protect{~\cite[Definition 3]{DBLP:conf/eurocrypt/HsiaoLR07}}
 \label{def:hill ent}
 Let $(W, S)$ be a pair of random variables.  $W$ has
 \emph{HILL entropy} at least $k$ conditioned on $S$,
 denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon$.
-\end{definition}
+\end{definition} \lnote{I haven't checked this section below this line}
 We now define a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 \begin{definition}
 \label{def:comp fuzzy cond}
@@ -421,7 +421,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep'$.
 \item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $X$ has high HILL entropy conditioned on $P$, that is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(X |P)\geq \tilde{m}$.
 \end{itemize}
 \end{definition}
-A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average-case:
+A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average-case:
 \begin{definition}
 Let $\chi$ be a finite set.
 A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon_{ext}, s_{ext})$-average-case computational extractor} if for all pairs
@@ -445,12 +445,12 @@ Then $(\gen, \rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational f
 
 \section{Tolerating a Constant Fraction of Errors when $\Huse\le 0$}
 \label{sec:construction}
-For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys for a large class of sources where $0>\Huse = \Hoo(W) - \log|B_t|$.
-In the computational setting a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  We focus on building a computational fuzzy conductor with meaningful output entropy.  Our first construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
+For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  Our goal is to derive strong keys for a large class of sources where $0\ge \Huse = \Hoo(W) - \log|B_t|$.
+In the computational setting, a ``long enough'' key may be expanded using a computational extractor~(\lemref{lem:cond and cext}).  We therefore focus on building a computational fuzzy conductor with meaningful output entropy.\lnote{where do we talk about running it multiple times if we don't get enough output from one run?}  Our first construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
 
 \begin{construction}
 \label{cons:first construction}
-Let $n$ be a security parameter, let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an obfuscator for the family of point functions $\mathtt{I}_{\mathcal{Z}}$.  Let  $C\subset \zo^\ell$ be an error-correcting code.
+Let $n$ be a security parameter \lnote{it's not clear how this parameter is used in the construction}, let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an obfuscator for the family of point functions $\mathtt{I}_{\mathcal{Z}}$.  Let  $C\subset \zo^\ell$ be an error-correcting code.
 We describe $\gen, \rep$ as follows:
 
 \begin{center}
@@ -487,11 +487,11 @@ We describe $\gen, \rep$ as follows:
 \end{center}
 \end{construction}
 
-The input $w$ is hidden in two different ways.  In locations where $c_i=1$ the block $w_i$ is information-theoretically unknown.
-In locations where $c_i=0$ it is hard to find $w_i$ given access to the point obfuscation.
-There are two possible reasons for a bit $c_i'$ to be $1$.  Because the true value was $1$ and because $w_i \neq w_i'$.  However if a bit $c_i'$ is $0$ this likely means that $w_i=w_i'$ because collisions when $c_i=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
+The input $w$ is hidden in two different ways.  In locations where $c_i=1$, the block $w_i$ is information-theoretically unknown.
+In locations where $c_i=0$, it is hard to find $w_i$ given access to the point obfuscation.
+There are two possible reasons for a bit $c_i'$ to be $1$: because the true value was $1$ and because $w_i \neq w_i'$.  However, if a bit $c_i'$ is $0$, this likely means that $w_i=w_i'$ because collisions when $c_i=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
 
-\consref{cons:first construction} is secure if no distinguisher can tell whether they are working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  More formally, our construction is secure as long as enough blocks are unpredictable after adaptive queries:
+\consref{cons:first construction} is secure if no distinguisher can tell whether it is working with random obfuscations or obfuscations of $W_i$.  By using the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function.  More formally, our construction is secure as long as enough blocks are unpredictable after adaptive queries:
 
 \begin{definition}
 \label{def:block guessable}
