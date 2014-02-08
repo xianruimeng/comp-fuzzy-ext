@@ -346,7 +346,7 @@ For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where
 \end{definition}
 
 \begin{definition}
-Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\rec$ such that for all $c\in C, \forall c'\in \neigh_t(c), \Pr[\rec(c') \neq c] \leq \delta_{code}$.
+Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that for all $c\in C, \forall c'\in \neigh_t(c), \Pr[\decode(c') \neq c] \leq \delta_{code}$.
 \end{definition}
 
 \lnote{since our construction takes random codewords, can't we afford to take the probability also over a random choice of $c$?}\bnote{I think so, what would need to change?  I think we might also be able to deal with just random neighbors?}\lnote{I don't see anything that else in the paper would change if we simply changed how probability is taken here (but please check if I am mistaken); I don't think we can deal with random neighbors, since errors in $w'$ translate to code errors, and errors in $w'$ can be adversarial}
@@ -450,7 +450,7 @@ In the computational setting, a ``long enough'' key may be expanded using a comp
 
 \begin{construction}
 \label{cons:first construction}
-Let $n$ be a security parameter \lnote{it's not clear how this parameter is used in the construction}, let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an obfuscator for the family of point functions $\mathtt{I}_{\mathcal{Z}}$.  Let  $C\subset \zo^\ell$ be an error-correcting code.
+Let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an obfuscator for the family of point functions $\mathtt{I}_{\mathcal{Z}}$.  Let  $C\subset \zo^\ell$ be an error-correcting code.
 We describe $\gen, \rep$ as follows:
 
 \begin{center}
@@ -512,7 +512,8 @@ We show some examples of unguessable block distributions in \apref{sec:character
 
 \begin{theorem}
 \label{thm:main thm first cons}
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$ \lnote{and security parameter $n$?}.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =H_0(C) - \beta$.
+Let $n$ be a security parameter.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$. Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =H_0(C) - \beta$.
 \end{theorem}
 \begin{proof}
 We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{lem:correct of cons}.
@@ -568,10 +569,8 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/|
 
 \textbf{Note: }By using a more structured type of code, the necessary error tolerance may be decreased from $t$ to  $(1/2+\Omega(1))t$ by arguing that roughly half of the mismatches between $w, w'$ occur where $c_i =1$.  This requires a code where most codewords have Hamming weight close to $1/2$.
 
-\subsection{Discussion}
+\subsection{Discussion of \consref{cons:first construction}}
 \label{sec:discussion}
-Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small \lnote{why small? constant fraction, right?} number of dimensions that are allowed to vary completely.  \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries. \lnote{has all this already been said in the intro and more formally in she statements of the theorems? Do we need to repeat it here?}
-
 To show that $\Huse$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
 \[
 \log |B_t| = \log \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i> \log {\ell \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\ell\choose t}
@@ -582,10 +581,8 @@ We consider what entropy is necessary for security.  The simplest type of ungues
 \Huse = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t\log |\mathcal{Z}|) + \log {\ell \choose t}\right).
 \]
 When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$, then $\Huse\le 0$ and the output entropy is $H_0(C) -\beta$~(if $C$ is a constant rate code, this is $\Theta(\ell)$).
-%Thus, \consref{cons:first construction} achieves for security for unguessable block distributions with negative $\Huse$ when $t = \Theta(\ell)$.  %We achieve security when $\Huse\le 0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
-%When $ \ell , t, n$ to be the same order provides a natural balance of parameters.
 
-\textbf{Limitations of \consref{cons:first construction}:}  \lnote{I feel like this repeats a lot of what said above (alphabet size), and what is said below (lots of entropy per block). Do we need it?} There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks if they can be guessed.  To compensate for this leakage, we need most\lnote{just some linear fraction, not most, right? and, in fact, isn't just one block enough given our repeated use argument which we haven't really made yet?} blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
+%\textbf{Limitations of \consref{cons:first construction}:}  \lnote{I feel like this repeats a lot of what said above (alphabet size), and what is said below (lots of entropy per block). Do we need it?} There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks if they can be guessed.  To compensate for this leakage, we need most\lnote{just some linear fraction, not most, right? and, in fact, isn't just one block enough given our repeated use argument which we haven't really made yet?} blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
 
 \section{Trading Errors for Entropy}
 \label{sec:sampling}
@@ -608,7 +605,6 @@ We use an algorithm that selects a fixed size random subset of $\{1,..., \gamma\
 
 \begin{construction}[Sample-then-Obfuscate]
 \label{cons:sampling}
-Let $n$ be a security parameter.
 Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_i$ is over $\mathcal{Z}$. %and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.
 Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\mathcal{O}$ be an obfuscator for the family of point functions over $\mathtt{I}_{\mathcal{Z}^\eta}$.  Define $\gen, \rep$ as:
 
@@ -753,7 +749,7 @@ This yields:
 &< \Theta(\gamma)- t \log |\mathcal{Z}|\\
 &= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|
 \end{align*}
-That is, \consref{cons:sampling} achieves $\Huse\le 0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$).  We note that for polynomial-size alphabets, \consref{cons:sampling} will still work as long as we use a code that corrects Hamming errors in both directions (we need it because with a polynomial size alphabet the probability of $1\rightarrow 0$ bits flips is noticeable); however, for a polynomial-size alphabet, $\Huse>0$.
+That is, \consref{cons:sampling} achieves $\Huse\le 0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$).  We note that for polynomial-size alphabets, \consref{cons:sampling} will still work as long as we use a code that corrects Hamming errors in both directions (with a polynomial size alphabet the probability of $1\rightarrow 0$ bits flips is noticeable); however, for a polynomial-size alphabet, $\Huse>0$.
 %However, in this setting $\Huse =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
 \bibliographystyle{alpha}
 \bibliography{crypto}
@@ -934,7 +930,7 @@ Let $W$ be a distribution and let $q$ be a parameter, if there exists an orderin
 \end{claim}
 
 \begin{proof}
-For convenience relabel the ordering that violates the condition as $1,..., \ell$.  We describe an unbounded adversary that determines $W_1,..., W_{\ell-\beta+1}$.  As before $A$ queries the $q /\ell$ possible values for $W_1$ and determines $W_1$.  Then $A$ queries the $q/\ell$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\ell-\beta+1}$ is learned.  Note the optimum ordering for the adversary can be encoded nonuniformly but it may take an unbounded amount of time/space to construct the support of $W_j | W_1,.., W_{j-1}$.\lnote{what does this last half-sentence mean}
+For convenience relabel the ordering that violates the condition as $1,..., \ell$.  We describe an unbounded adversary that determines $W_1,..., W_{\ell-\beta+1}$.  As before $A$ queries the $q /\ell$ possible values for $W_1$ and determines $W_1$.  Then $A$ queries the $q/\ell$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\ell-\beta+1}$ is learned.  Note the optimum ordering for the adversary can be encoded nonuniformly but it may take an unbounded amount of time/space to sample from $W_j | W_1,.., W_{j-1}$.
 \end{proof}
 
 \section{Proof of \lemref{lem:cond and cext}}
