@@ -234,9 +234,11 @@
 
 
 \begin{abstract}
-Fuzzy extractors convert a noisy source of entropy into a consistent uniformly distributed key.  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of correctable error patterns. We call what is left after this worst-case loss the \emph{minimum usable entropy}.  Unfortunately, this quantity is negative for some sources that are important in practice.
+Fuzzy extractors convert a noisy source of entropy into a consistent uniformly distributed key.  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of correctable error patterns. We call what is left after this worst-case loss the \emph{minimum usable entropy}.  Unfortunately, this quantity is negative for some sources that are important in practice. Most known approaches for building fuzzy extractors work in the worst case and thus cannot be used for such sources.
 
-We construct fuzzy extractors with computational security that work for distributions in which the minimum usable entropy is negative. They correct Hamming errors over a large alphabet. In order to avoid the worst-case loss, they necessarily restrict distributions for which they work.  Our first construction requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  Our second construction requires  a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. The constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
+We construct the first fuzzy extractors that work for a large class of distributions in which the minimum usable entropy is negative. Their security is computational.  They correct Hamming errors over a large alphabet. In order to avoid the worst-case loss, they necessarily restrict distributions for which they work.  
+
+Our first construction requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  Our second construction requires  a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. The constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
 
 \iffalse
 For many practical noisy sources, like biometrics, the minimum usable entropy is negative, leaving reliable key derivation from these sources as an open problem.
