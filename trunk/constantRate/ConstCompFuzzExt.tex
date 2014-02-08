@@ -361,7 +361,7 @@ Let $C$ be a subset of $\{0,1\}^\ell$ with a uniform distribution, and let $J\su
 
 \textbf{Notes:}
 Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
- Codes where $\log |C| = \Theta(\ell)$ and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
+ Codes with $2^{\Theta(\ell)}$ codewords and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
 The class of errors we support in our source~($t$ Hamming errors over a large alphabet) and the class of errors for which we need codes~($t$ $0\rightarrow 1$ errors) are different.  See Constructions~\ref{cons:first construction} and~\ref{cons:sampling} for the translation between the error classes.
 
 \subsection{Obfuscation}
@@ -513,7 +513,7 @@ We discuss unguessable block distributions in \apref{sec:characterize}.  In part
 
 \begin{theorem}
 \label{thm:main thm first cons}
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =\log |C| - \beta$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =H_0(C)- \beta$.
 \end{theorem}
 \begin{proof}
 We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{lem:correct of cons}.
@@ -521,12 +521,12 @@ We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{le
 
 \begin{lemma}
 \label{lem:security of cons}
-Let all variables be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq |C| - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
+Let all variables be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq H_0(C) - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{lemma}
 
 We give a brief outline of the proof here, the proof is in \apref{app:security of main cons}.
 \begin{proof}[Outline]
-It is sufficient to show that there exists a distribution $C'$ with conditional min-entropy and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))\le \ngl(n)$.  Let $J$ be the set of indices that exists in \defref{def:block guessable}, the distribution $C'$ is defined as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $J$.  We first note that $C'$ has sufficient entropy.  That is, $\Hav(C' |P) =\Hav(C' | C_{J^c} = C'_{J^c}) = |C| - |J^c|$.  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P)) \le \ngl(n)$.
+It is sufficient to show that there exists a distribution $C'$ with conditional min-entropy and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))\le \ngl(n)$.  Let $J$ be the set of indices that exists in \defref{def:block guessable}, the distribution $C'$ is defined as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $J$.  We first note that $C'$ has sufficient entropy.  That is, $\Hav(C' |P) =\Hav(C' | C_{J^c} = C'_{J^c}) = H_0(C) - |J^c|$.  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P)) \le \ngl(n)$.
 %Define the distribution $X$ as follows:
 %\[X_i =
 %\begin{cases}
@@ -582,7 +582,7 @@ We consider what entropy is necessary for security.  The simplest type of ungues
 \[
 \Huse = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t\log |\mathcal{Z}|) + \log {\ell \choose t}\right).
 \]
-When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$, then $\Huse\le 0$ and the output entropy is $|C| -\beta$~(if $C$ is a constant rate, this is $\Theta(\ell)$).
+When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$, then $\Huse\le 0$ and the output entropy is $H_0(C) -\beta$~(if $C$ is a constant rate code, this is $\Theta(\ell)$).
 %Thus, \consref{cons:first construction} achieves for security for unguessable block distributions with negative $\Huse$ when $t = \Theta(\ell)$.  %We achieve security when $\Huse\le 0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters.
 
@@ -667,7 +667,7 @@ Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\The
 $\ell = \omega(\log n)$.  Let $C$ be a $(\neigh_{t'}, \delta_{code})$ where $t' = \Theta(\ell)$.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for
 \begin{align*}
 t&\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta}  = O(\gamma/\eta) = n /\omega(\log n)\\
-\tilde{m} &=|C|\\
+\tilde{m} &=H_0(C)\\
 \delta &= O(\ell/|\mathcal{Z}|+2^{-\ell} +\delta_{code}).
 \end{align*}
 \bnote{By increasing the size of $\gamma$ we can actually reduce the hit here.  For example if $\gamma = n^c$, then we only get $t \le \gamma / \omega(\log^{1/c} \gamma)$. Don't worry for submission.}
@@ -716,7 +716,7 @@ Thus, unless the choice of $\lambda$ is very unlucky,
 \begin{corollary}
 \label{cor:samp unguess}
 Let all the variables be as in \thref{thm:sampling}.
-For every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq |C|$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
+For every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq H_0(C)$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
 \end{corollary}
 \begin{proof}
 Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
@@ -963,10 +963,10 @@ Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  T
 \label{app:security of main cons}
 \begin{proof}
 
-Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq |C|- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
-Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < |C|-\beta$.
+Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq H_0(C)- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
+Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < H_0(C)-\beta$.
 
-By \defref{def:block guessable} there exists a set of indices $J$ such that all blocks within $J$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $J$ are fixed.  Then $C | C_{J^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{J^c} )= |C| -\beta$ and thus $\Hav(C'| C_{J^c}) = |C| -\beta$.
+By \defref{def:block guessable} there exists a set of indices $J$ such that all blocks within $J$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $J$ are fixed.  Then $C | C_{J^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{J^c} )= H_0(C) -\beta$ and thus $\Hav(C'| C_{J^c}) = H_0(C) -\beta$.
 Let $D$ a distinguisher of size be some distinguisher of size at most $s_{sec}$ such that
 \[
 | \expe[D(C, P)] - \expe[D(C', P)] > \epsilon_{sec} = 1/\poly(n).
