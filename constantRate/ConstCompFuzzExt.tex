@@ -349,7 +349,7 @@ For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where
 Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\rec$ such that for all $c\in C, \forall c'\in \neigh_t(c), \Pr[\rec(c') \neq c] \leq \delta_{code}$.
 \end{definition}
 
-\lnote{since our construction takes random codewords, can't we afford to take the probability also over a random choice of $c$?}\bnote{I think so, what would need to change?  I think we might also be able to deal with just random neighbors?}
+\lnote{since our construction takes random codewords, can't we afford to take the probability also over a random choice of $c$?}\bnote{I think so, what would need to change?  I think we might also be able to deal with just random neighbors?}\lnote{I don't see anything that else in the paper would change if we simply changed how probability is taken here (but please check if I am mistaken); I don't think we can deal with random neighbors, since errors in $w'$ translate to code errors, and errors in $w'$ can be adversarial}
 
 
 We note that for any code, learning a few bits of a codeword does not inform on the remainder of the bits~(the claim is a direct result of \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}).
@@ -361,7 +361,7 @@ Let $C$ be a subset of $\{0,1\}^\ell$ with a uniform distribution, and let $J\su
 
 \textbf{Notes:}
 Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
- Codes with $2^{\Theta(\ell)}$ codewords and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
+Codes with $2^{\Theta(\ell)}$ codewords and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
 The class of errors we support in our source~($t$ Hamming errors over a large alphabet) and the class of errors for which we need codes~($t$ $0\rightarrow 1$ errors) are different.  See Constructions~\ref{cons:first construction} and~\ref{cons:sampling} for the translation between the error classes.
 
 \subsection{Obfuscation}
@@ -495,24 +495,24 @@ There are two possible reasons for a bit $c_i'$ to be $1$: because the true valu
 
 \begin{definition}
 \label{def:block guessable}
-Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(i, w_i')=
+Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(j, w_j')=
 \begin{cases}
-1 & w_i = w_i'\\
+1 & w_j = w_j'\\
 0 & \text{otherwise}.
 \end{cases}
 \]
 A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $S$ with oracle access to $I$ making at most $q$ queries
 \[
-\forall i\in J, \Hav(W_i |View(S^{I_{W}(\cdot, \cdot)}))\geq \alpha.
+\forall j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
 \end{definition}
 \lnote{stopped going through section 4 here}
 
-We discuss unguessable block distributions in \apref{sec:characterize}.  In particular any source $W$ where for all $i$, $\Hoo(W_i) \geq \omega(\log n)$~(all blocks may arbitrarily correlated) is an unguessable block distribution~(\clref{cl:all blocks entropy}).
+We show some examples of unguessable block distributions in \apref{sec:characterize}.  In particular, any source $W$ where for all $i$, $\Hoo(W_i) \geq \omega(\log n)$~(but all blocks may arbitrarily correlated) is an unguessable block distribution~(\clref{cl:all blocks entropy}).
 
 \begin{theorem}
 \label{thm:main thm first cons}
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =H_0(C)- \beta$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions for any $q = \poly(n)$ where each $W_i$ is over $\mathcal{Z}$ where $|\mathcal{Z}| = \omega(\poly(n))$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code.  Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for $\mathtt{I}_{\mathcal{Z}}$ \lnote{and security parameter $n$?}.  Then for $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$ and resulting entropy $\tilde{m} =H_0(C) - \beta$.
 \end{theorem}
 \begin{proof}
 We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{lem:correct of cons}.
@@ -523,7 +523,7 @@ We argue security in~\lemref{lem:security of cons} and correctness in~\lemref{le
 Let all variables be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{obf}}( C | P ) \geq H_0(C) - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
 \end{lemma}
 
-We give a brief outline of the proof here, the proof is in \apref{app:security of main cons}.
+We give a brief outline of the proof here; the proof is in \apref{app:security of main cons}.
 \begin{proof}[Outline]
 It is sufficient to show that there exists a distribution $C'$ with conditional min-entropy and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))\le \ngl(n)$.  Let $J$ be the set of indices that exists in \defref{def:block guessable}, the distribution $C'$ is defined as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $J$.  We first note that $C'$ has sufficient entropy.  That is, $\Hav(C' |P) =\Hav(C' | C_{J^c} = C'_{J^c}) = H_0(C) - |J^c|$.  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P)) \le \ngl(n)$.
 %Define the distribution $X$ as follows:
@@ -570,7 +570,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/|
 
 \subsection{Discussion}
 \label{sec:discussion}
-Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small number of dimensions that are allowed to vary completely.  \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries.
+Security of \consref{cons:first construction} relies on a large number of dimensions which are unpredictable.  Correction occurs for a small \lnote{why small? constant fraction, right?} number of dimensions that are allowed to vary completely.  \consref{cons:first construction} is not secure for an arbitrary min-entropy source, it must contain a significant number of dimensions that are hard to guess by equality queries. \lnote{has all this already been said in the intro and more formally in she statements of the theorems? Do we need to repeat it here?}
 
 To show that $\Huse$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
 \[
@@ -585,19 +585,19 @@ When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$,
 %Thus, \consref{cons:first construction} achieves for security for unguessable block distributions with negative $\Huse$ when $t = \Theta(\ell)$.  %We achieve security when $\Huse\le 0$, constant error tolerance, and extract a constant fraction of $n$ when $t = \Theta(\ell)$ and $\ell = O(n)$.
 %When $ \ell , t, n$ to be the same order provides a natural balance of parameters.
 
-\textbf{Limitations of \consref{cons:first construction}:}  There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks.  To compensate for this leakage, we need most blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
+\textbf{Limitations of \consref{cons:first construction}:}  \lnote{I feel like this repeats a lot of what said above (alphabet size), and what is said below (lots of entropy per block). Do we need it?} There are three major drawbacks to \consref{cons:first construction}.   First, we require blocks to be super-polynomial in size.  Second, we only obtain a single bit from each block.  Third, since each block is individually obfuscated, we leak information about individual blocks if they can be guessed.  To compensate for this leakage, we need most\lnote{just some linear fraction, not most, right? and, in fact, isn't just one block enough given our repeated use argument which we haven't really made yet?} blocks to be unguessable given equality queries.  Our second construction addresses this last weakness.
 
 \section{Trading Errors for Entropy}
 \label{sec:sampling}
-\consref{cons:first construction} is a computational fuzzy conductor with $\Huse\le 0$.  Unfortunately, it requires many blocks of $W$ to have super-logarithmic min-entropy.  This may be an unreasonable requirement.  In this section, we reduce the required entropy of blocks by obfuscating several blocks simultaneously, at the price of  decreasing the effective error tolerance.
+\consref{cons:first construction} is a computational fuzzy conductor with $\Huse\le 0$.  Unfortunately, it requires many blocks of $W$ to have super-logarithmic min-entropy.  In this section, we reduce the required entropy of blocks by obfuscating several blocks simultaneously, at the price of  decreasing the effective error tolerance.
 %In this section, we present a generalization where blocks are not individually obfuscated, instead several blocks are obfuscated together~(these blocks are selected using an oblivious sampler).
-The main idea is to sample a random subset of blocks $W_{i_1},..., W_{i_\eta}$ and obfuscate the concatenation of these blocks.  Denote this concatenated value by $V_1$.  This process is repeated to produce $V_1,..., V_\ell$ and the construction proceeds by either obfuscating $V_i$ or a random point as before. For security each value $V_i$ needs to be unguessable.  This will hold as long as enough blocks contribute some entropy:
+The main idea is to sample a random subset of blocks $W_{j_1},..., W_{j_\eta}$ and obfuscate the concatenation of these blocks.  Denote this concatenated value by $V_1$.  This process is repeated to produce $V_1,..., V_\ell$ and the construction proceeds by either obfuscating $V_i$ or a random point as before. For security each value $V_i$ needs to be unguessable.  This will hold as long as enough blocks contribute some entropy:
 
 \begin{definition}
 \label{def:partial source}
 A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block source if there exists a set of indices $J$ where $|J| \geq \gamma - \beta$ such that the following holds:
 \[
-\forall i\in J, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_i | W_1 = w_1,..., W_{i-1}=w_{i-1}) \geq \alpha.
+\forall j\in J, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}) \geq \alpha.
 \]
 \end{definition}
 
@@ -654,7 +654,7 @@ Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\
 \end{center}
 \end{construction}
 
-The main change in \consref{cons:sampling} is that the obfuscated values are concatenated symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we only need to argue each $v_i$ has only individual entropy, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of the $v_i$'s.
+The main change in \consref{cons:sampling} is that the obfuscated values are concatenated symbols of $W$.  This paradigm is similar to \emph{sample-then-extract} from the locally computable extractors literature~\cite{lu2002hyper,vadhan2003constructing}.  For this reason we call \consref{cons:sampling} \emph{sample-then-obfuscate}.  A crucial difference is that the use of a computational primitive~(obfuscation) allows us to sample multiple times, because we need to argue only about individual entropy of $v_i$, as opposed to the information-theoretic setting, where it would be necessary to argue about the joint entropy of the $v_i$ values.
 
 This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers in~\cite{goldreich1997sample}.
 
@@ -746,14 +746,15 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 \end{corollary}
 
 \subsection{Discussion of \consref{cons:sampling}}
-We now show \consref{cons:sampling} can work for partial block sources when $\Huse\le 0$.  The required entropy of  an partial block source is $\alpha\times (1-\beta )\times \gamma = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
+We now show \consref{cons:sampling} can work for partial block sources when $\Huse\le 0$.  The required entropy of partial block source is $\alpha (\gamma-\beta ) = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
 This yields:
 \begin{align*}
 \Huse &= \Hoo(W) -\log |B_t| \\
 &< \Theta(\gamma)- t \log |\mathcal{Z}|\\
 &= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|
 \end{align*}
-That is, \consref{cons:sampling} achieves $\Huse\le 0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$).  If we are willing to accept $\Huse\geq 0$ then \consref{cons:sampling} can be adapted to a polynomial size alphabet $\mathcal{Z}$ by using a code that corrects Hamming errors~(with a polynomial size alphabet the probability of $1\rightarrow 0$ bits flips is noticeable).  %However, in this setting $\Huse =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
+That is, \consref{cons:sampling} achieves $\Huse\le 0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$).  We note that for polynomial-size alphabets, \consref{cons:sampling} will still work as long as we use a code that corrects Hamming errors in both directions (we need it because with a polynomial size alphabet the probability of $1\rightarrow 0$ bits flips is noticeable); however, for a polynomial-size alphabet, $\Huse>0$.
+%However, in this setting $\Huse =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
@@ -846,14 +847,14 @@ The majority of the difficulty in characterizing \defref{def:block guessable} is
 
 \begin{claim}
 \label{cl:independent high ent}
-Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_i$  are mutually independent.  Let $\alpha$ be a parameter.  Let $J\subset \{1,..., \ell\}$ be a set of indices such that for all $i\in J$, $\Hoo(W_i ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |J|)$-unguessable block distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |J|)$-unguessable block distribution.
+Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_j$  are mutually independent.  Let $\alpha$ be a parameter.  Let $J\subset \{1,..., \ell\}$ be a set of indices such that for all $j\in J$, $\Hoo(W_j ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |J|)$-unguessable block distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |J|)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
-It suffices to show that for all $i\in J, \Hav(W_i |View(S^{I_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
-We can ignore queries for all blocks but the $i$th, as the blocks are independent. Furthermore, without loss of generality, we can assume that no duplicate queries are asked, and that the adversary is deterministic (we can hardwire the best coins as nonuniform advice). Let $A_1, A_2, \dots A_q$ be the random variables representing the oracle answers for an  adversary $S$ making $q$  queries about the $i$th block. Each $A_j$ is just a bit, and at most one of them  is equal to 1 (because duplicate queries are disallowed). Thus, the total number of possible responses is $q+1$. Thus, we have the following,
+It suffices to show that for all $j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
+We can ignore queries for all blocks but the $j$th, as the blocks are independent. Furthermore, without loss of generality, we can assume that no duplicate queries are asked, and that the adversary is deterministic (we can hardwire the best coins as nonuniform advice). Let $A_1, A_2, \dots A_q$ be the random variables representing the oracle answers for an  adversary $S$ making $q$  queries about the $i$th block. Each $A_k$ is just a bit, and at most one of them  is equal to 1 (because duplicate queries are disallowed). Thus, the total number of possible responses is $q+1$. Thus, we have the following,
 \begin{align*}
-\Hav(W_i | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) &= \Hav(W_i| A_1, \dots, A_q)\\
-&=\Hoo(W_i) - H_0(A_1, \dots, A_q)\\
+\Hav(W_j | View(A^{\mathcal{O}_{W}(\cdot, \cdot)}) &= \Hav(W_j| A_1, \dots, A_q)\\
+&=\Hoo(W_j) - |A_1, \dots, A_q|\\
 &=\alpha - \log (q+1)\,,
 \end{align*}
 where the second line follows from the first by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.
@@ -863,49 +864,49 @@ However, \defref{def:block guessable} captures more distributions.  We now consi
 
 \begin{claim}
 \label{cl:each block from single seed}
-Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_i$ denote the restriction of $f$'s output to its $i$th coordinate.  If for all $i, f_i$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
+Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_j$ denote the restriction of $f$'s output to its $j$th coordinate.  If for all $j$, $f_j$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
-Since $f$ is injective on each block, $\Hav(W_i | View(S^{I_{W}(\cdot, \cdot)})) = \Hav(U_e | View(S^{I_{W}(\cdot, \cdot)}))$.  Consider a query $q_j$ on block $i$.  There are two possibilities: either $q_j$ is not in the image of $f_i$,  or $q_j$ can be considered a query on the preimage $f_i^{-1}(q_j)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the
+Since $f$ is injective on each block, $\Hav(W_j | View(S^{I_{W}(\cdot, \cdot)})) = \Hav(U_e | View(S^{I_{W}(\cdot, \cdot)}))$.  Consider a query $q_k$ on block $j$.  There are two possibilities: either $q_k$ is not in the image of $f_j$,  or $q_k$ can be considered a query on the preimage $f_j^{-1}(q_k)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the
 proof of \clref{cl:independent high ent}),
- and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $i$, $\Hav(W_i | View(S^{I_{W}(\cdot, \cdot)})) \geq \Hoo(W_i) -\log (q+1)$.
+ and by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08} we have for all $j$, $\Hav(W_j | View(S^{I_{W}(\cdot, \cdot)})) \geq \Hoo(W_j) -\log (q+1)$.
 \end{proof}
 
 Note the total entropy of a source in \clref{cl:each block from single seed} is $e$, so this is a family of distributions with total entropy $\omega(\log n)$ for which \consref{cons:first construction} is secure.  For these distributions, all the coordinates are as dependent as possible: one determines all others.
 
-We can prove a slightly weaker claim when the correlation between the coordinates $W_i$ is arbitrary:
+We can prove a slightly weaker claim when the correlation between the coordinates $W_j$ is arbitrary:
 
 \begin{claim}
 \label{cl:all blocks entropy}
-Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $i$, $\Hoo(W_i)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is superlogarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
+Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $j$, $\Hoo(W_j)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is superlogarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
 \end{claim}
 
 \begin{proof}
 Intuitively, the claim is true because the oracle is not likely to return 1 on any query. Formally, we proceed by induction on oracle queries,
 using the same notation as in the proof of   \clref{cl:independent high ent}. Our inductive hypothesis is
-that $\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0] \leq (j-1)2^{1-\alpha}$.  If the inductive hypothesis holds, then, for each $i$,
+that $\Pr[A_1\neq 0 \vee \dots \vee A_{k-1}\neq 0] \leq (k-1)2^{1-\alpha}$.  If the inductive hypothesis holds, then, for each $j$,
 \begin{equation}
 \label{eq:cond-entropy}
-\Hoo(W_i | A_1= \dots= A_{j-1}=0) \ge \alpha-1\,.
+\Hoo(W_j | A_1= \dots= A_{k-1}=0) \ge \alpha-1\,.
 \end{equation}
-This is true for $j=1$ by the condition of the theorem. It is true for $j>1$ because, as a consequence of the definition of $\Hoo$,
-for any random variable $X$ and event $E$, $\Hoo(X|E)\ge \Hoo(X)+\log\Pr[E]$; and $(j-1) 2^{1-\alpha}\leq 2 q 2^{-\alpha} \leq 1/2$.
+This is true for $k=1$ by the condition of the theorem. It is true for $k>1$ because, as a consequence of the definition of $\Hoo$,
+for any random variable $X$ and event $E$, $\Hoo(X|E)\ge \Hoo(X)+\log\Pr[E]$; and $(k-1) 2^{1-\alpha}\leq 2 q 2^{-\alpha} \leq 1/2$.
 
-We now show that $\Pr[A_1\neq 0 \vee \dots \vee A_{j}\neq 0] \leq j2^{1-\alpha}$, assuming that $\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0] \leq (j-1)2^{1-\alpha}$.
+We now show that $\Pr[A_1\neq 0 \vee \dots \vee A_{k}\neq 0] \leq k 2^{1-\alpha}$, assuming that $\Pr[A_1\neq 0 \vee \dots \vee A_{k-1}\neq 0] \leq (k-1)2^{1-\alpha}$.
 \begin{align*}
-\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0 \vee A_j\neq 0] & =
-\Pr[A_1\neq 0 \vee \dots \vee A_{j-1}\neq 0]+\Pr[A_1=\dots = A_{j-1}=0 \wedge A_j=1]\\
-& \le  (j-1)2^{1-\alpha}+\Pr[A_j=1\,|\,A_1=\dots = A_{j-1}=0]\\
-& \le  (j-1)2^{1-\alpha}+\max_i 2^{-\Hoo(W_i | A_1=\dots =A_{j-1}=0)}\\
-& \le  (j-1)2^{1-\alpha}+ 2^{1-\alpha}\\
-& = j 2^{1-\alpha}
+\Pr[A_1\neq 0 \vee \dots \vee A_{k-1}\neq 0 \vee A_k\neq 0] & =
+\Pr[A_1\neq 0 \vee \dots \vee A_{k-1}\neq 0]+\Pr[A_1=\dots = A_{k-1}=0 \wedge A_k=1]\\
+& \le  (k-1)2^{1-\alpha}+\Pr[A_k=1\,|\,A_1=\dots = A_{k-1}=0]\\
+& \le  (k-1)2^{1-\alpha}+\max_j 2^{-\Hoo(W_j | A_1=\dots =A_{k-1}=0)}\\
+& \le  (k-1)2^{1-\alpha}+ 2^{1-\alpha}\\
+& = k 2^{1-\alpha}
 \end{align*}
-(where the third line follows by considering that to get $A_j=1$, the adversary needs to guess some $W_i$, and the fourth line follows by~\eqref{eq:cond-entropy}).
-Thus, using $j=q+1$ in~\eqref{eq:cond-entropy},
- we know $\Hoo(W_i | A_1= \dots= A_q=0) \ge \alpha-1$.  Finally this means that
+(where the third line follows by considering that to get $A_k=1$, the adversary needs to guess some $W_j$, and the fourth line follows by~\eqref{eq:cond-entropy}).
+Thus, using $k=q+1$ in~\eqref{eq:cond-entropy},
+ we know $\Hoo(W_j | A_1= \dots= A_q=0) \ge \alpha-1$.  Finally this means that
 \begin{align*}
-\Hav(W_i | A_1,\dots, A_q) &\ge -\log \left( 2^{-\Hoo(W_i | A_1= \dots= A_q=0)}\Pr[A_1=\dots=A_q=0]+1\cdot \Pr[A_1\neq 0 \vee \dots \vee  A_q\neq 0] \right)\\
-& \ge -\log \left(  2^{-\Hoo(W_i | A_1= \dots= A_q=0)}+q2^{1-\alpha} \right)\\
+\Hav(W_j | A_1,\dots, A_q) &\ge -\log \left( 2^{-\Hoo(W_j | A_1= \dots= A_q=0)}\Pr[A_1=\dots=A_q=0]+1\cdot \Pr[A_1\neq 0 \vee \dots \vee  A_q\neq 0] \right)\\
+& \ge -\log \left(  2^{-\Hoo(W_j | A_1= \dots= A_q=0)}+q2^{1-\alpha} \right)\\
 & \ge -\log \left(  (q+1) 2^{1-\alpha}\right) = \alpha-1-\log(q+1)\,.
 \end{align*}
 \end{proof}
@@ -913,7 +914,7 @@ Thus, using $j=q+1$ in~\eqref{eq:cond-entropy},
 Claims~\ref{cl:each block from single seed} and~\ref{cl:all blocks entropy} rest on there being no easy ``entry'' point to the distribution.  This is not always the case.  Indeed it is possible for some blocks to have very high entropy but lose all of it after equality queries.
 
 \begin{claim}
-Let $p = (\poly(n))$, let $X = U_{\log p\times \ell}$ be a distribution and let $f_1,..., f_{\ell}$ be injective functions where $f_i:\zo^{i\times \log p}\rightarrow \zo^n$.\footnote{Here we assume that $n\ge \ell \times \log p$, that is the source has a small number of blocks.}  Then define the distribution $W_1 = f_1(U_{1,...,\ell}), W_2 = f_2(U_{1,..., 2\ell}),...., W_\ell = f_\ell(U)$.  There is an adversary making $2^e\times \ell = \poly(n)$ queries such that $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
+Let $p = (\poly(n))$, let $X = U_{\log p\times \ell}$ be a distribution and let $f_1,..., f_{\ell}$ be injective functions where $f_j:\zo^{j\times \log p}\rightarrow \zo^n$.\footnote{Here we assume that $n\ge \ell \times \log p$, that is the source has a small number of blocks.}  Then define the distribution $W_1 = f_1(U_{1,...,\ell}), W_2 = f_2(U_{1,..., 2\ell}),...., W_\ell = f_\ell(U)$.  There is an adversary making $2^e\times \ell = \poly(n)$ queries such that $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
 \end{claim}
 \begin{proof}
 We present an adversary $S$~(running in polynomial time) that completely determines the value $x$.  $S$ computes $y_1^1 = f_1(x_1^1),..., y_1^p = f(x_1^p)$.  Then $S$ queries on $y_1,..., y_p$, exactly one answer returns $1$.  Let this value be $y_1^*$ and its preimage $x_1^*$.  Then $S$ computes $y_2^1 = f_2(x_1^*,x_2^1), ..., y_2^p= f_2(x_1^*, x_2^p)$ and queries $y_2^1,..., y_2^p$.  Again, exactly one of these queries returns $1$.  This process is repeated until all of $x$ is recovered.  The total space complexity of this algorithm can be reduced to a single query~(by computing $y$ as necessary) as its total time is $O(p\times \ell)$.  Once $x$ has been recovered then $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
@@ -933,7 +934,7 @@ Let $W$ be a distribution and let $q$ be a parameter, if there exists an orderin
 \end{claim}
 
 \begin{proof}
-For convenience relabel the ordering that violates the condition as $1,..., \ell$.  We describe an unbounded adversary that determines $W_1,..., W_{\ell-\beta+1}$.  As before $A$ queries the $q /\ell$ possible values for $W_1$ and determines $W_1$.  Then $A$ queries the $q/\ell$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\ell-\beta+1}$ is learned.  Note the optimum ordering for the adversary can be encoded nonuniformly but it may take an unbounded amount of time/space to construct the support of $W_i | W_1,.., W_{i-1}$.
+For convenience relabel the ordering that violates the condition as $1,..., \ell$.  We describe an unbounded adversary that determines $W_1,..., W_{\ell-\beta+1}$.  As before $A$ queries the $q /\ell$ possible values for $W_1$ and determines $W_1$.  Then $A$ queries the $q/\ell$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\ell-\beta+1}$ is learned.  Note the optimum ordering for the adversary can be encoded nonuniformly but it may take an unbounded amount of time/space to construct the support of $W_j | W_1,.., W_{j-1}$.\lnote{what does this last half-sentence mean}
 \end{proof}
 
 \section{Proof of \lemref{lem:cond and cext}}
@@ -964,7 +965,7 @@ Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  T
 
 Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq H_0(C)- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
 Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < H_0(C)-\beta$.
-
+\lnote{some $i$s should be changed to $j$s below this line, but I ran out of time; will do}
 By \defref{def:block guessable} there exists a set of indices $J$ such that all blocks within $J$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $J$ are fixed.  Then $C | C_{J^c} \overset{d}=C'$.  By \clref{cl:many locations ent}, we have that $\Hav(C|C_{J^c} )= H_0(C) -\beta$ and thus $\Hav(C'| C_{J^c}) = H_0(C) -\beta$.
 Let $D$ a distinguisher of size be some distinguisher of size at most $s_{sec}$ such that
 \[
