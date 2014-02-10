@@ -239,7 +239,7 @@ Fuzzy extractors convert a noisy source of entropy into a consistent uniformly-d
 We construct the first fuzzy extractors that work for a large class of distributions in which the minimum usable entropy is negative. Their security is computational.  They correct Hamming errors over a large alphabet. In order to avoid the worst-case loss, they necessarily restrict distributions for which they work.  
 
 Our first construction requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  Our second construction requires  a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. The constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
-\bnote{more about what we do}
+
 
 \textbf{Keywords} Fuzzy extractors, key derivation, error-correcting codes, computational entropy, point obfuscation.
 \end{abstract}
@@ -257,9 +257,12 @@ Both of these problems have interactive and non-interactive versions.  In this p
 
 Fuzzy extractors consist of a pair of algorithms: \gen takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$, as long as $w$ comes from a high-quality distribution (traditionally, any distribution with sufficient min-entropy $m$). The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\ell$ strings over some alphabet $\mathcal{Z}$).
 
-\paragraph{Limitations of Entropy-Based Approaches}
-\bnote{shorten this heading?}
-Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess some $w'$ within distance $t$ of $w$ they will be able to easily distinguish $r$ from uniform by running $\rep$. If $t$ is larger, then $\rep$ tolerates more $w'$ values, so the adversary's job is easier. In fact, if $t$ is high enough that there are $2^m$ points in a ball of radius $t$, then the \emph{entire distribution} of $w$ may have min-entropy $m$ and be contained in a single ball.  Then the adversary can always produce the key by running $\rep$ with the center of the ball as $w'$.\bnote{was told this wasn't clear enough}
+\paragraph{Limitations of Known Approaches}
+
+Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess any $w'$ within distance $t$ of $w$, it will be able to easily obtain the true $r$ by running $\rep$.
+%If $t$ is larger, then a single guess for $w'$ may be within distance $t$ of more $w$ values, thus increasing adversarial probability of winning. 
+In fact, if $t$ is high enough that there are $2^m$ points in a ball of radius $t$, then there exists a distribution of $w$ of min-entropy $m$  \emph{contained entirely in a single ball}.  For these distributions, an adversary can run $\rep$ on the center of this ball and always learn the key $r$.
+
 
 More generally, let $B_t$ denote the number of points in a ball of radius $t$. For any $m$ and $t$, there is a distribution of min-entropy $m$ such that the adversary can guess a correct $w'$ with probability $1/\lceil( 2^m/B_t) \rceil\approx B_t 2^{-m}$: the distribution consists of the uniform distribution over all points in several non-overlapping balls of radius $t$ (the metric space must be large enough for these balls not to intersect). We thus call $m-\log B_t$ the \emph{minimum usable} entropy, denoted by $\Huse$. The previous paragraph shows that  no fuzzy extractor can handle all distributions of a given min-entropy $m$ if  $\Huse\le 0$.
 \bnote{is there anyway we can reasonably say what previous works support?}
@@ -309,7 +312,10 @@ Constructing a computational fuzzy extractor when $\Huse\le 0$ and a small alpha
 
 Using information-theoretic fuzzy extractors with additional privacy properties, Dodis and Smith~\cite[Section 5]{DBLP:conf/stoc/DodisS05} construct program obfuscators for the program $I_w(x)$ that tests if $x$ is within Hamming distance $t$ of $w$. The obfuscation is secure as long as $w$ comes from a distribution of sufficient min-entropy; in particular, the entropy must be high enough so that $\Huse>0$. Our constructions do not provide obfuscators for proximity queries, because they leak more information than whether $x$ is within distance $t$ of $w$ (for example, they may provide some information about the actual distance or about which coordinates agree). Constructing an efficient obfuscator for proximity queries when $\Huse<0$ is an open problem.
 
+\lnote{restricting errors instead of entropy is another way to get around impossibility}
+
 \medskip
+\lnote{skip if no space}
 The remainder of this paper is organized as follows: we cover notation and background on obfuscation and error correcting codes in \secref{sec:preliminaries}, describe computational fuzzy extractors in \secref{sec:fuzzy extractors}, and present our two constructions in Sections \ref{sec:construction} and \ref{sec:sampling} respectively.
 
 \section{Preliminaries}
@@ -381,7 +387,6 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
-\bnote{cut the rest of this paragraph?} The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  As discussed in the introduction, when $\Huse\le 0$ some restriction on the source is necessary.  Instead of restricting the class of source distributions, the definition could restrict the correctable errors to errors that are ``likely'' to occur in the source.  We leave this as an open problem.
 
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.
 In \apref{sec:conductors}, we show that information-theoretic fuzzy conductors are subject to the same lower bounds on entropy loss as information-theoretic  fuzzy extractors.  To overcome these bounds, we use a computational version of a fuzzy conductor.
