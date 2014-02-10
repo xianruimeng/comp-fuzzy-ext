@@ -234,11 +234,12 @@
 
 
 \begin{abstract}
-Fuzzy extractors convert a noisy source of entropy into a consistent uniformly distributed key.  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of correctable error patterns. We call what is left after this worst-case loss the \emph{minimum usable entropy}.  Unfortunately, this quantity is negative for some sources that are important in practice. Most known approaches for building fuzzy extractors work in the worst case and cannot be used when the minimum usable entropy is negative.
+Fuzzy extractors convert a noisy source of entropy into a consistent uniformly-distributed key.  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of correctable error patterns. We call what is left after this worst-case loss the \emph{minimum usable entropy}.  Unfortunately, this quantity is negative for some sources that are important in practice. Most known approaches for building fuzzy extractors work in the worst case and cannot be used when the minimum usable entropy is negative.
 
 We construct the first fuzzy extractors that work for a large class of distributions in which the minimum usable entropy is negative. Their security is computational.  They correct Hamming errors over a large alphabet. In order to avoid the worst-case loss, they necessarily restrict distributions for which they work.  
 
 Our first construction requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  Our second construction requires  a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. The constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
+\bnote{more about what we do}
 \end{abstract}
 
 
@@ -248,28 +249,28 @@ Our first construction requires high individual entropy of a constant fraction o
 Cryptography relies on long-term secrets for key derivation and authentication. However, many sources with sufficient randomness to form long-term secrets provide similar but not identical values at repeated readings~(prominent examples include biometrics and other human-generated data~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password},
 physically unclonable functions~\cite{pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical},
 and quantum information~\cite{bennett1988privacy}). Turning similar readings into identical values is known as \emph{information reconciliation}; further converting those values into uniformly random secret strings is known as \emph{privacy amplification}~\cite{bennett1988privacy}.
-Both of these problems have interactive and noninteractive versions.  In this paper, we are interested in the noninteractive case, which is useful for a single user trying to produce the same key from multiple readings of a physical source at different times.
- A \emph{fuzzy extractor} is the primitive that accomplishes both information reconciliation and privacy amplification noninteractively; fuzzy extractors are defined information-theoretically in~\cite{DBLP:journals/siamcomp/DodisORS08}.
+Both of these problems have interactive and non-interactive versions.  In this paper, we are interested in the non-interactive case, which is useful for a single user trying to produce the same key from multiple readings of a physical source at different times.
+ A \emph{fuzzy extractor} is the primitive that accomplishes both information reconciliation and privacy amplification non-interactively; fuzzy extractors are defined information-theoretically in~\cite{DBLP:journals/siamcomp/DodisORS08}.
 
 
 Fuzzy extractors consist of a pair of algorithms: \gen takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$, as long as $w$ comes from a high-quality distribution (traditionally, any distribution with sufficient min-entropy $m$). The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\ell$ strings over some alphabet $\mathcal{Z}$).
 
 \paragraph{Limitations of Entropy-Based Approaches}
-Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess some $w'$ within distance $t$ of $w$ they will be able to easily distinguish $r$ from uniform by running $\rep$. If $t$ is larger, then $\rep$ tolerates more $w'$ values, so the adversary's job is easier. In fact, if $t$ is high enough that there are $2^m$ points in a ball of radius $t$, then the \emph{entire distribution} of $w$ may have min-entropy $m$ and be contained in a single ball.  Then the adversary can always produce the key by running $\rep$ with the center of the ball as $w'$.
+Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess some $w'$ within distance $t$ of $w$ they will be able to easily distinguish $r$ from uniform by running $\rep$. If $t$ is larger, then $\rep$ tolerates more $w'$ values, so the adversary's job is easier. In fact, if $t$ is high enough that there are $2^m$ points in a ball of radius $t$, then the \emph{entire distribution} of $w$ may have min-entropy $m$ and be contained in a single ball.  Then the adversary can always produce the key by running $\rep$ with the center of the ball as $w'$.\bnote{was told this wasn't clear enough}
 
-More generally, let $B_t$ denote the number of points in a ball of radius $t$. For any $m$ and $t$, there is a distribution of min-entropy $m$ such that the adversary can guess a correct $w'$ with probability $1/\lceil 2^m/B_t) \rceil\approx B_t 2^{-m}$: the distribution consists of the uniform distribution over all points in several nonoverlapping balls of radius $t$ (the metric space must be large enough for these balls not to intersect). We thus call $m-\log B_t$ the \emph{minimum usable} entropy, denoted by $\Huse$. The previous paragraph shows that  no fuzzy extractor can handle all distributions of a given min-etropy $m$ if  $\Huse\le 0$.
+More generally, let $B_t$ denote the number of points in a ball of radius $t$. For any $m$ and $t$, there is a distribution of min-entropy $m$ such that the adversary can guess a correct $w'$ with probability $1/\lceil 2^m/B_t) \rceil\approx B_t 2^{-m}$: the distribution consists of the uniform distribution over all points in several non-overlapping balls of radius $t$ (the metric space must be large enough for these balls not to intersect). We thus call $m-\log B_t$ the \emph{minimum usable} entropy, denoted by $\Huse$. The previous paragraph shows that  no fuzzy extractor can handle all distributions of a given min-entropy $m$ if  $\Huse\le 0$.
 
-Prime candidate sources for authentication have $\Huse\le 0$.  As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  The best estimate for iris entropy is $249$ bits~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  Let the outcome of this transform~(on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.  We have the following calculation for $\Huse$:
+Prime candidate sources for authentication have $\Huse\le 0$.  As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  Daugman estimates irises contain $249$ bits of entropy~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  Let the outcome of this transform~(on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.  We have the following calculation for $\Huse$:
 \[
 \Huse = \Hoo(W) - \log |B_t|
 = 249 - \log \sum_{i=0}^{205} {2048 \choose i} \approx -707.
 \]
-There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
+There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their analysis underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
 \paragraph{Our Contributions}
 We provide the first constructions of computational fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over $\mathcal{Z}^\ell$ for a large alphabet $\mathcal{Z}$.  As explained above, such constructions cannot work without some restriction on the distribution.
 Our first construction is secure when symbols in $w$
-each have individual superlogarithmic min-entropy, even if they are arbitrarily correlated. Moreover,
+each have individual super-logarithmic min-entropy, even if they are arbitrarily correlated. Moreover,
 a constant fraction of symbols in $w$ may have little entropy, as long as knowledge of their values does not reduce the entropy of the high-entropy symbols too much (see \defref{def:block guessable}).
 
 We improve the entropy requirement in the second construction, which requires only a constant fraction of the symbols $w$ to have constant min-entropy conditioned on the previous symbols.
@@ -346,7 +347,7 @@ Our construction uses obfuscation for a family of point functions $\mathtt{I} = 
 \[
 I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
 \]
-The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at most a polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. They can also be constructed by assuming strong properties of cryptographic hash functions!\cite{canetti1997towards}
+The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at most a polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. They can also be constructed by assuming strong properties of cryptographic hash functions~\cite{canetti1997towards}.
 
 \begin{definition}[$\ell$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
 \label{def:obf} Let $\mathtt{I}$ be a family of polynomial-size circuits.  A PPT algorithm $\mathcal{O}$ is an $\ell$-composable VGB obfuscator for $\mathtt{I}$ with auxiliary-input if the following conditions are met:
@@ -376,7 +377,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
-The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  As discussed in the introduction, when $\Huse\le 0$ some restriction on the source is necessary.  Instead of restricting the class of source distributions, the definition could restrict the correctable errors to errors that are ``likely'' to occur in the source.  We leave this as an open problem.
+\bnote{cut the rest of this paragraph?} The definition of computational fuzzy extractors specifies a family of sources for which the fuzzy extractor works rather than the family of all sources of a given min-entropy $m$.  As discussed in the introduction, when $\Huse\le 0$ some restriction on the source is necessary.  Instead of restricting the class of source distributions, the definition could restrict the correctable errors to errors that are ``likely'' to occur in the source.  We leave this as an open problem.
 
 Fuller, Meng, and Reyzin~\cite{fuller2013computational} present two approaches for constructing a computational fuzzy extractor: analyzing the information-reconciliation and privacy amplifications components together or using a fuzzy conductor and a privacy amplification component.  We follow the second approach.
 In \apref{sec:conductors}, we show that information-theoretic fuzzy conductors are subject to the same lower bounds on entropy loss as information-theoretic  fuzzy extractors.  To overcome these bounds, we use a computational version of a fuzzy conductor.
@@ -517,7 +518,7 @@ The outline for the rest of the proof is as follows:
 \item By the security of obfuscation, $\Pr[S^{\mathcal{O}}(C')=1]$ is close to $\Pr[D(C', P)=1]$.
 \end{itemize}
 \end{proof}
-We now a rgue correctness of \consref{cons:first construction}.
+We now a argue correctness of \consref{cons:first construction}.
 We begin by showing that the probability of a single $1\rightarrow 0$ bit flip in $c$ is negligible.
 %Most of the effort in showing the correctness of \consref{cons:first construction} is showing that $\dis(w, w')\leq t$ implies $\dis(c, c')\leq t$.  However, we start by justifying our use of unidirectional codes.
 \begin{lemma}
@@ -852,7 +853,7 @@ We can prove a slightly weaker claim when the correlation between the coordinate
 
 \begin{claim}
 \label{cl:all blocks entropy}
-Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $j$, $\Hoo(W_j)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is superlogarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
+Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $j$, $\Hoo(W_j)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is super-logarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
 \end{claim}
 
 \begin{proof}
