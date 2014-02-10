@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 %\documentclass{llncs}
-\def\shownotes{1}
+\def\shownotes{0}
 
 
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
@@ -667,16 +667,16 @@ There exists $\epsilon_{sam} = O(e^{-\eta}) = \ngl(n)$ and $\alpha' = \alpha\eta
 \end{lemma}
 
 \noindent
-We can then argue that all $V_i$ simultaneously have individual entropy with good probability:
+We can then argue that all $V_i$ simultaneously have individual entropy with good probability~(by union bound):
 \begin{corollary}
 \label{cor:samp sec}
  Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works}, and all the other variables be as in \thref{thm:sampling}.  Then $\Pr_{\lambda\leftarrow \Lambda}[\forall i, \Hoo(V_i | \Lambda = \lambda)  \ge \alpha'] \leq 1-\ell\epsilon_{sam}$.
 %[V_i(V, \Lambda)$ is $(\ell\epsilon_{sam})$-close to a distribution $(V', U_{\ell\times r_{sam}})$ where for $u\in U_{\ell\times r_{sam}}$ for all $i$, $\Hoo(V_i' | U_{\ell\times r_{sam}} =u)\geq \alpha'$.
 \end{corollary}
-\begin{proof}
-Union bound over the probability in \lemref{lem:sampling works}.
-%Hybrid argument over the statistical distance in \lemref{lem:sampling works}.
-\end{proof}
+%\begin{proof}
+%Union bound over the probability in \lemref{lem:sampling works}.
+%%Hybrid argument over the statistical distance in \lemref{lem:sampling works}.
+%\end{proof}
 
 In ~\clref{cl:all blocks entropy} we show that any distribution where each individual block has super-logarithmic min-entropy forms a unguessable block distribution.  This allows us to conclude:
 \begin{corollary}
@@ -686,20 +686,19 @@ Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works},  and all the
 
 
 Thus, unless the choice of $\lambda$ is very unlucky,
-\consref{cons:sampling} is \consref{cons:first construction} applied to an unguessable block distribution $V_1,..., V_\ell$. This allows us to conclude the following.
+\consref{cons:sampling} is \consref{cons:first construction} applied to an unguessable block distribution $V_1,..., V_\ell$. That is, 
 \begin{corollary}
 \label{cor:samp unguess}
 Let all the variables be as in \thref{thm:sampling}.
 For every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C | P) \geq H_0(C)$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
 \end{corollary}
-\begin{proof}
-Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
-\end{proof}
+%\begin{proof}
+%Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
+%\end{proof}
 
 \subsection{Correctness of \consref{cons:sampling}}
 \label{sec:correct sampling}
-The argument that $1\rightarrow 0$ flips from $c$ to $c'$ are unlikely carries over from \consref{cons:first construction}.  This probability is at most $\ell/\mathcal{Z}^\eta$.   Recall that the code $C$ corrects up to $t'$ flips from $0$ to $1$. We now show that $C$ is up to the task with overwhelming probability, i.e., that  $\Pr_{(v, v')\leftarrow (V, V')}[v'\not\in\neigh_{t'}(v)] <\ngl(n)$.  The proof is in \apref{sec:sampling errors}.
-
+The argument that $1\rightarrow 0$ flips from $c$ to $c'$ are unlikely carries over from \consref{cons:first construction}.  Recall that the code $C$ corrects up to $t'$ flips from $0$ to $1$. We now show that $C$ is up to the task with overwhelming probability, i.e., that  $\Pr_{(v, v')\leftarrow (V, V')}[v'\not\in\neigh_{t'}(v)] <\ngl(n)$.  The proof is in \apref{sec:sampling errors}.  The correctness argument in \thref{thm:sampling} is obtained by subtracting the probability of a single $1\rightarrow 0$ bit flip~($\ell/|\mathcal{Z}|$) and the error of the code~($\delta_{code}$).
 
 \begin{lemma}
 \label{lem:sampling errors}
@@ -707,18 +706,19 @@ Let all the variables be as in \thref{thm:sampling}.
  Then $\Pr[v'\in\neigh_{t'}(v)]\geq 1-O(2^{-\ell})$, where the probability is over the coins of $\gen$.  %That is, for any $t\leq \mu(\gamma-\eta)/\eta$, \consref{cons:sampling} is correct with overwhelming probability.
 \end{lemma}
 
-\begin{corollary}
-Let all the variables be as in \thref{thm:sampling}.
-When
-\[
-\dis(w, w')\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = \Theta(\gamma/\eta)
-\]
-and $(c, p)\leftarrow \gen(w)$, then
-\[
-\Pr[\rep(w', p) = c] \geq 1-\frac{\ell}{|\mathcal{Z}|^\eta} - O(2^{-\ell}) -\delta_{code}= 1-\ngl(n).
-\]
-That is, \consref{cons:sampling} is correct with overwhelming probability.
-\end{corollary}
+
+%\begin{corollary}
+%Let all the variables be as in \thref{thm:sampling}.
+%When
+%\[
+%\dis(w, w')\le \frac{-\log(1-t'/(2\ell))}{2}\frac{\gamma-\eta}{\eta} = \Theta(\gamma/\eta)
+%\]
+%and $(c, p)\leftarrow \gen(w)$, then
+%\[
+%\Pr[\rep(w', p) = c] \geq 1-\frac{\ell}{|\mathcal{Z}|^\eta} - O(2^{-\ell}) -\delta_{code}= 1-\ngl(n).
+%\]
+%That is, \consref{cons:sampling} is correct with overwhelming probability.
+%\end{corollary}
 
 \subsection{Discussion of \consref{cons:sampling}}
 \lnote{I need to check this}
