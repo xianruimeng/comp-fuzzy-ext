@@ -378,12 +378,12 @@ In this section we present our paradigm for constructing computational fuzzy ext
 
 \begin{definition}~\cite[Definition 2.5]{fuller2013computational}
 \label{def:comp fuzzy extractor}
-Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s_{sec})$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \kappa, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s)$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
 \begin{itemize}
-\item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $R\in\{0,1\}^\kappa$ and a helper string $P\in\{0,1\}^*$.
-\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $P\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(R, P)\leftarrow \gen(w)$, then $\Pr[\rep( w', P) = R] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.
+\item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $r\in\{0,1\}^\kappa$ and a helper string $p\in\{0,1\}^*$.
+\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(r, p)\leftarrow \gen(w)$, then $\Pr[\rep( w', p) = r] \geq 1-\delta$, where the probability is over the randomness of $(\gen, \rep)$.
 If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
-\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $R$ is pseudorandom conditioned on $P$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\kappa, P))\leq \epsilon$.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $r$ is pseudorandom conditioned on $p$, that is $\delta^{\mathcal{D}_s}((R, P), (U_\kappa, P))\leq \epsilon$.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
@@ -396,24 +396,35 @@ We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL9
 Let $(W, S)$ be a pair of random variables.  $W$ has
 \emph{HILL entropy} at least $k$ conditioned on $S$,
 denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon$.
-\end{definition} \lnote{I haven't checked this section below this line}
+\end{definition} 
 We now define a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 \begin{definition}
 \label{def:comp fuzzy cond}
-Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen'$) and ``reproduce'' ($\rep'$) is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ if $\gen'$ and $\rep'$ satisfy the following properties:
+A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s)$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy \defref{def:comp fuzzy extractor}, except the last condition is replaced with the following weaker condition:
 \begin{itemize}
-\item The generate procedure $\gen'$ on input $w\in \mathcal{M}$ outputs a string $X\in\{0,1\}^\ell$ and a helper string $SS\in\{0,1\}^*$.
-\item The reproduction procedure $\rep'$ takes an element $w'\in\mathcal{M}$ and a bit string $SS\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(X, SS)\leftarrow \gen'(w)$, then $\Pr[\rep'( w', SS) = X] \geq 1-\delta$ where the probability is over the randomness of $(\gen', \rep')$.
-If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep'$.
-\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $X$ has high HILL entropy conditioned on $P$, that is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(X |P)\geq \tilde{m}$.
+\item for any distribution $W\in \mathcal{W}$, the string $x$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(R |P)\geq \tilde{m}$.
 \end{itemize}
 \end{definition}
+
+\iffalse
+\begin{definition}
+\label{def:comp fuzzy cond}
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s)$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy the following properties (the first two properties are the same as in \defref{def:comp fuzzy extractor}, with $x$ replacing $r$):
+\begin{itemize}
+\item The generate procedure $\gen$ on input $w\in \mathcal{M}$ outputs a string $x\in\{0,1\}^\ell$ and a helper string $p\in\{0,1\}^*$.
+\item The reproduction procedure $\rep$ takes an element $w'\in\mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(x, p)\leftarrow \gen(w)$, then $\Pr[\rep(w',p) = x] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.
+If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep$.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $x$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(X |P)\geq \tilde{m}$.
+\end{itemize}
+\end{definition}
+\fi 
+
 A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average-case:
 \begin{definition}
 Let $\chi$ be a finite set.
 A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon_{ext}, s_{ext})$-average-case computational extractor} if for all pairs
-of random variables $X, Y$ over $\zo^\ell, \chi$ such that
-$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{ext}}}((\cext(X, U_d), U_d, Y), U_\kappa\times
+of random variables $X, Y$ (with $X$ over $\zo^\ell$) such that
+$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{ext}}}((\cext(X; U_d), U_d, Y), U_\kappa\times
 U_d \times Y) \le \epsilon_{ext}$.
 \end{definition}
 
@@ -423,8 +434,8 @@ Combining a computational fuzzy conductor and an appropriate computational extra
 \label{lem:cond and cext}
 Let $\gen'$, $\rep'$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, \epsilon_{ext}, s_{ext})$-average case computational extractor.  Define $(\gen, \rep)$ as:
 \begin{itemize}
-\item $\gen(w; seed):$ run $(x, ss)= \gen'(w)$ and set $r = \cext(x; seed)$, $p = (ss, seed)$.  Output $(r, p)$.
-\item $\rep(w, (ss, seed)):$ recover $x = \rec'(w'; p')$ and output $r = \cext(x; seed)$.
+\item $\gen(w; seed)$ (where $seed\in \zo^d$): run $(r', p')= \gen'(w)$ and output $r = \cext(r'; seed)$, $p = (p', seed)$. 
+\item $\rep(w', (p', seed)):$ run $r' = \rep'(w'; p')$ and output $r = \cext(r'; seed)$.
 \end{itemize}
 Then $(\gen, \rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{cond}+\epsilon_{ext}, s')$-hard with error $\delta$ where $s' = \min\{s_{cond} - |\cext| -d, s_{ext}\}$.
 \end{lemma}
