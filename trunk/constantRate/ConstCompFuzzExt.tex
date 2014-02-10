@@ -240,6 +240,8 @@ We construct the first fuzzy extractors that work for a large class of distribut
 
 Our first construction requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  Our second construction requires  a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. The constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
 \bnote{more about what we do}
+
+\textbf{Keywords} Fuzzy extractors, key derivation, error-correcting codes, computational entropy, point obfuscation.
 \end{abstract}
 
 
@@ -535,7 +537,7 @@ Recall that $c$ contains at most $\ell$ $1$s.  Since $w'$ is chosen independentl
 \]
 \end{proof}
 
-We now consider the number of possible $0\rightarrow 1$ bit flips in $c$.  A $0\rightarrow 1$ flip on index $j$ occurs when two conditions are met $w_j\neq w_j'$ and $c_j = 0$.  Since the first conditioned is only fulfilled at most $t$ times, we have the following lemma:
+Since there are most $t$ locations when $w_j\neq w_j'$ there are at most $t$ $0\rightarrow 1$ bit flips in $c$:
 
 \begin{lemma}
 \label{lem:correct of cons}
@@ -551,7 +553,7 @@ That is, \consref{cons:first construction} is correct with error at most $\ell/|
 
 \subsection{Discussion of \consref{cons:first construction}}
 \label{sec:discussion}
-To show that $\Huse$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  We allow $t$ errors with an alphabet $\mathcal{Z}$ of size $2^n$.  This means that
+To show that $\Huse$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  
 \[
 \log |B_t| = \log \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i> \log {\ell \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\ell\choose t}
 \]
@@ -577,10 +579,7 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block sou
 \forall j\in J, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}) \geq \alpha.
 \]
 \end{definition}
-
 \defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), as only some blocks are required to have entropy conditioned on the past.  The choice of conditioning on the past is arbitrary: a more general sufficient condition is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
-%Note a partial block source requires worst case entropy while an unguessable block distribution only requires average conditional entropy. \lnote{this comparison is unclear to me}  However, we achieve security for significantly lower entropy levels than for unguessable block distributions.
-
 Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that  outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ given let $r_{sam}$ bits of randomness.
 
 \begin{construction}[Sample-then-Obfuscate]
@@ -725,11 +724,9 @@ That is, \consref{cons:sampling} is correct with overwhelming probability.
 \lnote{I need to check this}
 We now show \consref{cons:sampling} can work for partial block sources when $\Huse\le 0$.  The required entropy of partial block source is $\alpha (\gamma-\beta ) = \Theta(\gamma)$.  We are able to correct $O(\gamma/\eta)$ errors.
 This yields:
-\begin{align*}
-\Huse &= \Hoo(W) -\log |B_t| \\
-&< \Theta(\gamma)- t \log |\mathcal{Z}|\\
-&= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|
-\end{align*}
+\[
+\Huse = \Hoo(W) -\log |B_t| < \Theta(\gamma)- t \log |\mathcal{Z}|= \Theta(\gamma) - \Theta(\gamma/\eta) \log |\mathcal{Z}|
+\]
 That is, \consref{cons:sampling} achieves $\Huse\le 0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$).  We note that for polynomial-size alphabets, \consref{cons:sampling} will still work as long as we use a code that corrects Hamming errors in both directions (with a polynomial size alphabet the probability of $1\rightarrow 0$ bits flips is noticeable); however, for a polynomial-size alphabet, $\Huse>0$.
 %However, in this setting $\Huse =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
 \bibliographystyle{alpha}
@@ -931,7 +928,8 @@ Let $D'$ be such a distinguisher.  That is,
 Then define $D$ as follows.  On input $(y, ss)$ sample $seed\leftarrow U_d$, compute $r\leftarrow \cext(y; seed)$ and output $D(r, seed, ss)$.  Note that $|D| \approx s' + |\cext| +d= s_{cond}$.  Then we have the following:
 \begin{align*}
 \delta^{D}((X, SS), (Y, SS))&= \delta^{D'}((\cext(X, U_d), U_d, SS), \cext(Y, U_d), U_d, SS)\\
-&\geq \delta^{D'}((\cext(X, U_d), U_d, SS), (U_\kappa\times U_d \times SS)) - \delta^{D'}((\cext(Y, U_d), U_d, SS), (U_\kappa\times U_d \times SS))\\
+&\geq \delta^{D'}((\cext(X, U_d), U_d, SS), (U_\kappa\times U_d \times SS)) \\
+&- \delta^{D'}((U_\kappa\times U_d \times SS), (\cext(Y, U_d), U_d, SS))\\
 &>\epsilon_{cond}+\epsilon_{ext}- \epsilon_{ext} = \epsilon_{cond}.
 \end{align*}
 Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.  This is a contradiction.
@@ -987,12 +985,11 @@ If $W$ is a $(q, \alpha, \beta)$-block unguessable distribution over $\mathcal{Z
 \end{claim}
 \begin{proof}
 \bnote{Leo I changed some of this under you.  It wasn't clear or probably right as written.}
-\bnote{better name for guess, creativity is running low.}
 Let $W$ be a $(q, \alpha, \beta)$-block unguessable distribution.  Let $J\subset\{1,..., \ell\}$ the set of good indices.
-It suffices to show that there exists an $S$ making $q$ queries such that for some $j\in J, \Hav(W_j | S^{I_{W}(\cdot, \cdot)})\le \log |\mathcal{Z}| - \log q$.  Denote by $guess_{1}, ..., guess_q$ the $q$ most likely outcomes of $W_j$~(breaking ties arbitrarily).  Note that $\sum_{i=1}^q \Pr[W_j = guess_i]\geq q/|\mathcal{Z}|$.  Suppose not, this means that there is some $guess_i$ with probability $\Pr[W_j = guess_i] < 1/|\mathcal{Z}|$.  Since there are $\mathcal{Z} - q $ remaining possible values of $W_j$ for their total probability to be at least $1-q/|\mathcal{Z}|$ at least of these values has probability at least $1/\mathcal{Z}$.  This contradicts the statement $guess_1,..., guess_q$ are the most likely values.  Consider $S$ that queries its oracle on $(j, guess_1),.., (j, guess_q)$.  Denote by $Guess$ the random variable when $W_j\in \{guess_1,.., guess_q\}$  After these queries the remaining min-entropy is at most:
+It suffices to show that there exists an $S$ making $q$ queries such that for some $j\in J, \Hav(W_j | S^{I_{W}(\cdot, \cdot)})\le \log |\mathcal{Z}| - \log q$.  Denote by $w_{j,1}, ..., w_{j,q}$ the $q$ most likely outcomes of $W_j$~(breaking ties arbitrarily).  Then $\sum_{i=1}^q \Pr[W_j = w_{j,i}]\geq q/|\mathcal{Z}|$.  Suppose not, this means that there is some $w_{j,i}$ with probability $\Pr[W_j = w_{j,i}] < 1/|\mathcal{Z}|$.  Since there are $\mathcal{Z} - q $ remaining possible values of $W_j$ for their total probability to be at least $1-q/|\mathcal{Z}|$ at least of these values has probability at least $1/\mathcal{Z}$.  This contradicts the statement $w_{j,1},..., w_{j,q}$ are the most likely values.  Consider $S$ that queries its oracle on $(j, w_{j,1}),.., (j, w_{j,q})$.  Denote by $Bad$ the random variable when $W_j\in \{w_{j,1},.., w_{j,q}\}$  After these queries the remaining min-entropy is at most:
 \begin{align*}
-\Hav(W_j | S^{J_W(\cdot, \cdot)}) &=  -\log \left(\Pr[Guess=1]\times 1+ \Pr[Guess=0]\times \max_{w}\Pr[W_j = w|\not Guess =0]\right)\\
-&\leq  -\log \left(\Pr[Guess=1]\times 1\right)\\
+\Hav(W_j | S^{J_W(\cdot, \cdot)}) &=  -\log \left(\Pr[Bad=1]\times 1+ \Pr[Bad=0]\times \max_{w}\Pr[W_j = w| Bad =0]\right)\\
+&\leq  -\log \left(\Pr[Bad=1]\times 1\right)\\
 &=-\log\left( \frac{q}{|\mathcal{Z}|} \right) = \log|\mathcal{Z}|-\log q
 \end{align*}
 This completes the proof of \clref{cl:ent bounded away from n}.
