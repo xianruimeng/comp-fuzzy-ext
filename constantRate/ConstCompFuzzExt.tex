@@ -310,7 +310,7 @@ We note that fuzzy extractors for the setting where $\Huse\le 0$ can be triviall
 Both constructions require a large alphabet $\mathcal{Z}$---one whose size is more than polynomial in the security parameter.\footnote{Alternatively, in case of burst errors~\cite{gilbert1960capacity}, multiple symbols from a small alphabet can be combined into a single symbol from a large alphabet.}  It is possible to tweak the sample-then-obfuscate construction for use with a small alphabet.  However, distributions with $\Huse \le 0$ are supported only for large alphabets.  For small alphabets, $\Huse>0$ and there are good information-theoretic constructions known~\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08}.
 Constructing a computational fuzzy extractor when $\Huse\le 0$ and a small alphabet is an open problem.
 
-Using information-theoretic fuzzy extractors with additional privacy properties, Dodis and Smith~\cite[Section 5]{DBLP:conf/stoc/DodisS05} construct program obfuscators for the program $I_w(x)$ that tests if $x$ is within Hamming distance $t$ of $w$. The obfuscation is secure as long as $w$ comes from a distribution of sufficient min-entropy; in particular, the entropy must be high enough so that $\Huse>0$. Our constructions do not provide obfuscators for proximity queries, because they leak more information than whether $x$ is within distance $t$ of $w$ (for example, they may provide some information about the actual distance or about which coordinates agree). Constructing an efficient obfuscator for proximity queries when $\Huse<0$ is an open problem.
+Using information-theoretic fuzzy extractors with additional privacy properties, Dodis and Smith~\cite[Section 5]{DBLP:conf/stoc/DodisS05} construct program obfuscators for the program $I_w(x)$ that tests if $x$ is within Hamming distance $t$ of $w$. The obfuscation is secure as long as $w$ comes from a distribution of sufficient min-entropy; in particular, the entropy must be high enough so that $\Huse>0$. Our constructions do not provide obfuscators for proximity queries, because they leak more information than whether $x$ is within distance $t$ of $w$ (for example, they may provide some information about the actual distance or about which coordinates agree). Constructing an efficient obfuscator for proximity queries when $\Huse\le 0$ is an open problem.
 
 \lnote{restricting errors instead of entropy is another way to get around impossibility}
 
@@ -395,14 +395,14 @@ We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL9
 \label{def:hill ent}
 Let $(W, S)$ be a pair of random variables.  $W$ has
 \emph{HILL entropy} at least $k$ conditioned on $S$,
-denoted $H^{\hill}_{\epsilon, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon$.
+denoted $H^{\hill}_{\epsilon, s}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s}} ((W, S),(X,S))\leq \epsilon$.
 \end{definition} 
 We now define a computational fuzzy conductor and a (computational)~randomness extractor.  A computational fuzzy conductor is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 \begin{definition}
 \label{def:comp fuzzy cond}
 A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s)$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy \defref{def:comp fuzzy extractor}, except the last condition is replaced with the following weaker condition:
 \begin{itemize}
-\item for any distribution $W\in \mathcal{W}$, the string $x$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(R |P)\geq \tilde{m}$.
+\item for any distribution $W\in \mathcal{W}$, the string $x$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon, s}(R |P)\geq \tilde{m}$.
 \end{itemize}
 \end{definition}
 
@@ -422,17 +422,17 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep$.
 A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average-case:
 \begin{definition}
 Let $\chi$ be a finite set.
-A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon_{ext}, s_{ext})$-average-case computational extractor} if for all pairs
+A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon, s)$-average-case computational extractor} if for all pairs
 of random variables $X, Y$ (with $X$ over $\zo^\ell$) such that
-$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{ext}}}((\cext(X; U_d), U_d, Y), U_\kappa\times
-U_d \times Y) \le \epsilon_{ext}$.
+$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s}}((\cext(X; U_d), U_d, Y), U_\kappa\times
+U_d \times Y) \le \epsilon$.
 \end{definition}
 
 Combining a computational fuzzy conductor and an appropriate computational extractor yields a computational fuzzy extractor~(proof in \apref{sec:cond and cext}):
 
 \begin{lemma}
 \label{lem:cond and cext}
-Let $\gen'$, $\rep'$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, \epsilon_{ext}, s_{ext})$-average case computational extractor.  Define $(\gen, \rep)$ as:
+Let $(\gen'$, $\rep')$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, \epsilon_{ext}, s_{ext})$-average case computational extractor.  Define $(\gen, \rep)$ as:
 \begin{itemize}
 \item $\gen(w; seed)$ (where $seed\in \zo^d$): run $(r', p')= \gen'(w)$ and output $r = \cext(r'; seed)$, $p = (p', seed)$. 
 \item $\rep(w', (p', seed)):$ run $r' = \rep'(w'; p')$ and output $r = \cext(r'; seed)$.
