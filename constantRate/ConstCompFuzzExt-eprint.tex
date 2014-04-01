@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 %\documentclass{llncs}
-\def\shownotes{1}
+\def\shownotes{0}
 
 
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
@@ -221,13 +221,7 @@
 \newcommand{\Vol}{\mathsf{Vol}}
 
 \title{Key Derivation From Noisy Sources With More Errors Than Entropy}
-%\author{Ran Canetti \and Benjamin Fuller\footnote{The Lincoln Laboratory portion of this
-%work was sponsored by the Department of the Air Force under Air Force
-%Contract
-%\#FA8721-05-C-0002.  Opinions,
-%interpretations, conclusions and recommendations are those of the author
-%and
-%are not necessarily endorsed by the United States Government.} \and Omer Paneth \and Leonid Reyzin}
+\author{Ran Canetti\footnote{Email: {\tt canetti@cs.bu.edu}.} ~~~~~ Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Work done in part while the author was at MIT Lincoln Laboratory.} ~~~~~ Omer Paneth\footnote{Email: {\tt paneth@cs.bu.edu}. } ~~~~~ Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.} \\ Boston University }
 
 \begin{document}
 \maketitle
@@ -271,7 +265,7 @@ Prime candidate sources for authentication have $\Huse\le 0$.  As an example, th
 \Huse = \Hoo(W) - \log |B_t|
 = 249 - \log \sum_{i=0}^{205} {2048 \choose i} \approx -707.
 \]
-There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
+There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
 \paragraph{Our Contributions}
 We provide the first constructions of computational fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over $\mathcal{Z}^\ell$ for a large alphabet $\mathcal{Z}$.  As explained above, such constructions cannot work without some restriction on the distribution.
@@ -733,6 +727,11 @@ This yields:
 \]
 That is, \consref{cons:sampling} achieves $\Huse\le 0$ when the starting alphabet is super polynomial~(noting that for super polynomial size $\mathcal{Z}$ we can set $\eta$ to be super logarithmic and $o(\log |\mathcal{Z}|)$).  We note that for polynomial-size alphabets, \consref{cons:sampling} will still work as long as we use a code that corrects Hamming errors in both directions (with a polynomial size alphabet the probability of $1\rightarrow 0$ bits flips is noticeable); however, for a polynomial-size alphabet, $\Huse>0$.
 %However, in this setting $\Huse =\Omega(\gamma)$ and known information-theoretic fuzzy extractors provide superior performance.
+
+\section*{Acknowledgements}
+The authors are grateful to Nir Bitanski, Nishanth Chandran, Sharon Goldberg, Gene Itkis, Bhavana Kanukurthi, Adam Smith, and Mayank Varia for helpful discussions, creative ideas, and important references.  
+
+This work is supported in part by National Science Foundation grants XXXX. The work of Benjamin Fuller is sponsored in part by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.  
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
