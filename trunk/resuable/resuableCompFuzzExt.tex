@@ -1,0 +1,498 @@
+\documentclass[11pt]{article}
+%\documentclass{llncs}
+\def\shownotes{1}
+
+
+\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ...
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{algpseudocode}
+
+\mathchardef\mhyphen="2D
+
+\newcommand{\secref}[1]{\mbox{Section~\ref{#1}}}
+\newcommand{\subsecref}[1]{\mbox{Subsection~\ref{#1}}}
+\newcommand{\apref}[1]{\mbox{Appendix~\ref{#1}}}
+\newcommand{\thref}[1]{\mbox{Theorem~\ref{#1}}}
+\newcommand{\exref}[1]{\mbox{Example~\ref{#1}}}
+\newcommand{\defref}[1]{\mbox{Definition~\ref{#1}}}
+\newcommand{\corref}[1]{\mbox{Corollary~\ref{#1}}}
+\newcommand{\lemref}[1]{\mbox{Lemma~\ref{#1}}}
+\newcommand{\assref}[1]{\mbox{Assumption~\ref{#1}}}
+\newcommand{\probref}[1]{\mbox{Problem~\ref{#1}}}
+\newcommand{\clref}[1]{\mbox{Claim~\ref{#1}}}
+\newcommand{\propref}[1]{\mbox{Proposition~\ref{#1}}}
+\newcommand{\remref}[1]{\mbox{Remark~\ref{#1}}}
+\newcommand{\consref}[1]{\mbox{Construction~\ref{#1}}}
+\newcommand{\figref}[1]{\mbox{Figure~\ref{#1}}}
+\DeclareMathOperator*{\expe}{\mathbb{E}}
+\DeclareMathOperator*{\var}{\text{Var}}
+
+
+\newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
+\newcommand{\gen}{\ensuremath{\class{Gen}}\xspace}
+\newcommand{\rep}{\ensuremath{\class{Rep}}\xspace}
+\newcommand{\sketch}{\ensuremath{\class{SS}}\xspace}
+\newcommand{\rec}{\ensuremath{\class{Rec}}\xspace}
+\newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
+\newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
+\newcommand{\prg}{\ensuremath{\class{prg}}\xspace}
+\newcommand{\zo}{\ensuremath{\{0, 1\}}}
+\newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\zq}{\ensuremath{\mathbb{Z}_q}}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}}
+\newcommand{\sample}{\ensuremath{\class{Sample}}\xspace}
+\newcommand{\neigh}{\ensuremath{\class{Neigh}}\xspace}
+\newcommand{\dis}{\ensuremath{\mathsf{dis}}}
+\newcommand{\decode}{\ensuremath{\mathsf{Decode}}}
+\newcommand{\guess}{\mathsf{guess}}
+
+
+\newcommand{\A}{\mathcal{A}}
+
+
+\newcommand{\metric}{\ensuremath{\mathtt{Metric}}\xspace}
+\newcommand{\hill}{\ensuremath{\mathtt{HILL}}\xspace}
+\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL\mhyphen rlx}}\xspace}
+\newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
+\newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
+\newcommand{\unprlx}{\ensuremath{\mathtt{unp\mhyphen rlx}}\xspace}
+\newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
+\newcommand{\metricd}{\ensuremath{\mathtt{Metric}^*\mathtt{-d}}\xspace}
+\newcommand{\hillstar}{\ensuremath{\mathtt{HILL}^*}\xspace}
+\newcommand{\hillprime}{\ensuremath{\mathtt{HILL'}}\xspace}
+\newcommand{\metricprime}{\ensuremath{\mathtt{Metric'}}\xspace}
+\newcommand{\metricprimestar}{\ensuremath{\mathtt{Metric'}^*}\xspace}
+\newcommand{\hillprimestar}{\ensuremath{\mathtt{HILL'}^*}\xspace}
+\newcommand{\poly}{\ensuremath{\mathtt{poly}}\xspace}
+\newcommand{\rank}{\ensuremath{\mathtt{rank}}\xspace}
+\newcommand{\ngl}{\ensuremath{\mathtt{ngl}}\xspace}
+\newcommand{\Hoo}{\mathrm{H}_\infty}
+\newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
+\newcommand{\Hfuzz}{\mathrm{H}^{\mathtt{fuzz}}_{t,\infty}}
+\newcommand{\Huse}{\mathrm{H}_{\mathtt{usable}}}
+\newcommand{\Dom}{\mathsl{Dom}}
+\newcommand{\Range}{\mathsl{Rng}}
+\newcommand{\Keys}{\mathsl{Keys}}
+\def\col{\mathrm{Col}}
+
+\newcommand{\ddetbin}{\ensuremath{\mathcal{D}^{det,\{0,1\}}}}
+\newcommand{\drandbin}{\ensuremath{\mathcal{D}^{rand,\{0,1\}}}}
+\newcommand{\ddetrange}{\ensuremath{\mathcal{D}^{det,[0,1]}}}
+\newcommand{\drandrange}{\ensuremath{\mathcal{D}^{rand,[0,1]}}}
+
+\newcommand{\expinfo}{\ensuremath{\mathcal{E}}}
+\newcommand{\ext}{\ensuremath{\mathtt{ext}}}
+\newcommand{\cext}{\ensuremath{\mathtt{cext}}}
+\newcommand{\rext}{\ensuremath{\mathtt{rext}}}
+\newcommand{\cons}{\ensuremath{\mathtt{cons}}}
+\newcommand{\decons}{\ensuremath{\mathtt{decons}}}
+
+
+\newcommand{\lwe}{\class{LWE}}
+\newcommand{\LWE}{\class{LWE}}
+\newcommand{\distLWE}{\ensuremath{\class{dist\mbox{-}LWE}}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{construction}[theorem]{Construction}
+
+\newcounter{ctr}
+\newcounter{savectr}
+\newcounter{ectr}
+
+\newenvironment{newitemize}{%
+\begin{list}{\mbox{}\hspace{5pt}$\bullet$\hfill}{\labelwidth=15pt%
+\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{3pt} }}{\end{list}}
+
+
+\newenvironment{newenum}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=17pt%
+\labelsep=5pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{tiret}{%
+\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+\labelsep=3pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt}}}{\end{list}}
+
+
+\newenvironment{blocklist}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{20pt}}}{\end{list}}
+
+\newenvironment{blocklistindented}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=30pt \leftmargin=30pt\topsep=5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt}}}{\end{list}}
+
+\newenvironment{onelist}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=18pt%
+\labelsep=7pt \leftmargin=25pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{twolist}{%
+\begin{list}{{\rm (\arabic{ctr}.\arabic{ectr})}%
+\hfill}{\usecounter{ectr} \labelwidth=26pt%
+\labelsep=7pt \leftmargin=33pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{centerlist}{%
+\begin{list}{\mbox{}}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt} }}{\end{list}}
+
+\newenvironment{newcenter}[1]{\begin{centerlist}\centering%
+\item #1}{\end{centerlist}}
+
+\newenvironment{codecenter}[1]{\begin{small}\begin{centerlist}\centering%
+\item #1}{\end{centerlist}\end{small}}
+
+\ifnum\shownotes=1
+\newcommand{\authnote}[2]{{\textcolor{red}{\textsf{#1 notes: }\textcolor{blue}{ #2}}\marginpar{\textcolor{red}{\textbf{!!!!!}}}}}
+\else
+\newcommand{\authnote}[2]{}
+\fi
+\newcommand{\bnote}[1]{{\authnote{Ben}{#1}}}
+\newcommand{\lnote}[1]{{\authnote{Leo}{#1}}}
+\newcommand{\rnote}[1]{{\authnote{Ran}{#1}}}
+\newcommand{\onote}[1]{{\authnote{Omer}{#1}}}
+
+\newcommand{\ve}{\vect{e}}
+\newcommand{\vm}{\vect{m}}
+\newcommand{\vy}{\vect{y}}
+\newcommand{\vE}{\vect{E}}
+\newcommand{\vS}{\vect{S}}
+\newcommand{\vA}{\vect{A}}
+\newcommand{\vc}{\vect{c}}
+\newcommand{\vW}{\vect{W}}
+\newcommand{\vQ}{\vect{Q}}
+\newcommand{\vR}{\vect{R}}
+\newcommand{\vU}{\vect{U}}
+\newcommand{\vT}{\vect{T}}
+\newcommand{\vX}{\vect{X}}
+\newcommand{\vB}{\vect{B}}
+\newcommand{\vz}{\vect{z}}
+\newcommand{\vd}{\vect{d}}
+\newcommand{\vs}{\vect{s}}
+\newcommand{\vx}{\vect{x}}
+\newcommand{\va}{\vect{a}}
+\newcommand{\vb}{\vect{b}}
+\newcommand{\vgamma}{\mathbf{\Gamma}}
+\newcommand{\vt}{\vect{t}}
+\newcommand{\vu}{\vect{u}}
+\newcommand{\vF}{\vect{F}}
+\newcommand{\recout}{x}
+\newcommand{\ignore}[1]{}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\Vol}{\mathsf{Vol}}
+
+\title{Reusable Fuzzy Extractors Against Arbitrary Correlation}
+%\author{Ran Canetti \and Benjamin Fuller\footnote{The Lincoln Laboratory portion of this
+%work was sponsored by the Department of the Air Force under Air Force
+%Contract
+%\#FA8721-05-C-0002.  Opinions,
+%interpretations, conclusions and recommendations are those of the author
+%and
+%are not necessarily endorsed by the United States Government.} \and Omer Paneth \and Leonid Reyzin}
+
+\begin{document}
+\maketitle
+
+
+%\begin{abstract}
+%Fuzzy extractors convert a noisy source of entropy into a consistent uniformly-distributed key.  
+%
+%\end{abstract}
+
+
+\section{Introduction}\label{sec:introduction}
+
+\paragraph{Fuzzy Extractors}
+Cryptography relies on long-term secrets for key derivation and authentication. However, many sources with sufficient randomness to form long-term secrets provide similar but not identical values at repeated readings~(prominent examples include biometrics and other human-generated data~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password},
+physically unclonable functions~\cite{pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical},
+and quantum information~\cite{bennett1988privacy}). Turning similar readings into identical values is known as \emph{information reconciliation}; further converting those values into uniformly random secret strings is known as \emph{privacy amplification}~\cite{bennett1988privacy}.
+Both of these problems have interactive and non-interactive versions.  In this paper, we are interested in the non-interactive case, which is useful for a single user trying to produce the same key from multiple readings of a physical source at different times.
+ A \emph{fuzzy extractor} is the primitive that accomplishes both information reconciliation and privacy amplification non-interactively; fuzzy extractors are defined information-theoretically in~\cite{DBLP:journals/siamcomp/DodisORS08}.
+
+
+Fuzzy extractors consist of a pair of algorithms: \gen takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$, as long as $w$ comes from a high-quality distribution (traditionally, any distribution with sufficient min-entropy $m$). The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\ell$ strings over some alphabet $\mathcal{Z}$).
+
+\paragraph{Reusability} Fuzzy extractors should be able to authenticate users to multiple different services/devices.  That is, instead of creating a single pair $(r, p)$ from an initial reading $w$, we read the noisy sources multiple times~($w_1,..., w_q$) and produce $(r_1, p_1),..., (r_q, p_q)$.  This problem is known as a reusable fuzzy extractor~\cite{Boyen2004}.  There are two basic versions of the problem, first where the adversary sees $p_1,..., p_q$~(outsider security), and second where the adversary also sees some subset of the derived keys as well~(insider security).  Ideally, we want $w_1,..., w_q$ and the unseen keys to be ``as good'' as in the single use case.  Boyen constructs a reusable cryptographic fuzzy extractor based on the code-offset or the syndrome sketches from~\cite{JW99, DBLP:journals/siamcomp/DodisORS08} instantiated with linear codes.
+
+\paragraph{Limitations of Known Approaches}
+
+There are two primary questions about the reusability of a fuzzy extractor.  The first is how often it can be reused, the second is what correlation is allowed between $w_1,..., w_q$.  Boyen~\cite{Boyen2004} considers fuzzy extractors that are arbitrarily reusable.  Their construction is secure when the correlations between $w_1,.., w_q$ come from a subgroup of permutations used in the fuzzy extractor.  They show in the setting of arbitrary reuse such a strong restriction on correlation is necessary~\cite[Theorem 11]{Boyen2004}.  In particular, they show how any information-theoretic fuzzy extractor secure with arbitrary reuse can be transformed into their construction.  
+
+However, their negative result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two natural restrictions to the definition of reusability: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.fuzzy extractor will only be used a polynomial number of times.
+
+\paragraph{Our Contributions}
+We provide the first constructions of reusable fuzzy extractors that allow for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
+\begin{itemize}
+\item Provide an information-theoretic analogue of their construction.  We show a transform from locally computable extractors to fuzzy extractors.
+\item Significantly improve the error tolerance of the \cite[Construction 5.2]{canetti2014key}.  This also allows the construction to have negative minimum usable, with any super-constant alphabet size~(previously it was any super-polynomial alphabet size.  This solves the main open problem of~\cite{canetti2014key}.
+\end{itemize}
+
+\paragraph{Our Approach}
+Like the work of Canetti et al., our fuzzy extractors are built from point obfuscation.  \bnote{write more here}
+
+\medskip
+
+The remainder of this paper is organized as follows: we cover notation and background on obfuscation and error correcting codes in \secref{sec:preliminaries}, describe reusable fuzzy extractors in \secref{sec:fuzzy extractors}, and present our construction in \secref{sec:construction}.
+
+\section{Preliminaries}
+\label{sec:preliminaries}
+For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote by $X = X_1,..., X_\ell$  the tuple $(X_1,\dots, X_\ell)$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
+and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.
+The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
+For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s}$ the class of randomized circuits which output a single bit and have size at most $s$.
+
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\ell$, defined via $\dis(x,y) = \{i | x_i \neq y_i\}$.  For this metric, $|B_t| = \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  Unless otherwise noted logarithms are base $2$.
+Usually, we use capitalized letters for random variables and corresponding lowercase letters for their samples.
+
+%\subsection{Coding Theory}
+%\label{sec:coding theory}
+%We will consider slightly nonstandard error-correct codes over $\{0,1\}^\ell$, which correct up to $t$ bit flips from $0$ to $1$ but no bit flips from $1$ to $0$ (this is the Hamming analog of the $Z$-channel~\cite{tallini2002capacity}).
+%\begin{definition}
+%\label{def:hamming z channel}
+%For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where at most $t$ bits $c_i$ are changed from $0$ to $1$.
+%\end{definition}
+%
+%\begin{definition}
+%Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that $\Pr_{c\in C}[\exists c'\in \neigh_t(c) \text{ s.t. } \decode(c') \neq c] \leq \delta_{code}$.
+%\end{definition}
+%
+%\textbf{Notes:}
+%Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
+%Codes with $2^{\Theta(\ell)}$ codewords and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
+%The class of errors we support in our source~($t$ Hamming errors over a large alphabet) and the class of errors for which we need codes~($t$ $0\rightarrow 1$ errors) are different.  See Constructions~\ref{cons:first construction} and~\ref{cons:sampling} for the translation between the error classes.
+
+\subsection{Obfuscation}
+Our construction uses obfuscation for a family of point functions $\mathtt{I}_n = \{I_w\}_{w \in \zo^n}$ defined as follows:
+\[
+I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
+\]
+The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at most a polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. They can also be constructed by assuming strong properties of cryptographic hash functions~\cite{canetti1997towards}.
+
+\begin{definition}[$\ell$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
+\label{def:obf} A PPT algorithm $\mathcal{O}$ is an $\ell$-composable VGB obfuscator for point functions with auxiliary-input if the following conditions are met:
+\begin{enumerate}
+\item \emph{Functionality:} for every $n$ and $I \in \mathtt{I}_n$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.
+\item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^\ell \in \mathtt{I}_n$, (where $\ell=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
+\[
+|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | < \frac{1}{p(n)} \enspace,
+\]
+where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
+\end{enumerate}
+\end{definition}
+For notational convenience, since we only use point function obfuscation, we denote the oracle provided to the simulator as $I_w(\cdot, \cdot)$ where $w = w_1,..., w_\ell$ is the vector of obfuscated points.
+\section{Reusable Fuzzy Extractors}
+\label{sec:fuzzy extractors}
+
+In this section we define reusable fuzzy extractors.  We weaken the previous definition of Boyen that allowed for arbitrary reusability~\cite[Definitions 6 and 7]{Boyen2004}.  We will consider a fixed amount of reusability.  Restricting to limited reuse or a computationally bounded adversary~(that can only interact with a limited number of uses) is necessary to overcome the negative results of Boyen.  These negative results show that the correlation between $w_1,..., w_q$ must be extremely limited in the unbounded reuse setting.
+
+Definitions for information-theoretic fuzzy extractors can be found in the work of Dodis et al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08}.  The definition of computational fuzzy extractors allows for a small probability of error.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.  We begin by reviewing the definition of a computational fuzzy extractor.  We then consider definitions of reusable fuzzy extractors.
+
+\begin{definition}~\cite[Definition 2.5]{fuller2013computational}
+\label{def:comp fuzzy extractor}
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \kappa, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s)$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
+\begin{itemize}
+\item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $r\in\{0,1\}^\kappa$ and a helper string $p\in\{0,1\}^*$.
+\item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(r, p)\leftarrow \gen(w)$, then $\Pr[\rep( w', p) = r] \geq 1-\delta$, where the probability is over the randomness of $(\gen, \rep)$.
+If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $r$ is pseudorandom conditioned on $p$, that is $\delta^{\mathcal{D}_s}((R, P), (U_\kappa, P))\leq \epsilon$.
+\end{itemize}
+\end{definition}
+In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In both our constructions it is crucial that $w'$ is chosen independently of the outcome of \gen.
+
+Our goal for defining outsider security is to allow reusability when each reading comes from an admission distribution.  There are two possible ways to model the security game, the first is to provide security for joint distributions $W_1,..., W_q$ when each $W_i$ is an admissible distribution.  A stronger definition uses a multi-stage adversary game where the adversary is allowed to specify the next reading after seeing previous sketches.  We allow the first stage of the adversary to be unbounded, but restrict the second stage of the adversary when providing computational security.  Let $A_{sam}, A_{guess}$ be some adversary.
+
+\begin{enumerate}
+%\item[\textbf{Preparation:}] An unbounded $A_{sam}$ specifies to the challenger a distribution $W_1\in\mathcal{M}$.  We assume there is an efficient procedure to sample from this distribution, but ignore this issue.
+%\item[\textbf{Initialization:}] The challengers samples $w_1\leftarrow W_1$.  The challenger computes $(r_1, p_1)\leftarrow \gen(w_1)$.
+\item[\textbf{Queries:}] For queries $i=1,..., q$, $A_{sam}$ computes $w_i\leftarrow A_{sam}(p_1,..., p_{i-1})$.  The challenger computes $(r_i, p_i)\leftarrow \gen(w_i)$.
+\item[\textbf{Guessing:}] The adversary outputs $r^*\leftarrow A_{guess}(p_1,..., p_i)$.  The adversary wins if for some $i$, $r^* = r_i$.
+\end{enumerate}
+
+\begin{definition}
+Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  If for $A_{sam}$ of size at most $s_{sam}$ and $A_{guess}$ of size at most $s_{guess}$.  For $i=1,..., q$, let $W_{i, p_1,..., p_{i-1}}$ be distribution produced by $A_{sam}(p_1,..., p_{i-1})$.  We say that $(\gen, \rep)$ is a $(q, \epsilon_{reuse}, s_{sam}, s_{guess})$-reusable fuzzy extractor if $\forall i=1,..., q, \forall p_1,..., p_{i-1}$, $W_{i, p_1,..., p_{i-1}}\in\mathcal{W}$ then $\Pr[\text{exists i}| r^*\leftarrow A_{guess}(p_1,..., p_q) \wedge r^* = r_i] <\epsilon_{reuse}$.  
+
+We say that $(\gen, \rep)$ is a reusable fuzzy extractor if it for any $q = \poly(n), s_{guess} = \poly(n)$, there is some $\epsilon = \ngl(n)$ such that $(\gen, \rep)$ is a $(q, \epsilon_{reuse}, \infty, s_{guess})$-reusable fuzzy extractor.
+\end{definition}
+
+\begin{itemize}
+\item In the case where $\gen$ is deterministic we can consider simple consider security to hold for all joint distributions $\forall W_1,..., W_q$ where each $W_i\in\mathcal{W}$.  We provide an adaptive definition above, the adversary to refine the distribution based on seeing the value of sketch.
+\item We require the adversary to guess one of the output keys $r_i$.  This is weaker than requiring them to guess a reading $w_i$.  A successful guess for a reading $w_i$ can be easily transformed to a corresponding key, but the reverse is not necessarily true. 
+\item We allow $A_{sam}$ to keep state between queries, in particular they may remember the previously sampled $w_1,..., w_{i-1}$.  Alternatively, we could have $A_{sam}$ output some state information that is provided in the next queries.  These two alternatives are equivalent.
+\item The definition of Boyen required the adversary to guess the original reading $w_1$.  This was necessary as they did not require other readings were admissible distributions.  To allow arbitrary correlation between readings we must require that they are individually secure.
+\end{itemize}
+
+The work of Canetti et al. shows that a computational fuzzy conductor can be converted to a computational fuzzy extractor using a computational extractor.  We will use the same paradigm here.
+
+We use the common notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} extended to the conditional case:
+\begin{definition}\protect{~\cite[Definition 3]{DBLP:conf/eurocrypt/HsiaoLR07}}
+\label{def:hill ent}
+Let $(W, S)$ be a pair of random variables.  $W$ has
+\emph{HILL entropy} at least $k$ conditioned on $S$,
+denoted $H^{\hill}_{\epsilon, s}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s}} ((W, S),(X,S))\leq \epsilon$.
+\end{definition} 
+A computational fuzzy conductor is the computational analogue of a fuzzy conductor.
+\begin{definition}~\cite[Definition 3.3]{canetti2014key}
+\label{def:comp fuzzy cond}
+A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s)$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy \defref{def:comp fuzzy extractor}, except the last condition is replaced with the following weaker condition:
+\begin{itemize}
+\item for any distribution $W\in \mathcal{W}$, the string $x$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon, s}(R |P)\geq \tilde{m}$.
+\end{itemize}
+\end{definition}
+
+\iffalse
+\begin{definition}
+\label{def:comp fuzzy cond}
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$.  A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s)$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy the following properties (the first two properties are the same as in \defref{def:comp fuzzy extractor}, with $x$ replacing $r$):
+\begin{itemize}
+\item The generate procedure $\gen$ on input $w\in \mathcal{M}$ outputs a string $x\in\{0,1\}^\ell$ and a helper string $p\in\{0,1\}^*$.
+\item The reproduction procedure $\rep$ takes an element $w'\in\mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(x, p)\leftarrow \gen(w)$, then $\Pr[\rep(w',p) = x] \geq 1-\delta$ where the probability is over the randomness of $(\gen, \rep)$.
+If $\dis(w, w') > t$, then no guarantee is provided about the output of $\rep$.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $x$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon_{cond}, s_{cond}}(X |P)\geq \tilde{m}$.
+\end{itemize}
+\end{definition}
+\fi 
+
+A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We provide an average case version of the definition of Krawczyk~\cite{krawczyk2010cryptographic}:
+\begin{definition}
+Let $\chi$ be a finite set.
+A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon, s)$-average-case computational extractor} if for all pairs
+of random variables $X, Y$ (with $X$ over $\zo^\ell$) such that
+$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s}}((\cext(X; U_d), U_d, Y), U_\kappa\times
+U_d \times Y) \le \epsilon$.
+\end{definition}
+
+Combining a reusable computational fuzzy conductor and an appropriate computational extractor yields a reusable computational fuzzy extractor:
+
+\bnote{write this theorem}
+\begin{lemma}
+\label{lem:cond and cext}
+Let $(\gen'$, $\rep')$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, \epsilon_{ext}, s_{ext})$-average case computational extractor.  Define $(\gen, \rep)$ as:
+\begin{itemize}
+\item $\gen(w; seed)$ (where $seed\in \zo^d$): run $(r', p')= \gen'(w)$ and output $r = \cext(r'; seed)$, $p = (p', seed)$. 
+\item $\rep(w', (p', seed)):$ run $r' = \rep'(w'; p')$ and output $r = \cext(r'; seed)$.
+\end{itemize}
+Then $(\gen, \rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{cond}+\epsilon_{ext}, s')$-hard with error $\delta$ where $s' = \min\{s_{cond} - |\cext| -d, s_{ext}\}$.
+\end{lemma}
+
+
+\section{A reusable computational fuzzy extractor for arbitrary correlations}
+\label{sec:construction}
+For the remainder of this work, we consider the Hamming metric over some alphabet $\mathcal{Z}$.  
+
+\begin{definition}
+\label{def:block guessable}
+Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(j, w_j')=
+\begin{cases}
+1 & w_j = w_j'\\
+0 & \text{otherwise}.
+\end{cases}
+\]
+A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
+\[
+\forall j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}))\geq \alpha.
+\]
+\end{definition}
+
+The main idea is to sample a random subset of blocks $W_{j_1},..., W_{j_\eta}$ and obfuscate the concatenation of these blocks.  Denote this concatenated value by $V_1$.  This process is repeated to produce $V_1,..., V_\ell$ and the construction proceeds by either obfuscating $V_i$ or a random point as before. For security each value $V_i$ needs to be unguessable.  This will hold as long as enough blocks contribute some entropy:
+
+\begin{definition}
+\label{def:partial source}
+A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block source if there exists a set of indices $J$ where $|J| \geq \gamma - \beta$ such that the following holds:
+\[
+\forall j\in J, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}) \geq \alpha.
+\]
+\end{definition}
+\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), as only some blocks are required to have entropy conditioned on the past.  The choice of conditioning on the past is arbitrary: a more general sufficient condition is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
+Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that  outputs a random subset of $\{1,..., \gamma\}$ of size $\eta$ given let $r_{sam}$ bits of randomness.
+
+\begin{construction}[Sample-then-Obfuscate]
+\label{cons:sampling}
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_j$ is over $\mathcal{Z}$. %and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.
+Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\mathcal{O}$ be an obfuscator for the family of point functions.  Define $\gen, \rep$ as:
+
+\begin{center}
+\begin{tabular}{c|c}
+\begin{minipage}{3in}
+\textbf{\gen}
+\begin{enumerate}
+\item \underline{Input}: $w = w_1,..., w_\gamma$
+\item Select $c\overset{\$}\leftarrow C$.
+\item For $i=1,..., \ell$:
+\begin{enumerate}[(i)]
+\item Select $\lambda_i\overset{\$}\leftarrow \zo^{r_{sam}}$.
+\item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\eta,\gamma}( \lambda_i)$
+\item If $c_i = 0$:
+\subitem Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
+\subitem Set $\rho_i = \mathcal{O}(I_{v_i})$.
+\subitem Set $p_i = \rho_i, \lambda_i$.
+\item If $c_i = 1$: Select $r_i \overset{\$}\leftarrow \mathcal{Z}^{\eta}$.
+\subitem Let $p_i = \mathcal{O}(I_{r_i}), \lambda_i$.
+\end{enumerate}
+\item Output $(c, p)$, where $p=p_1\dots p_\ell$.
+\end{enumerate}
+ \end{minipage} &
+\begin{minipage}{3in}
+\textbf{\rep}
+\begin{enumerate}
+\item \underline{Input}: $(w', p)$
+\item For $i=1,..., \ell$:
+\begin{enumerate}[(i)]
+\item Parse $p_i$ as $\rho_i, \lambda_i$.
+\item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\gamma, \eta}(\lambda_i)$.
+\item Set $v_i' = w_{j_{i, 1}},..., w_{j_{i, \eta}}$.
+\item If $\rho_i(v_i') = 1$ set $c_i' = 0$.
+\item Else set $c_i' = 1$.
+\end{enumerate}
+\item Set $c = \decode(c')$.
+\item Output $c$.
+\end{enumerate}
+\vspace{0.37in}
+\end{minipage}
+\end{tabular}
+\end{center}
+\end{construction}
+
+\bibliographystyle{alpha}
+\bibliography{crypto}
+
+
+\end{document} 

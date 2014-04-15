@@ -1,0 +1,16 @@
+Thank you for the reviews.  This feedback is very helpful and will improve our work in the future.
+This work uses the iris distribution to motivate why minimum usable entropy is important. However, our constructions do not currently provide security for the iris distribution. We believe these  constructions provide the first steps to secure iris key derivation. While, we do not achieve security for irises, we believe computational techniques are the best approach. Information-theoretic fuzzy extractors are linked to codes and have not improved recently. Computational fuzzy extractors can overcome barriers information-theoretic barriers. 
+
+-What is the length of the key?
+A key can be expanded using a computational extractor (Krawczyk et al. 2010). Without more assumptions, our constructions can be run multiple times to yield a longer key. Once we can output a key, we can expand it arbitrarily.  
+
+Practicality of large alphabet?
+-Most biometrics operate over a small alphabet. Fingerprints operate over a large alphabet but use the set difference metric.  Our first construction is easily adapted to the set difference metric. Irises are over a binary alphabet. Our second construction works for an arbitrary size alphabet but only achieves negative usable entropy for large alphabets. This provides hope that the alphabet size can be reduced.  The main obstacle is increasing our supported error tolerance.  
+
+—Construction Details:
+Our constructions depend on the efficiency of point obfuscation. Canetti and Dakdouk 2008 build point obfuscation from Diffie-Hellman. Each point obfuscation is a random generator and the generator raised to the point: g, g^w. If we have $k$ symbols, generate and reproduce cost $k$ exponentiations.  We also run the encoding and decoding algorithms of the error-correcting code. In the first construction, the length of p is k obfuscations.  This equates to 2k group elements for the Canetti-Dakdouk construction. In the second construction, the length of p depends on the desired number of key bits, approximately two group elements per key bit. The second construction also stores the sampling bits, \omega(\log^2 k) per key bit.
+
+-Is every 2048-bit iris code string equally likely?
+This is not known. The best estimate for iris entropy is 250 bits. This is based on a degrees of freedom argument (Daugman 2004). Unfortunately, the exact correlation between iris bits is not known. All experiments have shown that no two people have very similar irises. If this holds true over the entire population then it is reasonable to assume the iris distribution is “equally likely.” Estimating the strength of a biometric is difficult. Irises are believed to be the “best.” This is based on our current understanding of human development and measurement techniques, but this estimate may change in the future.  
+
+
