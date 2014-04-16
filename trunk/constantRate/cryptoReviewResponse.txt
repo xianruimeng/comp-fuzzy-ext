@@ -11,7 +11,7 @@ Q: Practicality of large alphabet and hope for smaller
 A: Indeed, a large alphabet is a limitation of our work. Large alphabets do occur in applications: for example, fingerprints (but the metric is more complex than Hamming) or "movie lists" from Juels-Sudan (the metric is set difference). We note that our second construction works for an arbitrary size alphabet, but only achieves negative usable entropy for large alphabets because of limited error-tolerance. This provides hope that the alphabet size can be reduced.  The main obstacle is increasing our supported error tolerance.  
 
 Q: Heavy-duty machinery/efficiency
-A: Point obfuscation need not be heavy-duty: for example, it is reasonable to assume that a cryptographic hash function already works (it does in the RO model). As another example, Canetti-Dakdouk build it from Diffie-Hellman with just one exponentiation. So k hashes or exponentiations are reasonable efficiency estimates.
+A: Point obfuscation is practical and can be built from standard assumptions. It does not require indistinguishability obfuscation. For example, it is reasonable to assume that a randomized cryptographic hash function already works (it does in the RO model). As another example, Canetti-Dakdouk build it from Diffie-Hellman with just one exponentiation. So k hashes or exponentiations are reasonable efficiency estimates.
 
 Q: Length of p
 A: k obfuscations (e.g., hash values or pairs of group elements). The second construction also stores the sampling bits, \omega(\log^2 k) per key bit (but we can use more efficient samplers).
