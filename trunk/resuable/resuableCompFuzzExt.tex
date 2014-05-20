@@ -301,11 +301,13 @@ Usually, we use capitalized letters for random variables and corresponding lower
 %The class of errors we support in our source~($t$ Hamming errors over a large alphabet) and the class of errors for which we need codes~($t$ $0\rightarrow 1$ errors) are different.  See Constructions~\ref{cons:first construction} and~\ref{cons:sampling} for the translation between the error classes.
 
 \subsection{Obfuscation}
-Our construction uses obfuscation for a family of point functions $\mathtt{I}_n = \{I_w\}_{w \in \zo^n}$ defined as follows:
+Our construction uses obfuscation for digital lockers $\mathtt{I}_n = \{I_{w, r}\}_{w \in \zo^n, r\in\zo^\kappa}$ defined as follows:
 \[
-I_w(x):\begin{cases} 1 & x=w\\0 & \text{otherwise}\end{cases}.
-\]
-The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at most a polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. They can also be constructed by assuming strong properties of cryptographic hash functions~\cite{canetti1997towards}.
+I_{w, r}(x):\begin{cases} r & x=w\\\perp & \text{otherwise}\end{cases}.
+\].  
+
+Digital lockers can be constructed from obfuscations of point functions~\cite{canetti2008obfuscating}.\bnote{need to introduce point functions.}  
+The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at most a polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. They can also be constructed by assuming strong properties of cryptographic hash functions~\cite{canetti1997towards}.  A digital locker with output length $\kappa$ can be constructed from a $\kappa+1$ composable point obfuscation.
 
 \begin{definition}[$\ell$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
 \label{def:obf} A PPT algorithm $\mathcal{O}$ is an $\ell$-composable VGB obfuscator for point functions with auxiliary-input if the following conditions are met:
@@ -318,7 +320,7 @@ The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite
 where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
 \end{enumerate}
 \end{definition}
-For notational convenience, since we only use point function obfuscation, we denote the oracle provided to the simulator as $I_w(\cdot, \cdot)$ where $w = w_1,..., w_\ell$ is the vector of obfuscated points.
+For notational convenience, since we only use point function obfuscation, we denote the oracle provided to the simulator as $I_{w, r}(\cdot, \cdot)$ where $w = w_1,..., w_\ell$ is the vector of obfuscated points.
 \section{Reusable Fuzzy Extractors}
 \label{sec:fuzzy extractors}
 
@@ -423,7 +425,7 @@ For the remainder of this work, we consider the Hamming metric over some alphabe
 Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(j, w_j')=
 \begin{cases}
 1 & w_j = w_j'\\
-0 & \text{otherwise}.
+\perp & \text{otherwise}.
 \end{cases}
 \]
 A source $W = W_1||...|W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
@@ -455,19 +457,16 @@ Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\
 \textbf{\gen}
 \begin{enumerate}
 \item \underline{Input}: $w = w_1,..., w_\gamma$
-\item Select $c\overset{\$}\leftarrow C$.
+\item Sample $r \overset{\$}\leftarrow \zo^\kappa$.
 \item For $i=1,..., \ell$:
 \begin{enumerate}[(i)]
 \item Select $\lambda_i\overset{\$}\leftarrow \zo^{r_{sam}}$.
 \item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\eta,\gamma}( \lambda_i)$
-\item If $c_i = 0$:
-\subitem Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
-\subitem Set $\rho_i = \mathcal{O}(I_{v_i})$.
-\subitem Set $p_i = \rho_i, \lambda_i$.
-\item If $c_i = 1$: Select $r_i \overset{\$}\leftarrow \mathcal{Z}^{\eta}$.
-\subitem Let $p_i = \mathcal{O}(I_{r_i}), \lambda_i$.
+\item Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
+\item Set $\rho_i = \mathcal{O}(I_{v_i, r_i})$.
+\item Set $p_i = \rho_i, \lambda_i$.
 \end{enumerate}
-\item Output $(c, p)$, where $p=p_1\dots p_\ell$.
+\item Output $(r, p)$, where $p=p_1\dots p_\ell$.
 \end{enumerate}
  \end{minipage} &
 \begin{minipage}{3in}
@@ -479,17 +478,66 @@ Let $\eta$ be a parameter, $C\subset\zo^\ell$ be an error-correcting code and $\
 \item Parse $p_i$ as $\rho_i, \lambda_i$.
 \item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\gamma, \eta}(\lambda_i)$.
 \item Set $v_i' = w_{j_{i, 1}},..., w_{j_{i, \eta}}$.
-\item If $\rho_i(v_i') = 1$ set $c_i' = 0$.
-\item Else set $c_i' = 1$.
+\item Set $\rho_i(v_i') = r_i$.  If $r_i\neq \perp$ output $r_i$.
 \end{enumerate}
-\item Set $c = \decode(c')$.
-\item Output $c$.
+\item Output $\perp$.
 \end{enumerate}
 \vspace{0.37in}
 \end{minipage}
 \end{tabular}
 \end{center}
 \end{construction}
+
+\textbf{Discussion:} The construction of Canetti et al.~\cite{canetti2014key} encodes the key over a large number of obfuscations.  To recover their key they must be correct on a large number of obfuscations.  Instead, we use digital lockers allowing us to encode the entire key in each obfuscation.  This means for correctness we only need to correctly recover a single obfuscation~(with high probability).  This allows us to support a significantly higher error rate.  The tradeoff is requiring higher composability of the point obfuscation.  The construction of Canetti et al. requires order of key length composability~($O(\kappa)$) while we require order of key length times the number of obfuscations produced~($O(\kappa\times \ell)$).
+
+\begin{theorem}
+\label{thm:sampling}
+Let $\mathcal{Z}$ be an alphabet.  Let $n$ be a security parameter.  Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-partial block sources over $\mathcal{Z}^\gamma$ where $\gamma =\Omega(n)$.  Let $\eta$ be such that $\eta = \omega(\log n)$ and $\eta = o(\gamma)$, and let $c> 1$ be a constant and $\ell$ be such that $\ell = n^c$.  Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator for digital lockers~(with $\kappa$ bit outputs) with auxiliary inputs.  Then for every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ for 
+\begin{align*}
+t&\leq -\frac{(c-1)}{2} \frac{(\gamma-\eta)\log n}{\eta} = o(\gamma)\\
+\delta &= e^{-n}
+\end{align*}
+\end{theorem}
+
+We will argue correctness, security, and reusability in turn.
+
+\subsection{Correctness of \consref{cons:sampling}}
+\label{sec:correct sampling}
+We are encoding the entire key in each obfuscation.  For correctness, at least one of the repeated readings must be correct with overwhelming probability.  Let $V_i$ represent one of the initial readings and $V_i'$ represent a repeated reading.  For showing correctness we must show that $\Pr[\forall i, V_i \neq V_i'] < \ngl(n)$. \bnote{should talk about the obfuscation having some error}
+
+\bnote{can be tightened to $\omega(n^c \log n)$.}
+
+\begin{lemma}
+\label{lem:sampling errors}
+Let all the variables be as in \thref{thm:sampling}.
+ Then $\Pr[\forall i, v_i\neq v_i'] <1 - \ngl(n)$, where the probability is over the coins of $\gen$.  
+\end{lemma}
+\begin{proof}
+Recall that $\dis(w, w')\leq t$ and that the locations of the errors is independent of the selected locations.  Denote by $\mu = -\frac{(c-1)\log n}{2}$.  Since $\eta = \omega(\log n)$, we will assume
+$\eta\ge 2\mu$.  We begin by computing the probability that a single $v_i = v_i'$.  
+\begin{align*}
+\Pr[v_i = v_i'] &= \Pr[w\text{ and }w'\text{ agree on positions }j_{i,1},..., j_{i,\eta}]\\
+&\ge \prod_{j=0}^{\eta-1} \left( 1- \frac{t}{\gamma -j }\right) \ge \prod_{j=0}^{\eta-1}\left(1-\frac{\mu(\gamma-\eta)/\eta}{\eta-j}\right)\\
+&\ge \prod_{j=0}^{\eta-1} \left( 1- \frac{\mu}{\eta}\left(\frac{\gamma-\eta}{\gamma -j }\right)\right)\ge \prod_{j=0}^{\eta-1}\left(1-\frac{\mu}{\eta}\right)\\
+&= \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \left(\frac{1}{2}\right)^{2\mu}\\
+&\ge \left(\frac{1}{2}\right)^{(c-1) \log n}= \frac{1}{n^{c-1}}.
+\end{align*}
+We then have the probability that all $v_i\neq v_i'$ as:
+\begin{align*}
+\Pr[\forall i, v_i \neq v_i'] &= \left(1-\Pr[v_i= v_i']\right)^\ell\\
+&=\left( 1- \frac{1}{n^{c-1}}\right)^\ell =\left(\left( 1- \frac{1}{n^{c-1}}\right)^{n^{c-1}}\right)^{\ell /n^{c-1}}\\
+&\le \left(\frac{1}{e}\right)^{n^c/n^{c-1}} = \frac{1}{e^n}.
+\end{align*}
+This completes the proof of \lemref{lem:sampling errors}.
+\end{proof}
+
+\subsection{Security}
+
+\subsection{Reusability}
+
+\bnote{need to prove this new construction is a computational fuzzy conductor}
+
+\bnote{need to prove reusability}
 
 \bibliographystyle{alpha}
 \bibliography{crypto}
