@@ -644,7 +644,7 @@ There are three main differences between this construction and \consref{cons:fir
 \item Instead of encoding a bit of the key with each obfuscated value we encode the entire key with each obfuscated value.  This requires the use of digital lockers in place of point obfuscations.  Instead of having to open ``most'' of the obfuscations, it is only necessary for us to open a single obfuscation.  \consref{cons:first construction} only hid part of the key in each obfuscation.  This allowed some blocks in the distribution to be ``weak.''  However, sampling smoothes out $W$ so that all $V_i$ are ``good'' simultaneously.
 \item \consref{cons:first construction} required a large alphabet as blocks were individually obfuscated.  This construction works for an arbitrary size alphabet.  We show it supports $\Huse (W)\le 0$ when the alphabet size is super-constant in the security parameter.
 \end{itemize}
-The use of a computational primitive~(obfuscation) allows us to sample multiple times, because we need to argue only about individual entropy of $V_i$, as opposed to the information-theoretic setting, where it would be necessary to argue about the entropy of the joint variable $V$.\bnote{reusability}
+The use of a computational primitive~(obfuscation) allows us to sample multiple times, because we need to argue only about individual entropy of $V_i$, as opposed to the information-theoretic setting, where it would be necessary to argue about the entropy of the joint variable $V$.  Indeed, this is the property that allows this fuzzy extractor to be reusable~(we define reusability in \defref{def:reusable fuzz}).
 
 This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers in~\cite{goldreich2011sample}.
 
@@ -660,7 +660,7 @@ t&\leq -\frac{(c-1)}{2} \frac{(\gamma-\eta)\log n}{\eta} = o(\gamma)\\
 
 
 The next two sections are dedicated to proving this theorem.
- For security we argue that each of the $v_i$ values is unguessable.  For correctness we show that with overwhelming probability at least of the $v_i$ and $v_i'$ match and allowing the digital locker to be opened and $r$ to be recovered.
+ For security we argue that each of the $v_i$ values is unguessable.  For correctness we show that with overwhelming probability at least of the $v_i$ and $v_i'$ match and allowing the digital locker to be opened and $r$ to be recovered.  For reusability, we show that \bnote{what?}
 
 \subsection{Security of \consref{cons:sampling}}
 In order to show security \consref{cons:sampling}, we
@@ -709,8 +709,8 @@ For every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that
 
 \subsection{Correctness of \consref{cons:sampling}}
 \label{sec:correct sampling}
-\label{sec:correct sampling}
 We are encoding the entire key in each obfuscation.  For correctness, at least one of the repeated readings must be correct with overwhelming probability.  Let $V_i$ represent one of the initial readings and $V_i'$ represent a repeated reading.  For showing correctness we must show that $\Pr[\forall i, V_i \neq V_i'] < \ngl(n)$.
+
 
 
 \begin{lemma}[Proof in \apref{sec:sampling errors}]
@@ -718,6 +718,9 @@ We are encoding the entire key in each obfuscation.  For correctness, at least o
 Let all the variables be as in \thref{thm:sampling}.
  Then $\Pr[\forall i, v_i\neq v_i'] <1 - \ngl(n)$, where the probability is over the coins of $\gen$.  
 \end{lemma}
+
+\subsection{Reusability of \consref{cons:sampling}}
+\bnote{write this}
 
 \subsection{Discussion of \consref{cons:sampling}}
 \lnote{I need to check this}
@@ -728,8 +731,6 @@ This yields:
 \]
 That is, there exists a super-constant alphabet size for which \consref{cons:sampling} is secure with $\Huse\le 0$.  We note that \consref{cons:sampling} works for an arbitrary size alphabet; however, for a constant size alphabet, $\Huse>0$.
 
-\subsection{Reusability}
-\bnote{write this}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
@@ -829,6 +830,7 @@ Instead of restricting the type of correlations, we limit the adversary to be co
 We present a simplified non-adaptive definition and note that our results apply equally well to the adaptive definition.
 
 \begin{definition}[Insider Reusable Fuzzy Extractors]
+\label{def:reusable fuzz}
 Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  Let $W_1,..., W_q$ be a joint distribution such that $\forall i, W_i\in\mathcal{W}$.  We say that $(\gen, \rep)$ is $q$-reusable if for all $i$
 \begin{align*}
 \delta^{\mathcal{D}_{s_{sec}}}(&(R_1, P_1), ..., (R_i, P_i),..., (R_q, P_q), \\
@@ -838,6 +840,9 @@ Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, 
 
 \consref{cons:sampling} is the fuzzy extractor that allows for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  %Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
 
+\begin{theorem}
+
+\end{theorem}
 
 \section{Characterizing unguessable block distributions}
 \label{sec:characterize}
