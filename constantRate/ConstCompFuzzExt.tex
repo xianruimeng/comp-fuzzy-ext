@@ -240,7 +240,7 @@ We construct the first fuzzy extractors that work for a large class of distribut
 
 Our first construction corrects a constant fraction of Hamming errors over a large alphabet. It requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  
 
-Our second construction requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
+Our second construction requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub-constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
 
 The constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
 
@@ -282,10 +282,12 @@ We provide the first constructions of computational fuzzy extractors that can be
 
 Our first construction is secure when symbols in $w$
 each have individual super-logarithmic min-entropy, even if they are arbitrarily correlated. Moreover,
-a constant fraction of symbols in $w$ may have little entropy, as long as knowledge of their values does not reduce the entropy of the high-entropy symbols too much (see \defref{def:block guessable}).  This construction can correct a constant fraction~($\Theta(\ell)$) of errors.  However, this construction requires a large alphabet size~(super-polynomial in the security parameter).
+a constant fraction of symbols in $w$ may have little entropy, as long as knowledge of their values does not reduce the entropy of the high-entropy symbols too much (see \defref{def:block guessable}).  This construction can correct a constant fraction of errors~($\Theta(\ell)$).  However, this construction requires a large alphabet size~(super-polynomial in the security parameter).
 
-We improve the entropy requirement in the second construction, which requires only a constant fraction of the symbols $w$ to have constant min-entropy conditioned on the previous symbols.
-However, this improvement comes at a price to error-tolerance: it tolerates a sub-constant fraction~($o(\ell)$) of errors.  This second construction comes with an additional feature: reusability.  Boyen~\cite{Boyen2004} defined reusable fuzzy extractors: multiple readings $w_1,..., w_q$ are enrolled and the adversary sees the corresponding public values~(and maybe some subset of secret keys) where $w_i$ and $w_j$ are close.  Boyen showed that with an unbounded number of reuses it is only possible to support limited correlations between $w_i$ and $w_j$~\cite[Theorem 11]{Boyen2004}.  We show that for computational adversaries it is possible to significantly expand the allowed correlation between $w_i$ and $w_j$.  The only condition we need for security is that each marginal $W_i$ is an admissible distribution.  We do not considering the joint distribution $W_1,..., W_q$.
+We improve the entropy and alphabet size requirements in the second construction, which requires only a constant fraction of the symbols $w$ to have constant min-entropy conditioned on the previous symbols.  Our second construction supports an arbitrary alphabet size~(though it only achieves $\Huse\le 0$ when the alphabet size is super-constant).  
+However, these improvements come at a price to error-tolerance: it tolerates a sub-constant fraction of errors~($o(\ell)$).  
+
+The second construction comes with an additional feature: reusability.  Boyen~\cite{Boyen2004} defined reusable fuzzy extractors: multiple readings $w_1,..., w_q$ are enrolled and the adversary sees the corresponding public values $p_1,..., p_q$ and possibly some of the derived keys.  The enrolled values $w_i$ and $w_j$ are not assumed to be equal, and so information leakage may add up.  Indeed, Boyen showed that with an unbounded number of reuses it is only possible to support limited correlations between $w_i$ and $w_j$~\cite[Theorem 11]{Boyen2004}.  Our second construction allows for arbitrary correlation between $w_i$ and $w_j$ against computational adversaries\footnote{Our restriction to computational adversaries implies that the adversary only sees a polynomially bounded number of reuses.  It remains an open problem to construct a polynomially reusable fuzzy extractor against unbounded adversaries.} as long as each marginal $W_i$ is an admissible distribution.  %We do not considering the joint distribution $W_1,..., W_q$.
 
 
 
@@ -442,6 +444,30 @@ Let $(\gen'$, $\rep')$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computati
 Then $(\gen, \rep)$ is a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{cond}+\epsilon_{ext}, s')$-hard with error $\delta$ where $s' = \min\{s_{cond} - |\cext| -d, s_{ext}\}$.
 \end{lemma}
 
+\subsection{Reusable Fuzzy Extractors}
+\label{sec:reusable}
+
+Ideally, a fuzzy extractor allows a user to authenticate to multiple different services/devices.  That is, instead of creating a single pair $(r, p)$ from an initial reading $w$, we read the noisy sources multiple times~($w_1,..., w_q$) and produce $(r_1, p_1),..., (r_q, p_q)$.  This problem is known as a reusable fuzzy extractor~\cite{Boyen2004}.  There are two basic versions of the problem, first where the adversary sees $p_1,..., p_q$~(outsider security), and second where the adversary also sees some subset of the derived keys as well~(insider security).  Ideally, we want $w_1,..., w_q$ and the unseen keys to be ``as good'' as in the single use case.  Boyen constructs a reusable cryptographic fuzzy extractor based on the code-offset or the syndrome sketches from~\cite{JW99, DBLP:journals/siamcomp/DodisORS08} instantiated with linear codes.  For simplicity here, we define the insider security and note any scheme that achieves insider security also achieves outsider security.  
+
+\paragraph{Previous Results}
+
+There are two primary questions about the reusability of a fuzzy extractor.  The first is how often it can be reused, the second is what correlation is allowed between $w_1,..., w_q$.  Boyen~\cite{Boyen2004} considers fuzzy extractors that are arbitrarily reusable.  Their construction is secure when the correlations between $w_1,.., w_q$ come from a subgroup of permutations used in the construction of the fuzzy extractor.  They show in the setting of arbitrary reuse such a strong restriction on correlation is necessary~\cite[Theorem 11]{Boyen2004}.  In particular, they show how any information-theoretic fuzzy extractor secure with arbitrary reuse can be transformed into their construction.  However, there is no reason to expect that noise between repeated readings comes from a well-behaved subgroup of permutations.
+
+However, their negative result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two natural restrictions to the definition of reusability: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.
+
+We limit the adversary to be computationally bounded~(and thus sees only a limited number of reuses).
+We present a non-adaptive definition and note that our results extend to the adaptive definition presented by Boyen~\cite[Definition 7]{Boyen2004}.
+
+\begin{definition}[Insider Reusable Fuzzy Extractors]
+\label{def:reusable fuzz}
+Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  Let $W_1,..., W_q$ be a joint distribution such that $\forall i, W_i\in\mathcal{W}$.  Let $(R_i, P_i)$ be the distribution formed by running $\gen$ on the distribution $W_i$.  We say that $(\gen, \rep)$ is $q$-reusable if for all $i$
+\begin{align*}
+\delta^{\mathcal{D}_{s}}(&(R_1, P_1), ..., (R_i, P_i),..., (R_q, P_q), \\
+&(R_1, P_1),..., (U_\kappa, P_i),..., (R_q, P_q)) < \epsilon.
+\end{align*}
+\end{definition}
+
+%\consref{cons:sampling} is the fuzzy extractor that allows for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  %Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
 
 \section{Tolerating a Constant Fraction of Errors when $\Huse\le 0$}
 \label{sec:construction}
@@ -815,34 +841,8 @@ That is, there exists a super-constant alphabet size for which \consref{cons:sam
 %\begin{proof}  Assume $(\gen', \rep')$ is a fuzzy conductor with the parameters stated.  Let $A$ be a set of size $2^m$ in $\mathcal{M}$ and let $W$ be the uniform distribution over $A$.  Define $(X,SS) \leftarrow \gen'(W)$.  Then there must exist a distribution $Y$ with $\Hav(Y|SS) \geq \tilde{m}$ such that $\Delta((X,SS), (Y, SS))\leq \epsilon$.  By Markov's inequality, there exists some set $B_{SS}$ such that $\Pr[ss\in B_{SS}] \geq 1/2$ and $\forall s\in B_{SS}$ one has $\Delta(X | SS = s, s ), (Y | SS = s, s)<2\epsilon$.  Now applying Markov's inequality to $\max_{Y} \Pr[Y=y | SS=s]$, there exists a set $B_{SS'}$ such that $\Pr[SS\in B_{SS'}]>1/2$, and for all $s\in B_{SS'}$, $\Hoo(Y| SS =s ) \geq \tilde{m}-1$.  Denote by $s^*$ a value in $B_{SS}\cap B_{SS'}$~(one value must exist).  Then $\Delta((X | SS =s^* , s^*), (Y| SS = s^*, s^*))\leq 2\epsilon$ and $\Hoo(Y|SS=s^*)\geq \tilde{m}-1$.  Denote by the set $A'$ the possible values of $X$ when $SS=s^*$.  For the statistical distance property to hold, $|A'| \geq  (1-2\epsilon)2^{\tilde{m}-1}$.  Associate with every $x\in A'$ some $w\in S$ which could have produced $x$ with nonzero probability given $SS=s^*$, and call this map $C$.  $C$ defines an error correcting code with the required parameters.
 %\end{proof}
 
-\section{Reusable Fuzzy Extractors}
-\label{sec:reusable}
 
-Fuzzy extractors should authenticate users to multiple different services/devices.  That is, instead of creating a single pair $(r, p)$ from an initial reading $w$, we read the noisy sources multiple times~($w_1,..., w_q$) and produce $(r_1, p_1),..., (r_q, p_q)$.  This problem is known as a reusable fuzzy extractor~\cite{Boyen2004}.  There are two basic versions of the problem, first where the adversary sees $p_1,..., p_q$~(outsider security), and second where the adversary also sees some subset of the derived keys as well~(insider security).  Ideally, we want $w_1,..., w_q$ and the unseen keys to be ``as good'' as in the single use case.  Boyen constructs a reusable cryptographic fuzzy extractor based on the code-offset or the syndrome sketches from~\cite{JW99, DBLP:journals/siamcomp/DodisORS08} instantiated with linear codes.  For simplicity here, we define the insider security and note any scheme that achieves insider security also achieves outsider security.  
 
-\paragraph{Previous Results}
-
-There are two primary questions about the reusability of a fuzzy extractor.  The first is how often it can be reused, the second is what correlation is allowed between $w_1,..., w_q$.  Boyen~\cite{Boyen2004} considers fuzzy extractors that are arbitrarily reusable.  Their construction is secure when the correlations between $w_1,.., w_q$ come from a subgroup of permutations used in the construction of the fuzzy extractor.  They show in the setting of arbitrary reuse such a strong restriction on correlation is necessary~\cite[Theorem 11]{Boyen2004}.  In particular, they show how any information-theoretic fuzzy extractor secure with arbitrary reuse can be transformed into their construction.  However, there is no reason to expect that noise between repeated readings comes from a well-behaved subgroup of permutations.
-
-However, their negative result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two natural restrictions to the definition of reusability: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.fuzzy extractor will only be used a polynomial number of times.
-
-Instead of restricting the type of correlations, we limit the adversary to be computationally bounded~(and thus sees only a limited number of reuses).
-We present a simplified non-adaptive definition and note that our results apply equally well to the adaptive definition.
-
-\begin{definition}[Insider Reusable Fuzzy Extractors]
-\label{def:reusable fuzz}
-Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  Let $W_1,..., W_q$ be a joint distribution such that $\forall i, W_i\in\mathcal{W}$.  We say that $(\gen, \rep)$ is $q$-reusable if for all $i$
-\begin{align*}
-\delta^{\mathcal{D}_{s_{sec}}}(&(R_1, P_1), ..., (R_i, P_i),..., (R_q, P_q), \\
-&(R_1, P_1),..., (U_\kappa, P_i),..., (R_q, P_q)) < \epsilon.
-\end{align*}
-\end{definition}
-
-\consref{cons:sampling} is the fuzzy extractor that allows for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  %Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
-
-\begin{theorem}
-
-\end{theorem}
 
 \section{Characterizing unguessable block distributions}
 \label{sec:characterize}
