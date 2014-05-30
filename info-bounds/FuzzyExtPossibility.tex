@@ -349,14 +349,27 @@ A distribution $W$ is called \emph{$t_{sec}$-well spread} if for all $w, x\in W,
 Intuitively, it should be easy to build a fuzzy extractor for well-spread distributions when the desired error-tolerance is less than $t_{sec}/2$~(assuming the distribution has super-logarithmic min-entropy).  Indeed, this is the case when the fuzzy extractor is allowed to depend on $W$.
 
 \begin{lemma}
-Let $W$ be a $t_{sec}$ well-spread distribution with $\Hoo(W)\ge k$ there exists a $(\mathcal{M}, m, m, t_{sec}/2)$-secure sketch with no error that works only for $W$.  In particular, $\sketch(w) = \perp$, and $\rec(w')$ finds the nearest $w\in W$.  \rec is efficient if there exists efficient decoding for the points in $W$.  By \lemref{lem:fuzzy ext construction} there also exists a fuzzy extractor.\bnote{fill in the parameters}
+Let $W$ be a $t_{sec}$ well-spread distribution with $\Hoo(W)\ge k$ there exists a $(\mathcal{M}, m, m, t_{sec}/2)$-secure sketch with no error that works for $W$.  In particular, $\sketch(w) = \perp$, and $\rec(w')$ finds the nearest $w\in W$.  \rec is efficient if there exists efficient decoding for the points in $W$.  By \lemref{lem:fuzzy ext construction} there also exists a fuzzy extractor.\bnote{fill in the parameters}
 \end{lemma}  
 
-Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  Ideally, a secure sketch should be able to recover for any well-spread distribution.  However, as we show below this is not possible.
+Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In particular, any secure sketch must write down a large number of bits~(matching our known constructions of secure sketches).  However, it is not known if it is necessary to decrease the entropy of the distribution $W$.
 
 \begin{lemma}
-Let $\mathcal{W}$ be the set of all $t_{sec}$-well spread distributions.  Let $(\sketch, \rec)$ be a $(\mathcal{M}, m, \tilde{m}, t_{cor})$-secure sketch.  Then $\tilde{m}<....$.
+Let $\mathcal{W}$ be the set of all $t_{sec}$-well spread distributions.  Let $(\sketch, \rec)$ be a $(\mathcal{M}, m, \tilde{m}, t_{cor})$-secure sketch.  Then the length of $\sketch$ is at least $\log |B_{t}|$.
 \end{lemma}
+\begin{proof}
+Let $\mathcal{M}$ be a metric space.
+Let $\mathcal{W}$ be the set of all $t_{sec}$-well spread distributions on $\mathcal{M}$.  
+Consider the following experiment:
+\[
+W\leftarrow \mathcal{W} \wedge w \leftarrow W \wedge w'\leftarrow B_{t_{sec}}(w) \wedge ss \leftarrow \sketch(w) \wedge w^* \leftarrow \rec(w', ss).
+\]
+Since $(\sketch, \rec)$ works for any well-spread distribution the $\Pr[w^* = w] =1 $ in the above experiment.   Denote by $X$ the joint distribution of $w, w'$ produced in the above experiment.  Now consider the following experiment
+\[
+v \leftarrow U_{\mathcal{M}} \wedge v'\leftarrow B_{t_{sec}}(v) \wedge ss \leftarrow \sketch(v) \wedge v^* \leftarrow \rec(v', ss).
+\]
+Denote by $Y$ the joint distribution of $v, v'$ produced in the above experiment.  Then $X\overset{d}= Y$.  That is, the view of $(\sketch, \rec)$ is identically distributed in both cases.  Thus, $\Pr[v^* = v] = 1$.  For the uniform distribution the entropy retained by a secure sketch is at most $\Hav(U_{\mathcal{M}} | \sketch(U_{\mathcal{M}})) \le \log |\mathcal{M} - \log |B_t(\cdot)|$~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}.  For a secure sketch to lose $\log |B_{t_{sec}}(\cdot)|$ bits of entropy it must write down at least $\log |B_{t_{sec}}(\cdot)|$ bits~\cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}.  Thus, $(\sketch, \rec)$ writes down at least $\log |B_{t_{sec}}|$ bits on the uniform distribution and its view is identical on $X$ so it writes down at least $\log |B_{t_{sec}}|$ bits on $X$.  This completes the proof.\bnote{need to deal with the case where the number of bits written by $\sketch$ is variable.}
+\end{proof}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
