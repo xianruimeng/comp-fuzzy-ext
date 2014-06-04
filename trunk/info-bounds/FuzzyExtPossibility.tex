@@ -317,7 +317,7 @@ A necessary condition for fuzzy extractor security is that an adversary should n
 \label{def:fuzzy min-ent}
 A distribution $W$ in a metric space $(\mathcal{M}, \dis)$ has $(t, k)$-fuzzy min-entropy, denoted $\Hfuzz(W) \ge k$ if the following holds:
 \[
-\forall m\in \mathcal{M}, Pr_{w\in W}[\dis(w, m) \leq t] \leq 2^{-k}.
+\forall m\in \mathcal{M},  \sum_{w\in W | \dis(w, m)\le t} Pr[W=w] \leq 2^{-k}.
 \]
 \end{definition}
 For a metric space $\mathcal{M}$, let $\max |\mathcal{M}|$ the maximum length required to describe an element $m\in\mathcal{M}$~(for most natural metric spaces this is $\log |\mathcal{M}|$).
@@ -426,6 +426,17 @@ Let $n$ be a security parameter.
 If $|R| \ge c * n^{\omega(1)}$ then \consref{cons:pairwise hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log |c| + \omega(\log n)$ suffices.
 \end{corollary}
 
+Note that \consref{cons:pairwise hash} writes down essentially the worst case number of bits in all setting, it knows the maximum number of points in any ball and writes down that number~(with an additional super-logarithmic factor to prevent collisions).  Recall, our hope is to find a sketch that achieves total security equal to the fuzzy min-entropy of the distribution.  Thus, the remaining entropy for this construction is 
+\[
+\Hav(W |\sketch(W)) = \Hoo(W) - \log c - \omega(\log n)
+\]
+For a flat distribution with a fixed number of neighbors, 
+\begin{align*}
+\Hfuzz(W) &= -\log \max_{x\in \mathcal{M}}, \sum_{w | \dis(w, x)\le t} \Pr[W=w]\\
+&=-\log \max_{x\in \mathcal{M}}, -\log \sum_{w | \dis(w, x)\le t} 2^{-\Hoo(W)}\\
+&= -\log c2^{-\Hoo(W)} = \Hoo(W) - \log c
+\end{align*}
+Thus, the construction is optimal up to a super-logarithmic factor~(for flat sources with a fixed number of neighbors).
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
