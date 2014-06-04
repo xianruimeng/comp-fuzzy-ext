@@ -341,6 +341,7 @@ First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(
 \lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  In the interactive setting, fuzzy min-entropy is also a sufficient condition using secure two-party computation\bnote{cite something for this}.  However, in the non-interactive setting there are many distributions for which no construction is known to be secure and for which no impossibility result is known.  We attempt to bridge this gap in this work.
 
 \section{Well-spread distributions}
+\subsection{Depends on Distribution}
 We will start with an intuitively simple type of distribution where no results are known.  Security should be easy when all points of $W$ are far apart.  Intuitively, the fuzzy extractor/secure sketch does not need to disambiguate points and thus error-correction should be easy.  Indeed for any error-correcting code, a fuzzy extractor can be designed~(where the design of the fuzzy extractor depends on the supported distribution).  However, this intuition becomes more difficult when a fuzzy extractor should work for all well-spread distributions.  We begin by defining a well-spread distribution.
 
 \begin{definition}
@@ -349,9 +350,11 @@ A distribution $W$ is called \emph{$t_{sec}$-well spread} if for all $w, x\in W,
 Intuitively, it should be easy to build a fuzzy extractor for well-spread distributions when the desired error-tolerance is less than $t_{sec}/2$~(assuming the distribution has super-logarithmic min-entropy).  Indeed, this is the case when the fuzzy extractor is allowed to depend on $W$.
 
 \begin{lemma}
+\label{lem:nosketchwellspread}
 Let $W$ be a $t_{sec}$ well-spread distribution with $\Hoo(W)\ge k$ there exists a $(\mathcal{M}, m, m, t_{sec}/2)$-secure sketch with no error that works for $W$.  In particular, $\sketch(w) = \perp$, and $\rec(w')$ finds the nearest $w\in W$.  \rec is efficient if there exists efficient decoding for the points in $W$.  By \lemref{lem:fuzzy ext construction} there also exists a fuzzy extractor.\bnote{fill in the parameters}
 \end{lemma}  
 
+\subsection{Works for all well-spread distributions}
 Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In particular, any secure sketch must write down a large number of bits~(matching our known constructions of secure sketches).  However, it is not known if it is necessary to decrease the entropy of the distribution $W$.
 
 \begin{lemma}
@@ -370,6 +373,59 @@ v \leftarrow U_{\mathcal{M}} \wedge v'\leftarrow B_{t_{sec}}(v) \wedge ss \lefta
 \]
 Denote by $Y$ the joint distribution of $v, v'$ produced in the above experiment.  Then $X\overset{d}= Y$.  That is, the view of $(\sketch, \rec)$ is identically distributed in both cases.  Thus, $\Pr[v^* = v] = 1$.  For the uniform distribution the entropy retained by a secure sketch is at most $\Hav(U_{\mathcal{M}} | \sketch(U_{\mathcal{M}})) \le \log |\mathcal{M} - \log |B_t(\cdot)|$~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}.  For a secure sketch to lose $\log |B_{t_{sec}}(\cdot)|$ bits of entropy it must write down at least $\log |B_{t_{sec}}(\cdot)|$ bits~\cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}.  Thus, $(\sketch, \rec)$ writes down at least $\log |B_{t_{sec}}|$ bits on the uniform distribution and its view is identical on $X$ so it writes down at least $\log |B_{t_{sec}}|$ bits on $X$.  This completes the proof.\bnote{need to deal with the case where the number of bits written by $\sketch$ is variable.}
 \end{proof}
+
+\section{Non-well spread distributions}
+\subsection{Dependence on Distributions}
+\lemref{lem:nosketchwellspread} showed that if a fuzzy extractor~(resp. secure sketch) is built for a particular well-spread distribution, it is not necessary to write down information-reconciliation information.  In this section, we consider information-theoretic bounds on distributions that contain multiple points in each ball.  We start by considering distributions that have a fixed number of neighbors for each point.
+
+\begin{definition}
+We call a distribution $W$, over metric space $\mathcal{M}$, $(c, t)$-\emph{fixed neighbor} if there exists a constant $c$ such that for all points in $x\in \mathcal{M}$ there are exactly $c$ points $w\in W$ such that $\dis(w, x)\le t$.  We say that $W$ is a $(c, t)$-\emph{bounded neighbor distribution} if for all point $x\in\mathcal{M}$ there are at most $c$ points $w\in W$ such that $\dis(w, x)\le t$.
+\end{definition}
+
+\textbf{Note:} A fixed neighbor distribution is a special case of a bounded-neighbor distribution.
+
+We now present an information-theoretic construction for fixed-neighbor distributions.  We first introduce the notion of a pairwise-independent hash:
+
+\begin{definition}
+Let $F : \mathcal{K} \times D \to R$ be a function.  We say that $F$ is \emph{universal} if for all distinct $x_1, x_2 \in D$:
+\[
+ \Pr_{K \leftarrow \mathcal{K}}[F(K, x_1) = F(K, x_2)] = \frac{1}{|R|} \;.
+\]
+In other words, $F(K,x_1),F(K,x_2)$ are all uniformly and independently random over $R$. 
+\end{definition}
+
+We now show a sufficiently-long universal hash function suffices to construct an information-theoretic fuzzy extractor.
+
+\begin{construction}
+\label{cons:pairwise hash}
+Let $W$ be a $(c, t)$-fixed neighbor distribution over $\mathcal{M}$.  Let $F :\mathcal{M}\times \mathcal{M}\rightarrow R$ be a pairwise independent hash function.  We describe $\sketch, \rec$ as follows:
+\begin{itemize}
+\item $\sketch(w)$:
+\subitem Sample $K\leftarrow \mathcal{K}$.
+\subitem Set $p = F(K, w), K$.
+\item $\rec(w', y, K)$:
+\subitem Enumerate $W^* = \{w \in W | \dis(w, w')\le t\}$.
+\subitem For all $w^*\in W^*$, if $F(K, w^*) = y$, output $w^*$.
+\subitem Output $\perp$.
+\end{itemize}
+\end{construction}
+\begin{lemma}
+\consref{cons:pairwise hash} is a $(\mathcal{M}, m, m - \log |R|, t)$-secure sketch with error $\delta = \frac{c-1}{|R|}$. 
+\end{lemma}
+\begin{proof}
+We first argue security.  Since $\mathcal{K}$ and $W$ are independent $\Hav(W | \mathcal{K}) = \Hoo(W) = m$.  Then by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(W | \mathcal{K}, F(K, W)) \ge \Hoo(W) - \log |F(K, W)| \ge m - \log |R|$.
+
+We now argue correctness.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ recall that the size of $W^*$ is $c$ and since $w, w'$ are chosen independently of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash, our goal is to bound the probability that another element $w^*$ collides, that is $F(K, w^*) = F(K, w)$.
+\begin{align*}
+\Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] \le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)]  = \frac{c-1}{|R|}
+\end{align*}
+Where the inequality proceeds by union bound and the equality proceeds by the universality of $F$.  This completes the proof.
+\end{proof}
+\begin{corollary}
+Let $n$ be a security parameter.  
+If $|R| \ge c * n^{\omega(1)}$ then \consref{cons:pairwise hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log |c| + \omega(\log n)$ suffices.
+\end{corollary}
+
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
