@@ -391,7 +391,7 @@ Let $F : \mathcal{K} \times D \to R$ be a function.  We say that $F$ is \emph{un
 \[
  \Pr_{K \leftarrow \mathcal{K}}[F(K, x_1) = F(K, x_2)] = \frac{1}{|R|} \;.
 \]
-In other words, $F(K,x_1),F(K,x_2)$ are all uniformly and independently random over $R$. 
+%In other words, $F(K,x_1),F(K,x_2)$ are all uniformly and independently random over $R$. 
 \end{definition}
 
 We now show a sufficiently-long universal hash function suffices to construct an information-theoretic fuzzy extractor.
@@ -436,7 +436,35 @@ For a flat distribution with a fixed number of neighbors,
 &=-\log \max_{x\in \mathcal{M}}, -\log \sum_{w | \dis(w, x)\le t} 2^{-\Hoo(W)}\\
 &= -\log c2^{-\Hoo(W)} = \Hoo(W) - \log c
 \end{align*}
-Thus, the construction is optimal up to a super-logarithmic factor~(for flat sources with a fixed number of neighbors).
+Thus, the construction is optimal up to a super-logarithmic factor for flat sources with a fixed number of neighbors.  We now attempt to remove both of these restrictions.
+
+\subsection{Flat Sources with Sketches that Write a Fixed Number of Bits}
+We begin by trying to remove the restriction that every point in the metric space has a fixed number of neighbors in a distribution.  We start with sketches that write down a fixed number of bits~(independent of their input $w$).   We will show a lower bound on the number of bits that a $\sketch$ algorithm must write down.  We assume that all coins of $\sketch$ are provided to $\rec$ and that $\rec$ is deterministic~(any coins needed for $\rec$ can be flipped by $\sketch$ in this model).
+
+\begin{lemma}
+Let $W$ be a flat distribution and let $(\sketch, \rec)$ be a secure sketch for $W$.  Let $W$ be a $(c, t)$-bounded neighbor distribution.  Let $S_{coin}$ be the number of sketches that can be produced by any fixing of $coin$.  Then the error $\delta$ of $(\sketch, \rec)$ is at least $\frac{\expe_{coins}L(coins)}{c}$.  
+\end{lemma}
+\begin{proof}
+We consider a fixed $w'$ that has $c$ neighbors in the distribution.  We assume $\rec$ has access to all coins of $\sketch$.  Furthermore, we assume that $\rec$ is deterministic and that any coins necessary are provided by $\sketch$).  
+
+Denote by $S_{coin, R}$ the set of possible sketches for a given set of coins on all values in $R$.  Furthermore, denote by $S_{coin}$ the set of possible sketches for all values $w$~(for a given value of coin) and note that $S_{coin, R} \subset S_{coin}$.  Then $\rec(\cdot, w', coin)$ must fail to recover $|R|-|S_{coin, R}|$ fraction of $w\in R$~(recalling that $\rec$ is deterministic for this fixing of $coin$).  This means that the total number of pairs $(w, coin)$ for which $\rec$ fails to recover is $2^{|coins|}R - \sum_{coins} |S_{coin, R}|$.
+
+This means there must exist some $w$ such that the number of $coin$ values for which $\rec$ fails to recover is 
+\[
+2^{|coin|} - \frac{\sum_{coin} |S_{coin, R}|}{R}.
+\]
+ This means that for this $w$, 
+\[
+\Pr_{coin}[s \leftarrow \sketch(w, coin) \wedge w = \rec(s, w', coin)] < 1- \frac{\expe |S_{coin, R}|}{|R|} = 1-\frac{\expe |S_{coin, R}|}{c} \le 1-\frac{\expe |S_{coin}| }{c}.
+\]
+
+%Consider the function $\rec(w', ss, r)$ where $ss$ is the sketch produced by $\sketch(w)$ and $r$ are the coins used by $\sketch$.  
+\end{proof}
+
+For deterministic sketches:
+\[
+\Hav(W|S ) = -\log \left(\sum_{s\in S} \Pr[S = s] \frac{2^{-\Hoo(W)}}{\Pr[S=s]}\right) = -\log \left(2^{-\Hoo(W)} |S| \right)  = \Hoo(W) - H_0(S).
+\]
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
