@@ -465,6 +465,40 @@ For deterministic sketches:
 \[
 \Hav(W|S ) = -\log \left(\sum_{s\in S} \Pr[S = s] \frac{2^{-\Hoo(W)}}{\Pr[S=s]}\right) = -\log \left(2^{-\Hoo(W)} |S| \right)  = \Hoo(W) - H_0(S).
 \]
+
+\bnote{need to extend this to a non-fixed number of bits and randomized.}
+\section{Dealing with non flat distributions}
+The basic hashing approach outlined above does not extend to arbitrary sources.  The reason is that some balls may have significantly more points but occur with low probability.  Let $W$ be a distribution, denote by $B_1$ a ball with $2^{\Hoo(W)}$ points but with total probability $\Pr[W\in B_1] =2^{-1/2\Hoo(W)}$ and let $B_2$ be a ball with one point with probability $\Pr[W\in B_2] = 2^{-\Hoo(W)}$.  Then the hashing algorithm outlined above it is necessary to write down $\Hoo(W)$ bits in the case when $W$ lands in $B_1$.  However, this may completely reveal the point in $B_2$.  
+
+Dealing with non-flat distributions requires a new strategy.  Ideally, this strategy should be aware of the density of the current ball, aware that when an original reading comes from a sparse ball it is not necessary to write down many bits.  We present two strategies: leveraging convex combinations, and partitioning the probability space.
+
+\subsection{Leveraging convex combinations?}
+In many situations solving a problem for min-entropy distributions can be reduced to solving the problem for flat distributions and then using the fact that any min-entropy distribution is a convex combination of flat distributions.  For example, consider the following extension to \consref{cons:pairwise hash}.  Let $W$ be some distribution that is a finite convex combination of flat sources $W_1,..., W_n$ where each $\forall i, \Hoo(W_i)\ge k$~(a distribution may be an infinite convex combination, we will show this idea does not work even for the case of finite convex combinations).  For convenience we assume that the coefficients on all $W_i$ are the same and distributions may be repeated. 
+
+The proposed modification to the construction is as follows, when receiving an input $w$, sample a distribution $W_i$ from the set of distributions where $w$ has nonzero probability, then write down $i$ and perform the sketch as before for distribution $W_i$.  Intuitively, writing down a distribution $i$ should not do any harm as each of distributions $W_i$ has the same min-entropy as the starting distribution.  Furthermore, each of these distributions is flat and thus, \consref{cons:pairwise hash} should apply.
+
+In the flat case, we saw it was necessary to write the down number of bits in the largest ball, however, the residual entropy in this case was exactly equal to the density of the largest ball~(and this is our goal as the adversary can always guess the most likely ball).  That is, the residual entropy $\Hav(W|\sketch(W)) \approx \Hfuzz(W)$.  However, in the setting where $W$ is a convex combination of flat sources this does not hold.
+
+Consider set of distributions $W_i$ where each $W_i$ has two components, first $W_i$ contains a distinguished point $w^*$ where $\Pr[W=w^*] = 2^{-k}$ and $w^*$ has no neighbors, second let $W_i$ contain a set $B_i$ of $2^{-k}-1$ points within distance $t$ each with probability $2^{-k}$.  Note that the fuzzy min-entropy of $W_i$ is almost $0$ as the overwhelming majority of the probability space lies in $B_i$.  Now consider the distribution $W$ that is a convex combination of the $W_i$~(we assume that the various $B_i$ do not intersect).  Note that $\Hoo(W)=k$ and that $\Hfuzz(W)\approx \min\{\ell, k\}$ where $\ell$ is the number of distributions $W_1,..., W_\ell$.  (For our purposes, we can assume that $\ell$ is quite large and the probability of $w^*$ becomes the dominant factor.)
+
+Consider an input point $w\in W$.  One of two cases occurs either $w=w^*$ or $w\in B_i$ for some $i$.  It should be clear in either case that the selected distribution $W_i$ is uniformly distributed from $\{1,..., \ell\}$.  For any of the selected distributions, there is a ball with $\approx 2^{-k}$ points and thus the hash based construction must write down approximately $k$ points.  This means that $\Hav(W | \sketch(W))  = \Hav(W_i | \sketch(W_i)) \approx 0$.  This is despite the fact $\Hfuzz(W) \approx \min\{\ell, k\}$.  Thus, the ability to sketch flat distributions does not easily admit a technique to sketch non-flat distributions.  In the following discussion, we present a more complicated layering technique that is agnostic to the flat distributions that form the source.
+
+\begin{figure}[h]
+\label{fig:convex comb}
+\centering
+    \includegraphics[width=.9\textwidth]{convexCombExample.png}
+    \caption{A convex combination of $W_1,..., W_\ell$ has high min and fuzzy min-entropy, but sketching by using the component flat distributions removes all entropy.}
+    
+\end{figure}
+
+
+%\begin{centering}
+%\begin{figure}[t]
+%\includegraphics[scale.5*text_width]{convexCombExample}
+%\end{figure}
+%\end{centering}
+
+\section{Examples to Consider}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
