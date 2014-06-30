@@ -341,50 +341,95 @@ First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(
 \lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  In the interactive setting, fuzzy min-entropy is also a sufficient condition using secure two-party computation\bnote{cite something for this}.  However, in the non-interactive setting there are many distributions for which no construction is known to be secure and for which no impossibility result is known.  We attempt to bridge this gap in this work.
 
 \section{Well-spread distributions}
-\subsection{Depends on Distribution}
-We will start with an intuitively simple type of distribution where no results are known.  Security should be easy when all points of $W$ are far apart.  Intuitively, the fuzzy extractor/secure sketch does not need to disambiguate points and thus error-correction should be easy.  Indeed for any error-correcting code, a fuzzy extractor can be designed~(where the design of the fuzzy extractor depends on the supported distribution).  However, this intuition becomes more difficult when a fuzzy extractor should work for all well-spread distributions.  We begin by defining a well-spread distribution.
+In the remainder of this work, we consider increasingly complex types of distributions and consider both the minimum number of bits a secure sketch/fuzzy extractor must write down and the minimum entropy loss.  We begin by considering secure sketches.  We a call distribution well-spread if the distance between any two original readings $w_0, w_1$ is large.  Well-spread distributions should be the easiest type of distribution to handle as given a particular $w'$ there is a unique $w$ that could be the original reading.  Intuitively, no sketch should be necessary for such a distribution.  However, we show there is a large gap between a secure sketch that works for a particular well-spread distribution and a secure sketch that works for \emph{all} well-spread distributions.
+
+\begin{table}
+\begin{tabular}{l | l | c}
+Upper bound & Depends on Distribution & Works for all Dist\\
+\hline
+Well-spread distribution & $0$ & $\log |B_t|$\\
+Flat distribution & $\Hoo(W) - \Hfuzz(W) + \log (1/\delta)$ &$\log |B_t|$\\
+Arbitrary distribution & $\Hoo(W) - \Hfuzz(W) + \log (1/\delta) + \log \log \mathcal{M}$ & $\log |B_t|$
+\end{tabular}
+\caption{Upper bounds on minimum number of bits that a fuzzy extractor can write down and still have recovery.}
+\label{tab:upper bounds}
+\end{table}
+\subsection{Distribution Dependent Sketches}
+Error-correction should be easy when all points of $W$ are far apart.  Intuitively, the fuzzy extractor/secure sketch does not need to disambiguate points and thus error-correction should be easy.  Indeed for any error-correcting code, a fuzzy extractor can be designed~(where the design of the fuzzy extractor depends on the supported distribution).  However, this intuition becomes more difficult when a fuzzy extractor should work for all well-spread distributions.  We begin by defining a well-spread distribution.
 
 \begin{definition}
-A distribution $W$ is called \emph{$t_{sec}$-well spread} if for all $w, x\in W, \dis(w, x)\ge t_{sec}$.
+A distribution $W$ is called \emph{$t_{cor}$-well spread} if for all $w, x\in W, \dis(w, x)\ge t_{cor}$.
 \end{definition}
-Intuitively, it should be easy to build a fuzzy extractor for well-spread distributions when the desired error-tolerance is less than $t_{sec}/2$~(assuming the distribution has super-logarithmic min-entropy).  Indeed, this is the case when the fuzzy extractor is allowed to depend on $W$.
+Intuitively, it should be easy to build a fuzzy extractor for well-spread distributions when the desired error-tolerance is less than $t_{cor}/2$~(assuming the distribution has super-logarithmic min-entropy).  Indeed, this is the case when the fuzzy extractor is allowed to depend on $W$.
 
 \begin{lemma}
 \label{lem:nosketchwellspread}
-Let $W$ be a $t_{sec}$ well-spread distribution with $\Hoo(W)\ge k$ there exists a $(\mathcal{M}, m, m, t_{sec}/2)$-secure sketch with no error that works for $W$.  In particular, $\sketch(w) = \perp$, and $\rec(w')$ finds the nearest $w\in W$.  \rec is efficient if there exists efficient decoding for the points in $W$.  By \lemref{lem:fuzzy ext construction} there also exists a fuzzy extractor.\bnote{fill in the parameters}
+Let $W$ be a $t_{cor}$ well-spread distribution with $\Hoo(W)\ge k$ there exists a $(\mathcal{M}, m, m, \lfloor( t_{cor}-1)/2\rfloor)$-secure sketch with no error that works for $W$.  In particular, $\sketch(w) = \perp$, and $\rec(w')$ finds the nearest $w\in W$.  \rec is efficient if there exists efficient decoding for the points in $W$.  By \lemref{lem:fuzzy ext construction} there also exists a $(\mathcal{M}, m,m -2\log 1/\epsilon, \lfloor (t_{cor}-1)/2\rfloor, \epsilon)$-fuzzy extractor with no error.
 \end{lemma}  
+\begin{proof}
+It suffices to show that for any $w'$ there exists a unique $w\in W$ such that $\dis (w, w')\le \lfloor (t_{cor}-1)/2\rfloor$.  Since $W$ is $t_{cor}$-well spread, for all $w_0, w_1 \in W, \dis (w_0, w_1)\ge t_{cor}$.  Then by the triangle inequality,
+\[
+t_{cor}\ge \dis(w_0, w_1) \ge \dis(w_0, w') + \dis(w', w_1).\]
+This is only true if at least one of $\dis(w_0, w')$ or $\dis(w', w_1)$ is greater than $\lfloor (t_{cor}-1)/2\rfloor$.
+\end{proof}
 
-\subsection{Works for all well-spread distributions}
-Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In particular, any secure sketch must write down a large number of bits~(matching our known constructions of secure sketches).  However, it is not known if it is necessary to decrease the entropy of the distribution $W$.
+\subsection{Distribution Agnostic Sketches}
+Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In the previous model the particular well-spread distribution $W$ was encoded in the \sketch and \rec algorithms.  In this section we ask if a similar construction is possible when $(\sketch, \rec)$ must work for any well-spread distribution.  In this setting, $(\sketch, \rec)$ are described and the adversary then specifies a particular well-spread distribution $W$.
+
+We show that any secure sketch that works for all well-spread distributions must write down a large number of bits~(matching our known constructions of secure sketches).  It is not known if it is necessary to decrease the entropy of the distribution $W$.
 
 \begin{lemma}
-Let $\mathcal{W}$ be the set of all $t_{sec}$-well spread distributions.  Let $(\sketch, \rec)$ be a $(\mathcal{M}, m, \tilde{m}, t_{cor})$-secure sketch.  Then the length of $\sketch$ is at least $\log |B_{t}|$.
+Let $\mathcal{W}$ be the set of all $t_{cor}$-well spread distributions.  Let $t = \lfloor (t_{cor}-1)/2\rfloor$ and let $(\sketch, \rec)$ be a $(\mathcal{M}, m, \tilde{m}, t )$-secure sketch.  Then the length of $\sketch$ is at least $\log |B_{t}|$.
 \end{lemma}
 \begin{proof}
 Let $\mathcal{M}$ be a metric space.
-Let $\mathcal{W}$ be the set of all $t_{sec}$-well spread distributions on $\mathcal{M}$.  
+Let $\mathcal{W}$ be the set of all $t_{cor}$-well spread distributions on $\mathcal{M}$.  
 Consider the following experiment:
 \[
-W\leftarrow \mathcal{W} \wedge w \leftarrow W \wedge w'\leftarrow B_{t_{sec}}(w) \wedge ss \leftarrow \sketch(w) \wedge w^* \leftarrow \rec(w', ss).
+W\leftarrow \mathcal{W} \wedge w \leftarrow W \wedge w'\leftarrow B_{t_{cor}}(w) \wedge ss \leftarrow \sketch(w) \wedge w^* \leftarrow \rec(w', ss).
 \]
+That is, the adversary uniformly samples a well-spread distribution and then a point from the well-spread distribution.  
 Since $(\sketch, \rec)$ works for any well-spread distribution the $\Pr[w^* = w] =1 $ in the above experiment.   Denote by $X$ the joint distribution of $w, w'$ produced in the above experiment.  Now consider the following experiment
 \[
-v \leftarrow U_{\mathcal{M}} \wedge v'\leftarrow B_{t_{sec}}(v) \wedge ss \leftarrow \sketch(v) \wedge v^* \leftarrow \rec(v', ss).
+v \leftarrow U_{\mathcal{M}} \wedge v'\leftarrow B_{t_{cor}}(v) \wedge ss \leftarrow \sketch(v) \wedge v^* \leftarrow \rec(v', ss).
 \]
-Denote by $Y$ the joint distribution of $v, v'$ produced in the above experiment.  Then $X\overset{d}= Y$.  That is, the view of $(\sketch, \rec)$ is identically distributed in both cases.  Thus, $\Pr[v^* = v] = 1$.  For the uniform distribution the entropy retained by a secure sketch is at most $\Hav(U_{\mathcal{M}} | \sketch(U_{\mathcal{M}})) \le \log |\mathcal{M} - \log |B_t(\cdot)|$~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}.  For a secure sketch to lose $\log |B_{t_{sec}}(\cdot)|$ bits of entropy it must write down at least $\log |B_{t_{sec}}(\cdot)|$ bits~\cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}.  Thus, $(\sketch, \rec)$ writes down at least $\log |B_{t_{sec}}|$ bits on the uniform distribution and its view is identical on $X$ so it writes down at least $\log |B_{t_{sec}}|$ bits on $X$.  This completes the proof.\bnote{need to deal with the case where the number of bits written by $\sketch$ is variable.}
+Denote by $Y$ the joint distribution of $v, v'$ produced in the above experiment.  Then $X\overset{d}= Y$.  That is, the view of $(\sketch, \rec)$ is identically distributed in both cases.  Thus, $\Pr[v^* = v] = 1$.  For the uniform distribution the entropy retained by a secure sketch is at most $\Hav(U_{\mathcal{M}} | \sketch(U_{\mathcal{M}})) \le \log |\mathcal{M}| - \log |B_t(\cdot)|$~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}.  For a secure sketch to lose $\log |B_t(\cdot)|$ bits of entropy it must write down at least $\log |B_t(\cdot)|$ bits on average~\cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}.  Thus, $(\sketch, \rec)$ writes down at least $\log |B_t(\cdot)|$ bits on the uniform distribution and its view is identical on $X$ so it writes down at least $\log |B_{t_{cor}}|$ bits on $X$.  This completes the proof.
 \end{proof}
+\noindent
+\textbf{Note:} In the above lemma, the relation between the well-spreadness of the class of distributions and the correctness of the fuzzy extractor is not important and is made to match the relation in \lemref{lem:nosketchwellspread} for convenience.  The bound is purely derived from the correctness condition, the well-spreadness of the distribution can essentially be arbitrarily replaced~(as long as the maximal distance point from any point in the metric space is the same).
 
-\section{Non-well spread distributions}
-\subsection{Dependence on Distributions}
-\lemref{lem:nosketchwellspread} showed that if a fuzzy extractor~(resp. secure sketch) is built for a particular well-spread distribution, it is not necessary to write down information-reconciliation information.  In this section, we consider information-theoretic bounds on distributions that contain multiple points in each ball.  We start by considering distributions that have a fixed number of neighbors for each point.
+Furthermore, the above lemma easily extends to the setting where the distributions are not well-spread as long as there is an adversary strategy of choosing the input distribution that produces an input to sketch that is identically distributed to the uniform distribution.
+
+\section{Flat spread distributions}
+In the previous section we showed bounds on producing secure sketches and fuzzy extractors for well-spread distributions.  In this section we further investigate secure sketches where the sketch depends on the input distribution.\footnote{Recall the bound when the sketch does not know the input distribution is $\log |B_t|$ bits and this is constructible for any distribution.}
+
+\subsection{Distribution Dependent Sketches}
+
+\lemref{lem:nosketchwellspread} showed that if a fuzzy extractor~(resp. secure sketch) is built for a particular well-spread distribution, it is not necessary to write down information-reconciliation information.  In this section, we consider information-theoretic bounds on distributions that contain multiple points in each ball.  
+We begin by considering flat distributions where the probability of each point in $W$ is the same.
 
 \begin{definition}
-We call a distribution $W$, over metric space $\mathcal{M}$, $(c, t)$-\emph{fixed neighbor} if there exists a constant $c$ such that for all points in $x\in \mathcal{M}$ there are exactly $c$ points $w\in W$ such that $\dis(w, x)\le t$.  We say that $W$ is a $(c, t)$-\emph{bounded neighbor distribution} if for all point $x\in\mathcal{M}$ there are at most $c$ points $w\in W$ such that $\dis(w, x)\le t$.
+A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in W$, $\Pr[W=w_0] = \Pr[W=w_1]$.  
 \end{definition}
 
-\textbf{Note:} A fixed neighbor distribution is a special case of a bounded-neighbor distribution.
-
-We now present an information-theoretic construction for fixed-neighbor distributions.  We first introduce the notion of a pairwise-independent hash:
+Recall that fuzzy min-entropy is a lower bound of the adversaries success probability for any scheme~(\defref{def:fuzzy min-ent}).  Fuzzy min-entropy is total weight of the maximum probability ball.  For flat distribution, this is directly correlated to the ball with the largest number of points.  That is, for a flat distribution 
+\begin{align*}
+\Hfuzz(W) &= -\log \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t\} * \Pr[W=w]\\
+&= -\log \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t\} *2^{-\Hoo(W)}\\
+&=\Hoo(W) -\log \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t\} 
+\end{align*}
+For notational convenience, we denote the ball with the largest number of points as $B_{t, max}$.  For any scheme, the adversary's success probability is 
+\begin{align}
+\Hfuzz(W) = \Hoo(W) -\log |B_{t, max}|.\label{eq:fuzz for flat}
+\end{align}
+%We start by considering distributions that have a fixed number of neighbors for each point.
+%
+%\begin{definition}
+%We call a distribution $W$, over metric space $\mathcal{M}$, $(c, t)$-\emph{fixed neighbor} if there exists a constant $c$ such that for all points in $x\in \mathcal{M}$ there are exactly $c$ points $w\in W$ such that $\dis(w, x)\le t$.  We say that $W$ is a $(c, t)$-\emph{bounded neighbor distribution} if for all point $x\in\mathcal{M}$ there are at most $c$ points $w\in W$ such that $\dis(w, x)\le t$.
+%\end{definition}
+%
+%\textbf{Note:} A fixed neighbor distribution is a special case of a bounded-neighbor distribution.
+We now present an information-theoretic construction for flat distributions.  We first introduce the notion of a pairwise-independent hash:
 
 \begin{definition}
 Let $F : \mathcal{K} \times D \to R$ be a function.  We say that $F$ is \emph{universal} if for all distinct $x_1, x_2 \in D$:
@@ -398,7 +443,7 @@ We now show a sufficiently-long universal hash function suffices to construct an
 
 \begin{construction}
 \label{cons:pairwise hash}
-Let $W$ be a $(c, t)$-fixed neighbor distribution over $\mathcal{M}$.  Let $F :\mathcal{M}\times \mathcal{M}\rightarrow R$ be a pairwise independent hash function.  We describe $\sketch, \rec$ as follows:
+Let $W$ be a flat distribution over $\mathcal{M}$.  Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a pairwise independent hash function.  We describe $\sketch, \rec$ as follows:
 \begin{itemize}
 \item $\sketch(w)$:
 \subitem Sample $K\leftarrow \mathcal{K}$.
@@ -410,34 +455,150 @@ Let $W$ be a $(c, t)$-fixed neighbor distribution over $\mathcal{M}$.  Let $F :\
 \end{itemize}
 \end{construction}
 \begin{lemma}
-\consref{cons:pairwise hash} is a $(\mathcal{M}, m, m - \log |R|, t)$-secure sketch with error $\delta = \frac{c-1}{|R|}$. 
+\consref{cons:pairwise hash} is a $(\mathcal{M}, m, m - \log |R|, t)$-secure sketch with error $\delta \le \frac{|B_{t, max}|-1}{|R|}$. 
 \end{lemma}
 \begin{proof}
 We first argue security.  Since $\mathcal{K}$ and $W$ are independent $\Hav(W | \mathcal{K}) = \Hoo(W) = m$.  Then by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(W | \mathcal{K}, F(K, W)) \ge \Hoo(W) - \log |F(K, W)| \ge m - \log |R|$.
 
-We now argue correctness.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ recall that the size of $W^*$ is $c$ and since $w, w'$ are chosen independently of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash, our goal is to bound the probability that another element $w^*$ collides, that is $F(K, w^*) = F(K, w)$.
+We now argue correctness.  Fix some $w, w'$.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ recall that the size of $W^*$ is at most $B_{t, max}$ and since $w, w'$ are chosen independently of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash, our goal is to bound the probability that another element $w^*$ collides, that is $F(K, w^*) = F(K, w)$.
 \begin{align*}
-\Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] \le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)]  = \frac{c-1}{|R|}
+\Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R|} = \frac{|B_{t, max}|-1}{|R|}
 \end{align*}
-Where the inequality proceeds by union bound and the equality proceeds by the universality of $F$.  This completes the proof.
+Where the inequality proceeds by union bound, the first equality proceeds by the universality of $F$, and the second equality proceeds by noting the number of neighbors is bounded by $|B_{t, max}|$.  This completes the proof.
 \end{proof}
 \begin{corollary}
 Let $n$ be a security parameter.  
-If $|R| \ge c * n^{\omega(1)}$ then \consref{cons:pairwise hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log |c| + \omega(\log n)$ suffices.
+If $|R| \ge |B_{t, max}|* n^{\omega(1)}$ then \consref{cons:pairwise hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log |B_{t, max}| + \omega(\log n)$ suffices.
 \end{corollary}
 
 Note that \consref{cons:pairwise hash} writes down essentially the worst case number of bits in all setting, it knows the maximum number of points in any ball and writes down that number~(with an additional super-logarithmic factor to prevent collisions).  Recall, our hope is to find a sketch that achieves total security equal to the fuzzy min-entropy of the distribution.  Thus, the remaining entropy for this construction is 
 \[
-\Hav(W |\sketch(W)) = \Hoo(W) - \log c - \omega(\log n)
+\Hav(W |\sketch(W)) = \Hoo(W) - \log |B_{t, max}| - \omega(\log n)
 \]
-For a flat distribution with a fixed number of neighbors, 
-\begin{align*}
-\Hfuzz(W) &= -\log \max_{x\in \mathcal{M}}, \sum_{w | \dis(w, x)\le t} \Pr[W=w]\\
-&=-\log \max_{x\in \mathcal{M}}, -\log \sum_{w | \dis(w, x)\le t} 2^{-\Hoo(W)}\\
-&= -\log c2^{-\Hoo(W)} = \Hoo(W) - \log c
-\end{align*}
-Thus, the construction is optimal up to a super-logarithmic factor for flat sources with a fixed number of neighbors.  We now attempt to remove both of these restrictions.
+For a flat distribution this is within a super-logarithmic factor of optimal~(see Equation~\eqref{eq:fuzz for flat}).  Intuitively, this is because the sketch is deconflicting for the ball with the largest number of points.  For a flat distribution, this is also the ball with the largest total weight.  We will see this becomes more difficult as we move to the setting where points have very different probability.  In this setting, we may write down a large number of bits to deal with a low weight ball that has a large number of points, but this may completely reveal the high weight balls. We will compensate for this problem by writing down a variable number of bits.
+%with a fixed number of neighbors, 
+%\begin{align*}
+%\Hfuzz(W) &= -\log \max_{x\in \mathcal{M}}, \sum_{w | \dis(w, x)\le t} \Pr[W=w]\\
+%&=-\log \max_{x\in \mathcal{M}}, -\log \sum_{w | \dis(w, x)\le t} 2^{-\Hoo(W)}\\
+%&= -\log c2^{-\Hoo(W)} = \Hoo(W) - \log c
+%\end{align*}
+%Thus, the construction is optimal up to a super-logarithmic factor for flat sources with a fixed number of neighbors.  We now attempt to remove both of these restrictions.
 
+
+\bnote{need to extend this to a non-fixed number of bits and randomized.}
+\section{Dealing with non flat distributions}
+The hashing approach outlined above~(\consref{cons:pairwise hash}) does not extend to arbitrary sources.  The reason is that some balls may have significantly more points but low overall probability.  Let $W$ be a distribution, denote by $B_1$ a ball with $2^{\Hoo(W)}$ points but with probability $\Pr[W\in B_1] =2^{-\Hoo(W)}$ and let $B_2,..., B_{2^{-\Hoo(W)}}$ be well-spread balls with one point each with probability $\Pr[W\in B_i] = 2^{-\Hoo(W)}$.  Then the hashing algorithm outlined above it is necessary to write down $\Hoo(W)$ bits in the case when $W$ lands in $B_1$.  However, with probability $1-2^{-\Hoo(W)}$ the point $w_0$ lies outside of $B_1$ and the hash may completely reveal the point in this setting.  
+
+Dealing with non-flat distributions requires a new strategy.  Ideally, this strategy should be aware of the density of the current ball and aware that when an original reading comes from a sparse ball it is not necessary to write down many bits.  We first a natural method to leverage convex combinations that does not work\bnote{phrasing}.  We then show a solution that comes within \bnote{something} of optimal by partitioning the probability space.
+
+\subsection{Leveraging convex combinations?}
+In many situations solving a problem for min-entropy distributions can be reduced to solving the problem for flat distributions and then using the fact that any min-entropy distribution is a convex combination of flat distributions.  For example, consider the following extension to \consref{cons:pairwise hash}.  Let $W$ be some distribution that is a finite convex combination of flat sources $W_1,..., W_n$ where each $\forall i, \Hoo(W_i)\ge k$.\footnote{A distribution may be an  convex combination of an infinite number of distributions.  However, we show it is difficult to leverage convex combinations in the finite setting and handling the infinite case is more difficult.}  For convenience we assume that the coefficients on all $W_i$ are the same and distributions may be repeated. 
+
+The proposed modification to the construction is as follows, when receiving an input $w$, sample a distribution $W_i$ from the set of distributions where $w$ has nonzero probability, then write down $i$ and perform the sketch as before for distribution $W_i$.  Intuitively, writing down a distribution $i$ should not do any harm as each of distributions $W_i$ has the same min-entropy as the starting distribution.  Furthermore, each of these distributions is flat and thus, \consref{cons:pairwise hash} should apply.
+
+In the flat case, we saw it was necessary to write down the number of points in the largest ball, however, the residual entropy in this case was exactly equal to the density of the largest ball~(matching the success of the best adversary that always guesses in this ball).  That is, the residual entropy $\Hav(W|\sketch(W)) \approx \Hfuzz(W)$.  However, in the setting where $W$ is a convex combination of flat sources this does not hold.
+
+Consider set of distributions $W_i$ where each $W_i$ has two components, first $W_i$ contains a distinguished point $w^*$ where $\Pr[W=w^*] = 2^{-k}$ and $w^*$ has no neighbors, second let $W_i$ contain a set $B_i$ of $2^{-k}-1$ points within distance $t$ each with probability $2^{-k}$.  This distribution is illustrated in \figref{fig:convex comb}.  
+
+The fuzzy min-entropy of $W_i$ is almost $0$ as the overwhelming majority of the probability space lies in $B_i$.  Now consider the distribution $W$ that is a convex combination of the $W_i$~(we assume that $B_i$ do not intersect).  Note that $\Hoo(W)=k$ and that $\Hfuzz(W)\approx \min\{\ell, k\}$ where $\ell$ is the number of distributions $W_1,..., W_\ell$.  (For our purposes, we can assume that $\ell$ is quite large and the probability of $w^*$ becomes the dominant factor.)
+
+Consider an input point $w\in W$.  One of two cases occurs either $w=w^*$ or $w\in B_i$ for some $i$.  It should be clear in either case that the selected distribution $W_i$ is uniformly distributed from $\{1,..., \ell\}$.  For any of the selected distributions, there is a ball with $\approx 2^{-k}$ points and thus the hash based construction must write down approximately $k$ points.  This means that $\Hav(W | \sketch(W))  = \Hav(W_i | \sketch(W_i)) \approx 0$.  This is despite the fact $\Hfuzz(W) \approx \min\{\ell, k\}$.  Thus, the ability to sketch flat distributions does not easily admit a technique to sketch non-flat distributions.  In the following discussion, we present a more complicated technique that layers the distribution to make it appear flat.
+
+\begin{figure}[h]
+
+\centering
+    \includegraphics[width=.9\textwidth]{convexCombExample.png}
+    \caption{A convex combination of $W_1,..., W_\ell$ has high min and fuzzy min-entropy, but sketching by using the component flat distributions removes all entropy.}
+\label{fig:convex comb}    
+\end{figure}
+
+\bnote{remove pagebreak later}
+
+\subsection{Layered Hashing}
+As we saw in the previous section, dealing with non-flat distributions is difficult.  The problem is distinguishing between the setting where a ball has a few high probability points and a large number of low probability points.  We will deal with this problem by describing the probability of the point $w_0\in W$ seen in sketch.  Then the hash is applied only considering the maximum weight of the ball containing points at this level.  Roughly, at each layer we can think of the distribution as being flat, and the only additional information is the layer of the original reading.
+
+\pagebreak
+
+\begin{construction}
+\label{cons:leveling}
+Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$.  Let $\Hoo(W) \ge m$
+Let $\epsilon>0$ be a parameter.  Let $L_i = (2^{-(i+1)}, 2^{-i}]$ for $i=k,..., n+\log 1/\epsilon$.  Let $F_i :\mathcal{K}_i\times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions.  We describe $\sketch, \rec$ as follows:
+\begin{itemize}
+\item $\sketch(w)$:
+\subitem If $\Pr[W=w]\le 2^{-n}/\epsilon$
+\begin{itemize}
+\item Set $p=0, w$.
+\end{itemize}
+\subitem Else
+\begin{itemize}
+\item Find $i$ such that $\Pr[W=w]\in L_i$.  
+\item Sample $K\leftarrow \mathcal{K}_i$.
+\item Set $p =1,  i, F_i(K, w), K$.
+\end{itemize}
+\item $\rec(w', y)$:
+\subitem If $y_0 = 1$, output $y_{1,..., |y|}$.
+\subitem Else parse $(i, z, K) = y_{1,..., |y|}$.
+\subitem Enumerate $W^* = \{w \in W | \dis(w, w')\le t\}$.
+\subitem For all $w^*\in W^*$, if $F(K, w^*) = z$, output $w^*$.
+\subitem Output $\perp$.
+\end{itemize}
+\end{construction}
+
+Before describing the bounds obtained by \consref{cons:leveling} we will extend our notation for the maximum likelihood ball to the leveled case.  Let $B_{t, i, max}$ be the ball that contains the most points in $L_i$.  That is,
+\[
+B_{t, i, max} = \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t \wedge \Pr[W=w]\in L_i\}.
+\]
+\begin{lemma}
+Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions where $|R_i| = |B_{t, i, max}| /\delta$.  Then \consref{cons:leveling} is a $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log 1/\delta - \log 1/\epsilon -\log n$.\bnote{come back and correct this}
+\end{lemma}
+\begin{proof}
+We begin by arguing correctness.  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-n}\epsilon$, then $w$ is simply transmitted to $\rec$ and correctness is trivial.  Now consider the case when $\Pr[W=w]> 2^{-n}\epsilon$, let $L_i^*$ be the level of $\Pr[W=w]$.
+Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ such that $\forall w \in W^*, \Pr[W^*=w]\in L_i^*$. The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ is:
+\begin{align*}
+\Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} = \frac{|B_{t, i, max}|-1}{|R_i|} = \delta
+\end{align*}
+Where the inequality proceeds by union bound, the first equality proceeds by the universality of $F$, and the second equality proceeds by noting the number of neighbors is bounded by $|B_{t, i, max}|$.  
+
+We now argue security.  First note that the total weight of points whose probability is less than $2^{-n}\epsilon$ is at most $\epsilon$~(there are at most $2^n$ points in the distribution).  That is, $\sum_{w | \Pr[W=w]\le 2^{-n}\epsilon}\Pr[W = w] \le \epsilon$.  Let $1_{\text{low prob}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-n}$.  Then 
+\begin{align*}
+\Hav(W | \sketch(W)) = -\log \left(\Pr[1_{\text{low prob}}=1] * 1 + \Pr[1_{\text{low prob}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low prob}} = 0)}\right)\\
+-\log\left( \epsilon + (1-\epsilon)2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low prob}} = 0)}\right)
+\end{align*}
+For the remainder of the proof, we seek a bound on $\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\Pr[W=w | \sketch(W)]$.
+We separate out this quantity into levels:
+\begin{align*}
+\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
+&= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{|\sketch(W)|i|}\right)\\
+&= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
+&= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
+&=\frac{ \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-i}*|B_{t, i, max}|\right)}{\delta}\\
+%&=\delta \sum_{i | k\le i \le n+\log 1/\epsilon} \Pr[W\in L_i]\left(2^{-i}*|B_{t, i, max}|\right)
+\end{align*}
+Now consider an adversary that receives $i$ as input, in the oracle setting, the best strategy is to guess a point that has the most weight in that layer.  The success of this adversary is at most $2^{-i}|B_{t,i, max}|$.  Note there are $n-k+\log 1/\epsilon$ outcomes for $i$ so the overall success of such an adversary is at most $n-k+\log 1/\epsilon$ better than an adversary without such input.  This allows us to conclude that 
+\begin{align*}
+\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) &= \frac{(n-k+\log 1/\epsilon) 2^{-\Hfuzz(W)}}{\delta}.
+\end{align*}
+Combining both cases we have:
+\begin{align*}
+\Hav(W | \sketch(W)) = -\log \left(\epsilon+\frac{(1-\epsilon)(n-k+\log1/\epsilon)2^{-\Hfuzz(W)}}{\delta}\right).
+\end{align*}
+Setting $\epsilon = 2^{-k}$ yields
+\begin{align*}
+\Hav(W | \sketch(W)) &= -\log \left(k+(1-2^{-k})(n)2^{-\Hfuzz(W)/\delta}\right)\\
+&\ge -\log \min\{k, (1-2^{-k}) n2^{-\Hfuzz(W)}/\delta\})-1\\
+&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-k}) - 1\\
+&\ge \Hfuzz(W) - \log n + \log \delta - 2\\
+\end{align*}
+
+\end{proof}
+
+\bibliographystyle{alpha}
+\bibliography{crypto}
+
+\appendix
+\section{Old Proofs}
 \subsection{Flat Sources with Sketches that Write a Fixed Number of Bits}
 We begin by trying to remove the restriction that every point in the metric space has a fixed number of neighbors in a distribution.  We start with sketches that write down a fixed number of bits~(independent of their input $w$).   We will show a lower bound on the number of bits that a $\sketch$ algorithm must write down.  We assume that all coins of $\sketch$ are provided to $\rec$ and that $\rec$ is deterministic~(any coins needed for $\rec$ can be flipped by $\sketch$ in this model).
 
@@ -466,42 +627,8 @@ For deterministic sketches:
 \Hav(W|S ) = -\log \left(\sum_{s\in S} \Pr[S = s] \frac{2^{-\Hoo(W)}}{\Pr[S=s]}\right) = -\log \left(2^{-\Hoo(W)} |S| \right)  = \Hoo(W) - H_0(S).
 \]
 
-\bnote{need to extend this to a non-fixed number of bits and randomized.}
-\section{Dealing with non flat distributions}
-The basic hashing approach outlined above does not extend to arbitrary sources.  The reason is that some balls may have significantly more points but occur with low probability.  Let $W$ be a distribution, denote by $B_1$ a ball with $2^{\Hoo(W)}$ points but with total probability $\Pr[W\in B_1] =2^{-1/2\Hoo(W)}$ and let $B_2$ be a ball with one point with probability $\Pr[W\in B_2] = 2^{-\Hoo(W)}$.  Then the hashing algorithm outlined above it is necessary to write down $\Hoo(W)$ bits in the case when $W$ lands in $B_1$.  However, this may completely reveal the point in $B_2$.  
-
-Dealing with non-flat distributions requires a new strategy.  Ideally, this strategy should be aware of the density of the current ball, aware that when an original reading comes from a sparse ball it is not necessary to write down many bits.  We present two strategies: leveraging convex combinations, and partitioning the probability space.
-
-\subsection{Leveraging convex combinations?}
-In many situations solving a problem for min-entropy distributions can be reduced to solving the problem for flat distributions and then using the fact that any min-entropy distribution is a convex combination of flat distributions.  For example, consider the following extension to \consref{cons:pairwise hash}.  Let $W$ be some distribution that is a finite convex combination of flat sources $W_1,..., W_n$ where each $\forall i, \Hoo(W_i)\ge k$~(a distribution may be an infinite convex combination, we will show this idea does not work even for the case of finite convex combinations).  For convenience we assume that the coefficients on all $W_i$ are the same and distributions may be repeated. 
-
-The proposed modification to the construction is as follows, when receiving an input $w$, sample a distribution $W_i$ from the set of distributions where $w$ has nonzero probability, then write down $i$ and perform the sketch as before for distribution $W_i$.  Intuitively, writing down a distribution $i$ should not do any harm as each of distributions $W_i$ has the same min-entropy as the starting distribution.  Furthermore, each of these distributions is flat and thus, \consref{cons:pairwise hash} should apply.
-
-In the flat case, we saw it was necessary to write the down number of bits in the largest ball, however, the residual entropy in this case was exactly equal to the density of the largest ball~(and this is our goal as the adversary can always guess the most likely ball).  That is, the residual entropy $\Hav(W|\sketch(W)) \approx \Hfuzz(W)$.  However, in the setting where $W$ is a convex combination of flat sources this does not hold.
-
-Consider set of distributions $W_i$ where each $W_i$ has two components, first $W_i$ contains a distinguished point $w^*$ where $\Pr[W=w^*] = 2^{-k}$ and $w^*$ has no neighbors, second let $W_i$ contain a set $B_i$ of $2^{-k}-1$ points within distance $t$ each with probability $2^{-k}$.  Note that the fuzzy min-entropy of $W_i$ is almost $0$ as the overwhelming majority of the probability space lies in $B_i$.  Now consider the distribution $W$ that is a convex combination of the $W_i$~(we assume that the various $B_i$ do not intersect).  Note that $\Hoo(W)=k$ and that $\Hfuzz(W)\approx \min\{\ell, k\}$ where $\ell$ is the number of distributions $W_1,..., W_\ell$.  (For our purposes, we can assume that $\ell$ is quite large and the probability of $w^*$ becomes the dominant factor.)
-
-Consider an input point $w\in W$.  One of two cases occurs either $w=w^*$ or $w\in B_i$ for some $i$.  It should be clear in either case that the selected distribution $W_i$ is uniformly distributed from $\{1,..., \ell\}$.  For any of the selected distributions, there is a ball with $\approx 2^{-k}$ points and thus the hash based construction must write down approximately $k$ points.  This means that $\Hav(W | \sketch(W))  = \Hav(W_i | \sketch(W_i)) \approx 0$.  This is despite the fact $\Hfuzz(W) \approx \min\{\ell, k\}$.  Thus, the ability to sketch flat distributions does not easily admit a technique to sketch non-flat distributions.  In the following discussion, we present a more complicated layering technique that is agnostic to the flat distributions that form the source.
-
-\begin{figure}[h]
-\label{fig:convex comb}
-\centering
-    \includegraphics[width=.9\textwidth]{convexCombExample.png}
-    \caption{A convex combination of $W_1,..., W_\ell$ has high min and fuzzy min-entropy, but sketching by using the component flat distributions removes all entropy.}
-    
-\end{figure}
-
-
-%\begin{centering}
-%\begin{figure}[t]
-%\includegraphics[scale.5*text_width]{convexCombExample}
-%\end{figure}
-%\end{centering}
 
 \section{Examples to Consider}
-\bibliographystyle{alpha}
-\bibliography{crypto}
-
 
 \end{document}
 
