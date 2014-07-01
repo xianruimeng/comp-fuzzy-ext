@@ -549,9 +549,10 @@ Before describing the bounds obtained by \consref{cons:leveling} we will extend 
 \[
 B_{t, i, max} = \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t \wedge \Pr[W=w]\in L_i\}.
 \]
-\begin{lemma}
-Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions where $|R_i| = |B_{t, i, max}| /\delta$.  Then \consref{cons:leveling} is a $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log 1/\delta - \log 1/\epsilon -\log n$.\bnote{come back and correct this}
-\end{lemma}
+\begin{theorem}
+Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions where $|R_i| = |B_{t, i, max}| /\delta$.  Then \consref{cons:leveling} is a $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
+\end{theorem}
+\bnote{right now this is stated without epsilon.  I found the expression to be really gross with $\epsilon$ included.  Thoughts?  I know $\epsilon$ needs to be there because the construction uses it.}
 \begin{proof}
 We begin by arguing correctness.  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-n}\epsilon$, then $w$ is simply transmitted to $\rec$ and correctness is trivial.  Now consider the case when $\Pr[W=w]> 2^{-n}\epsilon$, let $L_i^*$ be the level of $\Pr[W=w]$.
 Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ such that $\forall w \in W^*, \Pr[W^*=w]\in L_i^*$. The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ is:
@@ -566,32 +567,40 @@ We now argue security.  First note that the total weight of points whose probabi
 \Hav(W | \sketch(W)) = -\log \left(\Pr[1_{\text{low prob}}=1] * 1 + \Pr[1_{\text{low prob}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low prob}} = 0)}\right)\\
 -\log\left( \epsilon + (1-\epsilon)2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low prob}} = 0)}\right)
 \end{align*}
+We first consider the optimum strategy for an adversary that receives just the information about the probability of $w$.  An adversary that receives $i$ as input the best strategy is to guess a point that has the most nearby weight in that layer.  That is, $w^*\leftarrow A(i)$ such that $\max_{w^* \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i}}[\dis(w, w^*)]$.The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  Note there are $n-k+\log 1/\epsilon$ outcomes for $i$ so the overall success of such an adversary is at most $n-k+\log 1/\epsilon$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+\begin{align}
+\expe_{i | k\le i \le n+\log 1/\epsilon}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | k\le i \le n+\log 1/\epsilon}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \label{eq:link fuzz 1}\\
+&\le \left(n-k+\log 1/\epsilon\right)\left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\label{eq:link fuzz 2}\\
+&= \left(n-k+\log 1/\epsilon\right)\Hfuzz(W)\label{eq:link fuzz 3}
+\end{align}
 For the remainder of the proof, we seek a bound on $\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\Pr[W=w | \sketch(W)]$.
 We separate out this quantity into levels:
 \begin{align*}
 \max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
 &= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{|\sketch(W)|i|}\right)\\
-&= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
-&= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
-&=\frac{ \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-i}*|B_{t, i, max}|\right)}{\delta}\\
+&\le \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
+&\le \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
+&\le\frac{ \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-(i+1)}*|B_{t, i, max}|\right)}{2\delta}\\
 %&=\delta \sum_{i | k\le i \le n+\log 1/\epsilon} \Pr[W\in L_i]\left(2^{-i}*|B_{t, i, max}|\right)
+%\end{align*}
+%Now consider This allows us to conclude that 
+%\begin{align*}
+%\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
+&= \frac{(n-k+\log 1/\epsilon) 2^{-\Hfuzz(W)}}{2\delta}.
 \end{align*}
-Now consider an adversary that receives $i$ as input, in the oracle setting, the best strategy is to guess a point that has the most weight in that layer.  The success of this adversary is at most $2^{-i}|B_{t,i, max}|$.  Note there are $n-k+\log 1/\epsilon$ outcomes for $i$ so the overall success of such an adversary is at most $n-k+\log 1/\epsilon$ better than an adversary without such input.  This allows us to conclude that 
-\begin{align*}
-\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) &= \frac{(n-k+\log 1/\epsilon) 2^{-\Hfuzz(W)}}{\delta}.
-\end{align*}
+Where the last line follows by Equations~\eqref{eq:link fuzz 1}-\eqref{eq:link fuzz 3}.
 Combining both cases we have:
 \begin{align*}
-\Hav(W | \sketch(W)) = -\log \left(\epsilon+\frac{(1-\epsilon)(n-k+\log1/\epsilon)2^{-\Hfuzz(W)}}{\delta}\right).
+\Hav(W | \sketch(W)) = -\log \left(\epsilon+\frac{(1-\epsilon)(n-k+\log1/\epsilon)2^{-\Hfuzz(W)}}{2\delta}\right).
 \end{align*}
 Setting $\epsilon = 2^{-k}$ yields
 \begin{align*}
-\Hav(W | \sketch(W)) &= -\log \left(k+(1-2^{-k})(n)2^{-\Hfuzz(W)/\delta}\right)\\
-&\ge -\log \min\{k, (1-2^{-k}) n2^{-\Hfuzz(W)}/\delta\})-1\\
-&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-k}) - 1\\
-&\ge \Hfuzz(W) - \log n + \log \delta - 2\\
+\Hav(W | \sketch(W)) &= -\log \left(k+\frac{(1-2^{-k})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
+&\ge -\log \min\{k, \frac{(1-2^{-k}) n2^{-\Hfuzz(W)}}{2\delta}\})-1\\
+&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-k}) - 2\\
+&\ge \Hfuzz(W) - \log n + \log \delta - 3\\
 \end{align*}
-
+Where the third line follows from the third because $\Hfuzz(W)\le \Hoo(W) = k$.\bnote{what condition do we need to get rid of $\log (1-2^{-k})$?}
 \end{proof}
 
 \bibliographystyle{alpha}
