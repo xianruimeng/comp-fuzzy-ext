@@ -523,10 +523,10 @@ As we saw in the previous section, dealing with non-flat distributions is diffic
 \begin{construction}
 \label{cons:leveling}
 Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$.  Let $\Hoo(W) \ge m$
-Let $\epsilon>0$ be a parameter.  Let $L_i = (2^{-(i+1)}, 2^{-i}]$ for $i=k,..., n+\log 1/\epsilon$.  Let $F_i :\mathcal{K}_i\times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions.  We describe $\sketch, \rec$ as follows:
+Let $\ell\in\mathbb{Z}^+$ be a parameter.  Let $L_i = (2^{-(i+1)}, 2^{-i}]$ for $i=m,..., n+\ell$.  Let $F_i :\mathcal{K}_i\times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions.  We describe $\sketch, \rec$ as follows:
 \begin{itemize}
 \item $\sketch(w)$:
-\subitem If $\Pr[W=w]\le 2^{-n}/\epsilon$
+\subitem If $\Pr[W=w]\le 2^{-(n+\ell)}$
 \begin{itemize}
 \item Set $p=0, w$.
 \end{itemize}
@@ -552,9 +552,9 @@ B_{t, i, max} = \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t
 \begin{theorem}
 Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions where $|R_i| = |B_{t, i, max}| /\delta$.  Then \consref{cons:leveling} is a $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
 \end{theorem}
-\bnote{right now this is stated without epsilon.  I found the expression to be really gross with $\epsilon$ included.  Thoughts?  I know $\epsilon$ needs to be there because the construction uses it.}
+\bnote{right now this is stated without $\ell$.  I found the expression to be really gross with $\ell$ included.  Thoughts?  I know $\ell$ needs to be there because the construction uses it.}
 \begin{proof}
-We begin by arguing correctness.  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-n}\epsilon$, then $w$ is simply transmitted to $\rec$ and correctness is trivial.  Now consider the case when $\Pr[W=w]> 2^{-n}\epsilon$, let $L_i^*$ be the level of $\Pr[W=w]$.
+We begin by arguing correctness.  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(n+\ell)}$, then $w$ is simply transmitted to $\rec$ and correctness is trivial.  Now consider the case when $\Pr[W=w]> 2^{-(n+\ell)}$, let $L_i^*$ be the level of $\Pr[W=w]$.
 Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ such that $\forall w \in W^*, \Pr[W^*=w]\in L_i^*$. The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ is:
 \begin{align*}
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
@@ -562,45 +562,45 @@ Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ such tha
 \end{align*}
 Where the inequality proceeds by union bound, the first equality proceeds by the universality of $F$, and the second equality proceeds by noting the number of neighbors is bounded by $|B_{t, i, max}|$.  
 
-We now argue security.  First note that the total weight of points whose probability is less than $2^{-n}\epsilon$ is at most $\epsilon$~(there are at most $2^n$ points in the distribution).  That is, $\sum_{w | \Pr[W=w]\le 2^{-n}\epsilon}\Pr[W = w] \le \epsilon$.  Let $1_{\text{low prob}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-n}$.  Then 
+We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+\ell)}$ is at most $2^{-\ell}$~(there are at most $2^n$ points in the distribution).  That is, $\sum_{w | \Pr[W=w]\le 2^{-(n+\ell)}}\Pr[W = w] \le 2^{-\ell}$.  Let $1_{\text{low prob}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-n}$.  Then 
 \begin{align*}
 \Hav(W | \sketch(W)) = -\log \left(\Pr[1_{\text{low prob}}=1] * 1 + \Pr[1_{\text{low prob}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low prob}} = 0)}\right)\\
--\log\left( \epsilon + (1-\epsilon)2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low prob}} = 0)}\right)
+-\log\left( 2^{-\ell} + (1-2^{-\ell})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low prob}} = 0)}\right)
 \end{align*}
-We first consider the optimum strategy for an adversary that receives just the information about the probability of $w$.  An adversary that receives $i$ as input the best strategy is to guess a point that has the most nearby weight in that layer.  That is, $w^*\leftarrow A(i)$ such that $\max_{w^* \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i}}[\dis(w, w^*)]$.The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  Note there are $n-k+\log 1/\epsilon$ outcomes for $i$ so the overall success of such an adversary is at most $n-k+\log 1/\epsilon$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+We first consider the optimum strategy for an adversary that receives just the information about the probability of $w$.  An adversary that receives $i$ as input the best strategy is to guess a point that has the most nearby weight in that layer.  That is, $w^*\leftarrow A(i)$ such that $\max_{w^* \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i}}[\dis(w, w^*)]$.The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  Note there are $n-m+\ell$ outcomes for $i$ so the overall success of such an adversary is at most $n-m+\ell$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
 \begin{align}
-\expe_{i | k\le i \le n+\log 1/\epsilon}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | k\le i \le n+\log 1/\epsilon}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \label{eq:link fuzz 1}\\
-&\le \left(n-k+\log 1/\epsilon\right)\left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\label{eq:link fuzz 2}\\
-&= \left(n-k+\log 1/\epsilon\right)\Hfuzz(W)\label{eq:link fuzz 3}
+\expe_{i | m\le i \le n+\ell}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | m\le i \le n+\ell}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \label{eq:link fuzz 1}\\
+&\le \left(n-m+\ell\right)\left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\label{eq:link fuzz 2}\\
+&= \left(n-m+\ell\right)\Hfuzz(W)\label{eq:link fuzz 3}
 \end{align}
-For the remainder of the proof, we seek a bound on $\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\Pr[W=w | \sketch(W)]$.
+For the remainder of the proof, we seek a bound on \[\max_{w\in W | \Pr[W=w]>2^{-(n+\ell)}}\Pr[W=w | \sketch(W)].\]
 We separate out this quantity into levels:
 \begin{align*}
-\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
-&= \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{|\sketch(W)|i|}\right)\\
-&\le \expe_{i | k\le i \le n+\log 1/\epsilon} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
-&\le \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
-&\le\frac{ \expe_{i | k\le i \le n+\log 1/\epsilon} \left(2^{-(i+1)}*|B_{t, i, max}|\right)}{2\delta}\\
-%&=\delta \sum_{i | k\le i \le n+\log 1/\epsilon} \Pr[W\in L_i]\left(2^{-i}*|B_{t, i, max}|\right)
+\max_{w\in W | \Pr[W=w]>2^{-(n+\ell)}}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
+&= \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{|\sketch(W)|i|}\right)\\
+&\le \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
+&\le \expe_{i | m\le i \le n+\ell} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
+&\le\frac{ \expe_{i | m\le i \le n+\ell} \left(2^{-(i+1)}*|B_{t, i, max}|\right)}{2\delta}\\
+%&=\delta \sum_{i | m\le i \le n+\ell} \Pr[W\in L_i]\left(2^{-i}*|B_{t, i, max}|\right)
 %\end{align*}
 %Now consider This allows us to conclude that 
 %\begin{align*}
 %\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
-&= \frac{(n-k+\log 1/\epsilon) 2^{-\Hfuzz(W)}}{2\delta}.
+&= \frac{(n-m+\ell) 2^{-\Hfuzz(W)}}{2\delta}.
 \end{align*}
 Where the last line follows by Equations~\eqref{eq:link fuzz 1}-\eqref{eq:link fuzz 3}.
 Combining both cases we have:
 \begin{align*}
-\Hav(W | \sketch(W)) = -\log \left(\epsilon+\frac{(1-\epsilon)(n-k+\log1/\epsilon)2^{-\Hfuzz(W)}}{2\delta}\right).
+\Hav(W | \sketch(W)) = -\log \left(2^{-\ell}+\frac{(1-2^{-\ell})(n-m+\ell)2^{-\Hfuzz(W)}}{2\delta}\right).
 \end{align*}
-Setting $\epsilon = 2^{-k}$ yields
+Setting $\ell = m$ yields
 \begin{align*}
-\Hav(W | \sketch(W)) &= -\log \left(k+\frac{(1-2^{-k})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
-&\ge -\log \min\{k, \frac{(1-2^{-k}) n2^{-\Hfuzz(W)}}{2\delta}\})-1\\
-&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-k}) - 2\\
+\Hav(W | \sketch(W)) &= -\log \left(m+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
+&\ge -\log \min\{m, \frac{(1-2^{-m}) n2^{-\Hfuzz(W)}}{2\delta}\})-1\\
+&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-m}) - 2\\
 &\ge \Hfuzz(W) - \log n + \log \delta - 3\\
 \end{align*}
-Where the third line follows from the third because $\Hfuzz(W)\le \Hoo(W) = k$.\bnote{what condition do we need to get rid of $\log (1-2^{-k})$?}
+Where the third line follows from the third because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$ then $\log (1-2^{-m})\le 1$ and if $m< 1$ the entire bound is vacuous as $\Hfuzz(W)< 1$ and thus the whole quantity is negative~(and entropy is non-negative).
 \end{proof}
 
 \bibliographystyle{alpha}
