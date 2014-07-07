@@ -1,0 +1,7 @@
+Title: Key Derivation From Noisy Sources With More Errors Than Entropy
+
+Fuzzy extractors convert a noisy source of entropy (such as a visual password, a biometric reading, or a physically unclonable function) into a consistent uniformly distributed key. In the process of eliminating noise, they lose some of the entropy of the original source. Specifically, to tolerate t errors, most natural constructions lose at least as much entropy as the logarithm of the volume of the ball of radius t. This loss is too high for many practically important sources, which do not have sufficient starting entropy to tolerate it.
+
+We construct the first fuzzy extractors that work for a large class of sources whose starting entropy is not high enough to tolerate such a loss. Our constructions correct Hamming errors over a large alphabet and (necessarily) impose certain restrictions on the distribution of the source. Their security is computational; unlike information-theoretic constructions, they are ``reusable''--i.e., permit multiple independent enrollments of correlated readings.
+
+We also explore the limits of achievable error-tolerance by fuzzy extractors, showing that customization for a particular distribution can be a powerful tool.
