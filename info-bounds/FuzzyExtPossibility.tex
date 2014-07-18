@@ -338,24 +338,27 @@ First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(
 \delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
 \]
 \end{proof}
-\lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  In the interactive setting, fuzzy min-entropy is also a sufficient condition using secure two-party computation\bnote{cite something for this}.  However, in the non-interactive setting there are many distributions for which no construction is known to be secure and for which no impossibility result is known.  We attempt to bridge this gap in this work.
-
-\section{Well-spread distributions}
-In the remainder of this work, we consider increasingly complex types of distributions and consider both the minimum number of bits a secure sketch/fuzzy extractor must write down and the minimum entropy loss.  We begin by considering secure sketches.  We call a distribution well-spread if the distance between any two original readings $w_0, w_1$ is large.  Well-spread distributions should be the easiest type of distribution to handle as given a particular $w'$ there is a unique $w$ that could be the original reading.  Intuitively, no sketch should be necessary for such a distribution.  However, we show there is a large gap between a secure sketch that works for a particular well-spread distribution and a secure sketch that works for \emph{all} well-spread distributions.
+\lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  In the interactive setting, fuzzy min-entropy is also a sufficient condition using secure two-party computation\bnote{cite something for this}.  However, in the non-interactive setting there are many distributions for which no construction is known to be secure and for which no impossibility result is known.  We attempt to bridge this gap in this work.  The summary of our results is in Table~\ref{tab:upper bounds}.
 
 \begin{table}
 \begin{tabular}{l | l | c}
-Upper bound & Depends on Distribution & Works for all Dist\\
+Lower bounds & Distribution-Dependent & Distribution-Agnostic\\
 \hline
-Well-spread distribution & $0$ & $\log |B_t|$\\
-Flat distribution & $\Hoo(W) - \Hfuzz(W) + \log (1/\delta)$ &$\log |B_t|$\\
-Arbitrary distribution & $\Hoo(W) - \Hfuzz(W) + \log (1/\delta) + \log \log \mathcal{M}$ & $\log |B_t|$
+Well-spread distribution & $\Hfuzz(W)$ & $\log |B_t|$\\
+Flat distribution & $\Hfuzz(W) - \log (1/\delta)$ &$\log |B_t|$\\
+Arbitrary distribution & $\Hfuzz(W) - \log (1/\delta) - \log \log \mathcal{M}$ & $\log |B_t|$
 \end{tabular}
-\caption{Upper bounds on minimum number of bits that a secure sketch can write down and still recovery with overwhelming probability.}
+\caption{Residual entropy of secure sketches for complete recovery.}
 \label{tab:upper bounds}
 \end{table}
-\subsection{Distribution-Dependent Sketches}
-Error-correction should be easy when all points of $W$ are far apart.  Intuitively, the fuzzy extractor/secure sketch does not need to disambiguate points and thus error-correction should be easy.  Indeed for any error-correcting code, a fuzzy extractor can be designed~(where the design of the fuzzy extractor depends on the supported distribution).  However, this intuition becomes more difficult when a fuzzy extractor should work for all well-spread distributions.  We begin by defining a well-spread distribution.
+\bnote{Fix right side of table}
+We begin with the left column of Table~\ref{tab:upper bounds} and provide constructions of sketches~(which generalize to fuzzy extractors).  We then show that building distribution-agnostic secure sketches and fuzzy extractors is significantly harder.
+
+\section{Distribution-Dependent Sketches}
+In the remainder of this work, we consider increasingly complex types of distributions and consider both the minimum number of bits a secure sketch/fuzzy extractor must write down and the minimum entropy loss.  We begin by considering secure sketches.  We consider the setting where the algorithms have a complete description of the distribution $W$.  In the next setting we consider the setting where the construction must work for a family of distributions~(we show there is a large gap between these two settings).
+
+\subsection{Well-Spread Distributions}
+We call a distribution well-spread if the distance between any two original readings $w_0, w_1$ is large.  Well-spread distributions should be the easiest type of distribution to handle as given a particular $w'$ there is a unique $w$ that could be the original reading.  Error-correction should be easy when all points of $W$ are far apart.  Intuitively, the fuzzy extractor/secure sketch does not need to disambiguate points and thus error-correction should be easy.  Indeed for any error-correcting code, a fuzzy extractor can be designed~(where the design of the fuzzy extractor depends on the supported distribution).  However, this intuition becomes more difficult when a fuzzy extractor should work for all well-spread distributions.  We begin by defining a well-spread distribution.
 
 \begin{definition}
 A distribution $W$ is called \emph{$t_{cor}$-well spread} if for all $w, x\in W, \dis(w, x)\ge t_{cor}$.
@@ -373,51 +376,18 @@ t_{cor}\ge \dis(w_0, w_1) \ge \dis(w_0, w') + \dis(w', w_1).\]
 This is only true if at least one of $\dis(w_0, w')$ or $\dis(w', w_1)$ is greater than $\lfloor (t_{cor}-1)/2\rfloor$.
 \end{proof}
 
-\subsection{Distribution-Agnostic Sketches}
-Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In the previous model the particular well-spread distribution $W$ was encoded in the \sketch and \rec algorithms.  In this section we ask if a similar construction is possible when $(\sketch, \rec)$ must work for any well-spread distribution.  In this setting, $(\sketch, \rec)$ are described and the adversary then specifies a particular well-spread distribution $W$.  
 
-In the standard definitions of fuzzy extractors and secure sketches the requirement is to work for all distributions from a particular family.  The reason for this is that the algorithm designer knows some properties of their input distribution but not the entire distribution.  We model this partial information by thinking of the distribution as coming from a family of distributions with those properties.  The requirement to work \emph{all} distributions allows the adversary to specify the distribution after seeing the algorithm.
-
-We show that any secure sketch that works for all well-spread distributions must write down a large number of bits~(matching our known constructions of secure sketches).  
-
-\begin{lemma}
-Let $\mathcal{W}$ be the set of all $t_{cor}$-well spread distributions.  Let $t = \lfloor (t_{cor}-1)/2\rfloor$ and let $(\sketch, \rec)$ be a $(\mathcal{M}, m, \tilde{m}, t )$-secure sketch.  Then the average length of $\sketch$ is at least $\log |B_{t}|$.
-\end{lemma}
-\bnote{what do we mean by average here?  we mean when receiving a uniform input across the coins.  Maybe, there are distributions where it writes down a little.  What's the right thing to say?  Markov?}
-\begin{proof}
-Let $\mathcal{M}$ be a metric space.
-Let $\mathcal{W}$ be the set of all $t_{cor}$-well spread distributions on $\mathcal{M}$.  
-Consider the following experiment:
-\[
-W\leftarrow \mathcal{W} \wedge w \leftarrow W \wedge w'\leftarrow B_{t_{cor}}(w) \wedge ss \leftarrow \sketch(w) \wedge w^* \leftarrow \rec(w', ss).
-\]
-That is, the adversary uniformly samples a well-spread distribution and then a point from the well-spread distribution.  
-Since $(\sketch, \rec)$ works for any well-spread distribution the $\Pr[w^* = w] =1 $ in the above experiment.   Denote by $X$ the joint distribution of $w, w'$ produced in the above experiment.  Now consider the following experiment
-\[
-v \leftarrow U_{\mathcal{M}} \wedge v'\leftarrow B_{t_{cor}}(v) \wedge ss \leftarrow \sketch(v) \wedge v^* \leftarrow \rec(v', ss).
-\]
-Denote by $Y$ the joint distribution of $v, v'$ produced in the above experiment.  Then $X\overset{d}= Y$.  That is, the view of $(\sketch, \rec)$ is identically distributed in both cases.  Thus, $\Pr[v^* = v] = 1$.  For the uniform distribution the entropy retained by a secure sketch is at most $\Hav(U_{\mathcal{M}} | \sketch(U_{\mathcal{M}})) \le \log |\mathcal{M}| - \log |B_t(\cdot)|$~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}.  For a secure sketch to lose $\log |B_t(\cdot)|$ bits of entropy it must write down at least $\log |B_t(\cdot)|$ bits on average~\cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}.  Thus, $(\sketch, \rec)$ writes down at least $\log |B_t(\cdot)|$ bits on the uniform distribution and its view is identical on $X$ so it writes down at least $\log |B_{t_{cor}}|$ bits on $X$.  This completes the proof.
-\end{proof}
-\noindent
-\textbf{Notes:} In the above lemma, the relation between the well-spreadness of the class of distributions and the correctness of the fuzzy extractor is not important and is made to match the relation in \lemref{lem:nosketchwellspread} for convenience.  The bound is purely derived from the correctness condition, the well-spreadness of the distribution can essentially be arbitrarily replaced~(as long as the maximal distance point from any point in the metric space is the same).
-
-Furthermore, the above lemma easily extends to the setting where the distributions are not well-spread as long as there is an adversary strategy of choosing the input distribution that produces an input to sketch that is identically distributed to the uniform distribution.
-
-The above lemma only talks about how many bits the algorithms must write down.  It does not say that the entropy of the distribution must decrease~(this is the important question).
-
-\section{Flat distributions}
-In the previous section we showed bounds on producing secure sketches and fuzzy extractors for well-spread distributions.  In this section we further investigate secure sketches where the sketch depends on the input distribution.\footnote{Recall the bound when the sketch does not know the input distribution is $\log |B_t|$ bits and this is constructible for any distribution.}
-
-\subsection{Distribution-Dependent Sketches}
-
-\lemref{lem:nosketchwellspread} showed that if a fuzzy extractor~(resp. secure sketch) is built for a particular well-spread distribution, it is not necessary to write down information-reconciliation information.  In this section, we consider information-theoretic bounds on distributions that contain multiple points in each ball.  
+\subsection{Flat distributions}
+In the previous section we showed that info-theoretically it is easy to produce a secure sketch and fuzzy extractor for a well-spread distribution when the algorithms are allowed to encode the input distribution $W$.  
+%\lemref{lem:nosketchwellspread} showed that if a fuzzy extractor~(resp. secure sketch) is built for a particular well-spread distribution, it is not necessary to write down information-reconciliation information.  
+In this section, we consider information-theoretic bounds on distributions that contain multiple points in each ball.  
 We begin by considering flat distributions where the probability of each point in $W$ is the same.
 
 \begin{definition}
 A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in W$, $\Pr[W=w_0] = \Pr[W=w_1]$.  
 \end{definition}
 
-Recall that fuzzy min-entropy is a lower bound of the adversaries success probability for any scheme~(\defref{def:fuzzy min-ent}).  Fuzzy min-entropy is total weight of the maximum probability ball.  For flat distribution, this is directly correlated to the ball with the largest number of points.  That is, for a flat distribution 
+Recall that fuzzy min-entropy is a lower bound of the adversaries success probability for any scheme (\defref{def:fuzzy min-ent}).  Fuzzy min-entropy is total weight of the maximum probability ball.  For flat distribution, this is directly correlated to the ball with the largest number of points.  That is, for a flat distribution 
 \begin{align*}
 \Hfuzz(W) &= -\log \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t\} * \Pr[W=w]\\
 &= -\log \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t\} *2^{-\Hoo(W)}\\
@@ -490,14 +460,14 @@ For a flat distribution this is within a super-logarithmic factor of optimal~(se
 %\end{align*}
 %Thus, the construction is optimal up to a super-logarithmic factor for flat sources with a fixed number of neighbors.  We now attempt to remove both of these restrictions.
 
-\section{Arbitary distributions}
+\subsection{Arbitary distributions}
 The hashing approach outlined above~(\consref{cons:pairwise hash}) does not extend to arbitrary sources.  The reason is that some balls may have significantly more points but low overall probability.  Let $W$ be a distribution, denote by $B_1$ a ball with $2^{\Hoo(W)}$ points but with probability $\Pr[W\in B_1] =2^{-\Hoo(W)}$ and let $B_2,..., B_{2^{-\Hoo(W)}}$ be well-spread balls with one point each with probability $\Pr[W\in B_i] = 2^{-\Hoo(W)}$.  Then the hashing algorithm outlined above it is necessary to write down $\Hoo(W)$ bits in the case when $W$ lands in $B_1$.  However, with probability $1-2^{-\Hoo(W)}$ the point $w_0$ lies outside of $B_1$ and the hash may completely reveal the point in this setting.  
 
 Dealing with non-flat distributions requires a new strategy.  Ideally, this strategy should be aware of the density of the current ball and aware that when an original reading comes from a sparse ball it is not necessary to write down many bits.  We first consider a mechanism that tries to reduce the arbitrary case to the flat case by selecting a candidate flat distribution.  Unfortunately, this mechanism does not work as a distribution with high fuzzy min-entropy can be formed as a convex combination of distributions with almost no fuzzy min-entropy~(\secref{sec:convex comb}). 
 
 We then show a solution that comes within a super-logarithmic factor of optimal of optimal by partitioning the probability space~(\secref{sec:layered hash}).
 
-\subsection{Leveraging convex combinations?}
+\subsubsection{Leveraging convex combinations?}
 \label{sec:convex comb}
 In many situations solving a problem for min-entropy distributions can be reduced to solving the problem for flat distributions and then using the fact that any min-entropy distribution is a convex combination of flat distributions.  For example, consider the following hypothetical extension to \consref{cons:pairwise hash}.  Let $W$ be some distribution that is a finite convex combination of flat sources $W_1,..., W_n$ where each $\forall i, \Hoo(W_i)\ge k$.\footnote{A distribution may be an  convex combination of an infinite number of distributions.  However, the difficulty arises even when considering a finite combination so we restrict ourselves to this simpler case.}  For convenience we assume that the coefficients on all $W_i$ are the same and distributions may be repeated. 
 
@@ -523,7 +493,7 @@ In the following discussion, we present a more complicated technique that layers
 \label{fig:convex comb}    
 \end{figure}
 
-\subsection{Layered Hashing}
+\subsubsection{Layered Hashing}
 \label{sec:layered hash}
 In the previous section, we saw that sketching non-flat distributions is difficult~(while retaining entropy close to the fuzzy min-entropy).  The problem is distinguishing between the setting where a ball has a few high probability points and a large number of low probability points.  We will deal with this problem by describing the probability of the point $w_0\in W$ seen in sketch.  Then the hash is applied only considering the maximum weight of the ball containing points at this level.  Roughly, at each layer we can think of the distribution as being flat, and the only additional information is the layer of the original reading.  Naturally, revealing the probability of the original point leaks some information and there is a balance between how much about the probability is revealed to the adversary and how useful it is.
 
@@ -615,6 +585,54 @@ Setting $\ell = m$ yields
 Where the third line follows from the second because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$ then $\log (1-2^{-m})\le 1$ and if $m< 1$ the entire bound is vacuous as $\Hfuzz(W)< 1$ and thus the whole quantity is negative~(and entropy is non-negative).
 \end{proof}
 
+\section{Distribution-Agnostic Sketches}
+Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In the previous model the particular well-spread distribution $W$ was encoded in the \sketch and \rec algorithms.  In this section we ask if a similar construction is possible when $(\sketch, \rec)$ must work for any well-spread distribution.  In this setting, $(\sketch, \rec)$ are described and the adversary then specifies a particular well-spread distribution $W$.  
+
+In the standard definitions of fuzzy extractors and secure sketches the requirement is to work for all distributions from a particular family.  The reason for this is that the algorithm designer knows some properties of their input distribution but not the entire distribution.  We model this partial information by thinking of the distribution as coming from a family of distributions with those properties.  The requirement to work \emph{all} distributions allows the adversary to specify the distribution after seeing the algorithm.
+
+We show that any secure sketch that works for all well-spread distributions must write down a large number of bits~(matching our known constructions of secure sketches).  
+
+\begin{lemma}
+Let $\mathcal{W}$ be the set of all $t_{cor}$-well spread distributions.  Let $t = \lfloor (t_{cor}-1)/2\rfloor$ and let $(\sketch, \rec)$ be a $(\mathcal{M}, m, \tilde{m}, t )$-secure sketch.  Then the average length of $\sketch$ is at least $\log |B_{t}|$.
+\end{lemma}
+\bnote{what do we mean by average here?  we mean when receiving a uniform input across the coins.  Maybe, there are distributions where it writes down a little.  What's the right thing to say?  Markov?}
+\begin{proof}
+Let $\mathcal{M}$ be a metric space.
+Let $\mathcal{W}$ be the set of all $t_{cor}$-well spread distributions on $\mathcal{M}$.  
+Consider the following experiment:
+\[
+W\leftarrow \mathcal{W} \wedge w \leftarrow W \wedge w'\leftarrow B_{t_{cor}}(w) \wedge ss \leftarrow \sketch(w) \wedge w^* \leftarrow \rec(w', ss).
+\]
+That is, the adversary uniformly samples a well-spread distribution and then a point from the well-spread distribution.  
+Since $(\sketch, \rec)$ works for any well-spread distribution the $\Pr[w^* = w] =1 $ in the above experiment.   Denote by $X$ the joint distribution of $w, w'$ produced in the above experiment.  Now consider the following experiment
+\[
+v \leftarrow U_{\mathcal{M}} \wedge v'\leftarrow B_{t_{cor}}(v) \wedge ss \leftarrow \sketch(v) \wedge v^* \leftarrow \rec(v', ss).
+\]
+Denote by $Y$ the joint distribution of $v, v'$ produced in the above experiment.  Then $X\overset{d}= Y$.  That is, the view of $(\sketch, \rec)$ is identically distributed in both cases.  Thus, $\Pr[v^* = v] = 1$.  For the uniform distribution the entropy retained by a secure sketch is at most $\Hav(U_{\mathcal{M}} | \sketch(U_{\mathcal{M}})) \le \log |\mathcal{M}| - \log |B_t(\cdot)|$~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}.  For a secure sketch to lose $\log |B_t(\cdot)|$ bits of entropy it must write down at least $\log |B_t(\cdot)|$ bits on average~\cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}.  Thus, $(\sketch, \rec)$ writes down at least $\log |B_t(\cdot)|$ bits on the uniform distribution and its view is identical on $X$ so it writes down at least $\log |B_{t_{cor}}|$ bits on $X$.  This completes the proof.
+\end{proof}
+\noindent
+\textbf{Notes:} In the above lemma, the relation between the well-spreadness of the class of distributions and the correctness of the fuzzy extractor is not important and is made to match the relation in \lemref{lem:nosketchwellspread} for convenience.  The bound is purely derived from the correctness condition, the well-spreadness of the distribution can essentially be arbitrarily replaced~(as long as the maximal distance point from any point in the metric space is the same).
+
+Furthermore, the above lemma easily extends to the setting where the distributions are not well-spread as long as there is an adversary strategy of choosing the input distribution that produces an input to sketch that is identically distributed to the uniform distribution.
+
+The above lemma only talks about how many bits the algorithms must write down.  It does not say that the entropy of the distribution must decrease~(this is the important question).  We now proceed to this question.
+
+\subsection{Min-Max to switch quantifiers}
+
+\subsection{Impossibility of info-theoretic sketches for distribution}
+\begin{lemma}
+There is a family of distributions such that for any secure sketch that works for an adversarial choice of the distribution, there is no residual entropy conditioned on adversary knowledge and the secure sketch.
+\end{lemma}
+
+\begin{corollary}
+This is also impossible for computational sketches that retain hill entropy.
+\end{corollary}
+
+\subsection{Conductors}
+Possible for computational objects.  See the constructions of Canetti et al.~\cite{canetti2014key}.
+\begin{lemma}
+Not possible for information-theoretic objects.
+\end{lemma}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
