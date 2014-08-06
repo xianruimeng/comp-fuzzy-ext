@@ -227,7 +227,13 @@
 \begin{abstract}
 We characterize when deriving a stable key from a noisy source is possible.  We use the notation of fuzzy extractors introduced by Dodis et al. (Eurocrypt 2004).  The goal is to produce a strong $key$ from a $w$ drawn from a \emph{strong} distribution $W$ and to produce the same when given a nearby $w'$.  A fuzzy extractor is split into two algorithms $\gen$ which produces $key$ along with some helper information $p$ and $\rep$ which takes $w'$ and $p$ to reproduce $key$.  The key must remain strong in the presence of $p$.  The goal is to produce the correct key whenever $\dis(w, w')\le t$.
 
-Ideally, key derivation should be possible whenever a negligible portion of $W$ lies within a ball~(arbitrarily centered) of radius $t$.  We call the maximum overall weight that lies within any ball of radius $t$ the fuzzy min-entropy of a distribution.  However, current techniques for constructing fuzzy extractors lie far from this necessary condition.  We investigate whether this is necessary for both fuzzy extractors and secure sketches~(a one round information-reconciliation component).  Our results are centered on feasibility and our constructions and impossibility results are primarily information-theoretic.
+Ideally, key derivation should be possible whenever a negligible portion of $W$ lies within a ball~(arbitrarily centered) of radius $t$.  We call the maximum weight that lies within any ball of radius $t$ the fuzzy min-entropy of a distribution.  In interactive information-reconciliation, fuzzy min-entropy is both a necessary and sufficient condition for security.  
+
+Current techniques for constructing fuzzy extractors lie far from this necessary condition.  We investigate whether this is inherent for both fuzzy extractors and secure sketches~(a one round information-reconciliation component).  Our results are centered on feasibility and our constructions and impossibility results are primarily information-theoretic.  We consider two types of fuzzy extractors and secure sketches.  The first we call \emph{distribution-aware}, the algorithms know the precise distribution they are trying to correct.  The second is \emph{distribution-oblivious} where $(\gen, \rep)$ must work for a family of distributions.
+
+\textbf{Distribution-Aware} In the distribution-aware setting we show that whenever the fuzzy min-entropy is super-logarithmic, there exists a secure sketch and fuzzy extractor with super-logarithmic output entropy.  That is, fuzzy min-entropy is both a necessary and \emph{sufficient} condition for security in this setting.
+
+\textbf{Distribution-Oblivious} The distribution-oblivious situation is more complicated.  Indeed, there is a significant difference between secure sketches and fuzzy extractors.  We show that there exist families of distributions where each distribution has fuzzy min-entropy such that any secure sketch is insecure.  However, it is possible to build a fuzzy extractor for these same family of distributions.
 \end{abstract}
 
 \section{Introduction}
@@ -237,14 +243,45 @@ This problem was introduced in the seminal work of Bennett, Brassard, and Robert
 
 The paradigm for performing noisy key derivation using a single metric is known as fuzzy extractors~\cite{DBLP:journals/siamcomp/DodisORS08}.  Consider a particular high entropy distribution $W$.  Our goal is to derive stable keys from $W$ whenever the two readings~(denoted $w$ and $w'$ respectively) are within distance $t$.  A fuzzy extractor consists of two algorithms: generate~($\gen$) which takes the initial reading $w$ and produces $key$ along with a public helper value $p$.  The reproduce~($\rep$) algorithm takes the subsequent reading $w'$ along with the helper value $p$ to reproduce $key$.  The $key$ must be strong even to an adversary that has observed $p$~(the problem is trivial if $p$ is private).
 
-Traditionally, fuzzy extractors are constructed by using a separate information-reconciliation component, known as a secure sketch, that maps $w'$ back to $w$ and a privacy-amplification component, a strong randomness extractor~\cite{nisan1993randomness}, that maps $w$ to a random key.  These objects can either be information-theoretic or computational.  The computational versions of these objects are defined in~\cite{krawczyk2010cryptographic} and~\cite{fuller2013computational} respectively.  Fuller et al.~\cite{fuller2013computational} show that computational secure sketches cannot improve significantly on information-theoretic secure sketches.
+Traditionally, fuzzy extractors are constructed by using a separate information-reconciliation component, known as a secure sketch, that maps $w'$ back to $w$ and a privacy-amplification component, a strong randomness extractor~\cite{nisan1993randomness}, that maps $w$ to a random key.  These objects can either be information-theoretic or computational.  The computational versions of these objects are defined in~\cite{krawczyk2010cryptographic} and~\cite{fuller2013computational} respectively.  Fuller et al.~\cite{fuller2013computational} show that computational secure sketches are unlikely to improve significantly on information-theoretic secure sketches.
 
-\textbf{A Necessary Condition:}  Intuitively, error-tolerance and key strength are at odds.  If the error-tolerance allows the entire metric space to authenticate then no security is possible.  As an example, consider a distribution $W$, where the adversary attempts to learn the key simply by inputting a point to the reproduce function.  Let $x^*$ be the point input by the adversary, the adversary learns the correct key whenever $\dis(w, x^*)\le t$.  For a fuzzy extractor to be secure this must occur with negligible probability.  That is, for all $x^*, \sum_{w\in W | \dis(w, x^*)\le t} \Pr[ W= w] \le \ngl(n)$.  We call the negative logarithm of this quantity the \emph{fuzzy min-entropy} of a distribution.  Clearly, the fuzzy min-entropy of a distribution must be super-logarithmic for any security.  Indeed, in the interactive setting this is a sufficient condition as well.  
+\textbf{A Necessary Condition:}  Intuitively, error-tolerance and key strength are at odds.  If the error-tolerance allows the entire metric space to authenticate then no security is possible.  As an example, consider a distribution $W$, where the adversary attempts to learn the key simply by inputting a point to the reproduce function.  Let $x^*$ be the point input by the adversary, the adversary learns the correct key whenever $\dis(w, x^*)\le t$.  For a fuzzy extractor to be secure this must occur with negligible probability.  That is, a negligible portion of the probability mass of $W$ may be close to any point in the metric space.  Mathematically, for all $x^*, \sum_{w\in W | \dis(w, x^*)\le t} \Pr[ W= w] \le \ngl(n)$.  We call the negative logarithm of this quantity the \emph{fuzzy min-entropy} of a distribution.  The fuzzy min-entropy of a distribution must be super-logarithmic for any reasonable of either a fuzzy extractor~(\lemref{lem:fuzz necessary}).  
 
-However, in the one-round setting we are far from achieving security for all distributions with super-logarithmic fuzzy min-entropy.  Traditional fuzzy extractors and secure sketches incur at entropy loss of the size of the ball to be error-corrected.  While, this is optimal for the uniform distribution, it seems far from optimal for distributions where points are far apart.  Indeed, when the goal is provide key derivation from a source that has more errors than entropy, this bound provides no guarantee on the strength of the key.  The work of Canetti et al.~\cite{canetti2014key} shows it is possible to provide key derivation for some distributions of this type.  However, their work leaves the question open for a large number of distributions.  In this work, we attempt to settle this question: for what distributions is noisy key derivation possible and impossible?  \bnote{come back to this}
+In the more general interactive setting where two parties hold $w$ and $w'$ and wish to agree on a common key, fuzzy min-entropy is both a necessary and sufficient condition~(using two-party computation). 
+However, in the one-message setting we are far from achieving security whenever fuzzy min-entropy is high.
 
-\textbf{Our results:} In this work we show awesome things!\bnote{write}
 
+Traditional fuzzy extractors and secure sketches incur at entropy loss of the size of the ball to be error-corrected.  While, this is optimal for the uniform distribution, it is far from optimal for distributions that arise in practice.  As an example, many examples that arise in practice there are more error patterns than starting entropy.  Traditional fuzzy extractors provide no guarantee for sources of this type.  The work of Canetti et al.~\cite{canetti2014key} shows it is possible to provide build fuzzy extractors for some distributions with this property.  Their work leaves the question open for a large number of distributions.  This leads to the following natural question: \emph{when is key derivation from noisy sources possible?}
+
+When building a fuzzy extractor, the algorithm designer has some information about the distribution $W$ that will be used.  However, rarely does the algorithm designer know the entire description of $W$'s probability distribution~(indeed this description may be exponential size).  This uncertainty is usually expressed by proving the fuzzy extractor works for a class of distributions with some known property~(such as entropy and error levels).  In this work, we discriminate between fuzzy extractors and secure sketches that are allowed to know the distribution of $W$ and algorithms that are required to work for a family of distributions $\mathcal{W}$.  We call the first type of algorithm \emph{distribution-aware} and the second type \emph{distribution-oblivious}
+
+\textbf{Our Contributions} We show that for every distribution with super-logarithmic fuzzy min-entropy it is information-theoretically possible to build a secure sketch that retains super-logarithmic min-entropy.  Using standard techniques we can convert this secure sketch to a fuzzy extractor with super-logarithmic key output length.  (A key with super-logarithmic entropy can be expanded to arbitrary length using computational techniques.)  For distribution-aware secure sketches and fuzzy extractors, fuzzy min-entropy is both a necessary and sufficient condition for security.  
+
+The situation is significantly more complicated for distribution-oblivious algorithms.  Indeed, we show that there natural families to distributions where every distribution has fuzzy min-entropy such that no secure sketch can provide meaningful security.  However, it is possible to build a meaningful fuzzy extractor for this same class of distributions.
+
+\textbf{Note:} Our constructions are information-theoretic and do not run in polynomial time.  They should primarily be regarded as feasibility results.  Our negative results apply to algorithms even given arbitrary running time, thus there is clear separation for unbounded running time algorithms.  It remains as an open question whether our distribution-aware results can be replicated by efficient algorithms.  This seems unlikely as most  interesting distributions have exponential size description.  The power of the distribution-aware setting is that the algorithms can access this description.  It seems unlikely that algorithms with access to a polynomial size part of the distribution description can replicate these results.
+
+\textbf{Open Problems:} We showed that in the distribution-oblivious setting there is a separation between a secure sketch and a fuzzy extractor.  However, it is still not known if fuzzy extractors can be constructed for any family of distributions.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{c | c | c }
+& Distribution-Aware & Distribution-Oblivious\\
+\hline
+Secure Sketch & Yes~(\thref{cons:leveling}) & No\\
+\hline
+Fuzzy Extractor & Yes~(\thref{cons:leveling}) & Yes for some families\\
+& & Unknown for arbitrary family
+%Flat distribution & $\Hfuzz(W) - \log (1/\delta)$ &$\log |B_t|$\\
+%Arbitrary distribution & $\Hfuzz(W) - \log (1/\delta) - \log \log \mathcal{M}$ & $\log |B_t|$
+\end{tabular}
+\end{center}
+\caption{Is fuzzy min-entropy sufficient for extraction?}
+\label{tab:main results}
+\end{table}
+
+
+\bnote{connection to obfuscation}
 \section{Preliminaries}
 \label{sec:preliminaries}
 For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote by $X = X_1,..., X_\ell$  the tuple $(X_1,\dots, X_\ell)$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
@@ -270,9 +307,7 @@ An $(\mathcal{M}, m, \ell, t, \epsilon)$-\emph{fuzzy extractor} with error $\del
 A fuzzy extractor is efficient if $\gen$ and $\rep$ run in expected polynomial time.
 \end{definition}
 
-Replacing the statistical distance in \defref{def:fuzzy extractor} with a computational distance results in a computational fuzzy extractor~\cite[Definition 2.5]{fuller2013computational}.
-
-Secure sketches are the main technical tool in the construction of fuzzy extractors.  Secure sketches produce a string $s$ that does not decrease the entropy of $w$ too much, while allowing recovery of $w$ from a  close $w'$:
+Replacing the statistical distance in \defref{def:fuzzy extractor} with computational distance results in a \emph{computational fuzzy extractor}~\cite[Definition 2.5]{fuller2013computational}.  A fuzzy extractor performs two tasks, producing a uniform key and providing error-tolerance.  Traditional, the uniform key is produced by extraction from the original secret $w$ and the error-tolerance is obtained by using a secure sketch.  Secure sketches produce a string $s$ that does not decrease the entropy of $w$ too much, while allowing recovery of $w$ from a  close $w'$:
 \begin{definition}
 \label{def:secure sketch}
 An $(\mathcal{M},m, \tilde{m}, t)$-\emph{secure sketch} with error $\delta$ is a pair of randomized procedures, ``sketch'' $(\sketch)$ and ``recover'' $(\rec)$, with the following properties:
@@ -284,7 +319,7 @@ An $(\mathcal{M},m, \tilde{m}, t)$-\emph{secure sketch} with error $\delta$ is a
 A secure sketch is \emph{efficient} if \sketch and \rec run in expected polynomial time. 
 \end{definition}
 
-\textbf{Notes:} In the above definition of secure sketches (resp., fuzzy extractors), the errors are chosen before $s$ (resp., $P$) is known: if the error pattern between $w$ and $w'$ depends on the output of $\sketch$ (resp., $\gen$), then there is no guarantee about the probability of correctness.  Also we do not consider a computational version of secure sketches as Fuller et al. showed that computational secure sketches imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.
+\textbf{Notes:} In the above definition of secure sketches (resp., fuzzy extractors), the errors are chosen before $s$ (resp., $P$) is known: if the error pattern between $w$ and $w'$ depends on the output of $\sketch$ (resp., $\gen$), then there is no guarantee about the probability of correctness.  We do not consider a computational version of secure sketches. Fuller et al. showed that computational secure sketches imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.
 
 
 A fuzzy extractor can be produced from a \emph{secure sketch} and an \emph{average-case randomness extractor}. An average-case extractor is a generalization of a strong randomness extractor \cite[Definition 2]{nisan1993randomness}) (in particular, Vadhan~\cite[Problem 6.8]{Vad12} showed that all strong extractors are average-case extractors with a slight loss of parameters):
@@ -307,11 +342,11 @@ Assume $(\sketch, \rec)$ is an $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch wi
 
 \subsection{A necessary condition for security}
 \label{sec:minimal conditions}
-We now define fuzzy min-entropy and show that fuzzy extractor security is only possible when the fuzzy min-entropy is super-logarithmic.
+Consider the functionality of a fuzzy extractor, the reproduce algorithm produces the same key when provided with a nearby input point.  In an ideal world, this would be all that is revealed by the reproduce algorithm.  For the remainder of this work, we compare security with this ideal world.  This ideal world can be expressed by an adversary providing a ``guess'' point to the algorithm~(and hoping that their guess was closed to the stored point).  We call the level of security in this setting, fuzzy min-entropy.
+%\todo{doesn't 2PC require assumptions?}
+%We now define fuzzy min-entropy and show that fuzzy extractor security is only possible when the fuzzy min-entropy is super-logarithmic.
 
-
-
-A necessary condition for fuzzy extractor security is that an adversary should not be able to learn the key simply by inputting a point into the \rep algorithm.  This means a negligible portion of the source distribution $W$ lies within any Hamming ball.  We make this intuition formal here:
+%A necessary condition for fuzzy extractor security is that an adversary should not be able to learn the key simply by inputting a point into the \rep algorithm.  This means a negligible portion of the source distribution $W$ lies within any Hamming ball.  We make this intuition formal here:
 
 \begin{definition}
 \label{def:fuzzy min-ent}
@@ -320,6 +355,8 @@ A distribution $W$ in a metric space $(\mathcal{M}, \dis)$ has $(t, k)$-fuzzy mi
 \forall m\in \mathcal{M},  \sum_{w\in W | \dis(w, m)\le t} Pr[W=w] \leq 2^{-k}.
 \]
 \end{definition}
+
+If an adversary can always obtain the output of a fuzzy extractor by running the reproduce adversary, then there is no hope for security~(independent of the implementation of the fuzzy extractor).  We make this intuition formal in the following result.  
 For a metric space $\mathcal{M}$, let $\max |\mathcal{M}|$ the maximum length required to describe an element $m\in\mathcal{M}$~(for most natural metric spaces this is $\log |\mathcal{M}|$).
 \begin{lemma}
 \label{lem:fuzz necessary}
@@ -327,10 +364,10 @@ Let $n$ be a security parameter and let $W$ be a distribution over $(\mathcal{M}
 If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that is $(\max |\mathcal{M}| +  |\rep|, \epsilon)$-hard for $\epsilon = \ngl(n)$ with error $\delta = \ngl(n)$~(and thus no fuzzy extractor) for $\kappa =\omega(\log n)$.
 \end{lemma}
 \begin{proof}
-Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m\in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
+Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m^*\in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m^*)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
 \begin{itemize}
-\item On input $r, p$.
-\item If $\rep(m, p) = r$, output $1$.
+\item Input $r, p$.
+\item If $\rep(m^*, p) = r$, output $1$.
 \item Else output $0$.
 \end{itemize}
 First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(R, P) = 1]\geq 1/\poly(n) - \delta$, while $\Pr[D(U_\kappa, P)=1 ]= 1/2^{-\kappa}$.  Thus, when $\kappa = \omega(\log n)$:
@@ -338,11 +375,26 @@ First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(
 \delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
 \]
 \end{proof}
-\lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  In the interactive setting, fuzzy min-entropy is also a sufficient condition using secure two-party computation\bnote{cite something for this}.  However, in the non-interactive setting there are many distributions for which no construction is known to be secure and for which no impossibility result is known.  We attempt to bridge this gap in this work.  The summary of our results is in Table~\ref{tab:upper bounds}.
+\lemref{lem:fuzz necessary} generalizes to interactive protocols, $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  As stated above, fuzzy min-entropy is also a sufficient condition for security in the interactive setting.  However, in the fuzzy extractor~(non-interactive) setting there are many distributions for which no construction is known to be secure and for which no impossibility result is known.  We attempt to bridge this gap in this work.  
+
+Before turning to our results we separate between two types of fuzzy extractors and secure sketches.  The standard definition requires a fuzzy extractor/secure sketch to work for a family of distributions.  We call this type of algorithm distribution-oblivious.  We define a new type of algorithm that called distribution-aware that is allowed to know the precise distribution to be supported.  We provide a definition for secure sketches~(this definition can easily be extended to fuzzy extractors)
+
+\begin{definition}
+Let $W$ denote a distribution.  A secure sketch, $(\sketch_W, \rec_W)$ is called \emph{distribution-aware} if the correctness and security properties hold for the distribution $W$.  That is, 
+\begin{enumerate}
+\item \emph{Correctness} For all $w\in W$ and for all $w'\in\mathcal{M}$,  if $\dis(w,w')\leq t$, then $\Pr[\rec(w',\sketch(w))=w]\geq 1-\delta$ where the probability is taken over the coins of $\sketch$ and $\rec$.  If $\dis(w,w')>t$, then no guarantee is provided about the output of \rec.
+\item \emph{Security} $W$ is unknown conditioned on $s$: $\Hav(W|\sketch(W))\geq \tilde{m}$.
+\end{enumerate}
+\end{definition}
+Note that correctness is only required to hold for points in the support of the distribution $W$, the algorithms are allowed the description of $W$ and security need only hold for the distribution $W$.  When we consider distribution-aware algorithms, we generally assume they are \emph{inefficient}, this seems inherent to make use of the (possibly)~exponential size distributions.  It is not clear how to meaningfully define efficient distribution aware algorithms.  If the algorithms were required to be efficient, they could only encode a negligible portion of the probability space of $W$, and would have to ``work'' on all distributions $W'$ with the same probability mass function on the encoded space.  This would make the algorithms a distribution-oblivious fuzzy extractor for all distributions with this property.
+
+We begin with by showing that secure sketches and fuzzy extractors are possible in the distribution aware setting whenever there is super-logarithmic fuzzy min-entropy.  We then turn to the standard \emph{distribution oblivious} setting.
+
+%The summary of our results is in Table~\ref{tab:upper bounds}.
 
 \begin{table}
 \begin{tabular}{l | l | c}
-Lower bounds & Distribution-Dependent & Distribution-Agnostic\\
+Lower bounds & Distribution-Dependent & Distribution-Oblivious\\
 \hline
 Well-spread distribution & $\Hfuzz(W)$ & $\log |B_t|$\\
 Flat distribution & $\Hfuzz(W) - \log (1/\delta)$ &$\log |B_t|$\\
@@ -352,18 +404,21 @@ Arbitrary distribution & $\Hfuzz(W) - \log (1/\delta) - \log \log \mathcal{M}$ &
 \label{tab:upper bounds}
 \end{table}
 \bnote{Fix right side of table}
-We begin with the left column of Table~\ref{tab:upper bounds} and provide constructions of sketches~(which generalize to fuzzy extractors).  We then show that building distribution-agnostic secure sketches and fuzzy extractors is significantly harder.
+\bnote{the table should move.}
+%We begin with the left column of Table~\ref{tab:upper bounds} and provide constructions of sketches~(which generalize to fuzzy extractors).  We then show that building distribution-agnostic secure sketches and fuzzy extractors is significantly harder.
 
 \section{Distribution-Dependent Sketches}
-In the remainder of this work, we consider increasingly complex types of distributions and consider both the minimum number of bits a secure sketch/fuzzy extractor must write down and the minimum entropy loss.  We begin by considering secure sketches.  We consider the setting where the algorithms have a complete description of the distribution $W$.  In the next setting we consider the setting where the construction must work for a family of distributions~(we show there is a large gap between these two settings).
+In this section, we consider show it is possible to build distribution-aware fuzzy extractors and secure sketches whenever $\Hfuzz(W)= \omega(\log n)$.
+We consider increasingly complex types of distributions and end with an arbitrary distribution over a metric space.  We construct secure sketches but all constructions can be transformed to fuzzy extractors using \lemref{lem:fuzzy ext construction}.  In the next section \bnote{what section?} we consider distribution-oblivious algorithms.  
 
 \subsection{Well-Spread Distributions}
-We call a distribution well-spread if the distance between any two original readings $w_0, w_1$ is large.  Well-spread distributions should be the easiest type of distribution to handle as given a particular $w'$ there is a unique $w$ that could be the original reading.  Error-correction should be easy when all points of $W$ are far apart.  Intuitively, the fuzzy extractor/secure sketch does not need to disambiguate points and thus error-correction should be easy.  Indeed for any error-correcting code, a fuzzy extractor can be designed~(where the design of the fuzzy extractor depends on the supported distribution).  However, this intuition becomes more difficult when a fuzzy extractor should work for all well-spread distributions.  We begin by defining a well-spread distribution.
+We call a distribution well-spread if the distance between any two original readings $w_0, w_1$ is large.  Well-spread distributions should be the easiest type of distribution to handle as given a particular $w'$ there is a unique $w$ that could be the original reading.  Error-correction is ``easy'' when all points of $W$ are far apart.  Intuitively, the fuzzy extractor/secure sketch does not need to disambiguate points.  %Indeed for any error-correcting code, a fuzzy extractor can be designed~(where the design of the fuzzy extractor depends on the supported distribution).  However, this intuition becomes more difficult when a fuzzy extractor should work for all well-spread distributions.  
+We begin by defining a well-spread distribution.
 
 \begin{definition}
 A distribution $W$ is called \emph{$t_{cor}$-well spread} if for all $w, x\in W, \dis(w, x)\ge t_{cor}$.
 \end{definition}
-Intuitively, it should be easy to build a fuzzy extractor for well-spread distributions when the desired error-tolerance is less than $t_{cor}/2$~(assuming the distribution has super-logarithmic min-entropy).  Indeed, this is the case when the fuzzy extractor is allowed to depend on $W$.
+Intuitively, it should be easy to build a fuzzy extractor for well-spread distributions when the desired error-tolerance is less than $t_{cor}/2$~(assuming the distribution has super-logarithmic min-entropy).  Indeed, this is the case when the fuzzy extractor is allowed to depend on $W$.\footnote{This result can be viewed as saying that well-spread distributions are not interesting in the distribution-aware setting.  However, we will show that providing secure sketches for well-spread distributions in the distribution-oblivious setting is impossible.}
 
 \begin{lemma}
 \label{lem:nosketchwellspread}
@@ -376,7 +431,7 @@ t_{cor}\ge \dis(w_0, w_1) \ge \dis(w_0, w') + \dis(w', w_1).\]
 This is only true if at least one of $\dis(w_0, w')$ or $\dis(w', w_1)$ is greater than $\lfloor (t_{cor}-1)/2\rfloor$.
 \end{proof}
 
-
+\bnote{stopped here}
 \subsection{Flat distributions}
 In the previous section we showed that info-theoretically it is easy to produce a secure sketch and fuzzy extractor for a well-spread distribution when the algorithms are allowed to encode the input distribution $W$.  
 %\lemref{lem:nosketchwellspread} showed that if a fuzzy extractor~(resp. secure sketch) is built for a particular well-spread distribution, it is not necessary to write down information-reconciliation information.  
@@ -527,6 +582,7 @@ Before describing the bounds obtained by \consref{cons:leveling} we will extend 
 B_{t, i, max} = \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t \wedge \Pr[W=w]\in L_i\}.
 \]
 \begin{theorem}
+\label{thm:layered hashing}
 Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of pairwise independent hash functions where $|R_i| = |B_{t, i, max}| /\delta$.  Then \consref{cons:leveling} is a $(\mathcal{M}, m, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
 \end{theorem}
 \bnote{right now this is stated without $\ell$.  I found the expression to be really gross with $\ell$ included.  Thoughts?  I know $\ell$ needs to be there because the construction uses it.}
