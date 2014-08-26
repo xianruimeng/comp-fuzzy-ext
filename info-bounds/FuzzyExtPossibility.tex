@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\def\shownotes{0}
+\def\shownotes{1}
 
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
 \geometry{letterpaper}                   % ... or a4paper or a5paper or ...
@@ -265,7 +265,7 @@ Traditional fuzzy extractors and secure sketches incur at entropy loss of the si
 
 When building a fuzzy extractor, the algorithm designer has some information about the distribution $W$ that will be used.  However, rarely does the algorithm designer know the entire description of $W$'s probability distribution~(indeed this description may be exponential size).  This uncertainty is usually expressed by proving the fuzzy extractor works for a class of distributions with some known property~(such as entropy and error levels).  In this work, we discriminate between fuzzy extractors and secure sketches that are allowed to know the distribution of $W$ and algorithms that are required to work for a family of distributions $\mathcal{W}$.  We call the first type of algorithm \emph{distribution-aware} and the second type \emph{distribution-oblivious}
 
-\textbf{Our Contributions} We show that for every distribution with super-logarithmic fuzzy min-entropy it is information-theoretically possible to build a secure sketch that retains super-logarithmic min-entropy.  Using standard techniques we can convert this secure sketch to a fuzzy extractor with super-logarithmic key output length.  (A key with super-logarithmic entropy can be expanded to arbitrary length using computational techniques.)  For distribution-aware secure sketches and fuzzy extractors, fuzzy min-entropy is both a necessary and sufficient condition for security.  
+\textbf{Our Contribution} We show that for every distribution with super-logarithmic fuzzy min-entropy it is information-theoretically possible to build a secure sketch that retains super-logarithmic min-entropy.  Using standard techniques we can convert this secure sketch to a fuzzy extractor with super-logarithmic key output length.  (A key with super-logarithmic entropy can be expanded to arbitrary length using computational techniques.)  For distribution-aware secure sketches and fuzzy extractors, fuzzy min-entropy is both a necessary and sufficient condition for security.  
 
 The situation is significantly more complicated for distribution-oblivious algorithms.  Indeed, we show that there natural families to distributions where every distribution has fuzzy min-entropy such that no secure sketch can provide meaningful security.  However, it is possible to build a meaningful fuzzy extractor for this same class of distributions.
 
@@ -631,7 +631,9 @@ For any distribution $W$ over $\mathcal{M}$ with $\Hfuzz(W)=\omega(\log n)$, the
 In the previous section, we saw it is possible to construct secure sketches and fuzzy extractors when the algorithms are allowed to precisely known and encode the source distribution.  This type of assumption is problematic for two reasons 1) we rarely have complete information about a distribution 2) encoding the entire source distribution made the algorithms in the previous section inherently inefficient.  In this section we ask if the results can be replicated for a family of distributions.  Example families of distributions include all well-spread distributions, all distributions of a given min-entropy, all distributions where individual symbols have entropy.  The hope is that we can leverage a construction for each member of the family~(which was shown to exist in the previous section).  Unfortunately, we show for secure sketches this is not the case.  That is, there are families of distributions~(where each member has fuzzy min-entropy) where any secure sketch must not leave enough super-logarithmic min-entropy.
 
 \subsection{A definitional equivalence}
-Before proceeding to our result, we consider the definition of a fuzzy extractor.  The standard definition requires a secure sketch to work for all members $W$ of a family $\mathcal{V}$.  This can be thought of as a two stage process: 1) the system designer specifies $(\sketch, \rec)$, 2) the adversary specifies a particular member $W\in \mathcal{V}$.  We will say the system designer wins if the adversary can guess the element in $W$ with low probability, and the adversary wins if the can recover $w\in W$ with noticeable probability.  That is, we can formulate this process as a standard cryptographic game.  Let $\mathcal{A}, \mathcal{C}$ be the adversary and challenger respectively. We will formulate this as a two player game.
+Before proceeding to our result, we consider the definition of a fuzzy extractor.  The standard definition requires a secure sketch to work for all members $W$ of a family $\mathcal{V}$.  For clarity we will refer to $\mathcal{V}$ as the \emph{family}, the distribution $W$ as a \emph{source} and the particular sample taken $w\in W$ as the \emph{outcome}.    We will add the family $\mathcal{V}$ to the description of a fuzzy extractor where appropriate~(replacing the entropy requirement).
+
+The security game of a fuzzy extractor can be thought of as a two stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{V}$.  The challenger wins if the adversary can guess the outcome of $W$ with low probability, and the adversary wins if the can guess $w\in W$ with noticeable probability.  More formally, let $\mathcal{A}, \mathcal{C}$ be the adversary and challenger respectively. We will formulate this as a two player game.\footnote{We denote the outcome of the game as a reward to each player.  This is opposed to the standard formulation saying that $\mathcal{A}$ wins or loses.  Later, we will need this game to be zero sum.}
 
 \begin{center}
 \begin{minipage}{1in}
@@ -646,7 +648,8 @@ If $\Hav(W | \sketch(W))\ge k$ set reward $(1, -1)$ else reward $(-1, 1)$.
 \end{center}
 
 %Alternatively, we can think of this as a zero sum game where the adversary wins $1$ and the challenger loses $1$ when the guess is correct with the opposite reward otherwise.
-In the results that follow it will be useful to think of a different formulation of this game.  Let $\mathcal{W}$ be a distribution~(of distributions) over the family $\mathcal{V}$.
+Instead of using this standard formulation, it will be useful to think of a distribution~(of distributions) over the family $\mathcal{V}$.  This formulation yields the following game:
+%In the results that follow it will be useful to think of a different formulation of this game.  Let $\mathcal{W}$ be a distribution~(of distributions) over the family $\mathcal{V}$.
 
 \begin{center}
 \begin{minipage}{1in}
@@ -661,24 +664,91 @@ If $\Hav(W | \sketch(W))\ge k$ set reward $(1, -1)$ else reward $(-1, 1)$.
 \end{tabbing} \end{minipage} 
 \end{center}
 
-Note the only different between these two games is which player announce their action first, in $\Exp^{\mathcal{V}}_1$, the challenger announces a pair of algorithms, the adversary is then allowed to specify a source.  In $\Exp^{\mathcal{V}}_2$, the adversary specifies a distribution over sources, and the challenger then specifies their algorithm.  These two formulations are equivalent by the minimax theorem~\cite{neumann1928theorie}.
+The only difference between these two games is which player announces their action first, in $\Exp^{\mathcal{V}}_1$, the challenger announces a pair of algorithms, the adversary is then allowed to specify a source.  In $\Exp^{\mathcal{V}}_2$, the adversary specifies a distribution over sources, and the challenger then specifies their algorithm.  These two formulations are equivalent by the minimax theorem~\cite{neumann1928theorie}.
 
 \begin{lemma}
-If a fuzzy extractor is secure for all $W\in\mathcal{V}$, then it is secure for all distributions $\mathcal{W}$ over the family $\mathcal{V}$.
+\label{lem:quant switch fuzz}
+Let $\mathcal{V}$ be a family of distributions.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{V}, \ell, t, \epsilon)$-fuzzy extractor.  Then let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  Then there exists a fuzzy extractor $(\gen', \rep')$ is a $(\mathcal{M}, \mathcal{W}, \ell, t, \epsilon)$-fuzzy extractor.\footnote{Note the other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
 \end{lemma}
 
-Thus, instead of thinking of an adversary specifying a family of sources, we think of an adversary specifying a distribution over sources.  Importantly, the adversary is sees the distribution $W$ and $\sketch(W)$ when they are trying to recover the particular outcome.  We can think of the description of $W$ as side-information or leakage to the adversary.  The system designer, however never sees the particular outcome $W$.  This asymmetry will form the basis of our negative results in the next subsection.
+Instead of thinking of an adversary specifying a family of sources, we think of an adversary specifying a distribution over sources.  Importantly, the adversary sees the distribution $W$ and $\sketch(W)$ when they are trying to recover the particular outcome.  We can think of the description of $W$ as side-information or leakage to the adversary.  The system designer, however never sees the particular outcome $W$.  This asymmetry will form the basis of our negative results in the next subsection.
+
+\begin{corollary}
+\label{cor:no fuzz for dist}
+Let $\mathcal{V}$ be a family of distributions.  Let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  If there does not exist a $(\mathcal{M}, \mathcal{V}, \ell, t, \epsilon)$-fuzzy extractor, then there is no $(\mathcal{M}, \mathcal{V}, \ell, t, \epsilon)$-fuzzy extractor.
+\end{corollary}
 %Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In the previous model the particular well-spread distribution $W$ was encoded in the \sketch and \rec algorithms.  In this section we ask if a similar construction is possible when $(\sketch, \rec)$ must work for any well-spread distribution.  In this setting, $(\sketch, \rec)$ are described and the adversary then specifies a particular well-spread distribution $W$.  
 
 %In the standard definitions of fuzzy extractors and secure sketches the requirement is to work for all distributions from a particular family.  The reason for this is that the algorithm designer knows some properties of their input distribution but not the entire distribution.  We model this partial information by thinking of the distribution as coming from a family of distributions with those properties.  The requirement to work \emph{all} distributions allows the adversary to specify the distribution after seeing the algorithm.
 
 %We show that any secure sketch that works for all well-spread distributions must write down a large number of bits~(matching our known constructions of secure sketches).  
 
+Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for secure sketches as well as fuzzy extractors.  Additionally we elide the correctness term $\delta$ above, but these generalize the secure sketches and fuzzy extractors with imperfect completeness.
 
 \subsection{Impossibility of info-theoretic sketches}
-In the previous section we showed a fuzzy extractor that works for a family of sources must also work for an arbitrary distribution over those sources.  In addition, the adversary learns the particular source that is being sketched while the system designer does not.  To simplify notation, we denote the source from the system designers point of view as $V$ and the adversary's side information as $Z$.  Let $\mathbb{F}$ be some field of size $q$.  Consider the following distributions of the following type $W = w_1,..., w_\ell$ where $w_i = a_i w_1 + b_i$ for $2\le i \le \ell$.  This type of distribution is a line in space $\mathbb{F}^\ell$.  Consider $V$ as the uniform distribution over all such $W$.  Then $V$ is the uniform distribution over $\mathbb{F}^\ell$.
+In the previous section, we saw that if a fuzzy extractor is secure for a family of sources, for every distribution over those sources there is a secure fuzzy extractor.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.  
 
-Canetti et al.~\cite[XXXX]{canetti2014key} construct computational fuzzy extractors for this family of distributions~(as long $\mathbb{F}$ is large enough).\bnote{fill in right theorem number}  This result presents a contrast between what is possible for sketches and fuzzy extraction.
+\begin{theorem}
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch with error $\delta \le 1/2$ for $\tilde{m} =\omega(1)$.  %Furthermore, consider $V$ as the uniform distribution over $\mathcal{V}$.  There is no secure sketch for $\mathcal{
+\end{theorem}
+
+\begin{proof}
+It will be convenient to think of a single distribution where the outcome $w$ is a two step process of first sampling $W\leftarrow \mathcal{W}$ and then sampling $w\leftarrow W$.  The adversary sees the information $W$, but the system designer does not.  We can think of the fuzzy extractor working for a distribution $V$ and the adversary receiving some side information $Z$~(which distribution was sampled).  
+
+We show that there exists distribution $V$ such that for any secure sketch $\Hav(V | \sketch(V), Z)$ is small.  We begin by describing our family $\mathcal{V}$.  $\mathcal{V}$ consists of the set of affine functions from one dimension to $\ell$ dimensions.  % That is, we project a single point in the field to an arbitrary element in the metric space.
+%In addition, the adversary learns the particular source that is being sketched while the system designer does not.  To simplify notation, we denote the source from the system designers point of view as $V$ and the adversary's additional information about the distribution as $Z$.  We will show a distribution $V$ that does not admit a secure sketch, and thus for any secure sketch construction is insecure for at least one element of the family.
+Let $\mathbb{F}$ be some field of size $q =\omega(\poly(n))$.  
+
+Let $\mathcal{V}$ be family of distributions of the form $W = w_1,..., w_\ell$ where $w_1$ is uniform and $w_i = a_i w_1 + b_i$ for $2\le i \le \ell$ and $a_i\neq 0$.  This type of distribution is a line in space $\mathbb{F}^\ell$.  Define $V$ as the uniform distribution over all such $W$.  Fix some $1< t < \ell$.
+It suffices to show the following:
+
+\begin{itemize}
+\item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$.
+\item The distribution $V$ is uniform~(from the sketch designers point of view).
+\item For any secure sketch on $V$, $H_0(V | \sketch(V)) \le n -\log |B_t|$.
+\item The information $Z$ is a universal hash of $V$ that is independent of $\sketch(V)$. This suffices to show that $\Hav(V| \sketch(V), Z)$ is very small.
+\end{itemize}
+\begin{proposition} For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
+\end{proposition}
+\begin{proof}
+Consider some fixed $W\in\mathcal{V}$.  First note that since $w_1$ is uniform in a field of size $\omega(\poly(n))$, the distribution $\Hoo(W) =\omega(\log n)$.  Recall that $t< \ell$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \ell$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\ell$.
+\end{proof}
+
+\begin{proposition}$V$ is the uniform distribution over $\mathbb{F}^\ell$.
+\end{proposition}
+\begin{proof}
+Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\ell , b_\ell$.  The value $w_1$ is uniformly random and $w_i$ are uniformly random since $b_2,..., b_\ell$ are uniformly random.
+\end{proof}
+\bnote{will need to define average Hartley entropy}
+\bnote{show version without error first?}
+\begin{proposition}
+Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $H_0(V | \sketch(V)) \le n - \log |B_t|+ O(1)$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
+\end{proposition}
+\begin{proof}
+By the definition of correctness for $(\sketch, \rec)$, 
+\[
+\forall w, w^*, \Pr_{p\leftarrow \sketch(w)} [\rec(w^*, p) = w] >1-\delta.
+\]
+By the Markov inequality, 
+\[
+\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
+\]
+That is, for most $p$, $\Pr[\rec(w^*, p) = w] > 1-2\delta>1/2$.
+
+Outline of what I want to say.
+\begin{itemize}
+\item Suppose we are at some good sketch value, that is, the sketch decodes well for $w^*$ close to the true value $w$.
+\item Then for the true value that was sketched, for most neighbors $w^*$ of $w$, $\Pr[\rec(w^*, p) =w] >1/2$.  
+\item For a value $w'$ to be in the support of $W | P=p$, it must be for all neighbors of $\Pr[\rec( w', p) =w ]>1/2$.
+\item This implies that if $w_1, w_2 \in W|P = p$, then $\dis (w_1, w_2)\ge t$.
+\item Conditioned on $P=p$, $W| P=p$ is a good code for random errors.
+Consider some subset $G\subseteq supp(W| P=p)$ with $\Pr (W| P=p \in G)\ge 1/2$.  Then for all $w\in G$ the probability they recover correctly is at least $1-4\delta$~(by another application of Markov).  
+\item This, means that the size of $|G|$ is at most $n -\log |B_t|$.
+\end{itemize}
+\end{proof}
+
+\bnote{stopped here}
+\end{proof}
 
 \begin{lemma}
 There does not exist a secure secure sketch for $V$ with super-logarithmic residual min-entropy.
@@ -693,8 +763,8 @@ Need to show several things.
 \end{proof}
 
 
+Canetti et al.~\cite[XXXX]{canetti2014key} construct computational fuzzy extractors for this family of distributions~(as long $\mathbb{F}$ is large enough).\bnote{fill in right theorem number}  This result presents a contrast between what is possible for sketches and fuzzy extraction.
 
-\bnote{stopped here}
 \begin{lemma}
 There is a family of distributions such that for any secure sketch that works for an adversarial choice of the distribution, there is no residual entropy conditioned on adversary knowledge and the secure sketch.
 \end{lemma}
