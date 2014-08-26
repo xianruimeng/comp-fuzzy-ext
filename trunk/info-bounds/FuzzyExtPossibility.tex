@@ -296,7 +296,11 @@ Fuzzy Extractor & Yes~(\thref{cons:leveling}) & Yes for some families\\
 \label{sec:preliminaries}
 \bnote{be careful with overloading of $\ell$, both key length and number of levels.}
 For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote by $X = X_1,..., X_\ell$  the tuple $(X_1,\dots, X_\ell)$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
-and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.
+and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.  We will also use an average case version of this notion~(to the best of our understanding this has not been used before).\bnote{has it?}
+\begin{definition}[Conditional Hartley Entropy]
+\label{def:conditional hartley}
+The conditional Hartley entropy of $X |Y $ is $\tilde{H}_0(X |Y) = \log ( \expe_{y\in Y} 2^{-H_0(X | Y=y)})$.
+\end{definition}
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
 For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s}$ the class of randomized circuits which output a single bit and have size at most $s$.
 
@@ -633,7 +637,7 @@ In the previous section, we saw it is possible to construct secure sketches and 
 \subsection{A definitional equivalence}
 Before proceeding to our result, we consider the definition of a fuzzy extractor.  The standard definition requires a secure sketch to work for all members $W$ of a family $\mathcal{V}$.  For clarity we will refer to $\mathcal{V}$ as the \emph{family}, the distribution $W$ as a \emph{source} and the particular sample taken $w\in W$ as the \emph{outcome}.    We will add the family $\mathcal{V}$ to the description of a fuzzy extractor where appropriate~(replacing the entropy requirement).
 
-The security game of a fuzzy extractor can be thought of as a two stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{V}$.  The challenger wins if the adversary can guess the outcome of $W$ with low probability, and the adversary wins if the can guess $w\in W$ with noticeable probability.  More formally, let $\mathcal{A}, \mathcal{C}$ be the adversary and challenger respectively. We will formulate this as a two player game.\footnote{We denote the outcome of the game as a reward to each player.  This is opposed to the standard formulation saying that $\mathcal{A}$ wins or loses.  Later, we will need this game to be zero sum.}
+The security game of a fuzzy extractor can be thought of as a two stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{V}$.  The challenger wins if the adversary can guess the outcome of $W$ with low probability, and the adversary wins if they can guess $w\in W$ with noticeable probability.  More formally, let $\mathcal{A}, \mathcal{C}$ be the adversary and challenger respectively. We will formulate this as a two player game.\footnote{We denote the outcome of the game as a reward to each player.  This is opposed to the standard formulation saying that $\mathcal{A}$ wins or loses.  This is to apply results from game theory.}
 
 \begin{center}
 \begin{minipage}{1in}
@@ -642,7 +646,7 @@ The security game of a fuzzy extractor can be thought of as a two stage process:
 \textbf{Experiment} $\Exp^{\mathcal{V}}_1(\mathcal{A}, \mathcal{C}, k)$: \\
 $(\sketch, \rec)\leftarrow \mathcal{C}(\mathcal{V})$\\
 $W \leftarrow \mathcal{A}(\mathcal{V}, \sketch, \rec)$\\
-If $W\not\in \mathcal{V}$ return $0$.\\
+If $W\not\in \mathcal{V}$ reward $(1, -1)$.\\
 If $\Hav(W | \sketch(W))\ge k$ set reward $(1, -1)$ else reward $(-1, 1)$.
 \end{tabbing} \end{minipage} 
 \end{center}
@@ -659,23 +663,23 @@ Instead of using this standard formulation, it will be useful to think of a dist
 $\mathcal{W} \leftarrow \mathcal{A}(\mathcal{V})$\\
 $(\sketch, \rec)\leftarrow \mathcal{C}(\mathcal{V}, \mathcal{W})$\\
 $W \leftarrow \mathcal{W}$\\
-If $W\not\in \mathcal{V}$ return $0$.\\
+If $W\not\in \mathcal{V}$ reward $(1, -1)$.\\
 If $\Hav(W | \sketch(W))\ge k$ set reward $(1, -1)$ else reward $(-1, 1)$.
 \end{tabbing} \end{minipage} 
 \end{center}
 
-The only difference between these two games is which player announces their action first, in $\Exp^{\mathcal{V}}_1$, the challenger announces a pair of algorithms, the adversary is then allowed to specify a source.  In $\Exp^{\mathcal{V}}_2$, the adversary specifies a distribution over sources, and the challenger then specifies their algorithm.  These two formulations are equivalent by the minimax theorem~\cite{neumann1928theorie}.
+The difference between these two games is which player announces their action first, in $\Exp^{\mathcal{V}}_1$, the challenger announces a pair of algorithms, the adversary is then allowed to specify a source.  In $\Exp^{\mathcal{V}}_2$, the adversary specifies a distribution over sources, and the challenger then specifies their algorithm.  These two formulations are equivalent by the minimax theorem~\cite{neumann1928theorie}.
 
 \begin{lemma}
 \label{lem:quant switch fuzz}
-Let $\mathcal{V}$ be a family of distributions.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{V}, \ell, t, \epsilon)$-fuzzy extractor.  Then let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  Then there exists a fuzzy extractor $(\gen', \rep')$ is a $(\mathcal{M}, \mathcal{W}, \ell, t, \epsilon)$-fuzzy extractor.\footnote{Note the other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
+Let $\mathcal{V}$ be a family of distributions.  Let $(\sketch, \rec)$ be a $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch.  Then let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  Then there exists $(\sketch', \rec')$ that is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-fuzzy extractor.\footnote{The other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
 \end{lemma}
 
-Instead of thinking of an adversary specifying a family of sources, we think of an adversary specifying a distribution over sources.  Importantly, the adversary sees the distribution $W$ and $\sketch(W)$ when they are trying to recover the particular outcome.  We can think of the description of $W$ as side-information or leakage to the adversary.  The system designer, however never sees the particular outcome $W$.  This asymmetry will form the basis of our negative results in the next subsection.
+Thus, instead of thinking of an adversary specifying a family of sources, we think of an adversary specifying a distribution over sources.  Importantly, the adversary sees the distribution $W$ and $\sketch(W)$ when they are trying to recover the particular outcome.  We can think of the description of $W$ as side-information or leakage to the adversary.  The system designer, however never sees the particular outcome $W$.  This asymmetry will form the basis of our negative results in the next subsection.
 
 \begin{corollary}
 \label{cor:no fuzz for dist}
-Let $\mathcal{V}$ be a family of distributions.  Let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  If there does not exist a $(\mathcal{M}, \mathcal{V}, \ell, t, \epsilon)$-fuzzy extractor, then there is no $(\mathcal{M}, \mathcal{V}, \ell, t, \epsilon)$-fuzzy extractor.
+Let $\mathcal{V}$ be a family of distributions.  Let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  If there does not exist a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch, then there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch.
 \end{corollary}
 %Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In the previous model the particular well-spread distribution $W$ was encoded in the \sketch and \rec algorithms.  In this section we ask if a similar construction is possible when $(\sketch, \rec)$ must work for any well-spread distribution.  In this setting, $(\sketch, \rec)$ are described and the adversary then specifies a particular well-spread distribution $W$.  
 
@@ -683,16 +687,18 @@ Let $\mathcal{V}$ be a family of distributions.  Let $\mathcal{W}$ be an arbitra
 
 %We show that any secure sketch that works for all well-spread distributions must write down a large number of bits~(matching our known constructions of secure sketches).  
 
-Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for secure sketches as well as fuzzy extractors.  Additionally we elide the correctness term $\delta$ above, but these generalize the secure sketches and fuzzy extractors with imperfect completeness.
+Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for fuzzy extractors as well as secure sketches.  Additionally they generalize to the case of imperfect correctness.
 
 \subsection{Impossibility of info-theoretic sketches}
-In the previous section, we saw that if a fuzzy extractor is secure for a family of sources, for every distribution over those sources there is a secure fuzzy extractor.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.  
+In the previous section, we saw that if a secure sketch is secure for a family of sources, for every distribution over those sources there is a secure sketch.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.  
 
 \begin{theorem}
 Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch with error $\delta \le 1/2$ for $\tilde{m} =\omega(1)$.  %Furthermore, consider $V$ as the uniform distribution over $\mathcal{V}$.  There is no secure sketch for $\mathcal{
+\bnote{what is $t$?}\bnote{finish proof}
 \end{theorem}
 
 \begin{proof}
+\bnote{need to rearrange this proof.}
 It will be convenient to think of a single distribution where the outcome $w$ is a two step process of first sampling $W\leftarrow \mathcal{W}$ and then sampling $w\leftarrow W$.  The adversary sees the information $W$, but the system designer does not.  We can think of the fuzzy extractor working for a distribution $V$ and the adversary receiving some side information $Z$~(which distribution was sampled).  
 
 We show that there exists distribution $V$ such that for any secure sketch $\Hav(V | \sketch(V), Z)$ is small.  We begin by describing our family $\mathcal{V}$.  $\mathcal{V}$ consists of the set of affine functions from one dimension to $\ell$ dimensions.  % That is, we project a single point in the field to an arbitrary element in the metric space.
@@ -704,14 +710,14 @@ It suffices to show the following:
 
 \begin{itemize}
 \item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$.
-\item The distribution $V$ is uniform~(from the sketch designers point of view).
-\item For any secure sketch on $V$, $H_0(V | \sketch(V)) \le n -\log |B_t|$.
+\item The distribution $V$ is uniform~(from the sketch designers point of view).  That is $V\overset{d}=U$.
+\item For any secure sketch on $V$, $H_0(V | \sketch(V)) \le n -\log |B_t|$. 
 \item The information $Z$ is a universal hash of $V$ that is independent of $\sketch(V)$. This suffices to show that $\Hav(V| \sketch(V), Z)$ is very small.
 \end{itemize}
 \begin{proposition} For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some fixed $W\in\mathcal{V}$.  First note that since $w_1$ is uniform in a field of size $\omega(\poly(n))$, the distribution $\Hoo(W) =\omega(\log n)$.  Recall that $t< \ell$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \ell$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\ell$.
+Consider some fixed $W\in\mathcal{V}$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W) =\omega(\log n)$.  Recall that $t< \ell$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \ell$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\ell$.
 \end{proof}
 
 \begin{proposition}$V$ is the uniform distribution over $\mathbb{F}^\ell$.
@@ -722,66 +728,111 @@ Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution 
 \bnote{will need to define average Hartley entropy}
 \bnote{show version without error first?}
 \begin{proposition}
-Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $H_0(V | \sketch(V)) \le n - \log |B_t|+ O(1)$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
+Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $H_0(V | \sketch(V)) \le (\ell-t) |\mathbb{F}|n +1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
 \end{proposition}
 \begin{proof}
+We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We will however, not consider these coins in our security analysis.
+
 By the definition of correctness for $(\sketch, \rec)$, 
 \[
-\forall w, w^*, \Pr_{p\leftarrow \sketch(w)} [\rec(w^*, p) = w] >1-\delta.
+\forall w, w', \Pr_{p\leftarrow \sketch(w)} [\rec(w', p) = w] >1-\delta.
 \]
-By the Markov inequality, 
+%For most $p$, $\rec$ works on most neighbors of $w$.  
+Fix some $w$.  
+By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[p\in A_{ss}]\ge 1/2$ and $\forall s\in A_{ss}$, 
 \[
-\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
-\]
-That is, for most $p$, $\Pr[\rec(w^*, p) = w] > 1-2\delta>1/2$.
+\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Outline of what I want to say.
-\begin{itemize}
-\item Suppose we are at some good sketch value, that is, the sketch decodes well for $w^*$ close to the true value $w$.
-\item Then for the true value that was sketched, for most neighbors $w^*$ of $w$, $\Pr[\rec(w^*, p) =w] >1/2$.  
-\item For a value $w'$ to be in the support of $W | P=p$, it must be for all neighbors of $\Pr[\rec( w', p) =w ]>1/2$.
-\item This implies that if $w_1, w_2 \in W|P = p$, then $\dis (w_1, w_2)\ge t$.
-\item Conditioned on $P=p$, $W| P=p$ is a good code for random errors.
-Consider some subset $G\subseteq supp(W| P=p)$ with $\Pr (W| P=p \in G)\ge 1/2$.  Then for all $w\in G$ the probability they recover correctly is at least $1-4\delta$~(by another application of Markov).  
-\item This, means that the size of $|G|$ is at most $n -\log |B_t|$.
-\end{itemize}
+Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le n-\log |B_t|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|p$ this is also true.  This makes the support of $V|p$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|p$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|p$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V | p) \le (\ell -t )|\mathbb{F}|$.  Averaging over $p$ one has that $\tilde{H}_0(V|P) \le (\ell -t ) |\mathbb{F}| +1$.
+%By the Markov inequality, 
+%\[
+%\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
+%\]
+%That is, for most $p$, $\Pr[\rec(w^*, p) = w] > 1-2\delta>1/2$.
+%
+%Outline of what I want to say.
+%\begin{itemize}
+%\item Suppose we are at some good sketch value, that is, the sketch decodes well for $w^*$ close to the true value $w$.
+%\item Then for the true value that was sketched, for most neighbors $w^*$ of $w$, $\Pr[\rec(w^*, p) =w] >1/2$.  
+%\item For a value $w'$ to be in the support of $W | P=p$, it must be for all neighbors of $\Pr[\rec( w', p) =w ]>1/2$.
+%\item This implies that if $w_1, w_2 \in W|P = p$, then $\dis (w_1, w_2)\ge t$.
+%\item Conditioned on $P=p$, $W| P=p$ is a good code for random errors.
+%Consider some subset $G\subseteq supp(W| P=p)$ with $\Pr (W| P=p \in G)\ge 1/2$.  Then for all $w\in G$ the probability they recover correctly is at least $1-4\delta$~(by another application of Markov).  
+%\item This, means that the size of $|G|$ is at most $n -\log |B_t|$.
+%\end{itemize}
 \end{proof}
-
-\bnote{stopped here}
-\end{proof}
-
+We now define the side information $Z = a_2, b_2, ..., a_\ell, b_\ell$.  By described above the view of $\sketch, \rec$ is a uniform distribution $V$.  Thus, the side information $Z$ is independent of $\sketch(V)$.
 \begin{lemma}
-There does not exist a secure secure sketch for $V$ with super-logarithmic residual min-entropy.
+$\Hav(V| P , Z) = \Theta(1)$
 \end{lemma}
 \begin{proof}
-Need to show several things.  
-\begin{itemize}
-\item Each component of the distribution has fuzzy min-entropy.
-\item Any sketch must leak some information about $V$.
-\item The side information can be thought of as a hash function.  Furthermore, it is independent of the sketch.  Thus, the sketch and hash are independent information.  Thus, conditioned on both there is almost no entropy.
-\end{itemize}
+Consider some fixed $p$.
+If $Z$ is universal then $\forall w_1, w_2 \in V|P=p, w_1\neq w_2$\bnote{why should $Z$ be universal for the entire range, I get for each coordinate.}
+\[
+\Pr[Z(w_1) = Z(w_2)] = \frac{1}{|Z|}.
+\]
+Then by the union bound, 
+\[
+\Pr[\exists w_1\neq w_2 \wedge Z(w_1) = Z(w_2)]\le \frac{ 2^{H_0(V|P=p)}}{|Z|}.
+\]
+\bnote{need to average across $P$}
+\bnote{I'm confused about what we mean by $Z$ being universal here.}
+\bnote{working here!}
 \end{proof}
+%
+%\bnote{stopped here}
+\end{proof}
+
+%\begin{lemma}
+%There does not exist a secure secure sketch for $V$ with super-logarithmic residual min-entropy.
+%\end{lemma}
+%\begin{proof}
+%Need to show several things.  
+%\begin{itemize}
+%\item Each component of the distribution has fuzzy min-entropy.
+%\item Any sketch must leak some information about $V$.
+%\item The side information can be thought of as a hash function.  Furthermore, it is independent of the sketch.  Thus, the sketch and hash are independent information.  Thus, conditioned on both there is almost no entropy.
+%\end{itemize}
+%\end{proof}
 
 
 Canetti et al.~\cite[XXXX]{canetti2014key} construct computational fuzzy extractors for this family of distributions~(as long $\mathbb{F}$ is large enough).\bnote{fill in right theorem number}  This result presents a contrast between what is possible for sketches and fuzzy extraction.
 
-\begin{lemma}
-There is a family of distributions such that for any secure sketch that works for an adversarial choice of the distribution, there is no residual entropy conditioned on adversary knowledge and the secure sketch.
-\end{lemma}
+%\begin{lemma}
+%There is a family of distributions such that for any secure sketch that works for an adversarial choice of the distribution, there is no residual entropy conditioned on adversary knowledge and the secure sketch.
+%\end{lemma}
 
 \begin{corollary}
-This is also impossible for computational sketches that retain hill entropy.
+This is also impossible for computational sketches that retain hill entropy.\bnote{fill this in, use asiacrypt result.}
 \end{corollary}
 
-\subsection{Conductors}
-Possible for computational objects.  See the constructions of Canetti et al.~\cite{canetti2014key}.
-\begin{lemma}
-Not possible for information-theoretic objects.
-\end{lemma}
+%\subsection{Conductors}
+%Possible for computational objects.  See the constructions of Canetti et al.~\cite{canetti2014key}.
+%\begin{lemma}
+%Not possible for information-theoretic objects.
+%\end{lemma}
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
 \appendix
+\section{Coding Theory}
+\begin{definition}
+\label{def:shannon-code}
+Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $c\in \mathcal{C}$, $\Pr_{w' | \dis(w', w)\le t}[\rec(c') \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
+\end{definition}
+
+
+ \begin{definition}
+Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
+$\Pr_{c\leftarrow C}[\rec(\neigh(c, t')) \neq c]\le \epsilon$.
+\end{definition}
+An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} %(we provide a proof in \secref{sec:proof of average to maximal error}):
+\begin{lemma}
+\label{lem:averageToMaximalError}
+Let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$ such that $\Hoo(C)\geq k$.  There is a set $\mathcal{C}'$ with $|\mathcal{C}'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
+\end{lemma}
+
+\bnote{This comes from asiacrypt paper, what to cite?}
 \section{Block Unguessable Distributions}
 \begin{definition}~\cite[Definition 4.2]{canetti2014key}
 \label{def:block guessable}
