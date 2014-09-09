@@ -281,8 +281,9 @@ Prime candidate sources for authentication have $\Huse\le 0$.  As an example, th
 There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
 \paragraph{Our Contributions}
-We provide the first constructions of computational fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over the Hamming metric on $\mathcal{Z}^\ell$ for an alphabet $\mathcal{Z}$. 
+We provide the first constructions of fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over the Hamming metric on $\mathcal{Z}^\ell$ for an alphabet $\mathcal{Z}$. 
 
+\bnote{rewrite this!}
 Our first construction is secure when symbols in $w$
 each have individual super-logarithmic min-entropy, even if they are arbitrarily correlated. Moreover,
 a constant fraction of symbols in $w$ may have little entropy, as long as knowledge of their values does not reduce the entropy of the high-entropy symbols too much (see \defref{def:block guessable}).  This construction can correct a constant fraction of errors~($\Theta(\ell)$).  However, this construction requires a large alphabet size~(super-polynomial in the security parameter).
@@ -310,6 +311,7 @@ Construction & Security & Features & Limitations \\
 
 
 \paragraph{Our Approach}
+\bnote{rewrite this!}
 Our constructions are computationally secure.  Known techniques for proving security of information-theoretic  fuzzy extractors work for all distributions for a given $m, t$, and thus cannot be used with $\Huse\le 0$ (because they would prove security for distributions contained within a single ball of radius of $t$). 
 
 Most known constructions of fuzzy extractors put sufficient information in $p$ to recover the original $w$ from a nearby $w'$ during $\rep$ (this procedure is called a \emph{secure sketch}), and then apply a randomness extractor to $w$ to get $r$.
