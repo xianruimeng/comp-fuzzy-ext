@@ -291,7 +291,7 @@ a constant fraction of symbols in $w$ may have little entropy, as long as knowle
 We improve the entropy and alphabet size requirements in the second construction, which requires only a constant fraction of the symbols $w$ to have constant min-entropy conditioned on the previous symbols.  Our second construction supports an arbitrary alphabet size~(though it only achieves $\Huse\le 0$ when the alphabet size is super-constant).  
 However, these improvements come at a price to error-tolerance: it tolerates a sub-constant fraction of errors~($o(\ell)$).  
 
-The second construction comes with an additional feature: reusability.  Boyen~\cite{Boyen2004} defined reusable fuzzy extractors: multiple readings $w_1,..., w_q$ are enrolled and the adversary sees the corresponding public values $p_1,..., p_q$ and possibly some of the derived keys.  The enrolled values $w_i$ and $w_j$ are not assumed to be equal, and so information leakage may add up.  Indeed, Boyen showed that with an unbounded number of reuses it is only possible to support limited correlations between $w_i$ and $w_j$~\cite[Theorem 11]{Boyen2004}.  Our second construction allows for arbitrary correlation between $w_i$ and $w_j$ against computational adversaries\footnote{Our restriction to computational adversaries implies that the adversary only sees a polynomially bounded number of reuses.  It remains an open problem to construct a polynomially reusable fuzzy extractor against unbounded adversaries.} as long as each marginal $W_i$ is an admissible distribution.  %We do not considering the joint distribution $W_1,..., W_q$.
+\consref{cons:sampling} comes with an additional feature: reusability.  Boyen~\cite{Boyen2004} defined reusable fuzzy extractors: multiple readings $w_1,..., w_q$ are enrolled and the adversary sees the corresponding public values $p_1,..., p_q$ and possibly some of the derived keys.  The enrolled values $w_i$ and $w_j$ are not assumed to be equal, and so information leakage may add up.  Indeed, Boyen showed that with an unbounded number of reuses it is only possible to support limited correlations between $w_i$ and $w_j$~\cite[Theorem 11]{Boyen2004}.  Our second construction allows for arbitrary correlation between $w_i$ and $w_j$ against computational adversaries\footnote{Our restriction to computational adversaries implies that the adversary only sees a polynomially bounded number of reuses.  It remains an open problem to construct a polynomially reusable fuzzy extractor against unbounded adversaries.} as long as each marginal $W_i$ is an admissible distribution.  %We do not considering the joint distribution $W_1,..., W_q$.
 
 \begin{table}
 \begin{tabular}{l | l | l | l }
@@ -443,7 +443,7 @@ A secure sketch is \emph{efficient} if \sketch and \rec run in expected polynomi
 A function $\cond : \mathcal{Z}\times \zo^d\rightarrow \mathcal{Y}$ is a $(m, \tilde{m}, \epsilon)$-average case randomness condenser if whenever $\Hoo(W)\ge m$, then there exists a distribution $Y$ with $\Hoo(Y)\ge \tilde{m}$ and $(\cond(W, seed), seed) \approx_\epsilon (Y, seed)$.
 \end{definition}
 
-\noindent Randomness condensers can be built  more efficiently than randomness extractors~(for example~\cite{dodis2013key}).  
+\noindent Randomness condensers can be built  more efficiently than randomness extractors~(for example~\cite{dodis2014key}).  
 
 %\begin{definition}
 %\label{def:fuzzy conductor}
@@ -478,23 +478,6 @@ Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, 
 \end{definition}
 
 
-\subsection{Coding Theory}
-\label{sec:coding theory}
-We will consider slightly nonstandard error-correct codes over $\{0,1\}^\ell$, which correct up to $t$ bit flips from $0$ to $1$ but no bit flips from $1$ to $0$ (this is the Hamming analog of the $Z$-channel~\cite{tallini2002capacity}).
-\begin{definition}
-\label{def:hamming z channel}
-For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where at most $t$ bits $c_i$ are changed from $0$ to $1$.
-\end{definition}
-
-\begin{definition}
-Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that $\Pr_{c\in C}[\exists c'\in \neigh_t(c) \text{ s.t. } \decode(c') \neq c] \leq \delta_{code}$.
-\end{definition}
-
-\textbf{Notes:}
-Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
-Codes with $2^{\Theta(\ell)}$ codewords and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
-The class of errors we support in our source~($t$ Hamming errors over a large alphabet) and the class of errors for which we need codes~($t$ $0\rightarrow 1$ errors) are different.  See Constructions~\ref{cons:first construction} and~\ref{cons:sampling} for the translation between the error classes.
-
 \subsection{Obfuscation}
 Our constructions will use obfuscation for two types of circuits: point functions and digital lockers. The family of point functions $\mathtt{I}_n = \{I_w\}_{w \in \zo^n}$ defined as follows:
 \[
@@ -506,7 +489,7 @@ I_{w, r}(x):\begin{cases} r & x=w\\\perp & \text{otherwise}\end{cases}.
 \]
 The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at most a polynomial number of oracle queries to the function. In the following definition we also require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions and digital lockers are constructed in \cite[Theorem 6.1]{bitansky2010strong} from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. They can also be constructed by assuming strong properties of cryptographic hash functions~\cite{canetti1997towards}.
 
-\begin{definition}[$\ell$-composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
+\begin{definition}[composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
 \label{def:obf} A PPT algorithm $\mathcal{O}$ is an $\ell$-composable VGB obfuscator for $\mathtt{I}_{n}$~(resp. $\mathtt{I}_{n+\kappa}$) with auxiliary-input if the following conditions are met:
 \begin{enumerate}
 \item \emph{Functionality:} for every $n$ and $I \in \mathtt{I}_n$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.
@@ -521,38 +504,36 @@ For notational convenience, when we use point function obfuscation, we denote th
 
 %\consref{cons:sampling} is the fuzzy extractor that allows for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  %Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
 
-\section{An information-theoretic construction with $\Huse\le 0$}
+\section{Supporting more errors than entropy}
 \label{sec:info theory cons}
-\bnote{needs to be rewritten depending on ordering}
-In this section we show an information-theoretic analogue to \consref{cons:first construction}.  %This construction can essentially be seen as replacing the computational point obfuscation with information-theoretic randomness extractors.  
-Using this weaker object requires us to make a stronger assumption on our starting distribution.  Furthermore, the important features of \consref{cons:sampling}, $\Huse \le 0$ for a small alphabet and reusability, crucially rely on computational assumptions.  Achieving these benefits information-theoretically is an open question.  We will construct an information-theoretic fuzzy conductor which can be converted to a fuzzy extractor using a randomness extractor~(using the information-theoretic analogue of \lemref{lem:cond and cext}).
-
-The main idea of this construction is to first condense entropy from each block of the source and then apply a secure sketch to the extracted information.  Intuitively, we are then able from a large alphabet while paying entropy loss on the smaller alphabet.  %Alternatively, this construction can simply be seen as replacing the computational point function obfuscation with an information-theoretic point-function obfuscation~(this is only possible for high enough entropy levels).
+In this section we show an information-theoretic fuzzy conductor that supports more errors than entropy.
+Information-theoretic fuzzy conductors can be converted to fuzzy extractors using a randomness extractor~(using the information-theoretic analogue of \lemref{lem:cond and cext}).
+The main idea of this construction is to condense entropy from each block of the source and then apply a secure sketch to the condensed blocks.  The main idea is to correct errors on a large alphabet~(before condensing) while paying for the error correction on a smaller alphabet~(after condensing).%Alternatively, this construction can simply be seen as replacing the computational point function obfuscation with an information-theoretic point-function obfuscation~(this is only possible for high enough entropy levels).
 
 \begin{construction}
 \label{cons:info theoretic}
-Let $\mathcal{Z}$ be an alphabet and let $W=W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  We describe $\gen, \rep$ as follows:
+Let $\mathcal{Z}$ be an alphabet and let $W=W_1,..., W_\gamma$ be a distribution over $\mathcal{Z}^\gamma$.  We describe $\gen, \rep$ as follows:
 \begin{center}
 \begin{tabular}{c|c}
 \begin{minipage}{3in}
 \textbf{\gen}
 \begin{enumerate}
-\item \underline{Input}: $w = w_1,..., w_\ell$
-\item For $j=1,..., \ell$:
+\item \underline{Input}: $w = w_1,..., w_\gamma$
+\item For $j=1,..., \gamma$:
 \begin{enumerate}[(i)]
 \item Sample $seed_i\leftarrow \zo^d$.
 \item Set $v_i = \cond(w_i, seed_i)$.
 \end{enumerate}
-\item Set $ss \leftarrow \sketch(v_1,..., v_\ell)$.
-\item Set $p = (ss, seed_1,..., seed_\ell)$.
+\item Set $ss \leftarrow \sketch(v_1,..., v_\gamma)$.
+\item Set $p = (ss, seed_1,..., seed_\gamma)$.
 \item Output $(v, p)$.
 \end{enumerate}
  \end{minipage} &
 \begin{minipage}{3in}
 \textbf{\rep}
 \begin{enumerate}
-\item \underline{Input}: $(w', p = (ss, seed_1,..., seed_\ell))$
-\item For $j=1,..., \ell$:
+\item \underline{Input}: $(w', p = (ss, seed_1,..., seed_\gamma))$
+\item For $j=1,..., \gamma$:
 \begin{enumerate}[(i)]
 \item Set $v_i = \cond(w_i, seed_i)$.
 \end{enumerate}
@@ -574,16 +555,23 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block sou
 \forall j\in J, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}) \geq \alpha.
 \]
 \end{definition}
-\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), as only some blocks are required to have entropy conditioned on the past.  The choice of conditioning on the past is arbitrary: a more general sufficient condition is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).
+\defref{def:partial source} is a weakening of block sources~(introduced by Chor and Goldreich~\cite{DBLP:journals/siamcomp/ChorG88}), as only some blocks are required to have entropy conditioned on the past.  The choice of conditioning on the past is arbitrary: a more general sufficient condition is that there exists some ordering of indices where most items have entropy conditioned on all previous items in this ordering~(for example, a ``partial'' reverse block source~\cite{vadhan2003constructing}).  This construction is secure and it supports distributions with more errors than entropy~(proof is in~\apref{sec:info theory sec}).
 
 \begin{lemma}
 \label{lem:info theory sec}
-Let $\mathcal{W}$ be the family of $(\alpha, \beta)$-partial block sources over $\mathcal{Z}^\ell$ and let $\cond: \mathcal{Z} \times \zo^d\rightarrow \mathcal{Y}$ be a $(\alpha, \tilde{\alpha}, \epsilon)$-average case randomness conductor.  Let $(\sketch, \rec)$ be $(\mathcal{Y}^\ell, \tilde{\alpha}(\ell - \beta), \tilde{m}, t)$-secure sketch with error $\delta$.~(Convertible to a fuzzy extractor using~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}).
+Let $n$ be a security parameter and let $\gamma = \omega(\log n)$.
+Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-partial block sources over $\mathcal{Z}^\gamma$ wand let $\cond: \mathcal{Z} \times \zo^d\rightarrow \mathcal{Y}$ be a $(\alpha, \tilde{\alpha}, \epsilon)$-average case randomness conductor.  Let $(\sketch, \rec)$ be $(\mathcal{Y}^\gamma, \tilde{\alpha}(\gamma - \beta), \tilde{m}, t)$-secure sketch with error $\delta$.~(Convertible to a fuzzy extractor using~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}).
 
 \end{lemma}
 
-\subsection{Discussion of Information-Theoretic Construction}
-\bnote{write this}
+\subsection{When is $\Huse\le 0$?}
+
+\consref{cons:info theoretic} supports partial block sources with $\Huse\le 0$.  The required entropy of partial block source is $\alpha (\gamma-\beta ) = \Theta(\gamma)$.  The condenser of Dodis et al~\cite{dodis2014key} has a constant entropy loss, so $\alpha-\tilde{\alpha} = \Theta(1)$.  This means that the input entropy to the secure sketch is $\Theta(\gamma)$.  Standard secure sketches correct a constant fraction of errors at a entropy loss, yielding $\tilde{m} = \Theta(\gamma)$.  Thus, our construction is secure for distributions with more errors than entropy whenever $|\mathcal{Z}| = \omega(1)$.
+More formally:
+\[
+\Huse(W) = \Hoo(W) -\log |B_t| < \Theta(\gamma)- t \log |\mathcal{Z}|= \Theta(\gamma) - \Theta(\gamma) \log |\mathcal{Z}| <0
+\]
+That is, there exists a super-constant alphabet size for which \consref{cons:info theoretic} is secure with $\Huse\le 0$.  Furthermore, the construction has super-logarithmic output entropy since $\tilde{m} = \Theta(\gamma) = \omega(\log n)$.
 
 \section{Achieving Reusability \& $\Huse\le 0$}
 \label{sec:sampling}
@@ -667,7 +655,7 @@ In order to show security \consref{cons:sampling}, we
 show that with overwhelming probability, at each of the $\ell$ iterations, the sampler will choose enough coordinates of $W$ that have high entropy, making $V_i$ have sufficient entropy.   Once each of the $V_1,..., V_\ell$ have high entropy the obfuscations are unlikely to return a value other than $\perp$ to an adversary.
 % forms a block-unguessable distribution.  Then security essentially follows from the security of \consref{cons:first construction}. %follows very similarly to \lemref{lem:security of cons}~(used to show security of \consref{cons:first construction}).  
 %Essentially, the argument is that an adversary will never be able to open a digital locker and thus they learn no information about the key.  %By the same argument of Then \consref{cons:sampling} is just \consref{cons:first construction} applied to $V_1,.., V_\ell$, and security follows by \lemref{lem:security of cons}.  
-We begin by showing that each $V_i$ is statistically close to a high entropy distribution~(proof in \apref{sec:proof of sampling lemma}).   Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda=\lambda_1 \dots \lambda_\ell$
+We begin by showing that each $V_i$ is statistically close to a high entropy distribution.   Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda=\lambda_1 \dots \lambda_\ell$
 be some particular outcome.
 
 \begin{lemma}
@@ -725,9 +713,8 @@ Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, exc
 The only modification to the outline presented in \secref{ssec:sec cons sampling} is in \lemref{lem:samp unguess} with the other keys $R_1,..., R_{i-1}, R_{i+1}, ..., R_q$ treated as additional auxiliary input to the adversary/simulator.
 \end{proof}
 
-\subsection{Discussion of \consref{cons:sampling}}
-\lnote{I need to check this}
-We now show \consref{cons:sampling} supports partial block sources with $\Huse\le 0$.  The required entropy of partial block source is $\alpha (\gamma-\beta ) = \Theta(\gamma)$.  We are able to correct $o(\gamma)$ errors.
+\subsection{When is $\Huse\le 0$?}
+\consref{cons:sampling} supports partial block sources with $\Huse\le 0$.  The required entropy of partial block source is $\alpha (\gamma-\beta ) = \Theta(\gamma)$.  We are able to correct $o(\gamma)$ errors.
 This yields:
 \[
 \Huse = \Hoo(W) -\log |B_t| < \Theta(\gamma)- t \log |\mathcal{Z}|= \Theta(\gamma) - o(\gamma) \log |\mathcal{Z}|
@@ -736,7 +723,19 @@ That is, there exists a super-constant alphabet size for which \consref{cons:sam
 
 \section{Allowing Correlated Symbols}
 In the previous two sections, we presented constructions that supported $\Huse\le 0$ for restricted classes of distributions.  Unfortunately, both Constructions~\ref{cons:info theoretic} and \ref{cons:sampling} required each symbol to contribute ``fresh'' entropy.  In this section, we present a computational construction that allows for correlation between symbols while still supporting $\Huse \le 0$ and correcting a constant fraction of errors.
-This construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.
+This construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.  Before presenting the construction we provide some definitions from error correcting codes.
+We use slightly nonstandard error-correct codes over $\{0,1\}^\ell$, which correct up to $t$ bit flips from $0$ to $1$ but no bit flips from $1$ to $0$ (this is the Hamming analog of the $Z$-channel~\cite{tallini2002capacity}).\footnote{Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
+Codes with $2^{\Theta(\ell)}$ codewords and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
+The class of errors we support in our source~($t$ Hamming errors over a large alphabet) and the class of errors for which we need codes~($t$ $0\rightarrow 1$ errors) are different.  
+}
+\begin{definition}
+\label{def:hamming z channel}
+For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where at most $t$ bits $c_i$ are changed from $0$ to $1$.
+\end{definition}
+
+\begin{definition}
+Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that $\Pr_{c\in C}[\exists c'\in \neigh_t(c) \text{ s.t. } \decode(c') \neq c] \leq \delta_{code}$.
+\end{definition}
 
 \begin{construction}
 \label{cons:first construction}
@@ -805,17 +804,17 @@ Let $n$ be a security parameter. Let $\mathcal{Z}\subseteq \zo^{\omega(\log n)}$
 Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions over $\mathcal{Z}^\ell$, for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator for point functions with auxiliary inputs. Then for any $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}=H_0(C)-\beta, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$.
 \end{theorem}
 
-\subsection{Discussion of \consref{cons:first construction}}
+\subsection{When is $\Huse\le 0$?}
 \label{sec:discussion}
 \lnote{I did not check this calculation -- will do}
-To show that $\Huse$ can be negative for \consref{cons:first construction}, we first calculate the size of the Hamming ball.  
+In this section, we show that \consref{cons:first construction} can support distributions with more errors than entropy.
+We first calculate the size of the Hamming ball.  
 \[
 \log |B_t| = \log \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i> \log {\ell \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\ell\choose t}
 \]
-
-We consider what entropy is necessary for security.  The simplest type of unguessable block distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \ell\omega(\log n)$.  This yields:
+The simplest type of unguessable block distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \ell\omega(\log n)$.  This yields:
 \[
-\Huse = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t\log |\mathcal{Z}|) + \log {\ell \choose t}\right).
+\Huse (W) = \Hoo(W) - \log |B_t| < \ell \omega(\log n) -\left( \Theta(t\log |\mathcal{Z}|) + \log {\ell \choose t}\right).
 \]
 When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$, then $\Huse\le 0$ and the output entropy is $H_0(C) -\beta$~(if $C$ is a constant rate code, this is $\Theta(\ell)$).
 
@@ -959,14 +958,15 @@ Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  T
 \end{proof}
 
 \section{Analysis of \consref{cons:info theoretic}}
+\label{sec:info theory sec}
 \begin{proof}[Proof of \lemref{lem:info theory sec}]
 Let $W\in \mathcal{W}$.
 It suffices to argue correctness and security.  We first argue correctness.  
 When $w_i = w_i'$, then $\cond(w_i , seed_i) = \cond(w_i', seed_i)$ and thus $v_i = v_i'$.  Thus, for all $w, w'$ where $\dis(w, w')\le t$, then $\dis (v, v')\le t$.  Then by correctness of $(\sketch, \rep)$, $\Pr[\rec(v', \sketch(v)) = v]\ge 1-\delta$.  
 
-We now argue security.  Denote by $seed$ the random variable consisting of all $\ell$ seeds and $V$ the entire string of generated $V_1,..., V_\ell$.
-Our goal is to show that $\Hav(V | p)$ is close to a distribution with average min-entropy $\tilde{m}$.  We first argue that there exists a distribution $Y$ where $\Hav(Y | seed)\ge \tilde{\alpha}\beta$ and $(V, seed_1,..., seed_\ell)\approx (Y, seed_1,.., seed_\ell)$.  First note since $W$ is $(\alpha, \beta)$-partial block distribution that
-there exists a set of indices $J$ where $|J| \geq \ell - \beta$ such that the following holds:
+We now argue security.  Denote by $seed$ the random variable consisting of all $\gamma$ seeds and $V$ the entire string of generated $V_1,..., V_\gamma$.
+Our goal is to show that $\Hav(V | p)$ is close to a distribution with average min-entropy $\tilde{m}$.  We first argue that there exists a distribution $Y$ where $\Hav(Y | seed)\ge \tilde{\alpha}\beta$ and $(V, seed_1,..., seed_\gamma)\approx (Y, seed_1,.., seed_\gamma)$.  First note since $W$ is $(\alpha, \beta)$-partial block distribution that
+there exists a set of indices $J$ where $|J| \geq \gamma - \beta$ such that the following holds:
 \[
 \forall j\in J, \forall w_1,..., w_\gamma \in W_1,..., W_\gamma, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}) \geq \alpha.
 \]
@@ -988,13 +988,13 @@ Applying a deterministic function does not increase statistical distance and thu
 \end{align*}
 
 \noindent
-By a hybrid argument there exists a distribution $Z$ with $\Hav(Z | seed) \ge \alpha(\ell -\beta)$ where 
+By a hybrid argument there exists a distribution $Z$ with $\Hav(Z | seed) \ge \alpha(\gamma -\beta)$ where 
 \[
-(\cond(W_\ell, seed_\ell), ..., \cond(W_1, seed_1), seed_\ell,..., seed_1) \approx_{\epsilon\ell} (Z, seed_\ell,...,  seed_1).\]
-By the security of $(\sketch, \rec)$ we know that $\Hav(Z | seed, ss) \ge \tilde{m}$.  %Note that $U_{\mathcal{Y}}^\ell$ is independent of $seed_1,..., seed_\ell$ and so $\Hav(U_{\mathcal{Y}}^\ell, seed_1,..., seed_\ell, p)\ge \tilde{m}$. 
+(\cond(W_\gamma, seed_\gamma), ..., \cond(W_1, seed_1), seed_\gamma,..., seed_1) \approx_{\epsilon\gamma} (Z, seed_\gamma,...,  seed_1).\]
+By the security of $(\sketch, \rec)$ we know that $\Hav(Z | seed, ss) \ge \tilde{m}$.  %Note that $U_{\mathcal{Y}}^\gamma$ is independent of $seed_1,..., seed_\gamma$ and so $\Hav(U_{\mathcal{Y}}^\gamma, seed_1,..., seed_\gamma, p)\ge \tilde{m}$. 
 That is, 
 \[
-(V, seed_1,..., seed_\ell, p) \approx_{\epsilon\ell} (U_{\mathcal{Y}}^\ell, seed_1,..., seed_\ell, p).\]  This completes the proof.
+(V, seed_1,..., seed_\gamma, p) \approx_{\epsilon\gamma} (U_{\mathcal{Y}}^\gamma, seed_1,..., seed_\gamma, p).\]  This completes the proof.
 \end{proof}
 
 \section{Analysis of \consref{cons:sampling}}
