@@ -693,6 +693,7 @@ Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for 
 In the previous section, we saw that if a secure sketch is secure for a family of sources, for every distribution over those sources there is a secure sketch.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.  
 
 \begin{theorem}
+\label{thm:imposs sketch}
 Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch with error $\delta < 1/4$ for $\tilde{m} =\omega(1)$ for $t\ge 4$.  \bnote{finish proof}
 \end{theorem}
 
@@ -783,6 +784,8 @@ This means that the $\sketch$ algorithm include points for possible $Z$ values~(
 \end{align*}
  Where the last line follows for $t\ge 4$.  The fourth line follows from the third as long as $|\mathbb{F}|????$\bnote{fix this}
  \end{proof}
+ 
+ \thref{thm:imposs sketch} follows using the change of quantifiers in \corref{cor:no fuzz for dist}.
 %\begin{lemma}
 %$\Hav(V| P , Z) = \Theta(1)$
 %\end{lemma}
