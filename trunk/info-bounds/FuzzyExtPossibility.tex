@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+ \documentclass[11pt]{article}
 \def\shownotes{1}
 
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
@@ -296,10 +296,10 @@ Fuzzy Extractor & Yes~(\thref{cons:leveling}) & Yes for some families\\
 \label{sec:preliminaries}
 \bnote{be careful with overloading of $\ell$, both key length and number of levels.}
 For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote by $X = X_1,..., X_\ell$  the tuple $(X_1,\dots, X_\ell)$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
-and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.  We will also use an average case version of this notion~(to the best of our understanding this has not been used before).\bnote{has it?}
+and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.  We will also use an average case version of this notion~(to the best of our understanding this has not been used before):\bnote{has it?}
 \begin{definition}[Conditional Hartley Entropy]
 \label{def:conditional hartley}
-The conditional Hartley entropy of $X |Y $ is $\tilde{H}_0(X |Y) = \log ( \expe_{y\in Y} 2^{-H_0(X | Y=y)})$.
+The conditional Hartley entropy of $X |Y $ is $\tilde{H}_0(X |Y) = \log ( \expe_{y\in Y} |\{x | \Pr[X=x |Y=y]>0\}|)$.
 \end{definition}
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
 For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s}$ the class of randomized circuits which output a single bit and have size at most $s$.
@@ -422,7 +422,7 @@ Arbitrary distribution & $\Hfuzz(W) - \log (1/\delta) - \log \log \mathcal{M}- O
 \bnote{the table should move.}
 %We begin with the left column of Table~\ref{tab:upper bounds} and provide constructions of sketches~(which generalize to fuzzy extractors).  We then show that building distribution-agnostic secure sketches and fuzzy extractors is significantly harder.
 
-\section{Distribution-Dependent Sketches}
+\section{Distribution-Aware  Sketches}
 In this section, we consider show it is possible to build distribution-aware fuzzy extractors and secure sketches whenever $\Hfuzz(W)= \omega(\log n)$.
 We consider increasingly complex types of distributions and end with an arbitrary distribution over a metric space.  We construct secure sketches but our constructions can be transformed to fuzzy extractors using \lemref{lem:fuzzy ext construction}.  In \secref{sec:dist oblivious} we consider distribution-oblivious algorithms.  
 
@@ -693,28 +693,28 @@ Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for 
 In the previous section, we saw that if a secure sketch is secure for a family of sources, for every distribution over those sources there is a secure sketch.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.  
 
 \begin{theorem}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch with error $\delta \le 1/2$ for $\tilde{m} =\omega(1)$.  %Furthermore, consider $V$ as the uniform distribution over $\mathcal{V}$.  There is no secure sketch for $\mathcal{
-\bnote{what is $t$?}\bnote{finish proof}
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch with error $\delta < 1/4$ for $\tilde{m} =\omega(1)$ for $t\ge 4$.  \bnote{finish proof}
 \end{theorem}
 
 \begin{proof}
-\bnote{need to rearrange this proof.}
 It will be convenient to think of a single distribution where the outcome $w$ is a two step process of first sampling $W\leftarrow \mathcal{W}$ and then sampling $w\leftarrow W$.  The adversary sees the information $W$, but the system designer does not.  We can think of the fuzzy extractor working for a distribution $V$ and the adversary receiving some side information $Z$~(which distribution was sampled).  
 
 We show that there exists distribution $V$ such that for any secure sketch $\Hav(V | \sketch(V), Z)$ is small.  We begin by describing our family $\mathcal{V}$.  $\mathcal{V}$ consists of the set of affine functions from one dimension to $\ell$ dimensions.  % That is, we project a single point in the field to an arbitrary element in the metric space.
 %In addition, the adversary learns the particular source that is being sketched while the system designer does not.  To simplify notation, we denote the source from the system designers point of view as $V$ and the adversary's additional information about the distribution as $Z$.  We will show a distribution $V$ that does not admit a secure sketch, and thus for any secure sketch construction is insecure for at least one element of the family.
 Let $\mathbb{F}$ be some field of size $q =\omega(\poly(n))$.  
 
-Let $\mathcal{V}$ be family of distributions of the form $W = w_1,..., w_\ell$ where $w_1$ is uniform and $w_i = a_i w_1 + b_i$ for $2\le i \le \ell$ and $a_i\neq 0$.  This type of distribution is a line in space $\mathbb{F}^\ell$.  Define $V$ as the uniform distribution over all such $W$.  Fix some $1< t < \ell$.
-It suffices to show the following:
+Let $\mathcal{V}$ be family of distributions of the form $W = w_1,..., w_\ell$ where $w_1$ is uniform and $w_i = a_i w_1 + b_i$ for $2\le i \le \ell$ and $a_i\neq 0$.  This type of distribution is an affine line in space $\mathbb{F}^\ell$.  Define $V$ as the uniform distribution over all such $W$.  Furthermore, the side information $Z = a_2, b_2, ..., a_\ell, b_\ell$. Fix some $4\le t < \ell$.
+We then show the following:
 
 \begin{itemize}
-\item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$.
+\item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$. Alternatively, $\forall z, \Hfuzz(V | Z=z) = \omega(\log n)$.
 \item The distribution $V$ is uniform~(from the sketch designers point of view).  That is $V\overset{d}=U$.
-\item For any secure sketch on $V$, $H_0(V | \sketch(V)) \le n -\log |B_t|$. 
-\item The information $Z$ is a universal hash of $V$ that is independent of $\sketch(V)$. This suffices to show that $\Hav(V| \sketch(V), Z)$ is very small.
+\item For any secure sketch on $V$, $\tilde{H}_0(V | \sketch(V)) \le  (\ell-t+1)\log |\mathbb{F}|$. 
+\item Having seen $v\in V$, there are many possible values for $z_1, z_2$ for the side information $Z$~(and these possible values are equally likely).  Furthermore, the distributions $V|Z=z_1 $ and $V| Z=z_1$ have disjoint support outside of $v$.
+\item For most values of possible $Z$ there are few values possible in the distribution $V | \sketch(V)$.  Thus, $\Hav(V| \sketch(V) , Z)$ is small.
 \end{itemize}
-\begin{proposition} For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
+\begin{proposition} 
+\label{prop:each element good} For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
 Consider some fixed $W\in\mathcal{V}$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W) =\omega(\log n)$.  Recall that $t< \ell$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \ell$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\ell$.
@@ -725,10 +725,9 @@ Consider some fixed $W\in\mathcal{V}$.  The value $w_1$ is uniform in a field of
 \begin{proof}
 Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\ell , b_\ell$.  The value $w_1$ is uniformly random and $w_i$ are uniformly random since $b_2,..., b_\ell$ are uniformly random.
 \end{proof}
-\bnote{will need to define average Hartley entropy}
 \bnote{show version without error first?}
 \begin{proposition}
-Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $H_0(V | \sketch(V)) \le (\ell-t) |\mathbb{F}|n +1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
+Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $\tilde{H}_0(V | \sketch(V)) \le (\ell-t+1)\log |\mathbb{F}|+1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
 \end{proposition}
 \begin{proof}
 We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We will however, not consider these coins in our security analysis.
@@ -743,7 +742,7 @@ By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[p\in A_{ss}]\
 \[
 \{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le n-\log |B_t|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|p$ this is also true.  This makes the support of $V|p$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|p$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|p$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V | p) \le (\ell -t )|\mathbb{F}|$.  Averaging over $p$ one has that $\tilde{H}_0(V|P) \le (\ell -t ) |\mathbb{F}| +1$.
+Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le n-\log |B_t|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|p$ this is also true.  This makes the support of $V|p$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|p$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|p$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V | p) \le (\ell -t )|\mathbb{F}|$.  Averaging over $p$ one has that $\tilde{H}_0(V|P) \le (\ell -t +1) \log|\mathbb{F}| +1$.
 %By the Markov inequality, 
 %\[
 %\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
@@ -761,24 +760,46 @@ Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le n-\log |B_t|$.  N
 %\item This, means that the size of $|G|$ is at most $n -\log |B_t|$.
 %\end{itemize}
 \end{proof}
-We now define the side information $Z = a_2, b_2, ..., a_\ell, b_\ell$.  By described above the view of $\sketch, \rec$ is a uniform distribution $V$.  Thus, the side information $Z$ is independent of $\sketch(V)$.
+We showed that for most values of $\sketch$ many values of $V$ are removed from the support.  We now show that the information contained in $Z$ is enough to nearly determine the actual sketched value.
+
 \begin{lemma}
-$\Hav(V| P , Z) = \Theta(1)$
+$\Hav(V | \sketch(V), Z) \le \Theta(1)$.
 \end{lemma}
 \begin{proof}
-Consider some fixed $p$.
-If $Z$ is universal then $\forall w_1, w_2 \in V|P=p, w_1\neq w_2$\bnote{why should $Z$ be universal for the entire range, I get for each coordinate.}
-\[
-\Pr[Z(w_1) = Z(w_2)] = \frac{1}{|Z|}.
-\]
-Then by the union bound, 
-\[
-\Pr[\exists w_1\neq w_2 \wedge Z(w_1) = Z(w_2)]\le \frac{ 2^{H_0(V|P=p)}}{|Z|}.
-\]
-\bnote{need to average across $P$}
-\bnote{I'm confused about what we mean by $Z$ being universal here.}
-\bnote{working here!}
-\end{proof}
+Recall that $Z$ consists of $2\ell$ coefficients and there are $(|\mathbb{F}|-1)^{\ell-1} |\mathbb{F}|^{\ell-1}$ equally likely values for $Z$.
+ By described above the view of $\sketch, \rec$ is a uniform distribution $V$.  We know show there are many possible values for $Z$.  The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\ell$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
+ \[
+ \forall v, H_0(Z | V=v) =\log \left(\frac{(|\mathbb{F}|-1)^{\ell-1} |\mathbb{F}|^{\ell-1}}{|\mathbb{F}|^\ell}\right) = \log \left( (|\mathbb{F}|-1)^{\ell-1}/|\mathbb{F}|\right).
+ \]
+Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
+
+This means that the $\sketch$ algorithm include points for possible $Z$ values~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.\bnote{prove this}  This means that
+\begin{align*}
+\Hav(V | \sketch(V), Z) &\le \tilde{H}_0(V | \sketch(V) )- \log H_0(Z | V)\\
+&\le (\ell-t+1)\log |\mathbb{F}|+1 - \log (|\mathbb{F}|-1)^{\ell-1}/|\mathbb{F}|\\
+&\le (\ell-t+2)\log |\mathbb{F}| - (\ell-1) \log (|\mathbb{F}|-1)+1\\
+&\le (\ell-t+2)\log |\mathbb{F}| - (\ell-2) \log |\mathbb{F}|+1\\
+&\le \Theta(1)
+\end{align*}
+ Where the last line follows for $t\ge 4$.  The fourth line follows from the third as long as $|\mathbb{F}|????$\bnote{fix this}
+ \end{proof}
+%\begin{lemma}
+%$\Hav(V| P , Z) = \Theta(1)$
+%\end{lemma}
+%\begin{proof}
+%Consider some fixed $p$.
+%If $Z$ is universal then $\forall w_1, w_2 \in V|P=p, w_1\neq w_2$\bnote{why should $Z$ be universal for the entire range, I get for each coordinate.}
+%\[
+%\Pr[Z(w_1) = Z(w_2)] = \frac{1}{|Z|}.
+%\]
+%Then by the union bound, 
+%\[
+%\Pr[\exists w_1\neq w_2 \wedge Z(w_1) = Z(w_2)]\le \frac{ 2^{H_0(V|P=p)}}{|Z|}.
+%\]
+%\bnote{need to average across $P$}
+%\bnote{I'm confused about what we mean by $Z$ being universal here.}
+%\bnote{working here!}
+%\end{proof}
 %
 %\bnote{stopped here}
 \end{proof}
