@@ -263,25 +263,49 @@ Both of these problems have interactive and non-interactive versions.  In this p
  A \emph{fuzzy extractor} is the primitive that accomplishes both information reconciliation and privacy amplification non-interactively; fuzzy extractors are defined information-theoretically in~\cite{DBLP:journals/siamcomp/DodisORS08}.
 
 
-Fuzzy extractors consist of a pair of algorithms: \gen takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$, as long as $w$ comes from a high-quality distribution (traditionally, any distribution with sufficient min-entropy $m$). The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\ell$ strings over some alphabet $\mathcal{Z}$).
+Fuzzy extractors consist of a pair of algorithms: \gen (used once, at ``enrollment'') takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep (used subsequently) takes this helper value $p$ and a close $w'$ to reproduce the original key $r$. 
+The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\ell$ strings over some alphabet $\mathcal{Z}$).
+ The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$. This guarantee holds as long as $w$ comes from a high-quality distribution, which
+traditionally has been defined as \emph{any} distribution with sufficient min-entropy $m$. 
+
+\paragraph{Reusable Fuzzy Extractors}
+An additional desirable security property of fuzzy extractors, introduced by Boyen~\cite{Boyen2004}, is called reusability. This property is necessary if a user enrolls the same or correlated values multiple times. For example, if the source is a biometric reading, the user may have to enroll the same biometric with different organizations (after all, most users have only ten fingers and two irises). Each of them will get a slightly different enrollment reading $w_i$, and will run $\gen(w_i)$ to get a key $r_i$ and a helper value $p_i$. Security for each $r_i$ should hold even when an adversary is given all the values $p_1, \dots, p_q$ (and, in case some organizations turn out to compromised or adversarial, a stronger security notion requires security for $r_i$ even in the presence of $r_j$ for $j\neq i$).
+
 
 \paragraph{Limitations of Known Approaches}
 
-Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess any $w'$ within distance $t$ of $w$, it will be able to easily obtain the true $r$ by running $\rep$.
+Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess any $w'$ within distance $t$ of $w$, then it will be able to easily obtain the true $r$ by running $\rep$.
 %If $t$ is larger, then a single guess for $w'$ may be within distance $t$ of more $w$ values, thus increasing adversarial probability of winning. 
 In fact, if $t$ is high enough that there are $2^m$ points in a ball of radius $t$, then there exists a distribution of $w$ of min-entropy $m$  \emph{contained entirely in a single ball}.  For this distribution, an adversary can run $\rep$ on the center of this ball and always learn the key $r$.
+Thus, if the security guarantee of a given fuzzy extractor holds for \emph{any} source of a given min-entropy $m$ and the correctness guarantees holds for any $t$ errors, then $m$ must   be greater than $\log B_t$, where $B_t$ denotes the number of points in a ball of radius $t$.  If a source fails this condition, we will says that it has \emph{more errors than entropy}.
 
-More generally, let $B_t$ denote the number of points in a ball of radius $t$. For any $m$ and $t$, there is a distribution of min-entropy $m$ such that the adversary can guess a correct $w'$ with probability $1/\lceil( 2^m/B_t) \rceil\approx B_t 2^{-m}$: the distribution consists of the uniform distribution over all points in several non-overlapping balls of radius $t$ (the metric space must be large enough for these balls not to intersect). We thus call $m-\log B_t$ the \emph{minimum usable} entropy, denoted by $\Huse$. The previous paragraph shows that  no fuzzy extractor can handle all distributions of a given min-entropy $m$ if  $\Huse\le 0$.
 
-Prime candidate sources for authentication have $\Huse\le 0$.  As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  Daugman estimates irises contain $249$ bits of entropy~\cite{daugman2004}.  Daugman uses specialized wavelets to derive a $2048$ bit string called an iris code.  Let the outcome of this transform~(on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired false reject rate (how often the correct key is produced).  For a false reject rate of $\le 80\%$, a $t$ of approximately $205$ is required.  We have the following calculation for $\Huse$:
+
+%More generally, for any $m$ and $t$, there is a distribution of min-entropy $m$ such that the adversary can guess a correct $w'$ with probability $1/\lceil( 2^m/B_t) \rceil\approx B_t 2^{-m}$: the distribution consists of the uniform distribution over all points in several non-overlapping balls of radius $t$ (the metric space must be large enough for these balls not to intersect). We thus call $m-\log B_t$ the \emph{minimum usable} entropy, denoted by $\Huse$. The previous paragraph shows that  no fuzzy extractor can handle all distributions of a given min-entropy $m$ if  $\Huse\le 0$.
+
+%Prime candidate sources for authentication have $\Huse\le 0$.  
+Unfortunately, prime candidate sources for authentication have more errors than entropy. 
+As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  Daugman~\cite{daugman2004} designs a transform called IrisCode (using specialized wavelets) to derive a $2048$ bit string from an iris.  Let the outcome of this transform (on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired false reject rate.  Even allowing for a false reject rate of up to $80\%$ (i.e., permitting correctness to fail $80\%$ of the time), a $t$ of approximately $205$ is required. Thus,
 \[
-\Huse = \Hoo(W) - \log |B_t|
-= 249 - \log \sum_{i=0}^{205} {2048 \choose i} \approx -707.
+\log |B_t|
+= \log \sum_{i=0}^{205} {2048 \choose i} \approx 956\,.
 \]
-There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining} to Daugman but it does not affect $\Huse$ dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
+In contrast, $w$ is estimated to have about $249$ bits of entropy~\cite{daugman2004}.
+There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining}, but it does not affect the above comparison dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
-\paragraph{Our Contributions}
-We provide the first constructions of fuzzy extractors that can be used for a large class of distributions with $\Huse\le 0$ over the Hamming metric on $\mathcal{Z}^\ell$ for an alphabet $\mathcal{Z}$. 
+
+The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source.
+
+
+\paragraph{Our Contributions: Handling Sources with More Errors than Entropy}
+We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\ell$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.
+
+Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols. It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
+
+We then switch to computational security to obtain constructions with additional features. Our second construction works for the same class of distributions as the first, but also provides reusability. The reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution.
+We note that such strong reusability was shown to be impossible in information-theoretically secure fuzzy extractors~\cite[Theorem 11]{Boyen2004}.\lnote{really? I can't parse his theorem clearly enough} This construction, however, requires that the fraction of errors is sub constant.
+
+\lnote{stopped here}
 
 \bnote{rewrite this!}
 Our first construction is secure when symbols in $w$
