@@ -466,17 +466,43 @@ There are two primary questions about the reusability of a fuzzy extractor.  The
 However, their negative result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two natural restrictions to the definition of reusability: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.
 
 We limit the adversary to be computationally bounded~(and thus sees only a limited number of reuses).
-We present a non-adaptive definition and note that our results extend to the adaptive definition presented by Boyen~\cite[Definition 7]{Boyen2004}.\bnote{We need to come back to justifying this or provide a proof that our scheme works in the adaptive setting.}
-
-\begin{definition}[Insider Reusable Fuzzy Extractors]
-\label{def:reusable fuzz}
-Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  Let $W_1,..., W_q$ be a joint distribution such that $\forall i, W_i\in\mathcal{W}$.  Let $(R_i, P_i)$ be the distribution formed by running $\gen$ on the distribution $W_i$.  We say that $(\gen, \rep)$ is $q$-reusable if for all $i$
-\begin{align*}
-\delta^{\mathcal{D}_{s}}(&(R_1, P_1), ..., (R_i, P_i),..., (R_q, P_q), \\
-&(R_1, P_1),..., (U_\kappa, P_i),..., (R_q, P_q)) < \epsilon.
-\end{align*}
+%We present a non-adaptive definition and note that our results extend to the adaptive definition presented by Boyen~\cite[Definition 7]{Boyen2004}.\bnote{We need to come back to justifying this or provide a proof that our scheme works in the adaptive setting.}
+%\begin{definition}[Insider Reusable Fuzzy Extractors]
+%\label{def:reusable fuzz}
+%Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  Let $W_1,..., W_q$ be a joint distribution such that $\forall i, W_i\in\mathcal{W}$.  Let $(R_i, P_i)$ be the distribution formed by running $\gen$ on the distribution $W_i$.  We say that $(\gen, \rep)$ is $q$-reusable if for all $i$
+%\begin{align*}
+%\delta^{\mathcal{D}_{s}}(&(R_1, P_1), ..., (R_i, P_i),..., (R_q, P_q), \\
+%&(R_1, P_1),..., (U_\kappa, P_i),..., (R_q, P_q)) < \epsilon.
+%\end{align*}
+%\end{definition}
+Our definition is a modified form of the definition of Boyen~\cite[Definition 7]{Boyen2004}.  We first present the modified definition and then discuss the differences between our definition and that of Boyen.
+\begin{definition}[Outsider Reusable Fuzzy Extractors]
+\label{def:outsider fuzz ext}
+Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $f_2,.., f_q , D$ be a split adversary.  Define the following game~(for each $W_1\in \mathcal{W}$ and for all $i=1,..., q$):
+\begin{itemize}
+\item[Sampling] The challenger samples $w_1\leftarrow W_1$.
+\item[Perturbation] For $i=2,..., q$: the challenger computes $(r_i, p_i)\leftarrow \gen(w_i)$.  Set $w_{i+1} = f_i(w_1, p_1,..., p_i)$.% The output $p_i$ is provided to $\mathcal{A}$, who selects $\delta_i:\mathcal{M}\rightarrow \mathcal{M}$.  The challenger sets $w_{i+1} = \delta_i(w_1)$.
+\item[Distinguishing] The advantage of $D$ is
+\[
+\epsilon_{sec}\overset{def}= \Pr[D(r_1,..., r_{i-1}, r_i, r_{i+1},..., r_q, p_1,..., p_q)=1] - \Pr[D(r_1,..., r_{i-1}, u, r_{i+1},..., r_q, p_1,..., p_q)=1].
+\]
+where $u$ is a uniformly random string.
+\end{itemize}
+Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  We say that $(\gen, \rep)$ is $(q, s_{sec}, \epsilon_{sec}, f_2,..., f_q)$-reusable if for all $D$ of size at most $s_{sec}$ they win the game with advantage at most $\epsilon_{sec}$.
 \end{definition}
 
+\paragraph{Adapting the definition of Boyen to the computational setting:} 
+The definition of Boyen considers a single adversary.  We split the adversary into two parts, one of which is information-theoretic and another that is computationally bounded.  The functions $f_2,..., f_q$ can be thought of as a single adversary that sees all prior state.  However, to provide meaningful security in the computational setting, we cannot have communication between these adversaries.\footnote{An alternative would be to require the entire adversary to be computationally bounded.  Our construction satisfies this alternative adaption as well.}  
+
+Because these two adversaries do not communicate we strengthen the definition by allowing the perturbation adversary~($f_i$) to see the original sample $w_1$.  This was not allowed in the definition of Boyen as it would make security impossible.  
+
+Finally, we allow the distinguishing adversary to see other keys.  This is strictly stronger than the definition of Boyen.  However, it is weaker than the notion of insider reusable fuzzy extractors where the adversary sees key generation on arbitrary $p$.  This is a mixture of reusability and robustness~\cite{dkrs2006} of the fuzzy extractor.  Our reusable construction~(\consref{cons:sampling}) is not insider secure.
+
+The definition is parameterized by $f_2,..., f_q$.  This adversary implicitly defines distributions $W_2,..., W_q$~(which depend on $W_1$ and the public values $P_1,... P_i$).  Security seems hopeless if fuzzy extractor is not secure on each of these distributions on their own.  This is the only requirement we make on these functions.  We call these types of functions admissible:
+
+\begin{definition}
+Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  In the reusability game above, we say a set of functions $f_2,..., f_q$ are \emph{admissible} if for all $W_1\in \mathcal{W}$ for all $w_1\in W_1$ and $\forall p_1,..., p_q$ that are the public outputs of $\gen$ the implicit distribution $W_{i,w_1,p_1,..., p_{i-1}} = f_i(w_1,p_1,..., p_{i-1})$ is a member of $\mathcal{W}$.   
+\end{definition}
 
 \subsection{Obfuscation}
 Our constructions will use obfuscation for two types of circuits: point functions and digital lockers. The family of point functions $\mathtt{I}_n = \{I_w\}_{w \in \zo^n}$ defined as follows:
@@ -707,10 +733,11 @@ The reusability of \consref{cons:sampling} follows from the security of the VGB 
 
 \begin{theorem}
 \label{thm:reusability}
-Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, except that $\mathcal{O}$ be an $\ell\times q$-composable VGB obfuscator for digital lockers~(with $\kappa$ bit outputs) with auxiliary inputs.  Then \consref{cons:sampling} is $q$-reusable.
+Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, except that $\mathcal{O}$ be an $\ell\times q$-composable VGB obfuscator for digital lockers~(with $\kappa$ bit outputs) with auxiliary inputs.  For any admissible $f_2,..., f_q$, for all $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $(\gen, \rep)$ is $(q, s_{sec}, \epsilon_{sec}, f_2,..., f_q)$-reusable fuzzy extractor.
 \end{theorem}
 \begin{proof}
-The only modification to the outline presented in \secref{ssec:sec cons sampling} is in \lemref{lem:samp unguess} with the other keys $R_1,..., R_{i-1}, R_{i+1}, ..., R_q$ treated as additional auxiliary input to the adversary/simulator.
+The only modification to the outline presented in \secref{ssec:sec cons sampling} is in \lemref{lem:samp unguess} with the other keys $R_1,..., R_{i-1}, R_{i+1}, ..., R_q$ treated as additional auxiliary input to the adversary/simulator.  The simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations.
+\bnote{almost certainly need to say more here.  expand}
 \end{proof}
 
 \subsection{When is $\Huse\le 0$?}
