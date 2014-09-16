@@ -264,12 +264,12 @@ Both of these problems have interactive and non-interactive versions.  In this p
 
 
 Fuzzy extractors consist of a pair of algorithms: \gen (used once, at ``enrollment'') takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep (used subsequently) takes this helper value $p$ and a close $w'$ to reproduce the original key $r$. 
-The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\ell$ strings over some alphabet $\mathcal{Z}$).
+The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\gamma$ strings over some alphabet $\mathcal{Z}$).
  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$. This guarantee holds as long as $w$ comes from a high-quality distribution, which
 traditionally has been defined as \emph{any} distribution with sufficient min-entropy $m$. 
 
 \paragraph{Reusable Fuzzy Extractors}
-An additional desirable security property of fuzzy extractors, introduced by Boyen~\cite{Boyen2004}, is called reusability. This property is necessary if a user enrolls the same or correlated values multiple times. For example, if the source is a biometric reading, the user may have to enroll the same biometric with different organizations (after all, most users have only ten fingers and two irises). Each of them will get a slightly different enrollment reading $w_i$, and will run $\gen(w_i)$ to get a key $r_i$ and a helper value $p_i$. Security for each $r_i$ should hold even when an adversary is given all the values $p_1, \dots, p_q$ (and, in case some organizations turn out to compromised or adversarial, a stronger security notion requires security for $r_i$ even in the presence of $r_j$ for $j\neq i$).
+An additional desirable security property of fuzzy extractors, introduced by Boyen~\cite{Boyen2004}, is called reusability. This property is necessary if a user enrolls the same or correlated values multiple times. For example, if the source is a biometric reading, the user may have to enroll the same biometric with different organizations (after all, most users have only ten fingers and two irises). \bnote{ewww jokes} Each of them will get a slightly different enrollment reading $w_i$, and will run $\gen(w_i)$ to get a key $r_i$ and a helper value $p_i$. Security for each $r_i$ should hold even when an adversary is given all the values $p_1, \dots, p_q$ (and, in case some organizations turn out to compromised or adversarial, a stronger security notion requires security for $r_i$ even in the presence of $r_j$ for $j\neq i$).
 
 
 \paragraph{Limitations of Known Approaches}
@@ -277,7 +277,7 @@ An additional desirable security property of fuzzy extractors, introduced by Boy
 Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess any $w'$ within distance $t$ of $w$, then it will be able to easily obtain the true $r$ by running $\rep$.
 %If $t$ is larger, then a single guess for $w'$ may be within distance $t$ of more $w$ values, thus increasing adversarial probability of winning. 
 In fact, if $t$ is high enough that there are $2^m$ points in a ball of radius $t$, then there exists a distribution of $w$ of min-entropy $m$  \emph{contained entirely in a single ball}.  For this distribution, an adversary can run $\rep$ on the center of this ball and always learn the key $r$.
-Thus, if the security guarantee of a given fuzzy extractor holds for \emph{any} source of a given min-entropy $m$ and the correctness guarantees holds for any $t$ errors, then $m$ must   be greater than $\log B_t$, where $B_t$ denotes the number of points in a ball of radius $t$.  If a source fails this condition, we will says that it has \emph{more errors than entropy}.
+Thus, if the security guarantee of a given fuzzy extractor holds for \emph{any} source of a given min-entropy $m$ and the correctness guarantees holds for any $t$ errors, then $m$ must   be greater than $\log |B_t|$, where $|B_t|$ denotes the number of points in a ball of radius $t$.  If a source fails this condition, we will says that it has \emph{more errors than entropy}.
 
 
 
@@ -285,7 +285,7 @@ Thus, if the security guarantee of a given fuzzy extractor holds for \emph{any} 
 
 %Prime candidate sources for authentication have $\Huse\le 0$.  
 Unfortunately, prime candidate sources for authentication have more errors than entropy. 
-As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  Daugman~\cite{daugman2004} designs a transform called IrisCode (using specialized wavelets) to derive a $2048$ bit string from an iris.  Let the outcome of this transform (on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired false reject rate.  Even allowing for a false reject rate of up to $80\%$ (i.e., permitting correctness to fail $80\%$ of the time), a $t$ of approximately $205$ is required. Thus,
+As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  Daugman~\cite{daugman2004} designs a transform called IrisCode (using specialized wavelets) to derive a $2048$ bit string from an iris.  Let the outcome of this transform (on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired false reject rate.  Even allowing for a false reject rate of up to $80\%$ (i.e., permitting correctness to fail $80\%$ of the time),\bnote{I don't like saying this twice.  Should either say $20\%$ true accept or correctness around $20\%$} a $t$ of approximately $205$ is required. Thus,
 \[
 \log |B_t|
 = \log \sum_{i=0}^{205} {2048 \choose i} \approx 956\,.
@@ -294,11 +294,11 @@ In contrast, $w$ is estimated to have about $249$ bits of entropy~\cite{daugman2
 There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining}, but it does not affect the above comparison dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
 
-The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source.
+The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source. \bnote{this should be strengthened.  move negative results to there.}
 
 
 \paragraph{Our Contributions}
-We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\ell$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.
+We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.
 
 Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols. It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
 
@@ -343,19 +343,20 @@ Construction & Security & Features & Limitations \\
 %Fuller, Meng, and Reyzin show that replacing secure sketches with a similar computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, they suggest two alternatives: produce a new consistent secret with computational entropy instead of recovering $w$~(our first construction) or combine the information-reconciliation and privacy amplification components~(our second construction).
 
 Most known constructions of fuzzy extractors put sufficient information in $p$ to recover the original $w$ from a nearby $w'$ during $\rep$ (this procedure is called a \emph{secure sketch}), and then apply a randomness extractor to $w$ to get $r$.
-As shown by~\cite{DBLP:journals/siamcomp/DodisORS08}\lnote{specific theorem number} for the information-theoretic case and by \cite[Corollary 3.8, Theorem 3.10]{fuller2013computational} for the computational case, this is unlikely to work for sources with more errors than entropy. Thus, we give up on recovering $w$.
+As shown by~\cite{DBLP:journals/siamcomp/DodisORS08}\lnote{specific theorem number} for the information-theoretic case and by \cite[Corollary 3.8, Theorem 3.10]{fuller2013computational} for the computational case, this is unlikely to work for sources with more errors than entropy. Thus, we give up on recovering $w$. \bnote{I'm not sure I buy this argument.  We have coding bounds, but they don't say that secure sketches won't work.}
 
 Our first construction reduces the alphabet size by hashing each input symbol (which comes from a large alphabet) into a much smaller set, so that the resulting hash value has low entropy deficiency.
 The intuition behind this approach is that it reduces the size of $B_t$ by reducing the alphabet size, but preserves a sufficient portion of the input entropy.  The resulting string no longer has more errors than entropy.
  We then apply any information-theoretic fuzzy extractor to the resulting string
 
-Our second construction, which is only computationally secure, is based on digital lockers~\cite{canetti2008obfuscating}. Digital lockers are obfuscated functions that output a secret value only when given the correct input to ``unlock'' the secret. The main idea of the construction is to pick a random $r$ and then lock it up in a digital locker that is unlocked by a random subset of the symbols of $w$. To tolerate errors in the input, this process is repeated several times, so that at least one digital locker can be unlocked using $w'$. Reusability follows from composability of obfuscation.
+Our second construction, which is only computationally secure, is based on digital lockers~\cite{canetti2008obfuscating}. Digital lockers are obfuscated functions that output a secret value only when given the correct input to ``unlock'' the secret. The main idea of the construction is to pick a random $r$ and then lock it up in a digital locker that is unlocked by a random subset of the symbols of $w$. To tolerate errors in the input, this process is repeated several times, so that at least one digital locker can be unlocked using $w'$. Reusability follows from composable obfuscation.
 
 Finally, our third construction tolerates more errors than the second because it uses digital lockers that are unlocked by single symbols of $w$. Of course, hiding an entire $r$ in every locker then becomes too risky, since we do not assume that every symbol has high individual entropy. Instead, we hide a single bit per locker (this simplified version of a digital locker is basically point obfuscation). To tolerate errors, these bits come from an error correcting code. And to make sure that the adversary who learns some bits doesn't learn anything useful about $r$, we don't encode $r$ in the error-correcting code, but rather extract $r$ (using an information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractor~(\lemref{lem:cond and cext})) from the decoded string.
 
 
 We emphasize that the obfuscation techniques we use are much weaker than general obfuscation, and can be instantiated quite efficiently under appropriate assumptions.
-We need a strong version of point obfuscation/digital lockers that remains secure even when several obfuscations of correlated points are composed. While the standard definition of obfuscation \cite{barak2001possibility} does not imply security under composition, we can base our construction on the relaxed notion \lnote{something is weird --- standard definition is not ok for composition , but a relaxed one is ok?} of \emph{virtual grey-box} obfuscation introduced in~\cite{bitansky2010strong}. For this notion, \cite{bitansky2010strong} construct composable obfuscation of point programs under particular number-theoretic assumptions. Additionally, such obfuscation can be made very efficient under a strong assumption on cryptographic hash functions~\cite{canetti1997towards}.
+We need a strong version of point obfuscation/digital lockers that remains secure even when several obfuscations of correlated points are composed. While the standard definition of obfuscation \cite{barak2001possibility} does not imply security under composition, we can base our construction on the relaxed notion \lnote{something is weird --- standard definition is not ok for composition , but a relaxed one is ok?} \bnote{In neither definition is composition implied by standalone security.  However it is known how to construct composable VGB obfuscation for the class of functions we need.} of \emph{virtual grey-box} obfuscation introduced in~\cite{bitansky2010strong}. For this notion, \cite{bitansky2010strong} construct composable obfuscation of point programs under particular number-theoretic assumptions. 
+Additionally, such obfuscation can be made very efficient under a strong assumption on cryptographic hash functions~\cite{canetti1997towards}.
 
 
 
@@ -388,12 +389,12 @@ The remainder of this paper is organized as follows: we cover notation and backg
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote by $X = X_1,..., X_\ell$  the tuple $(X_1,\dots, X_\ell)$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
+For a random variables $X_i$ over some alphabet $\mathcal{Z}$ we denote by $X = X_1,..., X_\gamma$  the tuple $(X_1,\dots, X_\gamma)$.  For a set of indices $J$, $X_{J}$ is the restriction of $X$ to the indices in $J$.  The set $J^c$ is the complement of $J$.  The {\em min-entropy} of $X$ is $\Hoo(X) = -\log(\max_x \Pr[X=x])$,
 and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) = -\log(\expe_{y\in Y} \max_{x} \Pr[X=x|Y=y])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   For a random variable $W$, let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
 For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s}$ the class of randomized circuits which output a single bit and have size at most $s$.
 
-For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\ell$, defined via $\dis(x,y) = \{i | x_i \neq y_i\}$.  For this metric, $|B_t| = \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  Unless otherwise noted logarithms are base $2$.
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\gamma$, defined via $\dis(x,y) = \{i | x_i \neq y_i\}$.  For this metric, $|B_t| = \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  Unless otherwise noted logarithms are base $2$.
 Usually, we use capitalized letters for random variables and corresponding lowercase letters for their samples.
 
 \subsection{Fuzzy Extractors}
@@ -555,7 +556,7 @@ Let $\sample_{\gamma, \eta}(\cdot)$ be an algorithm that  outputs a random subse
 
 \begin{construction}[Sample-then-Obfuscate]
 \label{cons:sampling}
-Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_j$ is over $\mathcal{Z}$. %and $\gamma = \Omega(n)$.  Let $\ell = \omega(\log(n))$ and $\eta = o(\gamma)$ be integer parameters (we will set them later). Let $C\subset \zo^\ell$ be a $(\neigh_{t'}, \delta_{code})$.
+Let $\mathcal{Z}$ be an alphabet, and let $W = W_1,..., W_\gamma$ be a source where each $W_j$ is over $\mathcal{Z}$. 
 Let $\eta$ be a parameter, and $\mathcal{O}$ be an obfuscator for the family of digital lockers with $\kappa$-bit outputs.  Define $\gen, \rep$ as:
 
 \begin{center}
@@ -615,12 +616,8 @@ t&\leq -\frac{(c-1)}{2} \frac{(\gamma-\eta)\log n}{\eta} = o(\gamma)\\
 \end{align*}
 \end{theorem}
 
-%Before we show \thref{thm:sampling} we present a simplified construction of \consref{cons:sampling}.  This construction essentially ignores the sampling step and asks when obfuscation provides security of the obfuscated values $V_1,..., \ell$.  Our security argument for \consref{cons:sampling} will reduce to this simplified construction.  After presenting this simplified construction we will return to showing \thref{thm:sampling}.
-
-
 \subsection{Security of \consref{cons:sampling}}
 \label{ssec:sec cons sampling}
-%We now return to showing \thref{thm:sampling}.  
 In this section we outline security of \consref{cons:sampling}.  A proof of security appears in\apref{sec:analysis sampling}.  
 With overwhelming probability, at each of the $\ell$ iterations, the sampler will choose enough coordinates of $W$ that have high entropy, making $V_i$ have sufficient entropy.   Once each of the $V_1,..., V_\ell$ have high entropy the obfuscations are unlikely to return a value other than $\perp$ to an adversary.
 % forms a block-unguessable distribution.  Then security essentially follows from the security of \consref{cons:first construction}. %follows very similarly to \lemref{lem:security of cons}~(used to show security of \consref{cons:first construction}).  
@@ -697,22 +694,22 @@ In the previous two sections, we presented constructions that supported restrict
 This construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.  
 
 Before presenting the construction we provide some definitions from error correcting codes.
-We use slightly nonstandard error-correct codes over $\{0,1\}^\ell$, which correct up to $t$ bit flips from $0$ to $1$ but no bit flips from $1$ to $0$ (this is the Hamming analog of the $Z$-channel~\cite{tallini2002capacity}).\footnote{Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
-Codes with $2^{\Theta(\ell)}$ codewords and $t = \Theta(\ell)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
+We use slightly nonstandard error-correct codes over $\{0,1\}^\gamma$, which correct up to $t$ bit flips from $0$ to $1$ but no bit flips from $1$ to $0$ (this is the Hamming analog of the $Z$-channel~\cite{tallini2002capacity}).\footnote{Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
+Codes with $2^{\Theta(\gamma)}$ codewords and $t = \Theta(\gamma)$ over the binary alphabet exist for Hamming errors and suffice for our purposes~(first constructed by Justensen~\cite{justesen1972class}).  These codes also yield a constant error tolerance for $0\rightarrow 1$ bit flips.
 The class of errors we support in our source~($t$ Hamming errors over a large alphabet) and the class of errors for which we need codes~($t$ $0\rightarrow 1$ errors) are different.  
 }
 \begin{definition}
 \label{def:hamming z channel}
-For a point $c\in \zo^\ell$ define $\neigh_t(c) $ as the set of all points where at most $t$ bits $c_i$ are changed from $0$ to $1$.
+For a point $c\in \zo^\gamma$ define $\neigh_t(c) $ as the set of all points where at most $t$ bits $c_i$ are changed from $0$ to $1$.
 \end{definition}
 
 \begin{definition}
-Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\ell$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that $\Pr_{c\in C}[\exists c'\in \neigh_t(c) \text{ s.t. } \decode(c') \neq c] \leq \delta_{code}$.
+Let $\neigh_t(c)$ be as in \defref{def:hamming z channel}.  Then a set $C$~(over $\zo^\gamma$) is a $(\neigh_t, \delta_{code})$-code if there exists an efficient procedure $\decode$ such that $\Pr_{c\in C}[\exists c'\in \neigh_t(c) \text{ s.t. } \decode(c') \neq c] \leq \delta_{code}$.
 \end{definition}
 
 \begin{construction}
 \label{cons:first construction}
-Let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\ell$ be a distribution over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an obfuscator for point functions with points from $\mathcal{Z}$.  Let  $C\subset \zo^\ell$ be an error-correcting code.
+Let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\gamma$ be a distribution over $\mathcal{Z}^\gamma$.  Let $\mathcal{O}$ be an obfuscator for point functions with points from $\mathcal{Z}$.  Let  $C\subset \zo^\gamma$ be an error-correcting code.
 We describe $\gen, \rep$ as follows:
 
 \begin{center}
@@ -720,22 +717,22 @@ We describe $\gen, \rep$ as follows:
 \begin{minipage}{3in}
 \textbf{\gen}
 \begin{enumerate}
-\item \underline{Input}: $w = w_1,..., w_\ell$
+\item \underline{Input}: $w = w_1,..., w_\gamma$
 \item Sample $c\leftarrow C$.
-\item For $j=1,..., \ell$:
+\item For $j=1,..., \gamma$:
 \begin{enumerate}[(i)]
 \item If $c_j = 0$: $p_j = \mathcal{O}(I_{w_j})$.
 \item Else: $r_j \overset{\$}\leftarrow \mathcal{Z}$.
 \subitem Let $p_j = \mathcal{O}(I_{r_j})$.
 \end{enumerate}
-\item Output $(c, p)$, where $p=p_1\dots p_\ell$.
+\item Output $(c, p)$, where $p=p_1\dots p_\gamma$.
 \end{enumerate}
  \end{minipage} &
 \begin{minipage}{3in}
 \textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$
-\item For $j=1,..., \ell$:
+\item For $j=1,..., \gamma$:
 \begin{enumerate}[(i)]
 \item If $p_j(w_j') = 1$: set $c_j' = 0$.
 \item Else: set $c_j' = 1$.
@@ -764,7 +761,7 @@ Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(j, w_j')=
 0 & \text{otherwise}.
 \end{cases}
 \]
-A source $W = W_1| ... |W_\ell$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \ell\}$ of size at least $\ell -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
+A source $W = W_1| ... |W_\gamma$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \gamma\}$ of size at least $\gamma -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
 \[
 \forall j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
@@ -791,8 +788,8 @@ Computational fuzzy conductors can be converted to computational fuzzy extractor
 The following theorem states the construction is a computational fuzzy conductor.  %After proving this theorem we discuss when \consref{cons:first construction} is useful on its own.
 \begin{theorem}
 \label{thm:main thm first cons}
-Let $n$ be a security parameter. Let $\mathcal{Z}\subseteq \zo^{\omega(\log n)}$ be an alphabet.
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions over $\mathcal{Z}^\ell$, for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code over $\mathcal{Z}^\ell$.  Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator for point functions with auxiliary inputs. Then for any $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\ell, \mathcal{W}, \tilde{m}=H_0(C)-\beta, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \ell/|\mathcal{Z}|$.
+Let $n$ be a security parameter. Let $\mathcal{Z}$ be an alphabet where $|\mathcal{Z}| \ge 2^{ \omega(\log(n))}$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions over $\mathcal{Z}^\gamma$, for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code over $\mathcal{Z}^\gamma$.  Let $\mathcal{O}$ be an $\gamma$-composable VGB obfuscator for point functions with auxiliary inputs. Then for any $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}=H_0(C)-\beta, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \gamma/|\mathcal{Z}|$.
 \end{theorem}
 
 \subsection{More errors than entropy?}
@@ -800,17 +797,17 @@ Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessabl
 In this section, we show that \consref{cons:first construction} can support distributions with more errors than entropy.
 We first calculate the size of the Hamming ball.  
 \[
-\log |B_t| = \log \sum_{i=0}^t {\ell \choose i} (|\mathcal{Z}|-1)^i> \log {\ell \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\ell\choose t}
+\log |B_t| = \log \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i> \log {\gamma \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\gamma\choose t}
 \]
-The simplest type of unguessable block distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \ell\omega(\log n)$.  This yields:
+The simplest type of unguessable block distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \gamma\omega(\log n)$.  This yields:
 \[
-\text{\# errors} - \text{entropy} = \log |B_t| -  \Hoo(W)  <\left( \Theta(t\log |\mathcal{Z}|) + \log {\ell \choose t}\right) -  \ell \omega(\log n) .
+\text{\# errors} - \text{entropy} = \log |B_t| -  \Hoo(W)  <\left( \Theta(t\log |\mathcal{Z}|) + \log {\gamma \choose t}\right) -  \gamma \omega(\log n) .
 \]
-When $t =\Theta(\ell)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$, then the construction supports more errors than entropy. Furthermore, the output entropy is $H_0(C) -\beta$~(if $C$ is a constant rate code, this is $\Theta(\ell)$).
+When $t =\Theta(\gamma)$ and the entropy of each block is $o(\log |\mathcal{Z}|)$, then the construction supports more errors than entropy. Furthermore, the output entropy is $H_0(C) -\beta$~(if $C$ is a constant rate code, this is $\Theta(\gamma)$).
 
 \paragraph{Improvements}  If most codewords have Hamming weight close to $1/2$, we can decrease the error tolerance needed from the code from $t$ to  about $t/2$, because roughly half of the mismatches between $w$ and $w'$ occur where $c_j =1$. 
 
-If $\ell$ is not long enough to get a sufficiently long output, the construction can be run multiple times with the same input and independent randomness. 
+If $\gamma$ is not long enough to get a sufficiently long output, the construction can be run multiple times with the same input and independent randomness. 
 
 
 \bibliographystyle{alpha}
@@ -823,8 +820,8 @@ If $\ell$ is not long enough to get a sufficiently long output, the construction
 \label{sec:further defs}
 A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average case:
 \begin{definition}
-A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon, s)$-average-case computational extractor} if for all pairs
-of random variables $X, Y$ (with $X$ over $\zo^\ell$) such that
+A function $\cext: \zo^\gamma \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon, s)$-average-case computational extractor} if for all pairs
+of random variables $X, Y$ (with $X$ over $\zo^\gamma$) such that
 $\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s}}((\cext(X; U_d), U_d, Y), U_\kappa\times
 U_d \times Y) \le \epsilon$.
 \end{definition}
@@ -833,7 +830,7 @@ Combining a computational fuzzy conductor and a computational extractor yields a
 
 \begin{lemma}
 \label{lem:cond and cext}
-Let $(\gen'$, $\rep')$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\ell$.  Let $\cext:\zo^\ell\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, \epsilon_{ext}, s_{ext})$-average case computational extractor.  Define $(\gen, \rep)$ as:
+Let $(\gen'$, $\rep')$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-computational fuzzy conductor that is $(\epsilon_{cond}, s_{cond})$-hard with error $\delta$ and outputs in $\zo^\gamma$.  Let $\cext:\zo^\gamma\times \zo^d\rightarrow \zo^\kappa$ be a $(\tilde{m}, \epsilon_{ext}, s_{ext})$-average case computational extractor.  Define $(\gen, \rep)$ as:
 \begin{itemize}
 \item $\gen(w; seed)$ (where $seed\in \zo^d$): run $(r', p')= \gen'(w)$ and output $r = \cext(r'; seed)$, $p = (p', seed)$. 
 \item $\rep(w', (p', seed)):$ run $r' = \rep'(w'; p')$ and output $r = \cext(r'; seed)$.
@@ -888,7 +885,7 @@ We require that the obfuscation is composable and secure with respect to auxilia
 where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
 \end{enumerate}
 \end{definition}
-For notational convenience, when we use point function obfuscation, we denote the oracle provided to the simulator as $I_w(\cdot, \cdot)$ where $w = w_1,..., w_\ell$ is the vector of obfuscated points.  When we use digital lockers we denote the oracle provided to the simulator as $I_{w, r}(\cdot, \cdot)$ where $w = w_1,..., w_\ell$ is the vector of obfuscated points and $r$ is the hidden value~(we will hide the same value in each obfuscation).
+For notational convenience, when we use point function obfuscation, we denote the oracle provided to the simulator as $I_w(\cdot, \cdot)$ where $w = w_1,..., w_\gamma$ is the vector of obfuscated points.  When we use digital lockers we denote the oracle provided to the simulator as $I_{v, r}(\cdot, \cdot)$ where $v = v_1,..., v_\ell$ is the vector of obfuscated points and $r$ is the hidden value~(we will hide the same value in each obfuscation).
 
 %\consref{cons:sampling} is the fuzzy extractor that allows for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  %Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
 \section{Characterizing unguessable block distributions}
@@ -903,7 +900,7 @@ We begin with the case of independent blocks.
 
 \begin{claim}
 \label{cl:independent high ent}
-Let $W = W_1,  ... , W_\ell$ be a source in which all blocks $W_j$  are mutually independent.  Let $\alpha$ be a parameter.  Let $J\subset \{1,..., \ell\}$ be a set of indices such that for all $j\in J$, $\Hoo(W_j ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \ell - |J|)$-unguessable block distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \ell - |J|)$-unguessable block distribution.
+Let $W = W_1,  ... , W_\gamma$ be a source in which all blocks $W_j$  are mutually independent.  Let $\alpha$ be a parameter.  Let $J\subset \{1,..., \gamma\}$ be a set of indices such that for all $j\in J$, $\Hoo(W_j ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \gamma - |J|)$-unguessable block distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \gamma - |J|)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
 It suffices to show that for all $j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
@@ -920,7 +917,7 @@ However, \defref{def:block guessable} captures more distributions.  We now consi
 
 \begin{claim}
 \label{cl:each block from single seed}
-Let $f:\zo^e \rightarrow \mathcal{Z}^\ell$ be a function.  Furthermore, let $f_j$ denote the restriction of $f$'s output to its $j$th coordinate.  If for all $j$, $f_j$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
+Let $f:\zo^e \rightarrow \mathcal{Z}^\gamma$ be a function.  Furthermore, let $f_j$ denote the restriction of $f$'s output to its $j$th coordinate.  If for all $j$, $f_j$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
 \end{claim}
 \begin{proof}
 Since $f$ is injective on each block, $\Hav(W_j | View(S^{I_{W}(\cdot, \cdot)})) = \Hav(U_e | View(S^{I_{W}(\cdot, \cdot)}))$.  Consider a query $q_k$ on block $j$.  There are two possibilities: either $q_k$ is not in the image of $f_j$,  or $q_k$ can be considered a query on the preimage $f_j^{-1}(q_k)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the
@@ -933,7 +930,7 @@ We can prove a slightly weaker claim when the correlation between the coordinate
 
 \begin{claim}
 \label{cl:all blocks entropy}
-Let $W = W_1,..., W_\ell$ be a source.  Suppose that for all $j$, $\Hoo(W_j)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is super-logarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
+Let $W = W_1,..., W_\gamma$ be a source.  Suppose that for all $j$, $\Hoo(W_j)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is super-logarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
 \end{claim}
 
 \begin{proof}
@@ -971,27 +968,27 @@ Thus, using $k=q+1$ in~\eqref{eq:cond-entropy},
 Claims~\ref{cl:each block from single seed} and~\ref{cl:all blocks entropy} rest on there being no easy ``entry'' point to the distribution.  This is not always the case.  Indeed it is possible for some blocks to have very high entropy but lose all of it after equality queries.
 
 \begin{claim}
-Let $p = (\poly(n))$ and let $f_1,..., f_{\ell}$ be injective functions where $f_j:\zo^{j\times \log p}\rightarrow \zo^n$.\footnote{Here we assume that $n\ge \ell \times \log p$, that is the source has a small number of blocks.}  Then define the distribution $W_1 = f_1(U_{1,...,\ell}), W_2 = f_2(U_{1,..., 2\ell}),...., W_\ell = f_\ell(U)$.  There is an adversary making $p\times \ell = \poly(n)$ queries such that $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
+Let $p = (\poly(n))$ and let $f_1,..., f_{\gamma}$ be injective functions where $f_j:\zo^{j\times \log p}\rightarrow \zo^n$.\footnote{Here we assume that $n\ge \gamma \times \log p$, that is the source has a small number of blocks.}  Then define the distribution $W_1 = f_1(U_{1,...,\gamma}), W_2 = f_2(U_{1,..., 2\gamma}),...., W_\gamma = f_\gamma(U)$.  There is an adversary making $p\times \gamma = \poly(n)$ queries such that $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
 \end{claim}
 \begin{proof}
-Let $x$ be the true value for $U_{p\times \ell}$.
-We present an adversary $S$ that completely determines $x$.  $S$ computes $y_1^1 = f_1(x_1^1),..., y_1^p = f(x_1^p)$.  Then $S$ queries on $(1, y_1),..., (1, y_p)$, exactly one answer returns $1$.  Let this value be $y_1^*$ and its preimage $x_1^*$.  Then $S$ computes $y_2^1 = f_2(x_1^*,x_2^1), ..., y_2^p= f_2(x_1^*, x_2^p)$ and queries $y_2^1,..., y_2^p$.  Again, exactly one of these queries returns $1$.  This process is repeated until all of $x$ is recovered~(and thus $w$).  %The total space complexity of this algorithm can be reduced to a single query~(by computing $y$ as necessary) as its total time is $O(p\times \ell)$.  Once $x$ has been recovered then $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
+Let $x$ be the true value for $U_{p\times \gamma}$.
+We present an adversary $S$ that completely determines $x$.  $S$ computes $y_1^1 = f_1(x_1^1),..., y_1^p = f(x_1^p)$.  Then $S$ queries on $(1, y_1),..., (1, y_p)$, exactly one answer returns $1$.  Let this value be $y_1^*$ and its preimage $x_1^*$.  Then $S$ computes $y_2^1 = f_2(x_1^*,x_2^1), ..., y_2^p= f_2(x_1^*, x_2^p)$ and queries $y_2^1,..., y_2^p$.  Again, exactly one of these queries returns $1$.  This process is repeated until all of $x$ is recovered~(and thus $w$).  %The total space complexity of this algorithm can be reduced to a single query~(by computing $y$ as necessary) as its total time is $O(p\times \gamma)$.  Once $x$ has been recovered then $\Hav(W | View(S^{I_W(\cdot, \cdot)})) = 0$.
 \end{proof}
 
 The previous example relies on an adversaries ability to determine a block from the previous blocks.  We formalize this notion next.  We define the entropy jump of a block source as the remaining entropy when other blocks are known:
 
 \begin{definition}
-Let $W = W_1,..., W_\ell$ be a source under ordering $i_1,..., i_\ell$.  The \emph{jump} of a block $i_j$ is $\mathtt{Jump}(i_j) = \max_{w_{i_1},..., w_{i_{j-1}}} H_0 (W_{i_j} | W_{i_1} = w_{i_1} ,..., W_{i_{j-1}} = w_{i_{j-1}})$.
+Let $W = W_1,..., W_\gamma$ be a source under ordering $i_1,..., i_\gamma$.  The \emph{jump} of a block $i_j$ is $\mathtt{Jump}(i_j) = \max_{w_{i_1},..., w_{i_{j-1}}} H_0 (W_{i_j} | W_{i_1} = w_{i_1} ,..., W_{i_{j-1}} = w_{i_{j-1}})$.
 \end{definition}
 
 If an adversary can learn blocks in succession they can eventually recover the entire secret.  In order for a distribution to be block unguessable the adversary must get ``stuck'' early enough in their recovery process.  This translates to having a super-logarithmic jump early enough.
 
 \begin{claim}
-Let $W$ be a distribution and let $q$ be a parameter, if there exists an ordering $i_1,..., i_\ell$ such that for all $j\le \ell-\beta +1$, $\mathtt{Jump}(i_j) = \log q /(\ell-\beta+1)$, then $W$ is not $(q, 0, \beta)$-unguessable block distribution.
+Let $W$ be a distribution and let $q$ be a parameter, if there exists an ordering $i_1,..., i_\gamma$ such that for all $j\le \gamma-\beta +1$, $\mathtt{Jump}(i_j) = \log q /(\gamma-\beta+1)$, then $W$ is not $(q, 0, \beta)$-unguessable block distribution.
 \end{claim}
 
 \begin{proof}
-For convenience relabel the ordering that violates the condition as $1,..., \ell$.  We describe an unbounded adversary that determines $W_1,..., W_{\ell-\beta+1}$.  As before $S$ queries the $q /\ell$ possible values for $W_1$ and determines $W_1$.  Then $S$ queries the (at most)~$q/(\ell-\beta+1)$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\ell-\beta+1}$ is learned.  
+For convenience relabel the ordering that violates the condition as $1,..., \gamma$.  We describe an unbounded adversary that determines $W_1,..., W_{\gamma-\beta+1}$.  As before $S$ queries the $q /\gamma$ possible values for $W_1$ and determines $W_1$.  Then $S$ queries the (at most)~$q/(\gamma-\beta+1)$ possible values for $W_2 | W_1$.  This process is repeated until $W_{\gamma-\beta+1}$ is learned.  
 \end{proof}
 
 Presenting a sufficient condition for security is more difficult as $S$ may interleave queries to different blocks.  It seems like the optimum strategy is to focus on a single block at a time but it is unclear how to formalize this intuition.
@@ -1053,15 +1050,6 @@ Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works},  and all the
 \end{corollary}
 \item \lemref{lem:samp unguess}: An adversary is unlikely to receive any information about the key for a block unguessable distribution.
 \end{itemize}
-%We now return to showing \thref{thm:sampling}.  
-%In order to show security \consref{cons:sampling}, we
-%show that with overwhelming probability, at each of the $\ell$ iterations, the sampler will choose enough coordinates of $W$ that have high entropy, making $V_i$ have sufficient entropy.   We can then argue that $V_1,..., V_\ell$ forms a block-unguessable distribution.  Then security essentially follows from the security of \consref{cons:first construction}. %follows very similarly to \lemref{lem:security of cons}~(used to show security of \consref{cons:first construction}).  
-%Essentially, the argument is that an adversary will never be able to open a digital locker and thus they learn no information about the key.  %By the same argument of Then \consref{cons:sampling} is just \consref{cons:first construction} applied to $V_1,.., V_\ell$, and security follows by \lemref{lem:security of cons}.  
-%We begin by showing that each $V_i$ is statistically close to a high entropy distribution~(proof in \apref{sec:proof of sampling lemma}).   Let $\Lambda$ represent the random variable of all the coins used by $\sample$ and $\lambda=\lambda_1 \dots \lambda_\ell$
-%be some particular outcome.
-%
-%Intuitive once all $V_i$ all simultaneously have good entropy, then the obfuscations will never be unlocked.
-%%In ~\clref{cl:all blocks entropy} we show that any distribution where each individual block has super-logarithmic min-entropy forms a unguessable block distribution.  
 
 \noindent
 We now present the proofs of Lemmas \ref{lem:sampling works} and \ref{lem:samp unguess}.
@@ -1198,7 +1186,7 @@ Security of \consref{cons:first construction} is similar to the security of \con
 
 \begin{lemma}
 \label{lem:security of cons}
-Let all variables be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}( C | P ) \geq H_0(C) - \beta$.% for $\epsilon' = 2\epsilon_{obf} + (\ell-\beta)2^{-(\alpha - 1)}$.
+Let all variables be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}( C | P ) \geq H_0(C) - \beta$.
 \end{lemma}
 
 We give a brief outline of the proof here; the proof follows.
@@ -1221,7 +1209,7 @@ The outline for the rest of the proof is as follows:
 \label{app:security of main cons}
 
 \lnote{I need to check this}
-Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq H_0(C)- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\ell - \beta)2^{-(\alpha-1)}$.
+Let $\mathcal{O}$ be a $\gamma$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq H_0(C)- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\gamma - \beta)2^{-(\alpha-1)}$.
 Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < H_0(C)-\beta$.
 By \defref{def:block guessable} there exists a set of indices $J$ such that all blocks within $J$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $J$ are fixed.  Then 
 $\Hav(C' | C_{J^c}) \ge \Hoo(C', C_{J^c}) - H_0(C_{J^c})  = H_0(C) - \beta$ (by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}). 
@@ -1238,21 +1226,21 @@ R_j & C_j = 1.
 \end{cases}\]  By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $q$ queries) such that
 \begin{align}
 \label{eq:dist before}
-|\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|})] |\leq \epsilon_{sec}/3.
+|\expe [D(P_1,..., P_\gamma, C)] - \expe [S^{I_X(\cdot, \cdot)}(C, 1^{\gamma \log |Z|})] |\leq \epsilon_{sec}/3.
 \end{align}
 We now prove $S$ cannot distinguish between $C$ and $C'$.
 \begin{lemma}
 \label{lem:sim cannot distinguish}
-$\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})) \le (\ell-\beta) 2^{-(\alpha+1)}$.
+$\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\gamma \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\gamma \log |Z|})) \le (\gamma-\beta) 2^{-(\alpha+1)}$.
 \end{lemma}
 
 \begin{proof}
-\noindent It suffices to show that for any two codewords that agree on $J^c$, the statistical distance is at most $(\ell-\beta)2^{-(\alpha+1)}$.
+\noindent It suffices to show that for any two codewords that agree on $J^c$, the statistical distance is at most $(\gamma-\beta)2^{-(\alpha+1)}$.
 \begin{lemma}
 \label{lem:codewords in I close}
 Let $c^*$ be true value encoded in $X$ and let $c'$ a codeword in $C'$.  Then,
 \[
-\Delta( S^{I_X(\cdot, \cdot)}(c^*, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(c', 1^{\ell \log |Z|})) \le ( \ell -\beta) 2^{-(\alpha+1)}.
+\Delta( S^{I_X(\cdot, \cdot)}(c^*, 1^{\gamma \log |Z|}), S^{I_X(\cdot, \cdot)}(c', 1^{\gamma \log |Z|})) \le ( \gamma -\beta) 2^{-(\alpha+1)}.
 \]
 \end{lemma}
 \begin{proof}
@@ -1269,7 +1257,7 @@ If $W$ is a $(q, \alpha, \beta)$-block unguessable distribution over $\mathcal{Z
 \end{claim}
 \begin{proof}
 \bnote{Leo I changed some of this under you.  It wasn't clear or probably right as written.}
-Let $W$ be a $(q, \alpha, \beta)$-block unguessable distribution.  Let $J\subset\{1,..., \ell\}$ the set of good indices.
+Let $W$ be a $(q, \alpha, \beta)$-block unguessable distribution.  Let $J\subset\{1,..., \gamma\}$ the set of good indices.
 It suffices to show that there exists an $S$ making $q$ queries such that for some $j\in J, \Hav(W_j | S^{I_{W}(\cdot, \cdot)})\le \log |\mathcal{Z}| - \log q$.  Let $j\in J$ be some arbitrary element of $J$ and denote by $w_{j,1}, ..., w_{j,q}$ the $q$ most likely outcomes of $W_j$~(breaking ties arbitrarily).  Then $\sum_{i=1}^q \Pr[W_j = w_{j,i}]\geq q/|\mathcal{Z}|$.  Suppose not, this means that there is some $w_{j,i}$ with probability $\Pr[W_j = w_{j,i}] < 1/|\mathcal{Z}|$.  Since there are $\mathcal{Z} - q $ remaining possible values of $W_j$ for their total probability to be at least $1-q/|\mathcal{Z}|$ at least of these values has probability at least $1/\mathcal{Z}$.  This contradicts the statement $w_{j,1},..., w_{j,q}$ are the most likely values.  Consider $S$ that queries its oracle on $(j, w_{j,1}),.., (j, w_{j,q})$.  Denote by $Bad$ the random variable when $W_j\in \{w_{j,1},.., w_{j,q}\}$  After these queries the remaining min-entropy is at most:
 \begin{align*}
 \Hav(W_j | S^{J_W(\cdot, \cdot)}) &=  -\log \left(\Pr[Bad=1]\times 1+ \Pr[Bad=0]\times \max_{w}\Pr[W_j = w| Bad =0]\right)\\
@@ -1283,22 +1271,22 @@ Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
 \begin{align*}
  \Pr[\text{non zero response location }j \wedge c_j=0] &>2^{-\alpha+1} - 2^{-(\log |\mathcal{Z}|-\log q)}=  2^{-\alpha}
  \end{align*}
- When there is a $1$ response and $c_j=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $j\in J$ the total probability of a $1$ in $J$ is at most $(\ell-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\ell- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}.
+ When there is a $1$ response and $c_j=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the block unguessability of $W$~(\defref{def:block guessable}).  By the union bound over the indices $j\in J$ the total probability of a $1$ in $J$ is at most $(\gamma-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\gamma- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}.
 \end{proof}
-By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})) < (\ell -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
+By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\gamma \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\gamma \log |Z|})) < (\gamma -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
 
 \noindent Now by the security of obfuscation we have that
 \begin{align}
 \label{eq:dist after}
-|\expe [D(P_1,..., P_\ell, C') ]- \expe [S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})] |\leq \epsilon_{sec}/3.
+|\expe [D(P_1,..., P_\gamma, C') ]- \expe [S^{I_X(\cdot, \cdot)}(C', 1^{\gamma \log |Z|})] |\leq \epsilon_{sec}/3.
 \end{align}
 Combining Equations~\ref{eq:dist before} and~\ref{eq:dist after} and \lemref{lem:sim cannot distinguish}, we have
 \begin{align*}
-\delta^{D}(( P, C), (P, C'))&\leq |\expe [D(P_1,..., P_\ell, C)] - \expe [S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|})]| \\
-&+|\expe[S^{I_X(\cdot, \cdot)}(C, 1^{\ell \log |Z|})] - \expe[S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})] |\\
-&+|\expe [S^{I_X(\cdot, \cdot)}(C', 1^{\ell \log |Z|})] - \expe [D(P_1,..., P_\ell, C') ]|\\
-&\leq \epsilon_{sec}/3+ (\ell-\beta)2^{-(\alpha-1)}+\epsilon_{sec}/3 \\
+\delta^{D}(( P, C), (P, C'))&\leq |\expe [D(P_1,..., P_\gamma, C)] - \expe [S^{I_X(\cdot, \cdot)}(C, 1^{\gamma \log |Z|})]| \\
+&+|\expe[S^{I_X(\cdot, \cdot)}(C, 1^{\gamma \log |Z|})] - \expe[S^{I_X(\cdot, \cdot)}(C', 1^{\gamma \log |Z|})] |\\
+&+|\expe [S^{I_X(\cdot, \cdot)}(C', 1^{\gamma \log |Z|})] - \expe [D(P_1,..., P_\gamma, C') ]|\\
+&\leq \epsilon_{sec}/3+ (\gamma-\beta)2^{-(\alpha-1)}+\epsilon_{sec}/3 \\
 &\leq 2\epsilon_{sec}/3 + \ngl(n) < \epsilon_{sec}.
 \end{align*}
 This is a contradiction and completes the proof of \lemref{lem:security of cons}.
@@ -1311,14 +1299,14 @@ We begin by showing that the probability of a single $1\rightarrow 0$ bit flip i
 \begin{lemma}
 \label{lem:no 1 to 0 flips}
 Let all variables be as in \thref{thm:main thm first cons}.
-The probability of at least one $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $ \le \ell/|\mathcal{Z}| = \ngl(n)$.
+The probability of at least one $1\rightarrow 0$ bit flip~(an obfuscation of a random block being interpreted as the obfuscation of the point) is $ \le \gamma/|\mathcal{Z}| = \ngl(n)$.
 \end{lemma}
 \begin{proof}
-Consider a coordinate $j$ for which $c_j=1$. Since $w'$ is chosen independently of the points $r_j$, and $r_j$ is uniform, $\Pr[r_j =w_j']  = 1/|\mathcal{Z}|$. The lemma follows by the union bound, since there are at most $\ell$ such coordinates.
+Consider a coordinate $j$ for which $c_j=1$. Since $w'$ is chosen independently of the points $r_j$, and $r_j$ is uniform, $\Pr[r_j =w_j']  = 1/|\mathcal{Z}|$. The lemma follows by the union bound, since there are at most $\gamma$ such coordinates.
 \end{proof}
 
 Since there are most $t$ locations for which $w_j\neq w_j'$ there are at most $t$ $0\rightarrow 1$ bit flips in $c$, which the code will correct with probability $1-\delta_{code}$, because $c$ was chosen uniformly.
-Therefore, \consref{cons:first construction} is correct with error at most $\ell/|\mathcal{Z}|$.
+Therefore, \consref{cons:first construction} is correct with error at most $\gamma/|\mathcal{Z}|$.
 
 
 
