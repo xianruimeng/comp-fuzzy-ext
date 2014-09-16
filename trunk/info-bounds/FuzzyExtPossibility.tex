@@ -743,7 +743,7 @@ By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[p\in A_{ss}]\
 \[
 \{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le n-\log |B_t|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|p$ this is also true.  This makes the support of $V|p$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|p$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|p$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V | p) \le (\ell -t )|\mathbb{F}|$.  Averaging over $p$ one has that $\tilde{H}_0(V|P) \le (\ell -t +1) \log|\mathbb{F}| +1$.
+Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le n-\log |B_t|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|p$ this is also true.  This makes the support of $V|p$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|p$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|p$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V | p) \le (\ell -t+1 )|\mathbb{F}|$.  Averaging over $p$ one has that $\tilde{H}_0(V|P) \le (\ell -t +1) \log|\mathbb{F}| +1$.
 %By the Markov inequality, 
 %\[
 %\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
@@ -776,13 +776,13 @@ Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distribut
 
 This means that the $\sketch$ algorithm include points for possible $Z$ values~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.\bnote{prove this}  This means that
 \begin{align*}
-\Hav(V | \sketch(V), Z) &\le \tilde{H}_0(V | \sketch(V) )- \log H_0(Z | V)\\
+\tilde{H}_0(V | \sketch(V), Z) &\le \tilde{H}_0(V | \sketch(V) )- \log H_0(Z | V)\\
 &\le (\ell-t+1)\log |\mathbb{F}|+1 - \log (|\mathbb{F}|-1)^{\ell-1}/|\mathbb{F}|\\
 &\le (\ell-t+2)\log |\mathbb{F}| - (\ell-1) \log (|\mathbb{F}|-1)+1\\
 &\le (\ell-t+2)\log |\mathbb{F}| - (\ell-2) \log |\mathbb{F}|+1\\
 &\le \Theta(1)
 \end{align*}
- Where the last line follows for $t\ge 4$.  The fourth line follows from the third as long as $|\mathbb{F}|????$\bnote{fix this}
+ Where the last line follows for $t\ge 4$.  The fourth line follows from the third as long as $|\mathbb{F}|????$\bnote{fix this}\bnote{add more to this}
  \end{proof}
  
  \thref{thm:imposs sketch} follows using the change of quantifiers in \corref{cor:no fuzz for dist}.
@@ -820,7 +820,7 @@ This means that the $\sketch$ algorithm include points for possible $Z$ values~(
 %\end{proof}
 
 
-Canetti et al.~\cite[XXXX]{canetti2014key} construct computational fuzzy extractors for this family of distributions~(as long $\mathbb{F}$ is large enough).\bnote{fill in right theorem number}  This result presents a contrast between what is possible for sketches and fuzzy extraction.
+Canetti et al.~\cite{canetti2014key} construct computational fuzzy extractors for this family of distributions when $\mathbb{F}$ is large enough.\bnote{fill in right theorem number}  This result presents a contrast between what is possible for sketches and fuzzy extraction.
 
 %\begin{lemma}
 %There is a family of distributions such that for any secure sketch that works for an adversarial choice of the distribution, there is no residual entropy conditioned on adversary knowledge and the secure sketch.
