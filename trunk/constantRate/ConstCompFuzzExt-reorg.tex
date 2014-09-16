@@ -353,7 +353,7 @@ Obfuscation of point functions provides no security if a point can be guessed; t
 
 \paragraph{Connection to General Obfuscation}
 \bnote{needs to be rewritten}
-We note that fuzzy extractors for the setting where $\Huse\le 0$ can be trivially constructed from a strong form of obfuscation, specifically, virtual black-box obfuscation for the class {\em proximity point programs}, $I_w(x)$ that tests if $x$ is within Hamming distance $t$ of $w$. However, currently we do not know if such obfuscation exists, let alone whether it can be made as efficient as our constructions. Recent works constructed candidate indistinguishability obfuscators \cite{GargGH0SW13,PassTS13} and virtual black-box obfuscators in an idealized model \cite{BrakerskiR13,BarakGKPS13} for all programs. However, these notions of obfuscation do not imply virtual-black-box obfuscation for proximity point programs in the plain model. The work of \cite{BarakBCKPS13} suggests an average-case virtual-black-box obfuscator for the family of {\em evasive} functions that test if a low-degree multi-variant arithmetic circuit evaluates to zero. However, we do not know if these functions include proximity point programs.
+We note that fuzzy extractors for the setting where $\Huse\le 0$ can be trivially constructed from a strong form of obfuscation, specifically, virtual black-box obfuscation for the class {\em proximity point programs}, $I_w(x)$ that tests if $x$ is within Hamming distance $t$ of $w$. However, currently we do not know if such obfuscation exists, let alone whether it can be made as efficient as our constructions. Recent works constructed candidate indistinguishability obfuscators \cite{GargGH0SW13,PassTS13} and virtual black-box obfuscators in an idealized model \cite{brakerski2014virtual,barak2014protecting} for all programs. However, these notions of obfuscation do not imply virtual-black-box obfuscation for proximity point programs in the plain model. The work of \cite{BarakBCKPS13} suggests an average-case virtual-black-box obfuscator for the family of {\em evasive} functions that test if a low-degree multi-variant arithmetic circuit evaluates to zero. However, we do not know if these functions include proximity point programs.
 
 
 
@@ -436,8 +436,6 @@ where $u$ is a uniformly random string.
 Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  We say that $(\gen, \rep)$ is $(q, s_{sec}, \epsilon_{sec}, f_2,..., f_q)$-reusable if for all $D$ of size at most $s_{sec}$ they win the game with advantage at most $\epsilon_{sec}$.
 \end{definition}
 
-\paragraph{Adapting the definition of Boyen to the computational setting:} 
-
 The definition is parameterized by $f_2,..., f_q$.  This adversary implicitly defines distributions $W_2,..., W_q$~(which depend on $W_1$ and the public values $P_1,... P_i$).  Security seems hopeless if fuzzy extractor is not secure on each of these distributions on their own.  This is the only requirement we make on these functions.  We call these types of functions admissible:
 
 \begin{definition}
@@ -462,7 +460,7 @@ In this section we show an information-theoretic fuzzy extractor that supports m
 The construction first condenses entropy from each block of the source and then applies a different fuzzy extractor to the condensed blocks. We'll denote the fuzzy extractor on the smaller alphabet as $(\gen', \rep')$.  A condenser is like a randomness extractor but the output is allowed to be slightly entropy deficient.  Condensers are known with smaller entropy loss than possible for randomness extractors~(e.g.~\cite{dodis2014key}).  
 \begin{definition}
 \label{def:conductor}
-A function $\cond : \mathcal{Z}\times \zo^d\rightarrow \mathcal{Y}$ is a $(m, \tilde{m}, \epsilon)$-average case randomness condenser if whenever $\Hoo(W)\ge m$, then there exists a distribution $Y$ with $\Hoo(Y)\ge \tilde{m}$ and $(\cond(W, seed), seed) \approx_\epsilon (Y, seed)$.
+A function $\cond : \mathcal{Z}\times \zo^d\rightarrow \mathcal{Y}$ is a $(m, \tilde{m}, \epsilon)$-randomness condenser if whenever $\Hoo(W)\ge m$, then there exists a distribution $Y$ with $\Hoo(Y)\ge \tilde{m}$ and $(\cond(W, seed), seed) \approx_\epsilon (Y, seed)$.
 \end{definition}
 
 The main idea of the construction is that errors are ``corrected'' on the large alphabet~(before condensing) while the entropy loss for the error correction is incurred on a smaller alphabet~(after condensing).  
@@ -517,7 +515,7 @@ A distribution $W = W_1,..., W_\gamma$ is an $(\alpha, \beta)$-partial block sou
 \begin{lemma}
 \label{lem:info theory sec}
 %Let $n$ be a security parameter and let $\gamma = \omega(\log n)$.
-Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-partial block sources over $\mathcal{Z}^\gamma$ and let $\cond: \mathcal{Z} \times \zo^d\rightarrow \mathcal{Y}$ be a $(\alpha, \tilde{\alpha}, \epsilon_{cond})$-average case randomness conductor.  Let $(\gen', \rep')$ be $(\mathcal{Y}^\gamma, \tilde{\alpha}(\gamma - \beta), \kappa, t, \epsilon_{fext})$-fuzzy extractor with error $\delta$.  Then $(\gen, \rep)$ is a $(\mathcal{Z}^\gamma, \mathcal{W}, \kappa, t, \gamma\epsilon_{cond}+\epsilon_{fext})$-fuzzy extractor with error $\delta$.
+Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-partial block sources over $\mathcal{Z}^\gamma$ and let $\cond: \mathcal{Z} \times \zo^d\rightarrow \mathcal{Y}$ be a $(\alpha, \tilde{\alpha}, \epsilon_{cond})$-randomness conductor.  Let $(\gen', \rep')$ be $(\mathcal{Y}^\gamma, \tilde{\alpha}(\gamma - \beta), \kappa, t, \epsilon_{fext})$-fuzzy extractor with error $\delta$.\footnote{We actually need $(\gen', \rep')$ to be an average case fuzzy extractor~(see \cite[Definition 4]{DBLP:journals/siamcomp/DodisORS08} and the accompanying discussion).  Most known constructions of fuzzy extractors are average-case fuzzy extractors.  For simplicity we refer to $\gen', \rep'$ as simply a fuzzy extractor.}  Then $(\gen, \rep)$ is a $(\mathcal{Z}^\gamma, \mathcal{W}, \kappa, t, \gamma\epsilon_{cond}+\epsilon_{fext})$-fuzzy extractor with error $\delta$.
 
 \end{lemma}
 
@@ -807,14 +805,13 @@ If $\ell$ is not long enough to get a sufficiently long output, the construction
 \label{sec:further defs}
 A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average case:
 \begin{definition}
-Let $\chi$ be a finite set.
 A function $\cext: \zo^\ell \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon, s)$-average-case computational extractor} if for all pairs
 of random variables $X, Y$ (with $X$ over $\zo^\ell$) such that
 $\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s}}((\cext(X; U_d), U_d, Y), U_\kappa\times
 U_d \times Y) \le \epsilon$.
 \end{definition}
 
-Combining a computational fuzzy conductor and an appropriate computational extractor yields a computational fuzzy extractor:
+Combining a computational fuzzy conductor and a computational extractor yields a computational fuzzy extractor:
 
 \begin{lemma}
 \label{lem:cond and cext}
@@ -988,7 +985,7 @@ Let $W\in \mathcal{W}$.
 It suffices to argue correctness and security.  We first argue correctness.  
 When $w_i = w_i'$, then $\cond(w_i , seed_i) = \cond(w_i', seed_i)$ and thus $v_i = v_i'$.  Thus, for all $w, w'$ where $\dis(w, w')\le t$, then $\dis (v, v')\le t$.  Then by correctness of $(\gen', \rep')$, $\Pr[(r, p)\leftarrow \gen'(v) \wedge r'\leftarrow \rep(v',p) \wedge r' = r]\ge 1-\delta$.  
 
-We now argue security.  Denote by $seed$ the random variable consisting of all $\gamma$ seeds and $V$ the entire string of generated $V_1,..., V_\gamma$.  To show that $R | P, seed \approx_{\gamma \epsilon_{cond} + \epsilon_{text}} U | P, seed$, it suffices to show that $\Hav(V | seed)$ is $\gamma \epsilon_{cond}$ close to a distribution with average min-entropy $\tilde{\alpha}(\gamma - \beta)$.  The lemma then follows by the security of $(\gen', \rep')$.
+We now argue security.  Denote by $seed$ the random variable consisting of all $\gamma$ seeds and $V$ the entire string of generated $V_1,..., V_\gamma$.  To show that $R | P, seed \approx_{\gamma \epsilon_{cond} + \epsilon_{text}} U | P, seed$, it suffices to show that $\Hav(V | seed)$ is $\gamma \epsilon_{cond}$ close to a distribution with average min-entropy $\tilde{\alpha}(\gamma - \beta)$.  The lemma then follows by the security of $(\gen', \rep')$.\footnote{Note, again, that $(\gen', \rep')$ must be an average-case fuzzy extractor.  Most known constructions are average-case and we omit this notation.}
 
 We now argue that there exists a distribution $Y$ where $\Hav(Y | seed)\ge \tilde{\alpha}(\gamma - \beta)$ and $(V, seed_1,..., seed_\gamma)\approx (Y, seed_1,.., seed_\gamma)$.  First note since $W$ is $(\alpha, \beta)$-partial block distribution that
 there exists a set of indices $J$ where $|J| \geq \gamma - \beta$ such that the following holds:
@@ -1099,7 +1096,7 @@ Let $D$ be such a distinguisher of size at most $s_{sec}$.  That is,
 | \expe[D(R, P)] - \expe[D(U, P)] > \epsilon_{sec} = 1/\poly(n).
 \]
 Define the oracle $I_{v_1, ..., v_\ell, r}(\cdot, \cdot)$ as follows:
-\[I_{v_1,..., v_\ell, r}(x, j) =
+\[I_{v_1,..., v_\ell, r}(x, i) =
 \begin{cases}
 r & v_i = x\\
 \perp & \text{otherwise.}
