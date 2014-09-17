@@ -277,7 +277,8 @@ An additional desirable security property of fuzzy extractors, introduced by Boy
 Constructions of fuzzy extractors are limited by the tension between security and correctness guarantees: if we allow for higher error tolerance $t$, then we also need higher starting entropy $m$. The reason for this tension is simple: if an adversary who knows $p$ can guess any $w'$ within distance $t$ of $w$, then it will be able to easily obtain the true $r$ by running $\rep$.
 %If $t$ is larger, then a single guess for $w'$ may be within distance $t$ of more $w$ values, thus increasing adversarial probability of winning. 
 In fact, if $t$ is high enough that there are $2^m$ points in a ball of radius $t$, then there exists a distribution of $w$ of min-entropy $m$  \emph{contained entirely in a single ball}.  For this distribution, an adversary can run $\rep$ on the center of this ball and always learn the key $r$.
-Thus, if the security guarantee of a given fuzzy extractor holds for \emph{any} source of a given min-entropy $m$ and the correctness guarantees holds for any $t$ errors, then $m$ must   be greater than $\log |B_t|$, where $|B_t|$ denotes the number of points in a ball of radius $t$.  If a source fails this condition, we will says that it has \emph{more errors than entropy}.
+Thus, if the security guarantee of a given fuzzy extractor holds for \emph{any} source of a given min-entropy $m$ and the correctness guarantees holds for any $t$ errors, then $m$ must   be greater than $\log |B_t|$, where $|B_t|$ denotes the number of points in a ball of radius $t$.  This condition on the source is necessary regardless of whether the fuzzy extractor is information-theoretic or computational, and extends even to the interactive setting.
+If a source fails this condition, we will says that it has \emph{more errors than entropy}.
 
 
 
@@ -285,16 +286,18 @@ Thus, if the security guarantee of a given fuzzy extractor holds for \emph{any} 
 
 %Prime candidate sources for authentication have $\Huse\le 0$.  
 Unfortunately, prime candidate sources for authentication have more errors than entropy. 
-As an example, the iris is believed to be the best biometric for high security applications~\cite{prabhakar2003biometric}.  Daugman~\cite{daugman2004} designs a transform called IrisCode (using specialized wavelets) to derive a $2048$ bit string from an iris.  Let the outcome of this transform (on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired correctness.  For correctness of around $20\%$, a $t$ of approximately $205$ is required. Thus,
-\[
-\log |B_t|
-= \log \sum_{i=0}^{205} {2048 \choose i} \approx 956\,.
-\]
-In contrast, $w$ is estimated to have about $249$ bits of entropy~\cite{daugman2004}.
-There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining}, but it does not affect the above comparison dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
+For example, the IrisCode~\cite{daugman2004}, which is the state of the art approach to handling what is believed to be the best biometric \cite{prabhakar2003biometric}, produces a source that more errors than entropy~\cite[Section 5]{blanton2009biometric}. Physically inclonable functions suffer from similar problems \lnote{ben please fix}
+
+%As an example, the iris is believed to be the best biometric for high security applications~%\cite{prabhakar2003biometric}.  Daugman~\cite{daugman2004} designs a transform called IrisCode (using specialized wavelets) to derive a $2048$ bit string from an iris.  Let the outcome of this transform (on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired correctness.  For correctness of around $20\%$, a $t$ of approximately $205$ is required. Thus,
+%\[
+%\log |B_t|
+%= \log \sum_{i=0}^{205} {2048 \choose i} \approx 956\,.
+%\]
+%In contrast, $w$ is estimated to have about $249$ bits of entropy~\cite{daugman2004}.
+%There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining}, but it does not affect the above comparison dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
 
-The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source. \bnote{this should be strengthened.  move negative results to there.}
+The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source. \bnote{this should be strengthened.  move negative results to there.} \lnote{waiting for response form Adam}
 
 
 \paragraph{Our Contributions}
@@ -340,14 +343,14 @@ Construction & Security & Features & Limitations \\
 
 
 
-%Fuller, Meng, and Reyzin show that replacing secure sketches with a similar computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.  Instead, they suggest two alternatives: produce a new consistent secret with computational entropy instead of recovering $w$~(our first construction) or combine the information-reconciliation and privacy amplification components~(our second construction).
+%Fuller, Meng, and Reyzin show that replacing secure sketches with a similar computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10].  Instead, they suggest two alternatives: produce a new consistent secret with computational entropy instead of recovering $w$~(our first construction) or combine the information-reconciliation and privacy amplification components~(our second construction).
 
 Most known constructions of fuzzy extractors put sufficient information in $p$ to recover the original $w$ from a nearby $w'$ during $\rep$ (this procedure is called a \emph{secure sketch}), and then apply a randomness extractor to $w$ to get $r$.
-As shown by~\cite{DBLP:journals/siamcomp/DodisORS08}\lnote{specific theorem number} for the information-theoretic case and by \cite[Corollary 3.8, Theorem 3.10]{fuller2013computational} for the computational case, this is unlikely to work for sources with more errors than entropy. Thus, we give up on recovering $w$. \bnote{I'm not sure I buy this argument.  We have coding bounds, but they don't say that secure sketches won't work.}
+Unfortunately, the current techniques for building secure sketches do not work for sources with more errors than entropy, because they lose at least $\log |B_t|$ bits of entropy regardless of the source (this loss is necessary when the source is uniform~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}). Moreover, relaxing the security definition to computational will not improve this approach~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}. Thus, we take a different approach and do not attempt to recover $w$.
 
 Our first construction reduces the alphabet size by hashing each input symbol (which comes from a large alphabet) into a much smaller set, so that the resulting hash value has low entropy deficiency.
 The intuition behind this approach is that it reduces the size of $B_t$ by reducing the alphabet size, but preserves a sufficient portion of the input entropy.  The resulting string no longer has more errors than entropy.
- We then apply any information-theoretic fuzzy extractor to the resulting string
+ We then apply any information-theoretic fuzzy extractor to the resulting string.
 
 Our second construction, which is only computationally secure, is based on digital lockers~\cite{canetti2008obfuscating}. Digital lockers are obfuscated functions that output a secret value only when given the correct input to ``unlock'' the secret. The main idea of the construction is to pick a random $r$ and lock $r$ in a digital locker that is unlocked by a random subset of the symbols of $w$. To tolerate errors in the input, this process is repeated several times, so that at least one digital locker can be unlocked using $w'$. Reusability follows from composable obfuscation.
 
