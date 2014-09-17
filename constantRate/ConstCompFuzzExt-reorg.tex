@@ -235,15 +235,15 @@
 
 
 \begin{abstract}
-Fuzzy extractors convert a noisy source of entropy into a consistent uniformly-distributed key.  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of correctable error patterns. We call what is left after this worst-case loss the \emph{minimum usable entropy}.  Unfortunately, this quantity is negative for some sources that are important in practice. Most known approaches for building fuzzy extractors work in the worst case and cannot be used when the minimum usable entropy is negative.
+Fuzzy extractors convert a noisy source of entropy into a consistent uniformly-distributed key.  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of correctable error patterns. For many practical sources, the error tolerance necessary to achieve reliable key derivation is larger than the entropy of the source.  Unfortunately, it is impossible to provide security for all sources with this property.  Most known approaches for building fuzzy extractors work in the worst case and cannot be used when a source has \emph{more errors than entropy}.  
 
-We construct the first fuzzy extractors that work for a large class of distributions that have negative minimum usable entropy. We present both information-theoretic and computational constructions.In order to avoid the worst-case loss, they necessarily restrict distributions for which they work.  
+In this work, we exploit source structure to construct fuzzy extractors for large classes of sources with more errors than entropy.  Our constructions are for the Hamming metric over symbols of some alphabet $\mathcal{Z}$.  We present both information-theoretic and computational constructions.
 
-Our first construction is information-theoretic and corrects a constant fraction of Hamming errors over a large alphabet.  In this construction each symbol must contribute fresh entropy.  We then use computational techniques to obtain two constructions with additional properties.
+Our first construction is information-theoretic and corrects a constant fraction of Hamming errors over a super-constant size alphabet.  In this construction, each symbol must contribute fresh entropy.  
 
-Our second construction requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub-constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
+Our second construction provides computational security and supports the same type of sources as the first construction.  This construction comes with added feature: reusability.  A reusable fuzzy extractor can be safely reused across multiple noisy readings of the source~(Boyen, CCS 2004).  Previous reusable fuzzy extractors only provide security when the noise between repeated readings comes from a small and unrealistic class. Our construction is secure as long as the fuzzy extractor is secure on each individual reading. Unfortunately, this construction only corrects a sub-constant fraction of errors.  %Computational techniques allow us to show a very sshows that computational assu computationaprovide requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub-constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
 
-Our third construction corrects a constant fraction of Hamming errors over a large alphabet. It requires high individual entropy of a constant fraction of symbols, but permits symbols to be dependent.  
+Our first two constructions require each symbol of the source to contribute fresh entropy.  Our third construction removes this requirement and allows symbols to be dependent.  Unfortunately, this change requires a significantly larger alphabet.
 
 The computational constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
 
@@ -419,20 +419,25 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{definition}
 In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In Constructions~\ref{cons:sampling} and~\ref{cons:first construction} it is crucial that $w'$ is chosen independently of the outcome of \gen.  
 
-Information-theoretic fuzzy extractors are obtained by replacing computational distance by statistical distance.  We do make a second definitional modification.  The standard definition of information-theoretic fuzzy extractors considers $\mathcal{W}$  consisting of all distributions of a given entropy.  As described in the introduction, it is impossible to provide security for all distributions with more errors than entropy.  Thus, in both the computational and information-theoretic settings we consider arbitrary families of distributions.
+Information-theoretic fuzzy extractors are obtained by replacing computational distance by statistical distance.  We do make a second definitional modification.  The standard definition of information-theoretic fuzzy extractors considers $\mathcal{W}$  consisting of all distributions of a given entropy.  As described in the introduction, it is impossible to provide security for all distributions with more errors than entropy.  Thus, in both the computational and information-theoretic settings we consider limited families of distributions.
 
 \subsubsection{Reusable Fuzzy Extractors}
 \label{sec:reusable}
 
-Ideally, a fuzzy extractor allows a user to authenticate to multiple different services/devices.  That is, instead of creating a single pair $(r, p)$ from an initial reading $w$, we read the noisy source multiple times~($w_1,..., w_q$) and produce $(r_1, p_1),..., (r_q, p_q)$.  This problem is known as a reusable fuzzy extractor~\cite{Boyen2004}.  Boyen considers two versions of the problem, first where the adversary sees $p_1,..., p_q$~(outsider security).  Second where the adversary controls some subset of the servers and sees key generation on arbitrary $p$~(insider security).  
-Boyen constructs a outsider reusable cryptographic fuzzy extractor based on the code-offset or the syndrome sketches from~\cite{JW99, DBLP:journals/siamcomp/DodisORS08} instantiated with linear codes. Boyen also transforms this construction in an insider secure construction using random oracles. 
-\paragraph{Previous Negative Results}
+Ideally, a fuzzy extractor allows a user to authenticate to multiple different services/devices.  That is, instead of creating a single pair $(r, p)$ from an initial reading $w$, we read the noisy source multiple times~($w_1,..., w_q$) and produce $(r_1, p_1),..., (r_q, p_q)$.  This problem is known as a reusable fuzzy extractor~\cite{Boyen2004}.  There are two primary parameters of the definition: 1) $q$, the reusability of the fuzzy extractor and 2) what class of correlation is allowed between readings $w_i$ and $w_j$.  
 
-There are two primary questions about the reusability of a fuzzy extractor.  The first is how often it can be reused, the second is what correlation is allowed between $w_1,..., w_q$.  Boyen~\cite{Boyen2004} considers fuzzy extractors that are reusable an unbounded number of times.  Their construction is secure when the correlations between $w_1,.., w_q$ come from a subgroup of permutations used in the construction of the fuzzy extractor.  They then show information-theoretic fuzzy extractors secure with unbounded reuse can be transformed into their construction~\cite[Theorem 11]{Boyen2004}.  This shows that correlation between $w_1,..., w_q$ must be restricted to this limited class.  There is no reason to expect that noise between repeated readings comes from a well-behaved subgroup of permutations.  Their result can be interpreted as saying that reusability is impractical.
+Boyen considers two versions of the problem, first where the adversary sees $p_1,..., p_q$~(outsider security).  Second where the adversary controls some subset of the servers and sees key generation on arbitrary $p$~(insider security).  
+Boyen constructs a outsider reusable cryptographic fuzzy extractor for unbounded $q$ when the correlation between readings is limited to a transitive isometric permutation groups. Boyen transforms this construction to insider security using random oracles. In both constructions, the correlation between  $w_1,..., w_q$ is limited to a transitive isometric permutation group.  Unfortunately, this class of correlation is relatively weak and unrealistic.
+%\paragraph{Previous Negative Results}
 
-However, this result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two  restrictions to avoid this result: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.
+Boyen~\cite{Boyen2004} considers information-theoretic fuzzy extractors with unbounded reusability.  
+However, even for this relatively weak class of correlations, Boyen shows that reusability comes at a real cost~\cite[Theorem 11]{Boyen2004}.  If the correlation between readings contains a set that generates a transitive isometric permutation group, any secure sketch must lose entropy proportional to the number of errors corrected.\footnote{This result strengthens the bounds of~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}, who show this loss is necessary for uniform $W_1$.} This means achieving reusability for sources with more errors than entropy is impossible in this setting.
+%\bnote{old stuff}
+%Their construction is secure when the correlations between $w_1,.., w_q$ come from a subgroup of permutations used in the construction of the fuzzy extractor.  They then show information-theoretic fuzzy extractors secure with unbounded reuse can be transformed into their construction~\cite[Theorem 11]{Boyen2004}.  This shows that correlation between $w_1,..., w_q$ must be restricted to this limited class.  There is no reason to expect that noise between repeated readings comes from a well-behaved subgroup of permutations.  Their result can be interpreted as saying that reusability is impractical.
+%
+%However, this result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two  restrictions to avoid this result: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.
 
-We limit the adversary to be computationally bounded~(and thus sees only a limited number of reuses).
+To overcome this result, we consider computationally bounded adversaries.
 %We present a non-adaptive definition and note that our results extend to the adaptive definition presented by Boyen~\cite[Definition 7]{Boyen2004}.\bnote{We need to come back to justifying this or provide a proof that our scheme works in the adaptive setting.}
 %\begin{definition}[Insider Reusable Fuzzy Extractors]
 %\label{def:reusable fuzz}
@@ -442,7 +447,7 @@ We limit the adversary to be computationally bounded~(and thus sees only a limit
 %&(R_1, P_1),..., (U_\kappa, P_i),..., (R_q, P_q)) < \epsilon.
 %\end{align*}
 %\end{definition}
-Our definition is a modified form of the definition of Boyen~\cite[Definition 7]{Boyen2004}.  We discuss definitional differences in \apref{sec:comparing reusability}.
+We modify the definition of Boyen~\cite[Definition 7]{Boyen2004}.  We discuss the differences in \apref{sec:comparing reusability}.
 
 \begin{definition}[Outsider Reusable Fuzzy Extractors]
 \label{def:outsider fuzz ext}
@@ -752,10 +757,10 @@ We describe $\gen, \rep$ as follows:
 \end{center}
 \end{construction}
 
-\bnote{shorten this discussion?}
-The input $w$ is hidden in two different ways.  In locations where $c_j=1$, the block $w_j$ is information-theoretically unknown.
-In locations where $c_j=0$, it is hard to find $w_j$ given access to the point obfuscation.
-There are two possible reasons for a bit $c_j'$ to be $1$: because the true value was $1$ and because $w_j \neq w_j'$.  However, if a bit $c_j'$ is $0$, this likely means that $w_j=w_j'$ because collisions when $c_j=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
+%\bnote{shorten this discussion?}
+%The input $w$ is hidden in two different ways.  In locations where $c_j=1$, the block $w_j$ is information-theoretically unknown.
+%In locations where $c_j=0$, it is hard to find $w_j$ given access to the point obfuscation.
+%There are two possible reasons for a bit $c_j'$ to be $1$: because the true value was $1$ and because $w_j \neq w_j'$.  However, if a bit $c_j'$ is $0$, this likely means that $w_j=w_j'$ because collisions when $c_j=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
 
 \consref{cons:first construction} is secure if no distinguisher can tell whether it is working with random obfuscations or obfuscations of $W_j$.  By the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function. Therefore, our construction is secure as long as enough blocks are unpredictable even after adaptive queries to equality oracles for individual symbols. This restriction on the distribution is captured in the following definition.
 
@@ -821,7 +826,7 @@ If $\gamma$ is not long enough to get a sufficiently long output, the constructi
 
 \appendix
 
-\section{Further Definitions}
+\section{Definitions}
 \subsection{Computational Fuzzy Conductors}
 \label{sec:further defs}
 A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average case:
@@ -865,7 +870,7 @@ Then define $D$ as follows.  On input $(y, p')$ sample $seed\leftarrow U_d$, com
 Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.  This is a contradiction.
 \end{proof}
 
-\subsection{Adapting Reusability to the Computational Setting}
+\subsection{Defining Reusability in the Computational Setting}
 \label{sec:comparing reusability}
 
 The definition of Boyen considers a single adversary.  We split the adversary into two parts, one of which is information-theoretic and another that is computationally bounded.  The functions $f_2,..., f_q$ can be thought of as a single adversary that sees all prior state.  However, to provide meaningful security in the computational setting, we cannot have communication between these adversaries.\footnote{An alternative would be to require the entire adversary to be computationally bounded.  Our construction satisfies this alternative adaption as well.}  
