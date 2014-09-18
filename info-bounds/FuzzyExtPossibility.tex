@@ -710,7 +710,7 @@ We then show the following:
 \begin{itemize}
 \item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$. Alternatively, $\forall z, \Hfuzz(V | Z=z) = \omega(\log n)$.
 \item The distribution $V$ is uniform~(from the sketch designers point of view).  That is $V\overset{d}=U$.
-\item For any secure sketch on $V$, $\tilde{H}_0(V | \sketch(V)) \le  (\ell-t+1)\log |\mathbb{F}|$. 
+\item For any secure sketch on $V$, $\tilde{H}_0(V | \sketch(V)) \le  (\ell-t+1)\log |\mathbb{F}|+1$. 
 \item Having seen $v\in V$, there are many possible values for $z_1, z_2$ for the side information $Z$~(and these possible values are equally likely).  Furthermore, the distributions $V|Z=z_1 $ and $V| Z=z_1$ have disjoint support outside of $v$.
 \item For most values of possible $Z$ there are few values possible in the distribution $V | \sketch(V)$.  Thus, $\Hav(V| \sketch(V) , Z)$ is small.
 \end{itemize}
@@ -726,10 +726,9 @@ Consider some fixed $W\in\mathcal{V}$.  The value $w_1$ is uniform in a field of
 \begin{proof}
 Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\ell , b_\ell$.  The value $w_1$ is uniformly random and $w_i$ are uniformly random since $b_2,..., b_\ell$ are uniformly random.
 \end{proof}
-\bnote{show version without error first?}
-\begin{proposition}
+\begin{lemma}
 Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $\tilde{H}_0(V | \sketch(V)) \le (\ell-t+1)\log |\mathbb{F}|+1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
-\end{proposition}
+\end{lemma}
 \begin{proof}
 We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We will however, not consider these coins in our security analysis.
 
@@ -774,15 +773,31 @@ Recall that $Z$ consists of $2\ell$ coefficients and there are $(|\mathbb{F}|-1)
  \]
 Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
 
-This means that the $\sketch$ algorithm include points for possible $Z$ values~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.\bnote{prove this}  This means that
+This means that the $\sketch$ algorithm include points for possible $Z$ values~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.
+
+We show this across different sketch values.  Consider some fixed sketch value $s$ and let $h_s \overset{def}= H_0(V | \sketch(V) = s)$.  That is, there are $2^{h_s}$ possible values for $V$ conditioned on $\sketch(V) = s$.  Furthermore, recall that 
+\[
+\log \expe_{s\in \sketch(V)} 2^{h_s} = \log \expe_{s\in \sketch(V)} 2^{H_0(V | \sketch(V) = s)}  = \tilde{H}_0(V | \sketch(V)) %\le   (\ell-t+1)\log |\mathbb{F}|+1.
+\]  
+Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\ell-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as bins to be filled with the $2^{h_s}$ balls~(possible values of $V | \sketch(V)=s$).  The average number of balls in each bin is maximized when the bins are filled equally.  That is, the average number of balls in each bin is bounded by the number of balls divided by the number of bins.  That is, 
 \begin{align*}
-\tilde{H}_0(V | \sketch(V), Z) &\le \tilde{H}_0(V | \sketch(V) )- \log H_0(Z | V)\\
-&\le (\ell-t+1)\log |\mathbb{F}|+1 - \log (|\mathbb{F}|-1)^{\ell-1}/|\mathbb{F}|\\
+\tilde{H}_0(V |Z  , \sketch(V) = s) &\le \log \left(\frac{\text{\# bins}}{\text{\# balls}}\right)\\
+&= \log \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\ell-1}} \right)
+\end{align*}
+\bnote{should I be writing this as $Z | \sketch(V) =s $?}
+Then averaging over the possible values of $s$, we have the following:
+\begin{align*}
+\tilde{H}_0(V |Z , \sketch(V) ) &= \log \expe_{s\in \sketch(V)} 2^{\tilde{H}_0(V | Z, \sketch(V) =s )}\\
+&= \log\expe_{s\in \sketch(V)} \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\ell-1}} \right)\\
+&= \log \frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\ell-1}} \expe_{s\in \sketch(V)} 2^{h_s}\\
+&=\log |\mathbb{F}| - (\ell -1)\log (|\mathbb{F}|-1) + \log \expe_{s\in \sketch(V)} 2^{h_s}\\
+&=\log |\mathbb{F}| - (\ell -1)\log (|\mathbb{F}|-1) + \tilde{H}_0(V | \sketch(V))\\ 
+&\le \log |\mathbb{F}| - (\ell -1)\log (|\mathbb{F}|-1) + (\ell-t+1)\log |\mathbb{F}|+1\\
 &\le (\ell-t+2)\log |\mathbb{F}| - (\ell-1) \log (|\mathbb{F}|-1)+1\\
 &\le (\ell-t+2)\log |\mathbb{F}| - (\ell-2) \log |\mathbb{F}|+1\\
 &\le \Theta(1)
 \end{align*}
- Where the last line follows for $t\ge 4$.  The fourth line follows from the third as long as $|\mathbb{F}|????$\bnote{fix this}\bnote{add more to this}
+ Where the last line follows for $t\ge 4$.  The eighth line follows from the seventh as long as $|\mathbb{F}|????$\bnote{fix this}
  \end{proof}
  
  \thref{thm:imposs sketch} follows using the change of quantifiers in \corref{cor:no fuzz for dist}.
