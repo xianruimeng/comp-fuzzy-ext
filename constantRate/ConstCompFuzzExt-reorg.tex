@@ -241,9 +241,9 @@ In this work, we exploit source structure to construct fuzzy extractors for larg
 
 Our first construction is information-theoretic and corrects a constant fraction of Hamming errors over a super-constant size alphabet.  In this construction, each symbol must contribute fresh entropy.  
 
-Our second construction provides computational security and supports the same type of sources as the first construction.  This construction comes with added feature: reusability.  A reusable fuzzy extractor can be safely reused across multiple noisy readings of the source~(Boyen, CCS 2004).  Previous reusable fuzzy extractors only provide security when the noise between repeated readings comes from a small and unrealistic class. Our construction is secure as long as the fuzzy extractor is secure on each individual reading. Unfortunately, this construction only corrects a sub-constant fraction of errors.  %Computational techniques allow us to show a very sshows that computational assu computationaprovide requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub-constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
+Our second and third constructions switch to computational security to provide additional features.  Our second construction supports the same type of sources as the first construction but also provides reusability.  A reusable fuzzy extractor can be safely reused across multiple noisy readings of the source~(Boyen, CCS 2004).  Previous reusable fuzzy extractors only provide security when the noise between repeated readings comes from a small and unrealistic class. Our construction is secure as long as the fuzzy extractor is secure on each individual reading. Unfortunately, this construction only corrects a sub-constant fraction of errors.  %Computational techniques allow us to show a very sshows that computational assu computationaprovide requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub-constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
 
-Our first two constructions require each symbol of the source to contribute fresh entropy.  Our third construction removes this requirement and allows symbols to be dependent.  Unfortunately, this change requires a significantly larger alphabet.
+Our first two constructions require each symbol of the source to contribute fresh entropy.  Our third construction removes this requirement and allows symbols to be dependent.  This change requires a significantly larger alphabet.
 
 The computational constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
 
@@ -286,7 +286,7 @@ If a source fails this condition, we will says that it has \emph{more errors tha
 
 %Prime candidate sources for authentication have $\Huse\le 0$.  
 Unfortunately, prime candidate sources for authentication have more errors than entropy. 
-For example, the IrisCode~\cite{daugman2004}, which is the state of the art approach to handling what is believed to be the best biometric \cite{prabhakar2003biometric}, produces a source that more errors than entropy~\cite[Section 5]{blanton2009biometric}. Physically inclonable functions suffer from similar problems \lnote{ben please fix}
+For example, the IrisCode~\cite{daugman2004}, which is the state of the art approach to handling what is believed to be the best biometric \cite{prabhakar2003biometric}, produces a source that more errors than entropy~\cite[Section 5]{blanton2009biometric}. Physical unclonable problems with slightly nonuniform outputs suffer from similar problems~\cite{koeberl2014entropy}. 
 
 %As an example, the iris is believed to be the best biometric for high security applications~%\cite{prabhakar2003biometric}.  Daugman~\cite{daugman2004} designs a transform called IrisCode (using specialized wavelets) to derive a $2048$ bit string from an iris.  Let the outcome of this transform (on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired correctness.  For correctness of around $20\%$, a $t$ of approximately $205$ is required. Thus,
 %\[
@@ -297,16 +297,19 @@ For example, the IrisCode~\cite{daugman2004}, which is the state of the art appr
 %There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining}, but it does not affect the above comparison dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}  
 
 
-The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source. \bnote{this should be strengthened.  move negative results to there.} \lnote{waiting for response form Adam}
+The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source. \bnote{negative results stated in our contributions. keep there?}
 
 
 \paragraph{Our Contributions}
-We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.
+We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.  Table~\ref{tab:upper bounds} summarizes our constructions.
 
-Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols. It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
+Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols. %It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
 
-We then switch to computational security to obtain constructions with additional features. Our second construction, like the first, also requires that a constant fraction of symbols contribute fresh entropy. However, it provides reusability. The reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution.
-We note that such strong reusability was shown to be impossible in information-theoretically secure fuzzy extractors~\cite[Theorem 11]{Boyen2004}.\lnote{really? I can't parse his theorem clearly enough} This construction, however, requires that the fraction of errors is subconstant.
+We switch to computational security to obtain constructions with additional features. Boyen showed information-theoretic reusability fuzzy extractors incur entropy loss proportional to the number of corrected error patterns~\cite[Theorem 11]{Boyen2004}.  For sources with more errors than entropy, information-theoretic reusability is impossible~(see \secref{sec:reusable} for discussion).  
+
+Our second construction, like the first, also requires that a constant fraction of symbols contribute fresh entropy. It provides reusability against \emph{computational} adversaries. 
+The reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution. 
+ This construction, however, requires that the fraction of errors is subconstant. \bnote{reasonable?}
 
 Our third construction removes the need for fresh entropy in the symbols. 
 It is secure when symbols in $w$
@@ -324,18 +327,16 @@ a constant fraction of symbols in $w$ may have little entropy, as long as knowle
 \begin{tabular}{l | l | l | l }
 Construction & Security & Features & Limitations \\
 \hline
-\consref{cons:info theoretic} & Info-theoretic & Exploits distribution & Most symbols must \\
-&&structure & contribute fresh entropy \\\hline
-\consref{cons:sampling} & Computational  & Reusable with arbitrary & Error tolerance is\\
-&&correlation & sub-constant fraction\\\hline
-\consref{cons:first construction} & Computational & Supports distributions  & Super-polynomial \\
-& &  with dependent symbols & size symbols
+\consref{cons:info theoretic} & Info-theoretic & Exploit distribution & Symbols must add\\
+&&structure & fresh entropy \\\hline
+\consref{cons:sampling} & Computational  & Reusability & Sub-constant fraction \\
+&& & error tolerance\\\hline
+\consref{cons:first construction} & Computational & Allows correlated & Super-polynomial \\
+& &  symbols & size symbols
 \end{tabular}
 \caption{Summary of new constructions.  All constructions support families of distributions with more errors than entropy.}
 \label{tab:upper bounds}
 \end{table}
-
-
 
 \paragraph{Our Approach}
 %\bnote{rewrite this!}
@@ -352,9 +353,9 @@ Our first construction reduces the alphabet size by hashing each input symbol (w
 The intuition behind this approach is that it reduces the size of $B_t$ by reducing the alphabet size, but preserves a sufficient portion of the input entropy.  The resulting string no longer has more errors than entropy.
  We then apply any information-theoretic fuzzy extractor to the resulting string.
 
-Our second construction, which is only computationally secure, is based on digital lockers~\cite{canetti2008obfuscating}. Digital lockers are obfuscated functions that output a secret value only when given the correct input to ``unlock'' the secret. The main idea of the construction is to pick a random $r$ and lock $r$ in a digital locker that is unlocked by a random subset of the symbols of $w$. To tolerate errors in the input, this process is repeated several times, so that at least one digital locker can be unlocked using $w'$. Reusability follows from composable obfuscation.
+Our second construction, which is computationally secure, is based on obfuscated digital lockers~\cite{canetti2008obfuscating}. Digital lockers output a secret value only when given the correct input to ``unlock'' the secret. An obfuscated digital locker does not provide information about the locked value or how to unlock it.  The main idea of the construction is to pick a random $r$ and lock $r$ in a digital locker that is unlocked by a random subset of the symbols of $w$. To tolerate errors in the input, this process is repeated several times, so that at least one digital locker can be unlocked using $w'$. We use obfuscation in a way that does not leak partial information; this is crucial to arguing reusability.
 
-Finally, our third construction tolerates more errors than the second because it uses digital lockers that are unlocked by single symbols of $w$. Since we do not assume that every symbol has high individual entropy, hiding an entire $r$ in every locker then becomes too risky, Instead, we hide a single bit per locker (our actual construction uses point obfuscations, which are easier simpler to construct than digital lockers). To tolerate errors, these bits come from an error correcting code. And to make sure that the adversary who learns some bits doesn't learn anything useful about $r$, we don't encode $r$ in the error-correcting code, but rather extract $r$ (using an information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractor~(\lemref{lem:cond and cext})) from the decoded string.
+Finally, our third construction tolerates more errors than the second because it uses digital lockers that are unlocked by single symbols of $w$. Since we do not assume that every symbol has high individual entropy, hiding an entire $r$ in every locker then becomes too risky, Instead, we hide a single bit per locker (our actual construction uses point obfuscations, which are simpler to construct than digital lockers). To tolerate errors, these bits come from an error correcting code. To ensure an  adversary who learns some bits doesn't learn anything useful about $r$, we don't encode $r$ in the error-correcting code, but rather extract $r$ (using an information-theoretic~\cite{nisan1993randomness} or computational~\cite{krawczyk2010cryptographic} extractor) from the decoded string.
 
 
 We emphasize that the obfuscation techniques we use are much weaker than general obfuscation, and can be instantiated quite efficiently under appropriate assumptions.
@@ -382,14 +383,14 @@ We note that fuzzy extractors for the setting where $\Huse\le 0$ can be triviall
 
 
 \paragraph{Open Problems}
-All of our constructions support more errors than entropy by tolerating errors in a large alphabet and performing error correction over a different smaller alphabet.  This approach seems limited to larger alphabets~(all of our constructions require a super-constant size alphabet).  Supporting distributions with more errors than entropy over small alphabets is an important open problem.
+All of our constructions support more errors than entropy by using two metrics spaces.  Errors are tolerated in one metric space and corrected in a second.  To handle more errors than entropy,  we map to a metric space where multiple error patterns are grouped together.  All our constructions require the first metric space to have a super-constant size alphabet.  An alternative approach to the problem may support constant size alphabets.
 
 %Our first construction achieves a constant fraction error tolerance but at the cost of a large alphabet size.  Our second construction reduces the alphabet size significantly but only achieves a sub-constant error tolerance.  It remains an open question to support a constant fraction of errors on a small alphabet.  More generally, the problem of constructing a secure fuzzy extractor whenever a negligible fraction lies in any ``ball'' remains an open problem.  %Both constructions require a large alphabet $\mathcal{Z}$---one whose size is more than polynomial in the security parameter.\footnote{Codes over large alphabets are often used to correct burst errors~\cite{gilbert1960capacity}.}  It is possible to tweak the sample-then-obfuscate construction for use with a small alphabet.  However, distributions with $\Huse \le 0$ are supported only for large alphabets.  For small alphabets, $\Huse>0$ and there are good information-theoretic constructions known~\cite[Section 5]{DBLP:journals/siamcomp/DodisORS08}.
 %Constructing a computational fuzzy extractor when $\Huse\le 0$ and a small alphabet is an open problem.  \bnote{Should this just be removed?}
 
 %Using information-theoretic fuzzy extractors with additional privacy properties, Dodis and Smith~\cite[Section 5]{DBLP:conf/stoc/DodisS05} construct program obfuscators for the program $I_w(x)$ that tests if $x$ is within Hamming distance $t$ of $w$. The obfuscation is secure as long as $w$ comes from a distribution of sufficient min-entropy; in particular, the entropy must be high enough so that $\Huse>0$. Our constructions do not provide obfuscators for proximity queries, because they leak more information than whether $x$ is within distance $t$ of $w$ (for example, they may provide some information about the actual distance or about which coordinates agree). Constructing an efficient obfuscator for proximity queries when $\Huse\le 0$ is an open problem.
 
-In this work we restrict the distribution of the original reading $w$ and allow $w'$ to be an arbitrary point within distance $t$.  An alternative approach is to restrict the set of $w'$ where $\gen$ produces the correct key.  A meaningful restriction of correctable errors is an open problem.
+In this work we restrict the distribution of the original reading $w$ and allow $w'$ to be an arbitrary point within distance $t$.  An alternative approach is to restrict the set of $w'$ where $\gen$ produces the correct key.%  A meaningful restriction of correctable errors is an open problem.
 
 \medskip
 \paragraph{Organization }
@@ -422,7 +423,7 @@ If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
 \end{definition}
 In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In Constructions~\ref{cons:sampling} and~\ref{cons:first construction} it is crucial that $w'$ is chosen independently of the outcome of \gen.  
 
-Information-theoretic fuzzy extractors are obtained by replacing computational distance by statistical distance.  We do make a second definitional modification.  The standard definition of information-theoretic fuzzy extractors considers $\mathcal{W}$  consisting of all distributions of a given entropy.  As described in the introduction, it is impossible to provide security for all distributions with more errors than entropy.  Thus, in both the computational and information-theoretic settings we consider limited families of distributions.
+Information-theoretic fuzzy extractors are obtained by replacing computational distance by statistical distance.  We do make a second definitional modification.  The standard definition of information-theoretic fuzzy extractors considers $\mathcal{W}$  consisting of all distributions of a given entropy.  As described in the introduction, it is impossible to provide security for all distributions with more errors than entropy.  In both the computational and information-theoretic settings we consider a family of distributions $\mathcal{W}$.
 
 \subsubsection{Reusable Fuzzy Extractors}
 \label{sec:reusable}
@@ -691,7 +692,7 @@ Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, exc
 \end{theorem}
 \begin{proof}
 The only modification to the outline presented in \secref{ssec:sec cons sampling} is in \lemref{lem:samp unguess} with the other keys $R_1,..., R_{i-1}, R_{i+1}, ..., R_q$ treated as additional auxiliary input to the adversary/simulator.  The simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations.
-\bnote{almost certainly need to say more here.  expand}
+\bnote{say more here?}
 \end{proof}
 
 \subsection{More errors than entropy?}
