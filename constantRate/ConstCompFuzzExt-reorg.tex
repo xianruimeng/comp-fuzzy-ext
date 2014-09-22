@@ -264,7 +264,7 @@ The computational constructions can be implemented efficiently based on number-t
 
 \paragraph{Fuzzy Extractors}
 Cryptography relies on long-term secrets for key derivation and authentication. However, many sources with sufficient randomness to form long-term secrets provide similar but not identical values at repeated readings~(prominent examples include biometrics and other human-generated data~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password},
-physically unclonable functions~\cite{pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical},
+physically unclonable functions (PUFs)~\cite{pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical},
 and quantum information~\cite{bennett1988privacy}). Turning similar readings into identical values is known as \emph{information reconciliation}; further converting those values into uniformly random secret strings is known as \emph{privacy amplification}~\cite{bennett1988privacy}.
 Both of these problems have interactive and non-interactive versions.  In this paper, we are interested in the non-interactive case, which is useful for a single user trying to produce the same key from multiple readings of a physical source at different times.
  A \emph{fuzzy extractor} is the primitive that accomplishes both information reconciliation and privacy amplification non-interactively; fuzzy extractors are defined information-theoretically in~\cite{DBLP:journals/siamcomp/DodisORS08}.
@@ -292,8 +292,8 @@ If a source fails this condition, we will says that it has \emph{more errors tha
 %More generally, for any $m$ and $t$, there is a distribution of min-entropy $m$ such that the adversary can guess a correct $w'$ with probability $1/\lceil( 2^m/B_t) \rceil\approx B_t 2^{-m}$: the distribution consists of the uniform distribution over all points in several non-overlapping balls of radius $t$ (the metric space must be large enough for these balls not to intersect). We thus call $m-\log B_t$ the \emph{minimum usable} entropy, denoted by $\Huse$. The previous paragraph shows that  no fuzzy extractor can handle all distributions of a given min-entropy $m$ if  $\Huse\le 0$.
 
 %Prime candidate sources for authentication have $\Huse\le 0$.  
-Unfortunately, prime candidate sources for authentication have more errors than entropy. 
-For example, the IrisCode~\cite{daugman2004}, which is the state of the art approach to handling what is believed to be the best biometric \cite{prabhakar2003biometric}, produces a source that more errors than entropy~\cite[Section 5]{blanton2009biometric}. Physical unclonable problems with slightly nonuniform outputs suffer from similar problems~\cite{koeberl2014entropy}. 
+Unfortunately, sources that have been proposed as prime candidates for authentication have more errors than entropy. 
+For example, the IrisCode~\cite{daugman2004}, which is the state of the art approach to handling what is believed to be the best biometric \cite{prabhakar2003biometric}, produces a source that more errors than entropy~\cite[Section 5]{blanton2009biometric}. PUFs with slightly nonuniform outputs suffer from similar problems~\cite{koeberl2014entropy}. 
 
 %As an example, the iris is believed to be the best biometric for high security applications~%\cite{prabhakar2003biometric}.  Daugman~\cite{daugman2004} designs a transform called IrisCode (using specialized wavelets) to derive a $2048$ bit string from an iris.  Let the outcome of this transform (on different irises) define a distribution $w$.  The precise number of errors that must be tolerated depends on the desired correctness.  For correctness of around $20\%$, a $t$ of approximately $205$ is required. Thus,
 %\[
@@ -308,22 +308,19 @@ The situation with reusability is even worse: the only known construction of reu
 
 
 \paragraph{Our Contributions}
-We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.  Table~\ref{tab:upper bounds} summarizes our constructions.
+We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.  Table~\ref{tab:upper bounds} summarizes our constructions. \lnote{Note sure about the first line of this table. What does ``exploit distribution structure'' mean? Also, can we make it look a bit better? Perhaps center. Perhaps also remove some lines. Perhaps make "main feature" column the same part of speech in each entry.}
 
 Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols. %It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
 
-We switch to computational security to obtain constructions with additional features. Boyen showed information-theoretic reusability fuzzy extractors incur entropy loss proportional to the number of corrected error patterns~\cite[Theorem 11]{Boyen2004}.  For sources with more errors than entropy, information-theoretic reusability is impossible~(see \secref{sec:reusable} for discussion).  
+We switch to computational security to obtain constructions with additional features. Our second construction provides reusability (against computationally bounded adversaries).  Like the first construction,
+it requires that a constant fraction of symbols contribute fresh entropy. However,
+the reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution. The switch to computational security is necessary here: as discussed in \secref{sec:reusable}, it is impossible to obtain such reusability information-theoretically for sources with more errors than entropy.  
+This construction requires that the fraction of errors is subconstant. 
 
-Our second construction, like the first, also requires that a constant fraction of symbols contribute fresh entropy. It provides reusability against \emph{computational} adversaries. 
-The reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution. 
- This construction, however, requires that the fraction of errors is subconstant. \bnote{reasonable?}
-
-Our third construction removes the need for fresh entropy in the symbols. 
-It is secure when symbols in $w$
+Our third construction removes the need for fresh entropy in the symbols and allows a constant fraction of symbols of errors, at the cost of requiring a large alphabet size~(super-polynomial in the security parameter).
+It is secure if symbols in $w$
 each have individual super-logarithmic min-entropy, even if they are arbitrarily correlated. Moreover,
-a constant fraction of symbols in $w$ may have little entropy, as long as knowledge of their values does not reduce the entropy of the high-entropy symbols too much (see \defref{def:block guessable}).  This construction can correct a constant fraction of errors.  However, this construction requires a large alphabet size~(super-polynomial in the security parameter).
-
-%\bnote{rewrite this!}
+a constant fraction of symbols in $w$ may have little or no entropy, as long as knowledge of their values does not reduce the entropy of the high-entropy symbols too much (see \defref{def:block guessable}).  %\bnote{rewrite this!}
 %Our first construction is secure when symbols in $w$ each have individual super-logarithmic min-entropy, even if they are arbitrarily correlated. Moreover, a constant fraction of symbols in $w$ may have little entropy, as long as knowledge of their values does not reduce the entropy of the high-entropy symbols too much (see \defref{def:block guessable}).  This construction can correct a constant fraction of errors~($\Theta(\ell)$).  However, this construction requires a large alphabet size~(super-polynomial in the security parameter).
 %
 %We improve the entropy and alphabet size requirements in the second construction, which requires only a constant fraction of the symbols $w$ to have constant min-entropy conditioned on the previous symbols.  Our second construction supports an arbitrary alphabet size~(though it only achieves $\Huse\le 0$ when the alphabet size is super-constant).  However, these improvements come at a price to error-tolerance: it tolerates a sub-constant fraction of errors~($o(\ell)$).  
@@ -332,7 +329,7 @@ a constant fraction of symbols in $w$ may have little entropy, as long as knowle
 
 \begin{table}
 \begin{tabular}{l | l | l | l }
-Construction & Security & Features & Limitations \\
+Construction & Security & Main Feature & Main Limitation \\
 \hline
 \consref{cons:info theoretic} & Info-theoretic & Exploit distribution & Symbols must add\\
 &&structure & fresh entropy \\\hline
