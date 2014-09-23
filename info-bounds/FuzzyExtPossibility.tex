@@ -49,6 +49,8 @@
 \newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
 \newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
 \newcommand{\prg}{\ensuremath{\class{prg}}\xspace}
+\newcommand{\bnd}{\ensuremath{\class{Bnd}}\xspace}
+\newcommand{\inter}{\ensuremath{\class{Inter}}\xspace}
 \newcommand{\zo}{\ensuremath{\{0, 1\}}}
 \newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\zq}{\ensuremath{\mathbb{Z}_q}}
@@ -716,8 +718,8 @@ Let $\mathcal{V}$ be a family of distributions.  Let $\mathcal{W}$ be an arbitra
 
 Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for fuzzy extractors as well as secure sketches.  Additionally they generalize to the case of imperfect correctness.
 
-\subsection{Impossibility of info-theoretic sketches}
-In the previous section, we saw that if a secure sketch is secure for a family of sources, for every distribution over those sources there is a secure sketch.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.  
+\subsection{Fuzzy min-entropy is not sufficient for secure sketches}
+In the previous section, we saw that if a secure sketch is secure for a family of sources, for every distribution over those sources there is a secure sketch.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.
 
 \begin{theorem}
 \label{thm:imposs sketch}
@@ -757,7 +759,7 @@ Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution 
 Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $\tilde{H}_0(V | \sketch(V)) \le (\gamma-t+1)\log |\mathbb{F}|+1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
 \end{lemma}
 \begin{proof}
-We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We will however, not consider these coins in our security analysis.
+We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We do not consider these coins in our security analysis~(and thus, they can be considered private).
 
 By the definition of correctness for $(\sketch, \rec)$, 
 \[
@@ -769,7 +771,7 @@ By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[p\in A_{ss}]\
 \[
 \{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le n-\log |B_t|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|p$ this is also true.  This makes the support of $V|p$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|p$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|p$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V | p) \le (\gamma -t+1 )|\mathbb{F}|$.  Averaging over $p$ one has that $\tilde{H}_0(V|P) \le (\gamma -t +1) \log|\mathbb{F}| +1$.
+Consider some $p\in A_{ss}$.  We now show that $H_0(V | p) \le (\gamma-t+1)\log |\mathbb{F}|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|p$ this is also true.  This makes the support of $V|p$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|p$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|p$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V | p) \le (\gamma -t+1 )|\mathbb{F}|$.  Averaging over $p$ one has that $\tilde{H}_0(V|P) \le (\gamma -t +1) \log|\mathbb{F}| +1$.
 %By the Markov inequality, 
 %\[
 %\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
@@ -868,18 +870,89 @@ Canetti et al.~\cite{canetti2014key} construct computational fuzzy extractors fo
 %There is a family of distributions such that for any secure sketch that works for an adversarial choice of the distribution, there is no residual entropy conditioned on adversary knowledge and the secure sketch.
 %\end{lemma}
 
-\subsection{Computational secure sketches}
-We do not consider a computational version of secure sketches. Fuller et al. showed that computational secure sketches imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.
+\subsubsection{Computational secure sketches}
+Fuller et al. showed that computational secure sketches imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.  %This means that ruling out any information-theoretic secure sketches also rules out a computational secure sketch.  
+The definitional of Fuller et al. is uses HILL entropy.
+
+HILL entropy is a commonly used computational notion of entropy \cite{DBLP:journals/siamcomp/HastadILL99}.  Fuller et al.~use a weak version due to Gentry and Wichs~\cite{gentry2011separating}.
+
+\begin{definition}
+\label{def:relaxed hill}
+Let $(W, S)$ be a pair of random variables.  $W$ has 
+\emph{relaxed HILL entropy} at least $k$ conditioned on $S$,
+denoted $H^{\hillrlx}_{\epsilon_{sec}, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, Y)$, such that $\tilde{H}_\infty(X|Y)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,Y))\leq \epsilon_{sec}$.
+\end{definition}
+
+A \emph{HILL secure sketch} is obtained by replacing the security condition in \defref{def:secure sketch} with HILL entropy~(adding parameters $s_{sec}, \epsilon_{sec}$ parameters to the definition, representing the distinguishing circuit).  By applying the contrapositive of~\cite[Corollary 3.8]{fuller2013computational}, no sketch can retain HILL entropy for the same family of distributions:
 
 \begin{corollary}
-This is also impossible for computational sketches that retain hill entropy.\bnote{fill this in, use asiacrypt result.}
+\label{cor:imposs comp sketch}
+Let $n$ be a security parameter and let $\mathcal{M} = |\mathbb{F}|^\gamma$.  There exists a family of distributions $\mathcal{V}$ over $\mathcal{M}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and for any $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-HILL secure sketch $(\sketch, \rec)$ that is $(s_{sec}, \epsilon_{sec})$-hard and error $\delta$.  If 
+\begin{itemize}
+\item $s_{sec}\ge t(|\rec| + \gamma \log |\mathbb{F}|)$, 
+\item $t\ge 4$,
+\item and $\epsilon + t\delta < 1/16$,
+\end{itemize}
+ then $\tilde{m} =O(1)$.
 \end{corollary}
 
-%\subsection{Conductors}
-%Possible for computational objects.  See the constructions of Canetti et al.~\cite{canetti2014key}.
-%\begin{lemma}
-%Not possible for information-theoretic objects.
-%\end{lemma}
+
+\begin{corollary}
+\label{cor:rec yields sketch}
+Let $\mathcal{Z}$ be an alphabet. Let $(\sketch', \rec')$ be an $(\epsilon,s_{sec})$-HILL-entropy $(\mathcal{Z}^n, n\log |\mathcal{Z}|, \tilde{m}, t)$-secure sketch with error $\delta$ for the Hamming metric over $\mathcal{Z}^n$, with $\rec'$ of circuit size $s_{rec}$.
+If $s_{sec}\geq t(s_{rec} + n\log |\mathcal{Z}|)$, then there exists a   $(\mathcal{Z}^n, n\log |\mathcal{Z}|, \tilde{m}-2,t)$ (information-theoretic) secure sketch with error
+$4(\epsilon+t\delta)$. 
+\end{corollary}
+
+\textbf{Note:} The above result does not rule out a computational secure sketch based on unpredictability~(where $W$ is hard to guess given the string $S$).  Unpredictable secure sketches is implied by virtual-grey box obfuscation of point functions~\cite{BitanskyCKP14}.  
+
+\section{Distribution-Oblivious Fuzzy Extractors}
+In the previous section, we showed a family of distributions that does not admit a secure sketch.  In this section, we extend this result to fuzzy extractors.  The main difficulty is showing that fuzzy extractors must cause a significantly entropy drop in $V$.  This is not true for all metric spaces.  We begin with the case of perfect correctness in the Hamming metric.  
+
+\begin{theorem}
+\label{thm:imposs fuzz ext}
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \kappa, t, \epsilon)$-secure sketch with error $\delta = 0$ for $\tilde{m} =\omega(1)$ for $t\ge 4$. \bnote{what is $\epsilon$? what are the other parameters?}
+\end{theorem}
+ \bnote{write a proof!}
+\begin{proof}
+The only difference between \thref{thm:imposs fuzz ext} and \thref{thm:imposs sketch} is the functionality required of the algorithms $(\gen, \rep)$.  Thus, we must prove that a fuzzy extractor must still cause a significant drop in the entropy of $V$:
+
+\begin{lemma}
+Fix some $(\gen, \rep)$ algorithm with $\kappa = \omega(\log n)$ and $\epsilon=$ \bnote{what is this?}.  Then $\tilde{H}_0(V | \gen(V)) \le (\gamma-t+1)\log |\mathbb{F}|+1$.
+\end{lemma}
+\begin{proof}
+We assume that $\rep$ is deterministic in our analysis.  Any randomness necessary for the \rep algorithm can be provided by $\gen$.  We do not consider these coins in our security analysis~(and thus, they can be considered private).  Denote by $(R, P) \leftarrow \gen(V)$.
+
+%By the definition of correctness for $(\sketch, \rec)$, 
+%\[
+%\forall w, w', \Pr_{p\leftarrow \sketch(w)} [\rec(w', p) = w] >1-\delta.
+%\]
+%For most $p$, $\rec$ works on most neighbors of $w$.  
+%Fix some $w$.  
+By Markov's inequality, there exists a set $A_{p}$ such that $\Pr[p\in A_{p}]\ge 1/2$ and $\forall p\in A_{p}$, 
+\[
+(R |P =p, P = p ) \approx_{2\epsilon} (U_\kappa , P =p).
+\]
+%\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
+
+Consider some $p^*\in A_{ss}$.  We now show that $H_0(V | p^*) \le XXXX$\bnote{fill in}.  Since $(R | P=p^*, p^*)\approx_{2\epsilon} (U, p^*)$ this means that $R|P=p$ is at least $(1-2\epsilon)2^\kappa$.  Note that, $R|P=p$ is the set of possible keys.
+
+The set of possible keys induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique $Q_{p^*,r}$ such that $\rep(w, p^*) =r$.  Define two sets, called the boundary and interior respectively: \begin{align*}
+\bnd(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\},\\
+\inter(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =r\}.
+\end{align*}
+
+Note that $\bnd(Q_{p^*, r}) \cap \inter(Q_{p,r}) =\emptyset$, for any $r_1, r_2$, $\inter(Q_{p^*, r_1}) \cap \inter(Q_{p^*, r_2}) =\emptyset$ and the union of all boundaries and interiors is the entire space.  Furthermore, note that for any $r\in \zo^\kappa$,  $\Pr[V\in Q_{p^*, r}] = \ngl(n).$\bnote{need to fill in this distinguishing argument, note this doesn't need to be the case for all $p^*$ just on average. need another markov inequality.}\bnote{what can we say about the relative sizes of these spaces?}
+
+We now consider the distribution of $V | P=p^*$.  By the functionality of $(\gen, \rep)$, for every $v\in V| P=p^*$, $v\in Int(Q_{p, r})$.  Furthermore, if $v$ is not in some interior then $v\not \in V | P=p^*$.  Thus, it suffices to show that $\frac{\sum_{r} |\inter(Q_{p^*, r})|}{\mathcal{M}} = XXX$\bnote{fill this in.}
+
+To show this we any such partitioning of the metric space must have the majority of points lying on the boundary.  This is true for the Hamming metric.
+\begin{lemma}[Isoparametric Inequality]
+\bnote{XXXX}
+\end{lemma}
+\end{proof}
+\end{proof}
+
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
