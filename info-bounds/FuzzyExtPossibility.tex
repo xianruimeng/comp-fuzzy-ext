@@ -870,7 +870,7 @@ Canetti et al.~\cite{canetti2014key} construct computational fuzzy extractors fo
 %There is a family of distributions such that for any secure sketch that works for an adversarial choice of the distribution, there is no residual entropy conditioned on adversary knowledge and the secure sketch.
 %\end{lemma}
 
-\subsubsection{Computational secure sketches}
+\subsubsection{Extending to Computational secure sketches}
 Fuller et al. showed that computational secure sketches imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.  %This means that ruling out any information-theoretic secure sketches also rules out a computational secure sketch.  
 The definitional of Fuller et al. is uses HILL entropy.
 
@@ -935,14 +935,24 @@ By Markov's inequality, there exists a set $A_{p}$ such that $\Pr[p\in A_{p}]\ge
 \]
 %\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $p^*\in A_{ss}$.  We now show that $H_0(V | p^*) \le XXXX$\bnote{fill in}.  Since $(R | P=p^*, p^*)\approx_{2\epsilon} (U, p^*)$ this means that $R|P=p$ is at least $(1-2\epsilon)2^\kappa$.  Note that, $R|P=p$ is the set of possible keys.
+Consider some $p^*\in A_{ss}$.  We now show that $H_0(V | p^*) \le XXXX$\bnote{fill in}.  Since $(R | P=p^*, p^*)\approx_{2\epsilon} (U, p^*)$ this means that $R|P=p^*$ is at least $(1-2\epsilon)2^\kappa$.  Note that, $R|P=p$ is the set of possible keys.
 
 The set of possible keys induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique $Q_{p^*,r}$ such that $\rep(w, p^*) =r$.  Define two sets, called the boundary and interior respectively: \begin{align*}
 \bnd(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\},\\
 \inter(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =r\}.
 \end{align*}
 
-Note that $\bnd(Q_{p^*, r}) \cap \inter(Q_{p,r}) =\emptyset$.  Furthermore, note that for any $r\in \zo^\kappa$,  $ | Q_{p^*, r}| \le (1+\epsilon)2^\kappa.$\bnote{need to fill in this distinguishing argument, note this doesn't need to be the case for all $p^*$ just on average. need another markov inequality.}\bnote{what can we say about the relative sizes of these spaces?}
+Note that $\bnd(Q_{p^*, r}) \cap \inter(Q_{p,r}) =\emptyset$.  We now show $Q$ are small.
+
+\begin{claim} For any $r\in \zo^\kappa$,  $ | Q_{p^*, r}| \le (1+\epsilon)2^\kappa.$
+\end{claim}
+\begin{proof} 
+Recall that for any $r$, $\Pr[U = r] = 1/2^\kappa$.  Since the total statistical distance is $2\epsilon$, 
+\[
+\Pr[R=r] \le 2( 2\epsilon + \Pr[U=r]) = 4\epsilon + 2^{-\kappa+1}.
+\] 
+The distribution $R | P=p^*  \overset{def}= \rep(V | P=p^*, p^*)$.  Thus, the overall probability $\Pr[V|P=p^* \in Q_{r, P^*}] \le 4\epsilon+2^{-\kappa +1}$.  \bnote{how to continue from here?  this doesn't talk about the size of $V|P=p^*$.}
+\end{proof}
 
 We now consider the distribution of $V | P=p^*$.  By the functionality of $(\gen, \rep)$, for every $v\in V| P=p^*$, $v\in Int(Q_{p, r})$.  Furthermore, if $v$ is not in some interior then $v\not \in V | P=p^*$.  Thus, it suffices to show that $\frac{\sum_{r} |\inter(Q_{p^*, r})|}{\mathcal{M}} = XXX$\bnote{fill this in.}
 
