@@ -242,6 +242,7 @@
 
 
 \begin{abstract}
+\lnote{needs work}
 Fuzzy extractors convert a noisy source of entropy into the same uniformly distributed key~(Dodis et al., Eurocrypt 2004).  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of tolerated error patterns. For many practical sources, the error tolerance necessary to achieve reliable key derivation is larger than the entropy of the source.  Unfortunately, it is impossible to provide security for every source with this property.  Most known approaches for building fuzzy extractors work in the worst case and thus cannot be used when a source has \emph{more errors than entropy}.
 
 Fortunately, practical sources contain useful structure.  In this work, we exploit distributional structure to construct fuzzy extractors for large classes of noisy sources with more errors than entropy.  
@@ -252,7 +253,7 @@ We show an information-theoretic construction and two computational construction
 \item \textbf{Computational}
 %By adding computational techniques we obtain constructions with additional features.  
 Our second construction is also secure when each symbol contributes fresh entropy.  
-Additionally, it is a reusable fuzzy extractor~(Boyen, CCS 2004).  A reusable fuzzy extractor allows multiple readings of the source to be enrolled securely.  Our construction is reusable if each reading is a supported source.  Previous reusable fuzzy extractors required the correlation between repeated readings to be drawn from a small and unrealistic class.  This construction corrects a sub-constant fraction of errors.  %Computational techniques allow us to show a very sshows that computational assu computationaprovide requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub-constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
+Additionally, it is a reusable fuzzy extractor~(Boyen, CCS 2004).  A reusable fuzzy extractor allows multiple readings of the source to be enrolled securely.  Our construction is reusable if each individual reading is a supported source.  Previous reusable fuzzy extractors required the correlation between repeated readings to be drawn from a small and unrealistic class.  This construction corrects a sub-constant fraction of errors.  %Computational techniques allow us to show a very sshows that computational assu computationaprovide requires a constant fraction of symbols to have a constant amount of entropy conditioned on prior symbols. It corrects a sub-constant fraction of errors and supports super-constant size alphabets.  In addition, it is first construction of a reusable fuzzy extractor without assumption on the form of errors that occurs between reuse.  This is impossible in the information-theoretic setting for an arbitrary number of reuses~(Boyen, CCS 2004).
 
 Our third construction strengthens the class of supported sources and corrects a constant fraction of errors.  It is secure when individual symbols have high entropy but may be arbitrarily correlated.  This change requires a significantly larger alphabet.
 
@@ -276,7 +277,7 @@ Both of these problems have interactive and non-interactive versions.  In this p
 
 
 Fuzzy extractors consist of a pair of algorithms: \gen (used once, at ``enrollment'') takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep (used subsequently) takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.
-The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space (in this paper, we focus on the Hamming metric on length $\gamma$ strings over some alphabet $\mathcal{Z}$). \onote{parameters $\gamma$ and $\mathcal{Z}$ are not used until they are reintroduced in our contribution paragraph. Consider ignoring them here.}
+The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space.% (in this paper, we focus on the Hamming metric on length $\gamma$ strings over some alphabet $\mathcal{Z}$). \onote{parameters $\gamma$ and $\mathcal{Z}$ are not used until they are reintroduced in our contribution paragraph. Consider ignoring them here.}
  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$. This guarantee holds as long as $w$ comes from a high-quality distribution, which
 traditionally has been defined as \emph{any} distribution with sufficient min-entropy $m$.
 
@@ -309,19 +310,16 @@ For example, the IrisCode~\cite{daugman2004}, which is the state of the art appr
 %There is considerable subsequent research~\cite{gentile2009slic,gentile2009efficient,rathgeb2011combining}, but it does not affect the above comparison dramatically.%\footnote{The work of Hao et al.~\cite[Section 4.3]{hao2006combining} provides a similar analysis but their calculation underestimates the number of possible error patterns; their calculation, which we cannot confirm, is $\Huse \approx 44$.}
 
 
-The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source. \bnote{negative results stated in our contributions. keep there?}
-
+The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source.
 
 \paragraph{Our Contributions}
-We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure\onote{consider adding here that the class of sources we can deal with (in all constructions) contains many natural sources (or something along these lines).}.  Table~\ref{tab:upper bounds} summarizes our constructions. \lnote{Note sure about the first line of this table. What does ``exploit distribution structure'' mean? Also, can we make it look a bit better? Perhaps center. Perhaps also remove some lines. Perhaps make "main feature" column the same part of speech in each entry.}
-\onote{The table is confusing to me: all the constructions exploits distribution structure. In the second construction most symbols must contribute fresh entropy as well. Third construction is also reusable. Perhaps there is a better way to organize this information.}
-\bnote{these comments are all valid.  I'm not sure what to do about it.  Maybe organize by techniques and then notes (for limitations and features?)}
-Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols. %It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
+We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.  Table~\ref{tab:upper bounds} summarizes our constructions. \bnote{table better?}
+Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols~(\defref{def:partial source}). %It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
 
 We switch to computational security to obtain constructions with additional features. Our second construction provides reusability (against computationally bounded adversaries).  Like the first construction,
 it requires that a constant fraction of symbols contribute fresh entropy. However,
-the reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution. The switch to computational security is necessary here: as discussed in \secref{sec:reusable}, it is impossible to obtain such reusability information-theoretically for sources with more errors than entropy.
-This construction requires that the fraction of errors is subconstant.
+the reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution. 
+This construction requires that the fraction of errors is subconstant. 
 
 Our third construction removes the need for fresh entropy in the symbols and allows a constant fraction of symbols of errors, at the cost of requiring a large alphabet size~(super-polynomial in the security parameter).
 It is secure if symbols in $w$
@@ -333,20 +331,33 @@ a constant fraction of symbols in $w$ may have little or no entropy, as long as 
 %
 %\consref{cons:sampling} comes with an additional feature: reusability.  Boyen~\cite{Boyen2004} defined reusable fuzzy extractors: multiple readings $w_1,..., w_q$ are enrolled and the adversary sees the corresponding public values $p_1,..., p_q$ and possibly some of the derived keys.  The enrolled values $w_i$ and $w_j$ are not assumed to be equal, and so information leakage may add up.  Indeed, Boyen showed that with an unbounded number of reuses it is only possible to support limited correlations between $w_i$ and $w_j$~\cite[Theorem 11]{Boyen2004}.  Our second construction allows for arbitrary correlation between $w_i$ and $w_j$ against computational adversaries\footnote{Our restriction to computational adversaries implies that the adversary only sees a polynomially bounded number of reuses.  It remains an open problem to construct a polynomially reusable fuzzy extractor against unbounded adversaries.} as long as each marginal $W_i$ is an admissible distribution.  %We do not considering the joint distribution $W_1,..., W_q$.
 
+
 \begin{table}
-\begin{tabular}{l | l | l | l }
-Construction & Security & Main Feature & Main Limitation \\
+\begin{tabular}{l l l c c}
+Construction & Security & Source Structure & Error-Tolerance & Alphabet Size\\
 \hline
-\consref{cons:info theoretic} & Info-theoretic & Exploit distribution & Symbols must add\\
-&&structure & fresh entropy \\\hline
-\consref{cons:sampling} & Computational  & Reusability & Sub-constant fraction \\
-&& & error tolerance\\\hline
-\consref{cons:first construction} & Computational & Allows correlated & Super-polynomial \\
-& &  symbols & size symbols
+\consref{cons:info theoretic} & Info-theoretic  & Partial block source& $\Theta(\gamma)$ & $\omega(1)$ \\
+\consref{cons:sampling} & Reusable Computational & Partial block source& $o(\gamma)$ & $\omega(1)$ \\
+\consref{cons:first construction} & Computational & Unguessable block source & $\Theta(\gamma)$ & $n^{\omega(1)}$
 \end{tabular}
-\caption{Summary of new constructions.  All constructions support families of distributions with more errors than entropy.}
+\caption{Summary of new constructions.  All constructions support families of distributions with more errors than entropy.  Partial blocks sources are defined in \defref{def:partial source} and unguessable block sources are defined in \defref{def:block guessable}.}
 \label{tab:upper bounds}
 \end{table}
+
+%\begin{table}
+%\begin{tabular}{l | l | l | l }
+%Construction & Security & Main Feature  & Main Limitations \\
+%\hline
+%\consref{cons:info theoretic} & Info-theoretic & Exploit distribution & Symbols must add\\
+%&&structure & fresh entropy \\\hline
+%\consref{cons:sampling} & Computational  & Reusability & Sub-constant fraction \\
+%&& & error tolerance\\\hline
+%\consref{cons:first construction} & Computational & Allows correlated & Super-polynomial \\
+%& &  symbols & size symbols
+%\end{tabular}
+%\caption{Summary of new constructions.  All constructions support families of distributions with more errors than entropy.}
+%\label{tab:upper bounds}
+%\end{table}
 
 
 \paragraph{Our Approach}
@@ -358,7 +369,9 @@ Construction & Security & Main Feature & Main Limitation \\
 %Fuller, Meng, and Reyzin show that replacing secure sketches with a similar computational component is unlikely to be fruitful~\cite[Corollary 3.8, Theorem 3.10].  Instead, they suggest two alternatives: produce a new consistent secret with computational entropy instead of recovering $w$~(our first construction) or combine the information-reconciliation and privacy amplification components~(our second construction).
 
 Most known constructions of fuzzy extractors put sufficient information in $p$ to recover the original $w$ from a nearby $w'$ during $\rep$ (this procedure is called a \emph{secure sketch}), and then apply a randomness extractor to $w$ to get $r$.
-Unfortunately, the current techniques for building secure sketches do not work for sources with more errors than entropy, because they lose at least $\log |B_t|$ bits of entropy regardless of the source (this loss is necessary when the source is uniform~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08}). Moreover, relaxing the security definition to computational will not improve this approach~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}. Thus, we take a different approach and do not attempt to recover $w$.
+Unfortunately, the current techniques for building secure sketches do not work for sources with more errors than entropy, because they lose at least $\log |B_t|$ bits of entropy regardless of the source. Moreover, this loss is necessary when the source is uniform~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08} or when reusability against a sufficiently rich class of correlations is desired~\cite[Theorem 11]{Boyen2004}. 
+
+Addtionally, relaxing the security definition to computational will not improve this approach~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}. Thus, we take a different approach and do not attempt to recover $w$.
 
 Our first construction reduces the alphabet size by hashing each input symbol (which comes from a large alphabet) into a much smaller set, so that the resulting hash value has low entropy deficiency.
 The intuition behind this approach is that it reduces the size of $B_t$ by reducing the alphabet size, but preserves a sufficient portion of the input entropy.  The resulting string no longer has more errors than entropy.
@@ -445,20 +458,19 @@ Information-theoretic fuzzy extractors are obtained by replacing computational d
 \subsubsection{Reusable Fuzzy Extractors}
 \label{sec:reusable}
 
-Ideally, a fuzzy extractor allows a user to authenticate to multiple different services/devices.  That is, instead of creating a single pair $(r, p)$ from an initial reading $w$, we read the noisy source multiple times~($w_1,..., w_q$) and produce $(r_1, p_1),..., (r_q, p_q)$.  This problem is known as a reusable fuzzy extractor~\cite{Boyen2004}.  There are two primary parameters of the definition: 1) $q$, the reusability of the fuzzy extractor and 2) what class of correlation is allowed between readings $w_i$ and $w_j$.
+An additional desirable feature of fuzzy extractors is reusability~\cite{Boyen2004}. Inuitively, it is the ability to support multiple independent enrollments of the same value, allowing users to reuse the same biometric or PUF, for example, with multiple noncommunicating providers. More precisely, the algorithm $\gen$ may be run multiple times on correlated readings $w_1,..., w_q$ of a given source. Each time, $\gen$ will produce a different pair of values $(r_1, p_1),..., (r_q, p_q)$. Security for each extracted string $r_i$ should hold even in the presence of all the helper strings $p_1, \dots, p_q$ (even though the reproduction procedure $\rep$ at the $i$th provider obtains only a single $w'_i$ close to $w_i$ and uses a single helper string $p_i$). Because the multiple providers may not trust each other, a stronger security feature (which we satisfy) ensures that each $r_i$ is secure even when all $r_j$ for $j\neq i$ are also given to the adversary.
 
-Boyen considers two versions of the problem, first where the adversary sees $p_1,..., p_q$~(outsider security).  Second where the adversary controls some subset of the servers and sees key generation on arbitrary $p$~(insider security).
-Boyen constructs a outsider reusable cryptographic fuzzy extractor for unbounded $q$ when the correlation between readings is limited to a transitive isometric permutation groups. Boyen transforms this construction to insider security using random oracles. In both constructions, the correlation between  $w_1,..., w_q$ is limited to a transitive isometric permutation group.  Unfortunately, this class of correlation is relatively weak and unrealistic.
+ Our ability to construct reusable fuzzy extractors depends on the types of correlations allowed among $w_1, \dots, w_q$. Boyen \cite{Boyen2004} showed how to do so when each $w_i$ is a shift of $w_1$ by a value that is oblivious to the value of $w_1$ itself (formally, $w_i$ is a result of a transitive isometry applied to $w_1$). Boyen also showed that even for this weak class of correlations, any secure sketch must lose at least $\log |B_t|$ entropy~\cite[Theorem 11]{Boyen2004}.
+  
+
 %\paragraph{Previous Negative Results}
 
-Boyen~\cite{Boyen2004} considers information-theoretic fuzzy extractors with unbounded reusability.
-However, even for this relatively weak class of correlations, Boyen shows that reusability comes at a real cost~\cite[Theorem 11]{Boyen2004}.  If the correlation between readings contains a set that generates a transitive isometric permutation group, any secure sketch must lose entropy proportional to the number of errors corrected.\footnote{This result strengthens the bounds of~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}, who show this loss is necessary for uniform $W_1$.} This means achieving reusability for sources with more errors than entropy is impossible in this setting.
 %\bnote{old stuff}
 %Their construction is secure when the correlations between $w_1,.., w_q$ come from a subgroup of permutations used in the construction of the fuzzy extractor.  They then show information-theoretic fuzzy extractors secure with unbounded reuse can be transformed into their construction~\cite[Theorem 11]{Boyen2004}.  This shows that correlation between $w_1,..., w_q$ must be restricted to this limited class.  There is no reason to expect that noise between repeated readings comes from a well-behaved subgroup of permutations.  Their result can be interpreted as saying that reusability is impractical.
 %
 %However, this result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two  restrictions to avoid this result: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.
 
-To overcome this result, we consider computationally bounded adversaries.
+%To overcome this result, we consider computationally bounded adversaries.
 %We present a non-adaptive definition and note that our results extend to the adaptive definition presented by Boyen~\cite[Definition 7]{Boyen2004}.\bnote{We need to come back to justifying this or provide a proof that our scheme works in the adaptive setting.}
 %\begin{definition}[Insider Reusable Fuzzy Extractors]
 %\label{def:reusable fuzz}
@@ -468,21 +480,21 @@ To overcome this result, we consider computationally bounded adversaries.
 %&(R_1, P_1),..., (U_\kappa, P_i),..., (R_q, P_q)) < \epsilon.
 %\end{align*}
 %\end{definition}
-We modify the definition of Boyen~\cite[Definition 7]{Boyen2004}.  We discuss the differences in \apref{sec:comparing reusability}.
+We modify the definition of Boyen~\cite[Definition 6]{Boyen2004} for the computational setting.  We discuss the our definition and definitions due to Boyen in \apref{sec:comparing reusability}.
 
-\begin{definition}[Outsider Reusable Fuzzy Extractors]
+\begin{definition}[Reusable Fuzzy Extractors]
 \label{def:outsider fuzz ext}
 Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.
 Fix some $W_1 \in \mathcal{W}$.  Let $f_2,.., f_q , D$ be a split adversary.  Define the following game for all $i=1,..., q$:
-\begin{enumerate}%[leftmargin=-.6in]
-\item[Sampling] The challenger samples $w_1\leftarrow W_1$.
-\item[Perturbation] For $i=2,..., q$: the challenger computes $(r_i, p_i)\leftarrow \gen(w_i)$.  Set $w_{i+1} = f_i(w_1, p_1,..., p_i)$.% The output $p_i$ is provided to $\mathcal{A}$, who selects $\delta_i:\mathcal{M}\rightarrow \mathcal{M}$.  The challenger sets $w_{i+1} = \delta_i(w_1)$.
-\item[Distinguishing] The advantage of $D$ is
+\begin{itemize}%[leftmargin=-.6in]
+\item \textbf{Sampling} The challenger samples $w_1\leftarrow W_1$.
+\item \textbf{Perturbation} For $i=2,..., q$: the challenger computes $(r_i, p_i)\leftarrow \gen(w_i)$.  Set $w_{i+1} = f_i(w_1, p_1,..., p_i)$.% The output $p_i$ is provided to $\mathcal{A}$, who selects $\delta_i:\mathcal{M}\rightarrow \mathcal{M}$.  The challenger sets $w_{i+1} = \delta_i(w_1)$.
+\item \textbf{Distinguishing} The advantage of $D$ is
 \begin{align*}
 \text{Adv}(D)&\overset{def}= \Pr[D(r_1,..., r_{i-1}, r_i, r_{i+1},..., r_q, p_1,..., p_q)=1]\\ &- \Pr[D(r_1,..., r_{i-1}, u, r_{i+1},..., r_q, p_1,..., p_q)=1].
 \end{align*}
 where $u$ is a uniformly random string.
-\end{enumerate}
+\end{itemize}
 $(\gen, \rep)$ is $(q, s_{sec}, \epsilon_{sec}, f_2,..., f_q)$-reusable if for all $D\in\mathcal{D}_{s_{sec}}$ the advantage is at most $\epsilon_{sec}$.
 \end{definition}
 
@@ -793,13 +805,13 @@ Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(j, w_j')=
 0 & \text{otherwise}.
 \end{cases}
 \]
-A source $W = W_1| ... |W_\gamma$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \gamma\}$ of size at least $\gamma -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
+A source $W = W_1| ... |W_\gamma$ is a $(q, \alpha, \beta)$-\emph{unguessable block source} if there exists a set $J\subset\{1,..., \gamma\}$ of size at least $\gamma -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
 \[
 \forall j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}))\geq \alpha.
 \]
 \end{definition}
 
-We show some examples of unguessable block distributions in \apref{sec:characterize}.  In particular, any source $W$ where for all $j$, $\Hoo(W_j) \geq \omega(\log n)$~(but all blocks may arbitrarily correlated) is an unguessable block distribution~(\clref{cl:all blocks entropy}).
+We show some examples of unguessable block sources in \apref{sec:characterize}.  In particular, any source $W$ where for all $j$, $\Hoo(W_j) \geq \omega(\log n)$~(but all blocks may arbitrarily correlated) is an unguessable block source~(\clref{cl:all blocks entropy}).
 
 Unfortunately, \consref{cons:first construction} is not a computational fuzzy extractor.  The codewords $c$ are not uniformly distributed and it is possible to learn some bits of $c$~(for the symbols of $W$ without much entropy).  However, we can show that $c$ looks like it has entropy.  We use the notion of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} extended to the conditional case:
 \begin{definition}\protect{~\cite[Definition 3]{DBLP:conf/eurocrypt/HsiaoLR07}}
@@ -821,7 +833,7 @@ The following theorem states the construction is a computational fuzzy conductor
 \begin{theorem}
 \label{thm:main thm first cons}
 Let $n$ be a security parameter. Let $\mathcal{Z}$ be an alphabet where $|\mathcal{Z}| \ge 2^{ \omega(\log(n))}$.
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block distributions over $\mathcal{Z}^\gamma$, for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code over $\mathcal{Z}^\gamma$.  Let $\mathcal{O}$ be an $\gamma$-composable VGB obfuscator for point functions with auxiliary inputs. Then for any $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}=H_0(C)-\beta, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \gamma/|\mathcal{Z}|$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block sources over $\mathcal{Z}^\gamma$, for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code over $\mathcal{Z}^\gamma$.  Let $\mathcal{O}$ be an $\gamma$-composable VGB obfuscator for point functions with auxiliary inputs. Then for any $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}=H_0(C)-\beta, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \gamma/|\mathcal{Z}|$.
 \end{theorem}
 
 \subsection{More errors than entropy?}
@@ -831,7 +843,7 @@ We first calculate the size of the Hamming ball.
 \[
 \log |B_t| = \log \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i> \log {\gamma \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\gamma\choose t}
 \]
-The simplest type of unguessable block distribution is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \gamma\omega(\log n)$.  This yields:
+The simplest type of unguessable block source is where each block is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the required entropy is $\Hoo(W) = \gamma\omega(\log n)$.  This yields:
 \[
 \text{\# errors} - \text{entropy} = \log |B_t| -  \Hoo(W)  <\left( \Theta(t\log |\mathcal{Z}|) + \log {\gamma \choose t}\right) -  \gamma \omega(\log n) .
 \]
@@ -898,14 +910,22 @@ Then define $D$ as follows.  On input $(y, p')$ sample $seed\leftarrow U_d$, com
 Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.  This is a contradiction.
 \end{proof}
 
-\subsection{Defining Reusability in the Computational Setting}
+\subsection{Reusability Fuzzy Extractors}
 \label{sec:comparing reusability}
 
-The definition of Boyen considers a single adversary.  We split the adversary into two parts, one of which is information-theoretic and another that is computationally bounded.  The functions $f_2,..., f_q$ can be thought of as a single adversary that sees all prior state.  However, to provide meaningful security in the computational setting, we cannot have communication between these adversaries.\footnote{An alternative would be to require the entire adversary to be computationally bounded.  Our construction satisfies this alternative adaption as well.}
+The goal of a reusable fuzzy extractor is to allow enrollment of a source across multiple services.  A service $i$ sees an reading of the source $w_i$.
+Boyen considers two versions of reusable fuzzy extractors, first where the adversary sees $p_1,..., p_q$~(outsider security~\cite[Definition 6]{Boyen2004}) and tries to learn about the values $w_1,..., w_q$ or the keys $r_1,..., r_q$.  Second, where the adversary controls some subset of the servers and can key generation on arbitrary $p_i'$~(insider security~\cite[Definition 7]{Boyen2004}).   This allows the adversary to learn a subset of keys $r_i$~(by performing key generation on the valid $p_i$).  This definition makes sense when servers are compromised~(after enrollment) and act maliciously.
 
+Boyen constructs a outsider reusable cryptographic fuzzy extractor for unbounded $q$ when the correlation between readings is limited to a transitive isometric permutation groups. Boyen transforms this construction to insider security using random oracles. %In both constructions, the correlation between  $w_1,..., w_q$ is limited to a transitive isometric permutation group.  
+
+Insider security strengthens outsider security in two ways.  First, it allows the adversary to see some subset of keys, second it allows the adversary to perform regeneration on arbitrary $p_i$.  This mixes two properties of a fuzzy extractor:  reusability and robustness~\cite{dkrs2006}.  Robust fuzzy extractors provide security against modified $p$.  
+In this work, we show reusability when some $r_i$ are observed but do not handle the issue of robustness.  That is, we assume passive servers.  Our definition lies between outsider and insider security.
+
+We adapt the definition of Boyen to the computational setting~(\defref{def:outsider fuzz ext}).  
+The definition of Boyen considers a single adversary.  We split the adversary into two parts, one of which is information-theoretic and another that is computationally bounded.  The functions $f_2,..., f_q$ can be thought of as a single adversary that sees all prior state.  However, to provide meaningful security in the computational setting, we cannot have communication between these adversaries.\footnote{An alternative would be to have a single computationally bounded adversary.  Our construction satisfies this alternative adaption as well.}
 Because these two adversaries do not communicate we strengthen the definition by allowing the perturbation adversary~($f_i$) to see the original sample $w_1$.  This was not allowed in the definition of Boyen as it would make security impossible.
 
-Finally, we allow the distinguishing adversary to see other keys.  This is strictly stronger than the definition of Boyen.  However, it is weaker than the notion of insider reusable fuzzy extractors where the adversary sees key generation on arbitrary $p$.  This is a mixture of reusability and robustness~\cite{dkrs2006} of the fuzzy extractor.  Our reusable construction~(\consref{cons:sampling}) is not insider secure.
+%Finally, we allow the distinguishing adversary to see other keys \lnote{we do? then why do we call our definition ``outsider''?}.  This is strictly stronger than the definition of Boyen \lnote{you mean than the outsider security definition of Boyen?}.  However, it is weaker than the notion of insider reusable fuzzy extractors where the adversary sees key generation on arbitrary $p$.  This \lnote{what is ``this''?} is a mixture of reusability and robustness~\cite{dkrs2006} of the fuzzy extractor.  Our reusable construction~(\consref{cons:sampling}) is not insider secure \lnote{according to Boyen's notion, right? Why not say ``not robust'' and/or clarify that $r_i$ can leak but $p_i$ cannot be modified.}.
 
 \subsection{Obfuscation}
 \label{sec:obfuscation def}
@@ -927,11 +947,11 @@ where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ querie
 For notational convenience, when we use point function obfuscation, we denote the oracle provided to the simulator as $I_w(\cdot, \cdot)$ where $w = w_1,..., w_\gamma$ is the vector of obfuscated points.  When we use digital lockers we denote the oracle provided to the simulator as $I_{v, r}(\cdot, \cdot)$ where $v = v_1,..., v_\ell$ is the vector of obfuscated points and $r$ is the hidden value~(we will hide the same value in each obfuscation).
 
 %\consref{cons:sampling} is the fuzzy extractor that allows for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  %Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
-\section{Characterizing unguessable block distributions}
+\section{Characterizing unguessable block sources}
 \label{sec:characterize}
 
 \defref{def:block guessable} is an inherently adaptive definition and a little unwieldy.  In this section, we partially characterize sources that satisfy \defref{def:block guessable}.
-The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent, so an equality query on block $i$ may reshape the distribution of block $j$.  In the examples that follow we denote the adversary by $S$ as we consider security against computationally unbounded adversaries defined in VGB obfuscation~(\defref{def:obf}).  We first show some sources that are unguessable block distributions~(\secref{sec:positive ex}) and then show distributions with high overall entropy that are not unguessable block distributions~(\secref{sec:negative ex}).
+The majority of the difficulty in characterizing \defref{def:block guessable} is that different blocks may be dependent, so an equality query on block $i$ may reshape the distribution of block $j$.  In the examples that follow we denote the adversary by $S$ as we consider security against computationally unbounded adversaries defined in VGB obfuscation~(\defref{def:obf}).  We first show some sources that are unguessable block sources~(\secref{sec:positive ex}) and then show distributions with high overall entropy that are not unguessable block sources~(\secref{sec:negative ex}).
 
 \subsection{Positive Examples}
 \label{sec:positive ex}
@@ -939,7 +959,7 @@ We begin with the case of independent blocks.
 
 \begin{claim}
 \label{cl:independent high ent}
-Let $W = W_1,  ... , W_\gamma$ be a source in which all blocks $W_j$  are mutually independent.  Let $\alpha$ be a parameter.  Let $J\subset \{1,..., \gamma\}$ be a set of indices such that for all $j\in J$, $\Hoo(W_j ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \gamma - |J|)$-unguessable block distribution.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \gamma - |J|)$-unguessable block distribution.
+Let $W = W_1,  ... , W_\gamma$ be a source in which all blocks $W_j$  are mutually independent.  Let $\alpha$ be a parameter.  Let $J\subset \{1,..., \gamma\}$ be a set of indices such that for all $j\in J$, $\Hoo(W_j ) =\alpha $.  Then for any $q$, $W$ is a $(q, \alpha - \log (q+1), \gamma - |J|)$-unguessable block source.  In particular, when $\alpha = \omega(\log n)$ and $q = \poly(n)$, then $W$ is a $(q, \omega(\log n), \gamma - |J|)$-unguessable block source.
 \end{claim}
 \begin{proof}
 It suffices to show that for all $j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}) = \alpha -\log (q+1)$.
@@ -956,7 +976,7 @@ However, \defref{def:block guessable} captures more distributions.  We now consi
 
 \begin{claim}
 \label{cl:each block from single seed}
-Let $f:\zo^e \rightarrow \mathcal{Z}^\gamma$ be a function.  Furthermore, let $f_j$ denote the restriction of $f$'s output to its $j$th coordinate.  If for all $j$, $f_j$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block distribution.
+Let $f:\zo^e \rightarrow \mathcal{Z}^\gamma$ be a function.  Furthermore, let $f_j$ denote the restriction of $f$'s output to its $j$th coordinate.  If for all $j$, $f_j$ is injective then $W = f(U_e)$ is a $( q, e - \log (q+1), 0)$-unguessable block source.
 \end{claim}
 \begin{proof}
 Since $f$ is injective on each block, $\Hav(W_j | View(S^{I_{W}(\cdot, \cdot)})) = \Hav(U_e | View(S^{I_{W}(\cdot, \cdot)}))$.  Consider a query $q_k$ on block $j$.  There are two possibilities: either $q_k$ is not in the image of $f_j$,  or $q_k$ can be considered a query on the preimage $f_j^{-1}(q_k)$. Then (by assuming $S$ knows $f$) we can eliminate queries which correspond to the same value of $U_e$.  Then the possible responses are strings with Hamming weight at most $1$ (like in the
@@ -969,7 +989,7 @@ We can prove a slightly weaker claim when the correlation between the coordinate
 
 \begin{claim}
 \label{cl:all blocks entropy}
-Let $W = W_1,..., W_\gamma$ be a source.  Suppose that for all $j$, $\Hoo(W_j)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is super-logarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block distribution.
+Let $W = W_1,..., W_\gamma$ be a source.  Suppose that for all $j$, $\Hoo(W_j)\geq \alpha$, and that $q \le 2^{\alpha}/4$ (this holds asymptotically, in particular, if $q$ is polynomial and $\alpha$ is super-logarithmic). Then  $W$ is a $(q, \alpha-1-\log(q+1), 0)$-unguessable block source.
 \end{claim}
 
 \begin{proof}
@@ -1020,10 +1040,10 @@ The previous example relies on an adversaries ability to determine a block from 
 Let $W = W_1,..., W_\gamma$ be a source under ordering $i_1,..., i_\gamma$.  The \emph{jump} of a block $i_j$ is $\mathtt{Jump}(i_j) = \max_{w_{i_1},..., w_{i_{j-1}}} H_0 (W_{i_j} | W_{i_1} = w_{i_1} ,..., W_{i_{j-1}} = w_{i_{j-1}})$.
 \end{definition}
 
-If an adversary can learn blocks in succession they can eventually recover the entire secret.  In order for a distribution to be block unguessable the adversary must get ``stuck'' early enough in their recovery process.  This translates to having a super-logarithmic jump early enough.
+If an adversary can learn blocks in succession they can eventually recover the entire secret.  In order for a source to be block unguessable the adversary must get ``stuck'' early enough in their recovery process.  This translates to having a super-logarithmic jump early enough.
 
 \begin{claim}
-Let $W$ be a distribution and let $q$ be a parameter, if there exists an ordering $i_1,..., i_\gamma$ such that for all $j\le \gamma-\beta +1$, $\mathtt{Jump}(i_j) = \log q /(\gamma-\beta+1)$, then $W$ is not $(q, 0, \beta)$-unguessable block distribution.
+Let $W$ be a distribution and let $q$ be a parameter, if there exists an ordering $i_1,..., i_\gamma$ such that for all $j\le \gamma-\beta +1$, $\mathtt{Jump}(i_j) = \log q /(\gamma-\beta+1)$, then $W$ is not $(q, 0, \beta)$-unguessable block source.
 \end{claim}
 
 \begin{proof}
@@ -1077,17 +1097,17 @@ This completes the proof.
 \section{Analysis of \consref{cons:sampling}}
 \label{sec:analysis sampling}
 \subsection{Security}
-The proof of security for \consref{cons:sampling} uses the definition of block unguessable distributions~(\defref{def:block guessable}).  This definition is adaptive and discussed in \apref{sec:characterize}.
+The proof of security for \consref{cons:sampling} uses the definition of block unguessable sources~(\defref{def:block guessable}).  This definition is adaptive and discussed in \apref{sec:characterize}.
 We show the security of \consref{cons:sampling}:
 \begin{itemize}
 \item \lemref{lem:sampling works}: Show that sampling is successful with overwhelming probability.
 \item \corref{cor:samp sec}: The outputs $V_1,.., V_\ell$ have high individual entropy with good probability.
-\item The outputs $V_1,..., V_\ell$ are a block unguessable distribution.  This is made formal in the following corollary:
+\item The outputs $V_1,..., V_\ell$ are a block unguessable source.  This is made formal in the following corollary:
 \begin{corollary}
 \label{cor:v are unguessable}
-Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works},  and all the other variables be as in \thref{thm:sampling}. Take any $q=\poly(n)$.  For $\alpha'' =\alpha'-1-\log (q+1) =  \omega(\log n)$, with  probability $1-\ell \epsilon_{sam}$ over the choice of $\Lambda=\lambda$, the distribution $V| \Lambda=\lambda$ is a $(q, \alpha'', 0)$-unguessable block distribution.
+Let $\epsilon_{sam}, \alpha'$ be as in \lemref{lem:sampling works},  and all the other variables be as in \thref{thm:sampling}. Take any $q=\poly(n)$.  For $\alpha'' =\alpha'-1-\log (q+1) =  \omega(\log n)$, with  probability $1-\ell \epsilon_{sam}$ over the choice of $\Lambda=\lambda$, the distribution $V| \Lambda=\lambda$ is a $(q, \alpha'', 0)$-unguessable block source.
 \end{corollary}
-\item \lemref{lem:samp unguess}: An adversary is unlikely to receive any information about the key for a block unguessable distribution.
+\item \lemref{lem:samp unguess}: An adversary is unlikely to receive any information about the key for a block unguessable source.
 \end{itemize}
 
 \noindent
@@ -1133,7 +1153,7 @@ Thus, setting $\alpha'=\frac{\alpha \eta(\gamma-\beta)}{2\gamma}$ and applying \
 \begin{proof}[{\large Proof of \lemref{lem:samp unguess}}]
 
 \lnote{I need to check this}
-Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for digital lockers over $\mathcal{Z}$\footnote{In this proof we only consider the case where the sampling has produced a block unguessable distribution.  The negligible portion of the time when this does not happen in included in the security of \thref{thm:sampling}}  .  Let $W$ be a $(q, \alpha'' = \omega(\log n), 0)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U, P))\le \epsilon_{sec}$.
+Let $\mathcal{O}$ be a $\ell$-composable VGB obfuscator with auxiliary input for digital lockers over $\mathcal{Z}$\footnote{In this proof we only consider the case where the sampling has produced a block unguessable source.  The negligible portion of the time when this does not happen in included in the security of \thref{thm:sampling}}  .  Let $W$ be a $(q, \alpha'' = \omega(\log n), 0)$-unguessable block source.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U, P))\le \epsilon_{sec}$.
 
 Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U, P))> \epsilon_{sec}$.
 Let $D$ be such a distinguisher of size at most $s_{sec}$.  That is,
@@ -1221,7 +1241,7 @@ This completes the proof of \lemref{lem:sampling errors}.
 \section{Analysis of \consref{cons:first construction}}
 \label{sec:construction analysis}
 \subsection{Security}
-Security of \consref{cons:first construction} is similar to the security of \consref{cons:sampling}.  However, security is more complicated, the main difficulty is that the definition of block unguessable distributions~(\defref{def:block guessable}) allows for certain weak blocks that can easily be guessed.  This means we must limit our indistinguishable distribution to blocks that are difficult to guess.  Security is proved via the following lemma:
+Security of \consref{cons:first construction} is similar to the security of \consref{cons:sampling}.  However, security is more complicated, the main difficulty is that the definition of block unguessable sources~(\defref{def:block guessable}) allows for certain weak blocks that can easily be guessed.  This means we must limit our indistinguishable distribution to blocks that are difficult to guess.  Security is proved via the following lemma:
 
 \begin{lemma}
 \label{lem:security of cons}
@@ -1248,7 +1268,7 @@ The outline for the rest of the proof is as follows:
 \label{app:security of main cons}
 
 \lnote{I need to check this}
-Let $\mathcal{O}$ be a $\gamma$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block distribution.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq H_0(C)- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\gamma - \beta)2^{-(\alpha-1)}$.
+Let $\mathcal{O}$ be a $\gamma$-composable VGB obfuscator with auxiliary input for point programs over $\mathcal{Z}$.  Let $W$ be a $(q, \alpha = \omega(\log n), \beta)$-unguessable block source.  Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P)\geq H_0(C)- \beta$. % for $\epsilon' = 2\epsilon_{obf} + (\gamma - \beta)2^{-(\alpha-1)}$.
 Suppose not, that is suppose there is some $s_{sec} = \poly(n)$ such that exists $\epsilon_{sec} = \poly(n)$ and $H^{\hill}_{\epsilon_{sec}, s_{sec}}(C|P) < H_0(C)-\beta$.
 By \defref{def:block guessable} there exists a set of indices $J$ such that all blocks within $J$ are unguessable.  Define by $C'$ the distribution of sampling a uniform codeword where all locations outside $J$ are fixed.  Then
 $\Hav(C' | C_{J^c}) \ge \Hoo(C', C_{J^c}) - H_0(C_{J^c})  = H_0(C) - \beta$ (by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}).
@@ -1292,11 +1312,11 @@ Recall that for all $j\in J$, $\Hav(W_j | View(S))\geq \alpha$.  The only inform
 We now show that for an unguessable block source the remaining entropy $\alpha\leq \log |\mathcal{Z}|-\log q $:
 \begin{claim}
 \label{cl:ent bounded away from n}
-If $W$ is a $(q, \alpha, \beta)$-block unguessable distribution over $\mathcal{Z}$ then $\alpha \le \log |\mathcal{Z}|-\log q$.
+If $W$ is a $(q, \alpha, \beta)$-block unguessable source over $\mathcal{Z}$ then $\alpha \le \log |\mathcal{Z}|-\log q$.
 \end{claim}
 \begin{proof}
 \bnote{Leo I changed some of this under you.  It wasn't clear or probably right as written.}
-Let $W$ be a $(q, \alpha, \beta)$-block unguessable distribution.  Let $J\subset\{1,..., \gamma\}$ the set of good indices.
+Let $W$ be a $(q, \alpha, \beta)$-block unguessable source.  Let $J\subset\{1,..., \gamma\}$ the set of good indices.
 It suffices to show that there exists an $S$ making $q$ queries such that for some $j\in J, \Hav(W_j | S^{I_{W}(\cdot, \cdot)})\le \log |\mathcal{Z}| - \log q$.  Let $j\in J$ be some arbitrary element of $J$ and denote by $w_{j,1}, ..., w_{j,q}$ the $q$ most likely outcomes of $W_j$~(breaking ties arbitrarily).  Then $\sum_{i=1}^q \Pr[W_j = w_{j,i}]\geq q/|\mathcal{Z}|$.  Suppose not, this means that there is some $w_{j,i}$ with probability $\Pr[W_j = w_{j,i}] < 1/|\mathcal{Z}|$.  Since there are $\mathcal{Z} - q $ remaining possible values of $W_j$ for their total probability to be at least $1-q/|\mathcal{Z}|$ at least of these values has probability at least $1/\mathcal{Z}$.  This contradicts the statement $w_{j,1},..., w_{j,q}$ are the most likely values.  Consider $S$ that queries its oracle on $(j, w_{j,1}),.., (j, w_{j,q})$.  Denote by $Bad$ the random variable when $W_j\in \{w_{j,1},.., w_{j,q}\}$  After these queries the remaining min-entropy is at most:
 \begin{align*}
 \Hav(W_j | S^{J_W(\cdot, \cdot)}) &=  -\log \left(\Pr[Bad=1]\times 1+ \Pr[Bad=0]\times \max_{w}\Pr[W_j = w| Bad =0]\right)\\
