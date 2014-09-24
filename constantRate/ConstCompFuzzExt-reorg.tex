@@ -333,17 +333,23 @@ a constant fraction of symbols in $w$ may have little or no entropy, as long as 
 
 
 \begin{table}
-\begin{tabular}{l l l c c}
+{ \centering
+\begin{tabular}{l l l l l}
  & Security & Source Structure & Error-Tolerance & Alphabet Size\\
 \hline
-\consref{cons:info theoretic} & Info-theoretic  & Partial block source& $\Theta(\gamma)$ & $\omega(1)$ \\
-\consref{cons:sampling} & Reusable Computational & Partial block source& $o(\gamma)$ & $\omega(1)$ \\
-\consref{cons:first construction} & Computational & Unguessable block source & $\Theta(\gamma)$ & $n^{\omega(1)}$
+Cons. \ref{cons:info theoretic} & Info-theoretic  & Most symbols  & Constant fraction & Super constant \\
+& & contribute entropy & &\\\hline
+Cons. \ref{cons:sampling} & Reusable & Most symbols & Sub constant fraction & Super constant \\
+& Computational & contribute entropy & &\\\hline
+Cons. \ref{cons:first construction} & Computational & Symbols correlated  & Constant fraction & Super\\
+& & but hard to guess && polynomial
 \end{tabular}
-\caption{Summary of new constructions.  All constructions support families of distributions with more errors than entropy.  Partial blocks sources are defined in \defref{def:partial source} and unguessable block sources are defined in \defref{def:block guessable}.}
+}%end centering
+\caption{Summary of new constructions.  All constructions support families of distributions with more errors than entropy.}
 \label{tab:upper bounds}
 \end{table}
 
+\bnote{can't get this table to center don't know why}
 %\begin{table}
 %\begin{tabular}{l | l | l | l }
 %Construction & Security & Main Feature  & Main Limitations \\
@@ -730,7 +736,9 @@ This yields:
 \[
 \text{\# Errors} - \text{Entropy} =  \log |B_t| -\Hoo(W) < t \log |\mathcal{Z}| - \Theta(\gamma)= o(\gamma) \log |\mathcal{Z}| - \Theta(\gamma)
 \]
-That is, there exists a super-constant alphabet size for which \consref{cons:sampling} is secure with more errors than entropy.  We note that \consref{cons:sampling} works for an arbitrary size alphabet; however, for a constant size alphabet, the required entropy is greater than the number of corrected error patterns.  However, \consref{cons:sampling} is reusability for an arbitrary size alphabet.
+That is, there exists a super-constant alphabet size for which \consref{cons:sampling} is secure with more errors than entropy.  
+
+\textbf{Note:} \consref{cons:sampling} works for an arbitrary size alphabet; however, for a constant size alphabet, the required entropy is greater than the number of corrected error patterns.  However, \consref{cons:sampling} is reusability for an arbitrary size alphabet.
 
 \section{Allowing Correlated Symbols}
 \label{sec:cor construction}
