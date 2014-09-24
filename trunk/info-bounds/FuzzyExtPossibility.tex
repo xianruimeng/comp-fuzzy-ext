@@ -897,14 +897,14 @@ Let $n$ be a security parameter and let $\mathcal{M} = |\mathbb{F}|^\gamma$.  Th
 \end{corollary}
 
 
-\begin{corollary}
-\label{cor:rec yields sketch}
-Let $\mathcal{Z}$ be an alphabet. Let $(\sketch', \rec')$ be an $(\epsilon,s_{sec})$-HILL-entropy $(\mathcal{Z}^n, n\log |\mathcal{Z}|, \tilde{m}, t)$-secure sketch with error $\delta$ for the Hamming metric over $\mathcal{Z}^n$, with $\rec'$ of circuit size $s_{rec}$.
-If $s_{sec}\geq t(s_{rec} + n\log |\mathcal{Z}|)$, then there exists a   $(\mathcal{Z}^n, n\log |\mathcal{Z}|, \tilde{m}-2,t)$ (information-theoretic) secure sketch with error
-$4(\epsilon+t\delta)$. 
-\end{corollary}
+%\begin{corollary}
+%\label{cor:rec yields sketch}
+%Let $\mathcal{Z}$ be an alphabet. Let $(\sketch', \rec')$ be an $(\epsilon,s_{sec})$-HILL-entropy $(\mathcal{Z}^n, n\log |\mathcal{Z}|, \tilde{m}, t)$-secure sketch with error $\delta$ for the Hamming metric over $\mathcal{Z}^n$, with $\rec'$ of circuit size $s_{rec}$.
+%If $s_{sec}\geq t(s_{rec} + n\log |\mathcal{Z}|)$, then there exists a   $(\mathcal{Z}^n, n\log |\mathcal{Z}|, \tilde{m}-2,t)$ (information-theoretic) secure sketch with error
+%$4(\epsilon+t\delta)$. 
+%\end{corollary}
 
-\textbf{Note:} The above result does not rule out a computational secure sketch based on unpredictability~(where $W$ is hard to guess given the string $S$).  Unpredictable secure sketches is implied by virtual-grey box obfuscation of point functions~\cite{BitanskyCKP14}.  
+\textbf{Note:} The above result does not rule out a computational secure sketch based on unpredictability~(where $W$ is hard to guess given the string $S$).  Unpredictable secure sketches are implied by virtual-grey box obfuscation of proximity functions~\cite{BitanskyCKP14}.  
 
 \section{Distribution-Oblivious Fuzzy Extractors}
 In the previous section, we showed a family of distributions that does not admit a secure sketch.  In this section, we extend this result to fuzzy extractors.  The main difficulty is showing that fuzzy extractors must cause a significantly entropy drop in $V$.  This is not true for all metric spaces.  We begin with the case of perfect correctness in the Hamming metric.  
@@ -942,7 +942,7 @@ The set of possible keys induces a partition on the metric space.  That is, for 
 \inter(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =r\}.
 \end{align*}
 
-Note that $\bnd(Q_{p^*, r}) \cap \inter(Q_{p,r}) =\emptyset$, for any $r_1, r_2$, $\inter(Q_{p^*, r_1}) \cap \inter(Q_{p^*, r_2}) =\emptyset$ and the union of all boundaries and interiors is the entire space.  Furthermore, note that for any $r\in \zo^\kappa$,  $\Pr[V\in Q_{p^*, r}] = \ngl(n).$\bnote{need to fill in this distinguishing argument, note this doesn't need to be the case for all $p^*$ just on average. need another markov inequality.}\bnote{what can we say about the relative sizes of these spaces?}
+Note that $\bnd(Q_{p^*, r}) \cap \inter(Q_{p,r}) =\emptyset$.  Furthermore, note that for any $r\in \zo^\kappa$,  $ | Q_{p^*, r}| \le (1+\epsilon)2^\kappa.$\bnote{need to fill in this distinguishing argument, note this doesn't need to be the case for all $p^*$ just on average. need another markov inequality.}\bnote{what can we say about the relative sizes of these spaces?}
 
 We now consider the distribution of $V | P=p^*$.  By the functionality of $(\gen, \rep)$, for every $v\in V| P=p^*$, $v\in Int(Q_{p, r})$.  Furthermore, if $v$ is not in some interior then $v\not \in V | P=p^*$.  Thus, it suffices to show that $\frac{\sum_{r} |\inter(Q_{p^*, r})|}{\mathcal{M}} = XXX$\bnote{fill this in.}
 
