@@ -334,7 +334,7 @@ a constant fraction of symbols in $w$ may have little or no entropy, as long as 
 
 \begin{table}
 \begin{tabular}{l l l c c}
-Construction & Security & Source Structure & Error-Tolerance & Alphabet Size\\
+ & Security & Source Structure & Error-Tolerance & Alphabet Size\\
 \hline
 \consref{cons:info theoretic} & Info-theoretic  & Partial block source& $\Theta(\gamma)$ & $\omega(1)$ \\
 \consref{cons:sampling} & Reusable Computational & Partial block source& $o(\gamma)$ & $\omega(1)$ \\
@@ -458,7 +458,7 @@ Information-theoretic fuzzy extractors are obtained by replacing computational d
 \subsubsection{Reusable Fuzzy Extractors}
 \label{sec:reusable}
 
-An additional desirable feature of fuzzy extractors is reusability~\cite{Boyen2004}. Inuitively, it is the ability to support multiple independent enrollments of the same value, allowing users to reuse the same biometric or PUF, for example, with multiple noncommunicating providers. More precisely, the algorithm $\gen$ may be run multiple times on correlated readings $w_1,..., w_q$ of a given source. Each time, $\gen$ will produce a different pair of values $(r_1, p_1),..., (r_q, p_q)$. Security for each extracted string $r_i$ should hold even in the presence of all the helper strings $p_1, \dots, p_q$ (even though the reproduction procedure $\rep$ at the $i$th provider obtains only a single $w'_i$ close to $w_i$ and uses a single helper string $p_i$). Because the multiple providers may not trust each other, a stronger security feature (which we satisfy) ensures that each $r_i$ is secure even when all $r_j$ for $j\neq i$ are also given to the adversary.
+An additional desirable feature of fuzzy extractors is reusability~\cite{Boyen2004}. Inuitively, it is the ability to support multiple independent enrollments of the same value, allowing users to reuse the same biometric or PUF, for example, with multiple noncommunicating providers. More precisely, the algorithm $\gen$ may be run multiple times on correlated readings $w_1,..., w_q$ of a given source. Each time, $\gen$ will produce a different pair of values $(r_1, p_1),..., (r_q, p_q)$. Security for each extracted string $r_i$ should hold even in the presence of all the helper strings $p_1, \dots, p_q$ (the reproduction procedure $\rep$ at the $i$th provider still obtains only a single $w'_i$ close to $w_i$ and uses a single helper string $p_i$). Because the multiple providers may not trust each other, a stronger security feature (which we satisfy) ensures that each $r_i$ is secure even when all $r_j$ for $j\neq i$ are also given to the adversary.
 
  Our ability to construct reusable fuzzy extractors depends on the types of correlations allowed among $w_1, \dots, w_q$. Boyen \cite{Boyen2004} showed how to do so when each $w_i$ is a shift of $w_1$ by a value that is oblivious to the value of $w_1$ itself (formally, $w_i$ is a result of a transitive isometry applied to $w_1$). Boyen also showed that even for this weak class of correlations, any secure sketch must lose at least $\log |B_t|$ entropy~\cite[Theorem 11]{Boyen2004}.
   
@@ -488,7 +488,7 @@ Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, 
 Fix some $W_1 \in \mathcal{W}$.  Let $f_2,.., f_q , D$ be a split adversary.  Define the following game for all $i=1,..., q$:
 \begin{itemize}%[leftmargin=-.6in]
 \item \textbf{Sampling} The challenger samples $w_1\leftarrow W_1$.
-\item \textbf{Perturbation} For $i=2,..., q$: the challenger computes $(r_i, p_i)\leftarrow \gen(w_i)$.  Set $w_{i+1} = f_i(w_1, p_1,..., p_i)$.% The output $p_i$ is provided to $\mathcal{A}$, who selects $\delta_i:\mathcal{M}\rightarrow \mathcal{M}$.  The challenger sets $w_{i+1} = \delta_i(w_1)$.
+\item \textbf{Perturbation} For $i=2,..., q$: the challenger computes $(r_i, p_i)\leftarrow \gen(w_i)$.  Set $w_{i+1} = f_i(w_1, p_1,..., p_i)$.\bnote{should we allow keys to the perturbation adversary?}
 \item \textbf{Distinguishing} The advantage of $D$ is
 \begin{align*}
 \text{Adv}(D)&\overset{def}= \Pr[D(r_1,..., r_{i-1}, r_i, r_{i+1},..., r_q, p_1,..., p_q)=1]\\ &- \Pr[D(r_1,..., r_{i-1}, u, r_{i+1},..., r_q, p_1,..., p_q)=1].
@@ -914,12 +914,12 @@ Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  T
 \label{sec:comparing reusability}
 
 The goal of a reusable fuzzy extractor is to allow enrollment of a source across multiple services.  A service $i$ sees an reading of the source $w_i$.
-Boyen considers two versions of reusable fuzzy extractors, first where the adversary sees $p_1,..., p_q$~(outsider security~\cite[Definition 6]{Boyen2004}) and tries to learn about the values $w_1,..., w_q$ or the keys $r_1,..., r_q$.  Second, where the adversary controls some subset of the servers and can key generation on arbitrary $p_i'$~(insider security~\cite[Definition 7]{Boyen2004}).   This allows the adversary to learn a subset of keys $r_i$~(by performing key generation on the valid $p_i$).  This definition makes sense when servers are compromised~(after enrollment) and act maliciously.
+Boyen considers two versions of reusable fuzzy extractors, first where the adversary sees $p_1,..., p_q$~(outsider security~\cite[Definition 6]{Boyen2004}) and tries to learn about the values $w_1,..., w_q$ or the keys $r_1,..., r_q$.  Second, where the adversary controls some subset of the servers and can key generation on arbitrary $p_i'$~(insider security~\cite[Definition 7]{Boyen2004}).   This allows the adversary to learn a subset of keys $r_i$~(by performing key generation on the valid $p_i$).  This definition makes sense when servers are compromised~(after enrollment) and act maliciously.  In both definitions, the adversary creates a perturbation function $_i$ after seeing $p_1,..., p_{i-1}$~(and generated keys for outsider security) and the challenger generates $w_i = f_i(w_1)$.  The definition is parameterized by the class of allowed perturbation functions.
 
-Boyen constructs a outsider reusable cryptographic fuzzy extractor for unbounded $q$ when the correlation between readings is limited to a transitive isometric permutation groups. Boyen transforms this construction to insider security using random oracles. %In both constructions, the correlation between  $w_1,..., w_q$ is limited to a transitive isometric permutation group.  
+Boyen constructs a outsider reusable cryptographic fuzzy extractor for unbounded $q$ when the perturbation family is a transitive isometric permutation groups. Boyen transforms this construction to insider security using random oracles. %In both constructions, the correlation between  $w_1,..., w_q$ is limited to a transitive isometric permutation group.  
 
-Insider security strengthens outsider security in two ways.  First, it allows the adversary to see some subset of keys, second it allows the adversary to perform regeneration on arbitrary $p_i$.  This mixes two properties of a fuzzy extractor:  reusability and robustness~\cite{dkrs2006}.  Robust fuzzy extractors provide security against modified $p$.  
-In this work, we show reusability when some $r_i$ are observed but do not handle the issue of robustness.  That is, we assume passive servers.  Our definition lies between outsider and insider security.
+Insider security strengthens outsider security in two ways.  First, it allows the adversary to see some subset of keys, second it allows the adversary to perform key generation on arbitrary $p_i$.  This mixes two properties of a fuzzy extractor:  reusability and robustness~\cite{dkrs2006}.  Robust fuzzy extractors provide security against modified $p$.  
+In this work, we show reusability when $r_i$ are observed but do not handle the issue of robustness.  That is, we assume keys may be exposed but servers keep honest state.  Our definition lies between outsider and insider security.
 
 We adapt the definition of Boyen to the computational setting~(\defref{def:outsider fuzz ext}).  
 The definition of Boyen considers a single adversary.  We split the adversary into two parts, one of which is information-theoretic and another that is computationally bounded.  The functions $f_2,..., f_q$ can be thought of as a single adversary that sees all prior state.  However, to provide meaningful security in the computational setting, we cannot have communication between these adversaries.\footnote{An alternative would be to have a single computationally bounded adversary.  Our construction satisfies this alternative adaption as well.}
