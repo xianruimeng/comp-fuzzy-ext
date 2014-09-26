@@ -235,18 +235,36 @@
 \title{Key Derivation From Noisy Sources With More Errors Than Entropy}
 %\author{Ran Canetti \and Benjamin Fuller \and Omer Paneth \and Leonid Reyzin \and Adam Smith}
 \blind{
-\author{Ran Canetti\footnote{Email: {\tt canetti@cs.bu.edu}. Boston University and Tel Aviv University.} \and Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and MIT Lincoln Laboratory.} \and Omer Paneth\footnote{Email: {\tt paneth@cs.bu.edu}. Boston University.} \and Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.} \and Adam Smith\footnote{Email: {\tt asmith@cse.psu.edu}.  Pennsylvania State University.} }
+\author{Ran Canetti\footnote{Email: {\tt canetti@cs.bu.edu}. Boston University and Tel Aviv University.} \and Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and MIT Lincoln Laboratory.} \and Omer Paneth\footnote{Email: {\tt paneth@cs.bu.edu}. Boston University.} \and Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.} \and Adam Smith\footnote{Email: {\tt asmith@cse.psu.edu}.  Pennsylvania State University; work performed while at Boston University's Hariri Institute for Computing and RISCS Center, and Harvard University's
+``Privacy Tools'' project.} }
 }
 \begin{document}
 \maketitle
 
 
 \begin{abstract}
-\lnote{needs work}
-Fuzzy extractors convert repeated readings of a noisy source of entropy into the same uniformly distributed key~(Dodis et al., Eurocrypt 2004).  In the process of eliminating noise, they  lose some of the entropy of the original source---in the worst case, as much as the logarithm of the number of tolerated error patterns. For many practical sources, the error tolerance necessary to achieve reliable key derivation is larger than the entropy of the source.  Unfortunately, it is impossible to provide security for every source with this property.  Most known approaches for building fuzzy extractors work in the worst case and thus cannot be used when a source has \emph{more errors than entropy}.
+\lnote{Opinions?}
+Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated readings of a noisy source of entropy into the same uniformly distributed key. To eliminate noise, they require an initial enrollment phase that takes a reading from the source and produces a nonsecret helper string to be used in subsequent readings. This helper string reduces  the entropy of the original source---in the worst case, by as much as the logarithm of the number of tolerated error patterns. For many practical sources, reliability demands that the number of tolerated error patterns is large, making this loss greater than the original entropy of the source. We say that such sources have \emph{more errors than entropy}.  Most known approaches for building fuzzy extractors cannot be used for such sources.
 
-Fortunately, practical sources contain useful structure.  In this work, we exploit distributional structure to construct fuzzy extractors for large classes of noisy sources with more errors than entropy.  
-We show an information-theoretic construction and two computational constructions with additional features.  Our constructions are for the Hamming metric.
+%\emph{Reusable} fuzzy extractors (Boyen, CCS 2004)
+% remain secure even when the initial enrollment phase is repeated multiple times on correlated readings, producing multiple helper strings. Prior approaches to building reusable fuzzy extractors severely restricted allowed correlations among initial enrollment readings.
+%   
+%We provide constructions of fuzzy extractors for large classes of sources with more errors than entropy.  We also construct the first reusable fuzzy extractors that has no restrictions on correlations among multiple readings of the source. Our constructions exploit the structural properties of a source in addition to its entropy guarantees. One is information-theoretic; the other two rely computational assumptions. They differ in the types of sources they support.
+
+We provide constructions of fuzzy extractors for large classes of sources with more errors than entropy.  Our constructions exploit the structural properties of a source in addition to its entropy guarantees. Some are made possible by relaxing the security requirement from information-theoretic to computational.
+
+%One is information-theoretic; the other two rely computational assumptions. They differ in the types of sources they support.
+
+\emph{Reusable} fuzzy extractors (Boyen, CCS 2004)
+ remain secure even when the initial enrollment phase is repeated multiple times on correlated readings, producing multiple helper strings. By relying on computational security, we construct the first reusable fuzzy extractors that make no assumption about how multiple readings of the source are correlated.
+
+
+\iffalse
+
+We construct fuzzy extractors for large classes of such sources by exploiting  their structural properties in addition to their entropy guarantees.  
+We show an information-theoretic construction and two computational constructions with additional features.  Our constructions are for the Hamming metric over a nonbinary alphabet.
+
+The information-theoretic construction supports sources in which most symbols contributes fresh entropy. The first computational construction has the additional feature of \emph{reusability}~(Boyen, CCS 2004), allowing multiple correlated 
 
 \begin{itemize} \item \textbf{Information-theoretic}  Our first construction supports sources where each symbol contributes fresh entropy and corrects a constant fraction of errors over a super constant size alphabet.  
 
@@ -259,10 +277,11 @@ Our third construction strengthens the class of supported sources and corrects a
 
 The computational constructions can be implemented efficiently based on number-theoretic assumptions or assumptions on cryptographic hash functions.
 \end{itemize}
+\fi
 
 \medskip
 
-\textbf{Keywords} Fuzzy extractors, key derivation, error-correcting codes, computational entropy, point obfuscation.
+\textbf{Keywords} Fuzzy extractors, reusability, key derivation, error-correcting codes, computational entropy, point obfuscation.
 \end{abstract}
 
 
@@ -313,12 +332,12 @@ For example, the IrisCode~\cite{daugman2004}, which is the state of the art appr
 The situation with reusability is even worse: the only known construction of reusable fuzzy extractors \cite{Boyen2004} requires very particular relationships between $w_i$ values, which are unlikely to hold in any practical source.
 
 \paragraph{Our Contributions}
-We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.  Table~\ref{tab:upper bounds} summarizes our constructions. \bnote{table better?}
+We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy; each construction comes with a constraint on the sources for which it is secure.  Table~\ref{tab:upper bounds} summarizes our constructions.
 Our first construction provides information-theoretic security.  It can correct a constant fraction of errors, but requires that a constant fraction of the symbols contribute fresh entropy, even conditioned on previous symbols~(\defref{def:partial source}). %It requires an alphabet size that is super constant in the security parameter. \lnote{keep this last sentence?}
 
-We switch to computational security to obtain constructions with additional features. Our second construction provides reusability (against computationally bounded adversaries).  Like the first construction,
-it requires that a constant fraction of symbols contribute fresh entropy. However,
-the reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} satisfies the above conditions as a distribution. 
+We switch to computational security to obtain constructions with additional features. Our second construction provides reusability (against computationally bounded adversaries).  
+The reusability we obtain is very strong:  security holds even if the multiple readings $w_i$ used in $\gen$ are \emph{arbitrarily correlated}, as long as each $w_i$ \emph{individually} comes from an allowed distribution.
+The allowed distributions include those that are supported in the first construction, as well as other distributions, such as those with $k$-wise independence among symbols for superlogarithmic $k$.
 This construction requires that the fraction of errors is subconstant. 
 
 Our third construction removes the need for fresh entropy in the symbols and allows a constant fraction of symbols of errors, at the cost of requiring a large alphabet size~(super-polynomial in the security parameter).
@@ -333,23 +352,24 @@ a constant fraction of symbols in $w$ may have little or no entropy, as long as 
 
 
 \begin{table}
-{ \centering
+\begin{center}
 \begin{tabular}{l l l l l}
  & Security & Source Structure & Error-Tolerance & Alphabet Size\\
 \hline
-Cons. \ref{cons:info theoretic} & Info-theoretic  & Most symbols  & Constant fraction & Super constant \\
-& & contribute entropy & &\\\hline
+Cons. \ref{cons:info theoretic} & Not reusable  & Most symbols  & Constant fraction & Super constant \\
+&  Info-theoretic & contribute entropy & &\\\hline
 Cons. \ref{cons:sampling} & Reusable & Most symbols & Sub constant fraction & Super constant \\
 & Computational & contribute entropy & &\\\hline
-Cons. \ref{cons:first construction} & Computational & Symbols correlated  & Constant fraction & Super\\
-& & but hard to guess && polynomial
+Cons. \ref{cons:first construction} & Not reusable & Symbols correlated  & Constant fraction & Super polynomial\\
+&  Computational & but hard to guess && 
 \end{tabular}
-}%end centering
+\end{center}
+%end centering
 \caption{Summary of new constructions.  All constructions support families of distributions with more errors than entropy.}
 \label{tab:upper bounds}
 \end{table}
 
-\bnote{can't get this table to center don't know why}
+
 %\begin{table}
 %\begin{tabular}{l | l | l | l }
 %Construction & Security & Main Feature  & Main Limitations \\
@@ -652,7 +672,7 @@ Let $\eta$ be a parameter, and $\mathcal{O}$ be an obfuscator for the family of 
 %\end{itemize}
 The use of a computational primitive~(obfuscation of digital lockers) allows us to sample multiple times, because we need to argue only about individual entropy of $V_i$, as opposed to the information-theoretic setting, where it would be necessary to argue about the entropy of the joint variable $V$.  This is the property that allows reusability.
 
-This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. Goldreich provides an introduction to samplers in~\cite{goldreich2011sample}.
+This construction uses a na\"{i}ve sampler that takes truly random samples, but the public randomness may be substantially decreased by using more sophisticated samplers. (See Goldreich~\cite{goldreich2011sample} for an introduction to samplers.)
 
 \begin{theorem}
 \label{thm:sampling}
@@ -738,7 +758,8 @@ That is, there exists a super-constant alphabet size for which \consref{cons:sam
 
 \textbf{Notes:} \consref{cons:sampling} works for an arbitrary size alphabet; however, for a constant size alphabet, the required entropy is greater than the number of corrected error patterns.  However, \consref{cons:sampling} is reusability for an arbitrary size alphabet.
 
-Furthermore, we showed that \consref{cons:sampling} is secure on partial block sources.  In fact, it is secure for any source where sampling produces a high entropy string~($\omega(\log n)$) with overwhelming probability.  For comparison with \consref{cons:info theoretic} we restrict our attention to partial block sources.\bnote{I just added this.  Okay?}
+In the analysis of \consref{cons:sampling} we restricted our attention to partial block sources, to allow for an easy comparison with \consref{cons:info theoretic}.  However,  in fact \consref{cons:sampling}  is secure for any source where sampling produces a high entropy string~(entropy $\omega(\log n)$) with overwhelming probability. For example, it is secure for sources with symbols that are $\omega(\log n)/\log |\mathcal{Z}|$-wise independent. 
+
 
 \section{Allowing Correlated Symbols}
 \label{sec:cor construction}
@@ -865,9 +886,9 @@ If $\gamma$ is not long enough to get a sufficiently long output, the constructi
 \section*{Acknowledgements}
 The authors are grateful to Nishanth Chandran, Sharon Goldberg, Gene Itkis, Bhavana Kanukurthi, and Mayank Varia for helpful discussions, creative ideas, and important references.
 
-This work is supported in part by National Science Foundation grants 0831281, 1012910, 1012798, and 1218461.
+This work is supported in part by National Science Foundation grants 0831281, 1012910, 1012798, 1218461, and 1422965.
 Omer Paneth is additionally supported by the Simons award for graduate students in theoretical computer science.
-The work of Benjamin Fuller is sponsored in part by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government.
+The work of Benjamin Fuller is sponsored in part by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government. 
 }
 \bibliographystyle{alpha}
 \bibliography{crypto}
