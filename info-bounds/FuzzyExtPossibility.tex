@@ -49,7 +49,7 @@
 \newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
 \newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
 \newcommand{\prg}{\ensuremath{\class{prg}}\xspace}
-\newcommand{\bnd}{\ensuremath{\class{Bnd}}\xspace}
+\newcommand{\crust}{\ensuremath{\class{Crust}}\xspace}
 \newcommand{\inter}{\ensuremath{\class{Inter}}\xspace}
 \newcommand{\zo}{\ensuremath{\{0, 1\}}}
 \newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
@@ -738,7 +738,7 @@ We then show the following:
 
 \begin{itemize}
 \item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$. Alternatively, $\forall z, \Hfuzz(V | Z=z) = \omega(\log n)$.
-\item The distribution $V$ is uniform~(from the sketch designers point of view).  That is $V\overset{d}=U$.
+\item The distribution $V$ is uniform~(from the sketch designer's point of view).  That is $V\overset{d}=U$.
 \item For any secure sketch on $V$, $\tilde{H}_0(V | \sketch(V)) \le  (\gamma-t+1)\log |\mathbb{F}|+1$. 
 \item Having seen $v\in V$, there are many possible values for $z_1, z_2$ for the side information $Z$~(and these possible values are equally likely).  Furthermore, the distributions $V|Z=z_1 $ and $V| Z=z_1$ have disjoint support outside of $v$.
 \item For most values of possible $Z$ there are few values possible in the distribution $V | \sketch(V)$.  Thus, $\Hav(V| \sketch(V) , Z)$ is small.
@@ -796,7 +796,7 @@ $\Hav(V | \sketch(V), Z) \le \Theta(1)$.
 \end{lemma}
 \begin{proof}
 Recall that $Z$ consists of $2\gamma$ coefficients and there are $(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}$ equally likely values for $Z$.
- By described above the view of $\sketch, \rec$ is a uniform distribution $V$.  We know show there are many possible values for $Z$.  The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
+ As described above, the view of $\sketch, \rec$ is a uniform distribution $V$.  We know show there are many possible values for $Z$.  The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
  \[
  \forall v, H_0(Z | V=v) =\log \left(\frac{(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}}{|\mathbb{F}|^\gamma}\right) = \log \left( (|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|\right).
  \]
@@ -907,18 +907,51 @@ Let $n$ be a security parameter and let $\mathcal{M} = |\mathbb{F}|^\gamma$.  Th
 \textbf{Note:} The above result does not rule out a computational secure sketch based on unpredictability~(where $W$ is hard to guess given the string $S$).  Unpredictable secure sketches are implied by virtual-grey box obfuscation of proximity functions~\cite{BitanskyCKP14}.  
 
 \section{Distribution-Oblivious Fuzzy Extractors}
-In the previous section, we showed a family of distributions that does not admit a secure sketch.  In this section, we extend this result to fuzzy extractors.  The main difficulty is showing that fuzzy extractors must cause a significantly entropy drop in $V$.  This is not true for all metric spaces.  We begin with the case of perfect correctness in the Hamming metric.  
+In the previous section, we showed a family of distributions that does not admit a secure sketch.  In this section, we extend this result to fuzzy extractors.  This result has significantly weaker parameters than the previous result but still demonstrates hard.  \bnote{write this}
+
+We begin with the case of perfect correctness in the Hamming metric.  
 
 \begin{theorem}
 \label{thm:imposs fuzz ext}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \kappa, t, \epsilon)$-secure sketch with error $\delta = 0$ for $\tilde{m} =\omega(1)$ for $t\ge 4$. \bnote{what is $\epsilon$? what are the other parameters?}
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ over $\zo^n$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \kappa, t, \epsilon)$-secure sketch with error $\delta = 0$ for $\kappa =\omega(\log n)$ such that $\epsilon =\ngl( n)$ for $t \approx \kappa $. \bnote{what is $\epsilon$? what are the other parameters?}
 \end{theorem}
  \bnote{write a proof!}
 \begin{proof}
-The only difference between \thref{thm:imposs fuzz ext} and \thref{thm:imposs sketch} is the functionality required of the algorithms $(\gen, \rep)$.  Thus, we must prove that a fuzzy extractor must still cause a significant drop in the entropy of $V$:
+Instead of showing the above theorem for an arbitrary length $\kappa$ we assume that the size of $\kappa$ is bounded away from $n$.  That is, $\kappa = O(n^{1/2})$.  Note that ruling out a fuzzy extractor with this length key clearly rules out extracting a longer key.
+
+For this family we construct a different family of distributions $V$.  This family is closely related to the family we constructed in the previous section \bnote{comparison}.  However, we consider the binary alphabet.  Let $\nu = \omega(\log n)$ be some parameter to be determined later\bnote{set this later}.  We describe a single element $W\in V$. For convenience we assume that $n/\nu$ is an integer.  Let $x_1,..., x_\nu \in \zo^\nu$.  Let $\mathbb{F}$ denote the field of size $2^{\nu}$.  Let $a_2,..., a_{n/\nu}\in\mathbb{F}$ such that $a_i\neq 0$ and let $b_2,..., b_{n/\nu}\in\mathbb{F}$.  
+Interpret $x_1,..., x_{\nu}$ as a element in $\mathbb{F}$ and let 
+\[w = (x_1,..., x_{\nu})  \begin{pmatrix} \vec{1} \\a_1  \\ \vdots \\ a_{n/\nu} \end{pmatrix} + \begin{pmatrix} 0  \\ 
+b_2\\ \vdots \\ b_{n/\nu} \end{pmatrix} 
+\]
+Define the distribution $W$ as the uniform distribution over values of $x$ for a particular value of $a_2,..., a_{n/\nu}, b_2,..., b_{n/\nu}$.  Note, this example is essentially the same family as in the previous example squished to the binary alphabet.  \bnote{Come back to this explanation.}
+
+We now proceed using the same outline as the previous section\bnote{be more precise}
+\begin{itemize}
+\item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$. Alternatively, $\forall z, \Hfuzz(V | Z=z) = \omega(\log n)$.
+\item The distribution $V$ is uniform~(from the fuzzy extractor designer's point of view).  That is $V\overset{d}=U$.
+\item Show that for most values public values they are many keys that have possible pre images in the metric space.  Furthermore, only a small number of the public values are feasible.
+\item Having seen $v\in V$, there are many possible values for $z_1, z_2$ for the side information $Z$~(and these possible values are equally likely).  Furthermore, the distributions $V|Z=z_1 $ and $V| Z=z_1$ have disjoint support outside of $v$.
+\item For most values of possible $Z$ there are many keys that do not receive any weight, thus the output of the fuzzy extractor can be distinguished from uniform.
+\end{itemize}
+
+\begin{proposition} 
+For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
+\end{proposition}
+\begin{proof}
+Consider some fixed $W\in\mathcal{V}$.  The value $w_{1,..., \nu}$ is uniform, so $\Hoo(W) =\omega(\log n)$.  Recall that $t< n/\nu$\bnote{need to say this earlier}.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i w_1 + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$ and thus $\dis(w, w') \ge n/\nu$.  Thus, $\Hfuzz(W) = \Hoo(W)= 2^\nu = \omega(\log n)$.
+\end{proof}
+
+\begin{proposition}$V$ is the uniform distribution over $\mathbb{F}^\gamma$.
+\end{proposition}
+\begin{proof}
+Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_{1,...,\nu} =x $ is uniformly random and $w_{i\nu+1,...,(i+1)\nu}$ are uniformly random since $b_2,..., b_\gamma$ are uniformly random.
+\end{proof}
+
+We now proceed to showing the technical portion of the theorem.  We show for any $(\gen, \rep)$ many keys have few possible values that could produce them in the metric space once $p$ is published.  Then an adversary that sees $z$ is able to eliminate many possible keys and thus effectively distinguish the key from random.
 
 \begin{lemma}
-Fix some $(\gen, \rep)$ algorithm with $\kappa = \omega(\log n)$ and $\epsilon=$ \bnote{what is this?}.  Then $\tilde{H}_0(V | \gen(V)) \le (\gamma-t+1)\log |\mathbb{F}|+1$.
+Fix some $(\gen, \rep)$ algorithm with $\kappa = \omega(\log n)$.  Let $\nu = \kappa+1$ and $t = n/\nu-1$.  Then $\epsilon = \poly(n)$.\bnote{come back to this statement with precise parameters}
 \end{lemma}
 \begin{proof}
 We assume that $\rep$ is deterministic in our analysis.  Any randomness necessary for the \rep algorithm can be provided by $\gen$.  We do not consider these coins in our security analysis~(and thus, they can be considered private).  Denote by $(R, P) \leftarrow \gen(V)$.
@@ -935,33 +968,103 @@ By Markov's inequality, there exists a set $A_{p}$ such that $\Pr[p\in A_{p}]\ge
 \]
 %\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $p^*\in A_{ss}$.  We now show that $H_0(V | p^*) \le XXXX$\bnote{fill in}.  Since $(R | P=p^*, p^*)\approx_{2\epsilon} (U, p^*)$ this means that $R|P=p^*$ is at least $(1-2\epsilon)2^\kappa$.  Note that, $R|P=p$ is the set of possible keys.
+Consider some $p^*\in A_{p}$.  %Since $(R | P=p^*, p^*)\approx_{2\epsilon} (U, p^*)$ this means that $R|P=p^*$ is at least $(1-2\epsilon)2^\kappa$.  
+The distribution $R|P=p^*$ is the set of possible keys.
+The distribution $R|P=p^*$ induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique value $r$ such that $\rep(w, p^*) =r$.  Denote this partition by $Q_{p^*,r} = \{w | \rep(w, p^*) = r\}$.  
 
-The set of possible keys induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique $Q_{p^*,r}$ such that $\rep(w, p^*) =r$.  Define two sets, called the boundary and interior respectively: \begin{align*}
-\bnd(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\},\\
-\inter(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =r\}.
+Many of these sets must be small.  That is, there exists a set $R_{small}$  where $|R_{small} | \ge 2^{\kappa-1}$ such that for all $r\in R_{small}$,  $|Q_{p^*, r}|\le \mathcal{M}/2^{\kappa-1} = 2^{n-\kappa +1}$.  If not, there exists a set of $r$ of size $2^{\kappa-1}$ that all have at least $\mathcal{M}/2^{\kappa-1}$ points.  This is more points than exist in the metric space.  
+
+For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  Define two sets, called the interior and crust respectively: \bnote{change term crust?}
+
+\begin{align*}
+\inter(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =r\},\\
+\crust(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\}.
 \end{align*}
 
-Note that $\bnd(Q_{p^*, r}) \cap \inter(Q_{p,r}) =\emptyset$.  We now show $Q$ are small.
+Note that $\crust(Q_{p^*, r}) \cap \inter(Q_{p^*,r}) =\emptyset$.  We now show that for $r\in R_{small}$ there are few points in $\inter(Q_{p^*, r})$.  Consider some $r^*\in R_{small}$.  Recall that $B_{n-\kappa-t}$ denotes the ball of radius $n-\kappa -t$.
 
-\begin{claim} For any $r\in \zo^\kappa$,  $ | Q_{p^*, r}| \le (1+\epsilon)2^\kappa.$
-\end{claim}
-\begin{proof} 
-Recall that for any $r$, $\Pr[U = r] = 1/2^\kappa$.  Since the total statistical distance is $2\epsilon$, 
-\[
-\Pr[R=r] \le 2( 2\epsilon + \Pr[U=r]) = 4\epsilon + 2^{-\kappa+1}.
-\] 
-The distribution $R | P=p^*  \overset{def}= \rep(V | P=p^*, p^*)$.  Thus, the overall probability $\Pr[V|P=p^* \in Q_{r, P^*}] \le 4\epsilon+2^{-\kappa +1}$.  \bnote{how to continue from here?  this doesn't talk about the size of $V|P=p^*$.}
-\end{proof}
-
-We now consider the distribution of $V | P=p^*$.  By the functionality of $(\gen, \rep)$, for every $v\in V| P=p^*$, $v\in Int(Q_{p, r})$.  Furthermore, if $v$ is not in some interior then $v\not \in V | P=p^*$.  Thus, it suffices to show that $\frac{\sum_{r} |\inter(Q_{p^*, r})|}{\mathcal{M}} = XXX$\bnote{fill this in.}
-
-To show this we any such partitioning of the metric space must have the majority of points lying on the boundary.  This is true for the Hamming metric.
-\begin{lemma}[Isoparametric Inequality]
-\bnote{XXXX}
+\begin{lemma}
+$|\inter(Q_{p^*, r^*})| \le |B_{n-\kappa -t+2}|$.
 \end{lemma}
+\begin{proof}
+\bnote{deficient sphere/ball?}
+First recall that $Q_{p^*, r^*} \le 2^{n-\kappa+1}$.  We call a set $S$ a \emph{deficient sphere} if there exists a point $x$ and a radius $\beta$ \bnote{check for conflicts with $\beta$} such that $B_{\beta}(x) \subseteq S \subseteq B_{\beta+1}(x)$.  By the isoperimetric inequality on the Hamming space\bnote{cite!!!!}, there exists a deficient sphere $S_{p^*, r^*}$ and a set $D$ such that $|S_{p^*, r^*}| = |\inter(Q_{p^*, r^*})|$, $|D| = |Q_{p^*, r^*}^\complement|$ and $\forall s\in S_{p^*, r^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, r^*} \cup D$ is a deficient sphere~(and its radius is $t$ larger than $S_{p^*, r^*}$).
+We now find the radius of $S_{p^*, r^*}$.
+
+Recall that $|S_{p^*, r^*} \cup D| = |Q_{p^*, r^*} | \le 2^{n-(\kappa-1)}$.  We now find the maximum radius ball that contains at most $2^{n-(\kappa-1)}$ points.  That is, $\max \{d\in \mathbb{Z^+}| B_d \le 2^{n-(\kappa-1)}\}$.  Recall that $2^{n-(\kappa-1)} \ge |B_d| \ge (n/d)^d$\bnote{do we need to cite something here?}.  Thus,
+\[n-(\kappa-1) \ge d (\log n - \log d).\]  
+We first show that $d\le n/2$.  Since $|S_{p^*, r^*} | \le 2^{n-(\kappa-1)}/2^n \le 1/2$, then $d\le \lceil n/2\rceil$.  This is because $\sum_{i=0}^{\lceil n/2 \rceil} {n\choose i} \ge 2^{n-1}$.  
+
+Since $d\le 1/2$, $d\le d(\log n - \log d)$ and thus: $d\le n-(\kappa+1)$.  That is, $S_{p^*, r^*} \cup D$ is a deficient sphere of radius at most $n-(\kappa-1)$.  This means that $S_{p^*, r^*}$ is a deficient sphere of radius at most $n-(\kappa-1)-t$.  That is $S_{p^*, r^*}$ is contained in a sphere of radius $n-\kappa-t+2$. And thus, $|\inter(Q_{p^*, r^*}|\le |B_{n-\kappa-t+2}|$.\bnote{we need a much better bound here.  This is a radius of almost $n$}
+\end{proof}
+
+We have shown that $|\inter(Q_{p^*, r^*}| \le |B_{n-\kappa -t+2}|$.  Define the set $K_{bad} = \cup_{r^*\in R_{small}} |Q_{p^*, r^*}|$ and note that $|K_{bad} | \le  |B_{n-\kappa -t+2}||R_{small}|$.
+
+To complete the proof it suffices to show that for most values of the auxiliary information $Z$ there are many parts $Q_{p^*, r^*}$ that do not receive any points.  
+
+Recall that $Z$ consists of $2n/\nu$ coefficients and there are $(2^n-1)^{\nu-1} 2^{n-\nu}$ equally likely values for $Z$.
+ As described above, the view of $\gen, \rep$ is a uniform distribution $V$.  We know show there are many possible values for $Z |P=p^*$.  The only information about $Z$ is contained in the point  $V=v$.  The length of this point is $2^n$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
+ \[
+ \forall v, H_0(Z | V=v) =\log \left(\frac{(2^{n/\nu}-1)^{\nu-1} 2^{n-\nu}}{2^n} \right) = \log \frac{(2^{n/\nu}-1)^{\nu-1}}{2^{\nu}} \ge \log \frac{2^{(n/\nu-1)(\nu -1)}}{2^v} = n -n/\nu - 2\nu +1.
+ \]
+Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
+
+This means that the $\gen$ algorithm may include points for possible $Z$ values into $K_{bad}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  That is, 
+\[
+\expe_z |K_{bad} \cap V | P=p^* \wedge Z=z | \le \frac{|B_{n-\kappa -t+2}||R_{small}|}{2^{n\nu -n -2\nu +1}}.
+\]
+
+We now show that $\expe | K_{bad} \cap V | P=p^* \wedge Z=z| \le (1- \epsilon) |R_{small}|$. 
+We use the combinatorial bound that $|B_d| \le \left(\frac{ne}{d}\right)^d$.  We then have that, 
+\begin{align*}
+\expe_z |K_{bad} \cap V | P=p^* \wedge Z=z | &\le \frac{|B_{n-\kappa -t+2}||R_{small}|}{2^{n\nu -n -2\nu +1}}\\
+&\le  \frac{\left(\frac{ne}{n-\kappa -t+2}\right)^{n-\kappa -t+2}}{2^{n\nu -n-2\nu+1}}|R_{small}|\\
+&\le \frac{2^{3(n-\kappa -t +2)}}{2^{n -n/\nu-2\nu+1}}|R_{small}|
+%&= \frac{\left(2^{\log n+ \log e - \log (n-\kappa -t+2)}\right)^{n-\kappa -t+2}}{2^{n\nu -n-2\nu+1}}|R_{small}|\\
+%&=2^{(n-\kappa-t+2)(\log n+ \log e - \log (n-\kappa -t+2)) - (n\nu -n 2\nu+1)} |R_{small}|
+\end{align*}
+\bnote{the two combinatorial bounds we are using aren't good enough}
+To show that $\epsilon \ge 1/2$ we have that 
+%\begin{align*}
+%(n-\kappa-t+2)(\log n+ \log e - \log (n-\kappa -t+2)) - (n -n/\nu- 2\nu+1) 
+%\end{align*}
+\bnote{why was that sufficient to break security}
+\bnote{still working this isn't complete}
 \end{proof}
 \end{proof}
+
+%\subsection{Contrived Weird Example I'm worried about}
+%\begin{center}
+%\begin{tabular}{c|c}
+%\begin{minipage}{3in}
+%\textbf{\gen}
+%\begin{enumerate}
+%\item \underline{Input}: $w = w_1,..., w_\gamma$
+%\item Sample $pad_1, pad_2 \leftarrow \mathcal{M}$.
+%\item Create random pad $x \leftarrow \zo^\gamma$.
+%\item Set $c \leftarrow Syndrome(w)$.
+%\item Set $r = Ext(w, seed)$, \\$p = \langle w, x\rangle, seed, c, x$.
+%\item If $pad_1 = w \wedge pad_2 =w$:
+%\begin{enumerate}[(i)]
+%\item Set $r=0$, \\
+%$p = \langle w, x\rangle\oplus 1, seed, c, x$.
+%\end{enumerate}
+%\end{enumerate}
+% \end{minipage} &
+%\begin{minipage}{3in}
+%\textbf{\rep}
+%\begin{enumerate}
+%\item \underline{Input}: $(w', p = (b, seed, c, x))$
+%\item Decode $w = Decode(w', c)$.
+%\item 
+%%\begin{enumerate}[(i)]
+%%\end{enumerate}
+%\item Output $r = \rep'(v', ss)$.
+%\end{enumerate}
+%\vspace{0.7in}
+%\end{minipage}
+%\end{tabular}
+%\end{center}
 
 \bibliographystyle{alpha}
 \bibliography{crypto}
