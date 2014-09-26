@@ -433,7 +433,7 @@ Bitanski and Canetti constructed composable digital lockers with virtual grey-bo
 \paragraph{Connection to General Obfuscation}
 We note that fuzzy extractors for sources with more errors than entropy can be trivially constructed from virtual grey-box obfuscation for the class of {\em proximity point programs}. A proximity point program $I_w(x)$ tests if $x$ is within distance $t$ of $w$. 
 Recently, Bitansky et al.~\cite{BitanskyCKP14} constructed such obfuscation based on the strong assumption of {\em semantically secure graded encodings} \cite{PassTS13}.
-The construction of Bitansky et al. is based on multilinear encoding and is  highly impractical.  Our constructions use obfuscated digital lockers.  Obfuscated digital lockers are instantiable under significant weaker assumptions and can be implemented quite efficiently.
+The construction of Bitansky et al. is based on multilinear encoding and is  highly impractical.  Our constructions use obfuscated digital lockers.  Obfuscated digital lockers are instantiable under significantly weaker assumptions and can be implemented quite efficiently.
 \bnote{we need to say we are weaker than general obfuscation.  happy with this? merged with sentence from above}
 Additionally, the known obfuscation for proximity point programs is not known to be composable and therefore does not yield a reusable fuzzy extractor.
 
@@ -449,7 +449,7 @@ In this work we restrict the distribution of the original reading $w$ and allow 
 
 \medskip
 \paragraph{Organization }
-The remainder of this paper is organized as follows: we cover notation and fuzzy extractors in \secref{sec:preliminaries}.  Present our information-theoretic construction in \secref{sec:info theory cons} and our two computational constructions in Sections \ref{sec:sampling} and \ref{sec:cor construction}.
+The remainder of this paper is organized as follows: we cover notation and fuzzy extractors in \secref{sec:preliminaries}.  We present our information-theoretic construction in \secref{sec:info theory cons} and our two computational constructions in Sections \ref{sec:sampling} and \ref{sec:cor construction}.
 
 \section{Preliminaries}
 \label{sec:preliminaries}
@@ -510,13 +510,13 @@ We modify the definition of Boyen~\cite[Definition 6]{Boyen2004} for the computa
 \begin{definition}[Reusable Fuzzy Extractors]
 \label{def:outsider fuzz ext}
 Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.
-Fix some $W_1 \in \mathcal{W}$.  Let $f_2,.., f_q , D$ be a split adversary.  Define the following game for all $i=1,..., q$:
+Fix some $W_1 \in \mathcal{W}$.  Let $f_2,.., f_q , D$ be a split adversary.  Define the following game for all $j=1,..., q$:
 \begin{itemize}%[leftmargin=-.6in]
 \item \textbf{Sampling} The challenger samples $w_1\leftarrow W_1, u\leftarrow \zo^\kappa$.
 \item \textbf{Perturbation} For $i=2,..., q$: the challenger computes $(r_i, p_i)\leftarrow \gen(w_i)$.  Set $w_{i+1} = f_i(w_1, p_1,..., p_i)$.\bnote{should we allow keys to the perturbation adversary?}
 \item \textbf{Distinguishing} The advantage of $D$ is
 \begin{align*}
-\text{Adv}(D)&\overset{def}= \Pr[D(r_1,..., r_{i-1}, r_i, r_{i+1},..., r_q, p_1,..., p_q)=1]\\ &- \Pr[D(r_1,..., r_{i-1}, u, r_{i+1},..., r_q, p_1,..., p_q)=1].
+\text{Adv}(D)&\overset{def}= \Pr[D(r_1,..., r_{j-1}, r_j, r_{j+1},..., r_q, p_1,..., p_q)=1]\\ &- \Pr[D(r_1,..., r_{j-1}, u, r_{j+1},..., r_q, p_1,..., p_q)=1].
 \end{align*}
 \end{itemize}
 $(\gen, \rep)$ is $(q, s_{sec}, \epsilon_{sec}, f_2,..., f_q)$-reusable if for all $D\in\mathcal{D}_{s_{sec}}$ the advantage is at most $\epsilon_{sec}$.
@@ -896,8 +896,9 @@ The work of Benjamin Fuller is sponsored in part by the United States Air Force 
 \appendix
 
 \section{Definitions}
-\subsection{Computational Fuzzy Conductors}
+\subsection{Computational Fuzzy Conductors and Computational Extractors}
 \label{sec:further defs}
+In this section, we show that a computational fuzzy conductor~\defref{def:comp fuzzy cond} can be transformed to a computational fuzzy extractor~\defref{def:comp fuzzy extractor}.  The transformation uses a computational extractor.
 A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average case:
 \begin{definition}
 A function $\cext: \zo^\gamma \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon, s)$-average-case computational extractor} if for all pairs
