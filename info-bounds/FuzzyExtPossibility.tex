@@ -991,7 +991,7 @@ $|\inter(Q_{p^*, r^*})| \le |B_{n-\kappa -t+2}|$.
 First recall that $Q_{p^*, r^*} \le 2^{n-\kappa+1}$.  We call a set $S$ a \emph{deficient sphere} if there exists a point $x$ and a radius $\beta$ \bnote{check for conflicts with $\beta$} such that $B_{\beta}(x) \subseteq S \subseteq B_{\beta+1}(x)$.  By the isoperimetric inequality on the Hamming space\bnote{cite!!!!}, there exists a deficient sphere $S_{p^*, r^*}$ and a set $D$ such that $|S_{p^*, r^*}| = |\inter(Q_{p^*, r^*})|$, $|D| = |Q_{p^*, r^*}^\complement|$ and $\forall s\in S_{p^*, r^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, r^*} \cup D$ is a deficient sphere~(and its radius is $t$ larger than $S_{p^*, r^*}$).
 We now find the radius of $S_{p^*, r^*}$.
 
-Recall that $|S_{p^*, r^*} \cup D| = |Q_{p^*, r^*} | \le 2^{n-(\kappa-1)}$.  We now find the maximum radius ball that contains at most $2^{n-(\kappa-1)}$ points.  That is, $\max \{d\in \mathbb{Z^+}| B_d \le 2^{n-(\kappa-1)}\}$.  Recall that $2^{n-(\kappa-1)} \ge |B_d| \ge (n/d)^d$\bnote{do we need to cite something here?}.  Thus,
+Recall that $|S_{p^*, r^*} \cup D| = |Q_{p^*, r^*} | \le 2^{n-(\kappa-1)}$.  We now find the maximum radius ball that contains at most $2^{n-(\kappa-1)}$ points.  That is, $\max \{d\in \mathbb{Z^+}| B_d \le 2^{n-(\kappa-1)}\}$.  Recall that $2^{n-(\kappa-1)} \ge |B_d| \ge (n/d)^d$\bnote{this bounds sucks! do better}.  Thus,
 \[n-(\kappa-1) \ge d (\log n - \log d).\]  
 We first show that $d\le n/2$.  Since $|S_{p^*, r^*} | \le 2^{n-(\kappa-1)}/2^n \le 1/2$, then $d\le \lceil n/2\rceil$.  This is because $\sum_{i=0}^{\lceil n/2 \rceil} {n\choose i} \ge 2^{n-1}$.  
 
@@ -1015,7 +1015,7 @@ This means that the $\gen$ algorithm may include points for possible $Z$ values 
 \]
 
 We now show that $\expe | K_{bad} \cap V | P=p^* \wedge Z=z| \le (1- \epsilon) |R_{small}|$. 
-We use the combinatorial bound that $|B_d| \le \left(\frac{ne}{d}\right)^d$.  We then have that, 
+We use the combinatorial bound that $|B_d| \le \left(\frac{ne}{d}\right)^d$ \bnote{this bound is terrible!}.  We then have that, 
 \begin{align*}
 \expe_z |K_{bad} \cap V | P=p^* \wedge Z=z | &\le \frac{|B_{n-\kappa -t+2}||R_{small}|}{2^{n\nu -n -2\nu +1}}\\
 &\le  \frac{\left(\frac{ne}{n-\kappa -t+2}\right)^{n-\kappa -t+2}}{2^{n\nu -n-2\nu+1}}|R_{small}|\\
