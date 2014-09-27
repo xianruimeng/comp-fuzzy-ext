@@ -468,12 +468,12 @@ In this section we define computational fuzzy extractors.  Definitions for infor
 
 \begin{definition}~\cite[Definition 2.5]{fuller2013computational}
 \label{def:comp fuzzy extractor}
-Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \kappa, t)$-\emph{computational fuzzy extractor} that is $(\epsilon, s)$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
+Let $\mathcal{W}$ be a family of probability distributions over $\mathcal{M}$. A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \kappa, t)$-\emph{computational fuzzy extractor} that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ if \gen and \rep satisfy the following properties:
 \begin{itemize}
 \item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $r\in\{0,1\}^\kappa$ and a helper string $p\in\{0,1\}^*$.
 \item The reproduction procedure \rep takes an element $w'\in\mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.  The \emph{correctness} property guarantees that if $\dis(w, w')\leq t$ and $(r, p)\leftarrow \gen(w)$, then $\Pr[\rep( w', p) = r] \geq 1-\delta$, where the probability is over the randomness of $(\gen, \rep)$.
 If $\dis(w, w') > t$, then no guarantee is provided about the output of \rep.
-\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $r$ is pseudorandom conditioned on $p$, that is $\delta^{\mathcal{D}_s}((R, P), (U_\kappa, P))\leq \epsilon$.
+\item The \emph{security} property guarantees that for any distribution $W\in \mathcal{W}$, the string $r$ is pseudorandom conditioned on $p$, that is $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_\kappa, P))\leq \epsilon_{sec}$.
 \end{itemize}
 \end{definition}
 In the above definition, the errors are chosen before $P$: if the error pattern between $w$ and $w'$ depends on the output of $\gen$, then there is no guarantee about the probability of correctness. In Constructions~\ref{cons:sampling} and~\ref{cons:first construction} it is crucial that $w'$ is chosen independently of the outcome of \gen.
@@ -488,28 +488,11 @@ An additional desirable feature of fuzzy extractors is reusability~\cite{Boyen20
  Our ability to construct reusable fuzzy extractors depends on the types of correlations allowed among $w_1, \dots, w_q$. Boyen \cite{Boyen2004} showed how to do so when each $w_i$ is a shift of $w_1$ by a value that is oblivious to the value of $w_1$ itself (formally, $w_i$ is a result of a transitive isometry applied to $w_1$). Boyen also showed that even for this weak class of correlations, any secure sketch must lose at least $\log |B_t|$ entropy~\cite[Theorem 11]{Boyen2004}.
   
 
-%\paragraph{Previous Negative Results}
-
-%\bnote{old stuff}
-%Their construction is secure when the correlations between $w_1,.., w_q$ come from a subgroup of permutations used in the construction of the fuzzy extractor.  They then show information-theoretic fuzzy extractors secure with unbounded reuse can be transformed into their construction~\cite[Theorem 11]{Boyen2004}.  This shows that correlation between $w_1,..., w_q$ must be restricted to this limited class.  There is no reason to expect that noise between repeated readings comes from a well-behaved subgroup of permutations.  Their result can be interpreted as saying that reusability is impractical.
-%
-%However, this result is inherently information-theoretic, the adversary must exhaust all randomness of the fuzzy extractor and computes statistical distance over exponential size strings.  There are two  restrictions to avoid this result: 1) limit the number of reuses of the fuzzy extractor 2) provide security against computational adversaries.  The second restriction implies the adversary will only observe a polynomial number of invocations of the fuzzy extractor.
-
-%To overcome this result, we consider computationally bounded adversaries.
-%We present a non-adaptive definition and note that our results extend to the adaptive definition presented by Boyen~\cite[Definition 7]{Boyen2004}.\bnote{We need to come back to justifying this or provide a proof that our scheme works in the adaptive setting.}
-%\begin{definition}[Insider Reusable Fuzzy Extractors]
-%\label{def:reusable fuzz}
-%Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  Let $W_1,..., W_q$ be a joint distribution such that $\forall i, W_i\in\mathcal{W}$.  Let $(R_i, P_i)$ be the distribution formed by running $\gen$ on the distribution $W_i$.  We say that $(\gen, \rep)$ is $q$-reusable if for all $i$
-%\begin{align*}
-%\delta^{\mathcal{D}_{s}}(&(R_1, P_1), ..., (R_i, P_i),..., (R_q, P_q), \\
-%&(R_1, P_1),..., (U_\kappa, P_i),..., (R_q, P_q)) < \epsilon.
-%\end{align*}
-%\end{definition}
 We modify the definition of Boyen~\cite[Definition 6]{Boyen2004} for the computational setting.  We discuss the our definition and definitions due to Boyen in \apref{sec:comparing reusability}.
 
 \begin{definition}[Reusable Fuzzy Extractors]
 \label{def:outsider fuzz ext}
-Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.
+Let $\mathcal{W}$ be a family of distributions over $\mathcal{M}$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$.
 Fix some $W_1 \in \mathcal{W}$.  Let $f_2,.., f_q , D$ be a split adversary.  Define the following game for all $j=1,..., q$:
 \begin{itemize}%[leftmargin=-.6in]
 \item \textbf{Sampling} The challenger samples $w_1\leftarrow W_1, u\leftarrow \zo^\kappa$.
@@ -519,13 +502,13 @@ Fix some $W_1 \in \mathcal{W}$.  Let $f_2,.., f_q , D$ be a split adversary.  De
 \text{Adv}(D)&\overset{def}= \Pr[D(r_1,..., r_{j-1}, r_j, r_{j+1},..., r_q, p_1,..., p_q)=1]\\ &- \Pr[D(r_1,..., r_{j-1}, u, r_{j+1},..., r_q, p_1,..., p_q)=1].
 \end{align*}
 \end{itemize}
-$(\gen, \rep)$ is $(q, s_{sec}, \epsilon_{sec}, f_2,..., f_q)$-reusable if for all $D\in\mathcal{D}_{s_{sec}}$ the advantage is at most $\epsilon_{sec}$.
+$(\gen, \rep)$ is $(q, \epsilon_{sec}, s_{sec}, f_2,..., f_q)$-reusable if for all $D\in\mathcal{D}_{s_{sec}}$ the advantage is at most $\epsilon_{sec}$.
 \end{definition}
 
 The definition is parameterized by $f_2,..., f_q$.  This adversary implicitly defines distributions $W_2,..., W_q$~(which depend on $W_1$ and the public values $P_1,... P_i$).  Security seems hopeless if fuzzy extractor is not secure on each of these distributions on their own.  This is the only requirement we make on these functions.  We call these types of functions admissible:
 
 \begin{definition}
-Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon, s)$-hard with error $\delta$.  In the reusability game above, we say a set of functions $f_2,..., f_q$ are \emph{admissible} if for all $W_1\in \mathcal{W}$ for all $w_1\in W_1$ and $\forall p_1,..., p_q$ that are the public outputs of $\gen$ the distribution $W_{i,w_1,p_1,..., p_{i-1}} = f_i(w_1,p_1,..., p_{i-1})$ is a member of $\mathcal{W}$.
+Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$.  In the reusability game above, we say a set of functions $f_2,..., f_q$ are \emph{admissible} if for all $W_1\in \mathcal{W}$ for all $w_1\in W_1$ and $\forall p_1,..., p_q$ that are the public outputs of $\gen$ the distribution $W_{i,w_1,p_1,..., p_{i-1}} = f_i(w_1,p_1,..., p_{i-1})$ is a member of $\mathcal{W}$.
 \end{definition}
 
 \subsection{Obfuscation}
@@ -607,7 +590,7 @@ Let $\mathcal{W}$ be the family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\The
 
 \subsection{More errors than entropy}
 
-In this section we show that \consref{cons:info theoretic} supports partial block sources with more errors than entropy.  The structure of a partial block source implies that  $\Hoo(W) \ge \alpha (\gamma-\beta ) = \Theta(\gamma)$.  We assume that $\Hoo(W) = \Theta(\gamma)$. The condenser of Dodis et al~\cite{dodis2014key} has a constant entropy loss, so $\alpha-\tilde{\alpha} = \Theta(1)$. This means that the input entropy to the fuzzy extractor is $\Theta(\gamma)$.   We assume that the new alphabet $\mathcal{Y}$ is of constant size.  Standard fuzzy extractors on constant size alphabets correct a constant fraction of errors at a entropy loss of $\Theta(\gamma)$, yielding $\kappa = \Theta(\gamma)$.  Thus, our construction is secure for distributions with more errors than entropy whenever $|\mathcal{Z}| = \omega(1)$.
+In this section we show that \consref{cons:info theoretic} supports partial block sources with more errors than entropy.  The structure of a partial block source implies that  $\Hoo(W) \ge \alpha (\gamma-\beta ) = \Theta(\gamma)$.  We assume that $\Hoo(W) = \Theta(\gamma)$. The condenser of Dodis et al~\cite{dodis2014key} has a constant entropy loss, so $\alpha-\tilde{\alpha} = \Theta(1)$. This means that the input entropy to $(\gen', \rep')$ is $\Theta(\gamma)$.   We assume that the new alphabet $\mathcal{Y}$ is of constant size.  Standard fuzzy extractors on constant size alphabets correct a constant fraction of errors at a entropy loss of $\Theta(\gamma)$, yielding $\kappa = \Theta(\gamma)$.  Thus, our construction is secure for distributions with more errors than entropy whenever $|\mathcal{Z}| = \omega(1)$.
 More formally:
 \[
 \text{\# Errors} - \text{Entropy} = \log |B_t| - \Hoo(W) \ge  t \log |\mathcal{Z}| - \Theta(\gamma)-= \Theta(\gamma) \log |\mathcal{Z}| - \Theta(\gamma)  > 0
@@ -636,7 +619,7 @@ Let $\eta$ be a parameter, and $\mathcal{O}$ be an obfuscator for the family of 
 \item For $i=1,..., \ell$:
 \begin{enumerate}[(i)]
 \item Select $\lambda_i\overset{\$}\leftarrow \zo^{r_{sam}}$.
-\item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\eta,\gamma}( \lambda_i)$
+\item Set $j_{i, 1},..., j_{i, \eta}\leftarrow \sample_{\gamma,\eta}( \lambda_i)$
 \item Set $v_i = w_{j_{i,1}},..., w_{j_{i, \eta}}$.
 \item Set $\rho_i = \mathcal{O}(I_{v_i, r})$.
 \item Set $p_i = \rho_i, \lambda_i$.
@@ -718,11 +701,8 @@ Once all $V_i$ all simultaneously have good entropy, the adversary only sees $\p
 \begin{lemma}[Proof in \apref{sec:analysis sampling}]
 \label{lem:samp unguess}
 Let all the variables be as in \thref{thm:sampling}.
-For every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_{\kappa}, P))< \epsilon_{sec}$.% \geq H_0(C)$. %for $\epsilon' = (2\epsilon_{obf} + \ell(\epsilon_{sam}+ 2^{-(\alpha''-1)})) = \ngl(n)$.
+For every $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} = \ngl(n)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U_{\kappa}, P))< \epsilon_{sec}$.
 \end{lemma}
-%\begin{proof}
-%Result of \corref{cor:v are unguessable} and \lemref{lem:security of cons} noting that $\ell \epsilon_{sam} = \ngl(n)$.
-%\end{proof}
 
 \subsection{Correctness of \consref{cons:sampling}}
 \label{sec:correct sampling}
@@ -741,10 +721,10 @@ The reusability of \consref{cons:sampling} follows from the security of the VGB 
 
 \begin{theorem}
 \label{thm:reusability}
-Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, except that $\mathcal{O}$ be an $\ell\times q$-composable VGB obfuscator for digital lockers~(with $\kappa$ bit outputs) with auxiliary inputs.  For any admissible $f_2,..., f_q$, for all $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $(\gen, \rep)$ is $(q, s_{sec}, \epsilon_{sec}, f_2,..., f_q)$-reusable fuzzy extractor.
+Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, except that $\mathcal{O}$ be an $\ell\times q$-composable VGB obfuscator for digital lockers~(with $\kappa$ bit outputs) with auxiliary inputs.  For any admissible $f_2,..., f_q$, for all $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $(\gen, \rep)$ is $(q, \epsilon_{sec}, s_{sec}, f_2,..., f_q)$-reusable fuzzy extractor.
 \end{theorem}
 \begin{proof}
-The only modification to the outline presented in \secref{ssec:sec cons sampling} is in \lemref{lem:samp unguess} with the other keys $R_1,..., R_{i-1}, R_{i+1}, ..., R_q$ treated as additional auxiliary input to the adversary/simulator.  The simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations.
+The only modification to the outline presented in \secref{ssec:sec cons sampling} is in \lemref{lem:samp unguess} with the other keys $R_1,..., R_{i-1}, R_{i+1}, ..., R_q$ treated as additional auxiliary input to the adversary/simulator.  The simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations.  Thus allows reading $w_i$ to be chosen depending on public values $p_1,..., p_{i-1}$.
 \bnote{say more here?}
 \end{proof}
 
@@ -764,7 +744,7 @@ In the analysis of \consref{cons:sampling} we restricted our attention to partia
 \section{Allowing Correlated Symbols}
 \label{sec:cor construction}
 In the previous two sections, we presented constructions that supported restricted classes of distributions with more errors than entropy.  Unfortunately, both Constructions~\ref{cons:info theoretic} and \ref{cons:sampling} required each symbol to contribute ``fresh'' entropy.  In this section, we present a computational construction that allows for correlation between symbols while still supporting more errors than entropy and correcting a constant fraction of errors.
-This construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.  Instead of having large parts of the string $w$ unlock $r$, we have individual symbols unlock bits of $r$.  
+This construction is inspired by the construction of digital lockers from point obfuscation by Canetti and Dakdouk~\cite{canetti2008obfuscating}.  Instead of having large parts of the string $w$ unlock $r$, we have individual symbols unlock bits of the output.  
 
 Before presenting the construction we provide some definitions from error correcting codes.
 We use error-correct codes over $\{0,1\}^\gamma$ which correct up to $t$ bit flips from $0$ to $1$ but no bit flips from $1$ to $0$ (this is the Hamming analog of the $Z$-channel~\cite{tallini2002capacity}).\footnote{Any code that corrects $t$ Hamming errors also corrects $t$ $0\rightarrow 1$ errors, but more efficient codes  exist for this type of error~\cite{tallini2002capacity}.
@@ -847,14 +827,14 @@ Unfortunately, \consref{cons:first construction} is not a computational fuzzy ex
 \label{def:hill ent}
 Let $(W, S)$ be a pair of random variables.  $W$ has
 \emph{HILL entropy} at least $k$ conditioned on $S$,
-denoted $H^{\hill}_{\epsilon, s}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s}} ((W, S),(X,S))\leq \epsilon$.
+denoted $H^{\hill}_{\epsilon_{sec}, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon_{sec}$.
 \end{definition}
 We now define a weaker object that outputs computational entropy~(instead of a pseudorandom key).  We call this object a computational fuzzy conductor.  It is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 \begin{definition}
 \label{def:comp fuzzy cond}
-A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon, s)$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy \defref{def:comp fuzzy extractor}, except the last condition is replaced with the following weaker condition:
+A pair of randomized procedures ``generate'' ($\gen$) and ``reproduce'' ($\rep$) is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t$)-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$ if $\gen$ and $\rep$ satisfy \defref{def:comp fuzzy extractor}, except the last condition is replaced with the following weaker condition:
 \begin{itemize}
-\item for any distribution $W\in \mathcal{W}$, the string $r$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon, s}(R |P)\geq \tilde{m}$.
+\item for any distribution $W\in \mathcal{W}$, the string $r$ has high HILL entropy conditioned on $P$.  That is $H^{\hill}_{\epsilon_{sec}, s_{sec}}(R |P)\geq \tilde{m}$.
 \end{itemize}
 \end{definition}
 Computational fuzzy conductors can be converted to computational fuzzy extractors using standard techniques~(see \apref{sec:further defs}).
@@ -862,7 +842,7 @@ The following theorem states the construction is a computational fuzzy conductor
 \begin{theorem}
 \label{thm:main thm first cons}
 Let $n$ be a security parameter. Let $\mathcal{Z}$ be an alphabet where $|\mathcal{Z}| \ge 2^{ \omega(\log(n))}$.
-Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block sources over $\mathcal{Z}^\gamma$, for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code over $\mathcal{Z}^\gamma$.  Let $\mathcal{O}$ be an $\gamma$-composable VGB obfuscator for point functions with auxiliary inputs. Then for any $s_{sec} = \poly(n)$ there exists some $\epsilon=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}=H_0(C)-\beta, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \gamma/|\mathcal{Z}|$.
+Let $\mathcal{W}$ be a family of $(q,\alpha= \omega(\log n),  \beta)$-unguessable block sources over $\mathcal{Z}^\gamma$, for any $q = \poly(n)$.  Furthermore, let $C$ be a $(\neigh_t, \delta_{code})$-code over $\mathcal{Z}^\gamma$.  Let $\mathcal{O}$ be an $\gamma$-composable VGB obfuscator for point functions with auxiliary inputs. Then for any $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec}=\ngl(n)$ such that \consref{cons:first construction} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \tilde{m}=H_0(C)-\beta, t)$-computational fuzzy conductor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta_{code} + \gamma/|\mathcal{Z}|$.
 \end{theorem}
 
 \subsection{More errors than entropy?}
@@ -901,10 +881,10 @@ The work of Benjamin Fuller is sponsored in part by the United States Air Force 
 In this section, we show that a computational fuzzy conductor~\defref{def:comp fuzzy cond} can be transformed to a computational fuzzy extractor~\defref{def:comp fuzzy extractor}.  The transformation uses a computational extractor.
 A computational extractor is the adaption of a randomness extractor to the computational setting.  Any information-theoretic randomness extractor is also a computational extractor; however, unlike information-theoretic extractors, computational extractors can expand their output arbitrarily via pseudorandom generators once a long-enough output is obtained. We adapt the definition of Krawczyk~\cite{krawczyk2010cryptographic} to the average case:
 \begin{definition}
-A function $\cext: \zo^\gamma \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon, s)$-average-case computational extractor} if for all pairs
+A function $\cext: \zo^\gamma \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon_{sec}, s_{sec})$-average-case computational extractor} if for all pairs
 of random variables $X, Y$ (with $X$ over $\zo^\gamma$) such that
-$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s}}((\cext(X; U_d), U_d, Y), U_\kappa\times
-U_d \times Y) \le \epsilon$.
+$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{sec}}}((\cext(X; U_d), U_d, Y), U_\kappa\times
+U_d \times Y) \le \epsilon_{sec}$.
 \end{definition}
 
 Combining a computational fuzzy conductor and a computational extractor yields a computational fuzzy extractor:
@@ -1089,7 +1069,7 @@ Let $W\in \mathcal{W}$.
 It suffices to argue correctness and security.  We first argue correctness.
 When $w_i = w_i'$, then $\cond(w_i , seed_i) = \cond(w_i', seed_i)$ and thus $v_i = v_i'$.  Thus, for all $w, w'$ where $\dis(w, w')\le t$, then $\dis (v, v')\le t$.  Then by correctness of $(\gen', \rep')$, $\Pr[(r, p)\leftarrow \gen'(v) \wedge r'\leftarrow \rep(v',p) \wedge r' = r]\ge 1-\delta$.
 
-We now argue security.  Denote by $seed$ the random variable consisting of all $\gamma$ seeds and $V$ the entire string of generated $V_1,..., V_\gamma$.  To show that $R | P, seed \approx_{\gamma \epsilon_{cond} + \epsilon_{text}} U | P, seed$, it suffices to show that $\Hav(V | seed)$ is $\gamma \epsilon_{cond}$ close to a distribution with average min-entropy $\tilde{\alpha}(\gamma - \beta)$.  The lemma then follows by the security of $(\gen', \rep')$.\footnote{Note, again, that $(\gen', \rep')$ must be an average-case fuzzy extractor.  Most known constructions are average-case and we omit this notation.}
+We now argue security.  Denote by $seed$ the random variable consisting of all $\gamma$ seeds and $V$ the entire string of generated $V_1,..., V_\gamma$.  To show that $R | P, seed \approx_{\gamma \epsilon_{cond} + \epsilon_{fext}} U | P, seed$, it suffices to show that $\Hav(V | seed)$ is $\gamma \epsilon_{cond}$ close to a distribution with average min-entropy $\tilde{\alpha}(\gamma - \beta)$.  The lemma then follows by the security of $(\gen', \rep')$.\footnote{Note, again, that $(\gen', \rep')$ must be an average-case fuzzy extractor.  Most known constructions are average-case and we omit this notation.}
 
 We now argue that there exists a distribution $Y$ where $\Hav(Y | seed)\ge \tilde{\alpha}(\gamma - \beta)$ and $(V, seed_1,..., seed_\gamma)\approx (Y, seed_1,.., seed_\gamma)$.  First note since $W$ is $(\alpha, \beta)$-partial block distribution that
 there exists a set of indices $J$ where $|J| \geq \gamma - \beta$ such that the following holds:
@@ -1278,9 +1258,7 @@ Security of \consref{cons:first construction} is similar to the security of \con
 Let all variables be as in \thref{thm:main thm first cons}.  For every $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $H^{\hill}_{\epsilon_{sec}, s_{sec}}( C | P ) \geq H_0(C) - \beta$.
 \end{lemma}
 
-We give a brief outline of the proof here; the proof follows.
-
-\noindent \textbf{Outline:}
+We give a brief outline of the proof, followed by the proof.
 It is sufficient to show that there exists a distribution $C'$ with conditional min-entropy and $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P))\le \ngl(n)$.  Let $J$ be the set of indices that exists according to \defref{def:block guessable}. Define the distribution $C'$ as a uniform codeword conditioned on the values of $C$ and $C'$ being equal on all indices outside of $J$.  We first note that $C'$ has sufficient entropy, because $\Hav(C' |P) = \Hav(C' | C_{J^c}) \ge \Hoo(C', C_{J^c}) - H_0(C_{J^c})  = H_0(C) - |J^c|$ (the second step is by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}).  It is left to show $\delta^{\mathcal{D}_{s_{sec}}}((C, P), (C', P)) \le \ngl(n)$.
 %Define the distribution $X$ as follows:
 %\[X_i =
