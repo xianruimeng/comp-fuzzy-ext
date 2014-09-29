@@ -778,20 +778,18 @@ We begin with the case of perfect correctness in the Hamming metric.
 
 \begin{theorem}
 \label{thm:imposs fuzz ext}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ over $\zo^n$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \kappa, t, \epsilon)$-secure sketch with error $\delta = 0$ for $\kappa =\omega(\log n)$ such that $\epsilon =\ngl( n)$ for $t \approx \kappa $. \bnote{what is $\epsilon$? what are the other parameters?}
-\end{theorem}
- \bnote{write a proof!}
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ over $\zo^n$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \kappa, t, \epsilon)$-secure sketch with error $\delta = 0$ for $\kappa =\omega(\log n)$ such that $\epsilon \le 1/4 - \Theta(2^{n^{1/3}})$ for $t = \Theta(n^{4/5})$. \end{theorem}
 \begin{proof}
-Instead of showing the above theorem for an arbitrary length $\kappa$ we assume that the size of $\kappa$ is bounded away from $n$.  That is, $\kappa = O(n^{1/2})$.  Note that ruling out a fuzzy extractor with this length key clearly rules out extracting a longer key.
+Instead of showing the above theorem for an arbitrary length $\kappa$ we assume that the size of $\kappa$ is bounded away from $n$.  We assume that $\kappa = \omega(\log n)$ and that $\kappa = o(n^c)$ for any constant $c>0$. \bnote{do we actually need this at any point?} Note that ruling out a fuzzy extractor with this length key clearly rules out extracting a longer key.
 
-For this family we construct a different family of distributions $V$.  This family is closely related to the family we constructed in the previous section \bnote{comparison}.  However, we consider the binary alphabet.  Let $\nu = \omega(\log n)$ be some parameter to be determined later\bnote{set this later}.  We describe a single element $W\in V$. For convenience we assume that $n/\nu$ is an integer.  Let $x_1,..., x_\nu \in \zo^\nu$.  Let $\mathbb{F}$ denote the field of size $2^{\nu}$.  Let $a_2,..., a_{n/\nu}\in\mathbb{F}$ such that $a_i\neq 0$ and let $b_2,..., b_{n/\nu}\in\mathbb{F}$.  
+Our counterexample uses a slightly different family of distributions $V$ than the counterexample for secure sketches.  In particular, we need to assume a larger error tolerance $t=n^{4/5}$.  This family is closely related to the family we constructed in \thref{thm:imposs sketch}.  However, we work over the binary alphabet so the affine lines are ``squished'' to the binary realm.  Let $\nu = n/t = n^{1/5}$.  For convenience we assume that $\nu\in\mathbb{Z}^+$.  We describe a single element $W\in V$. Let $x_1,..., x_\nu \in \zo^\nu$.  Let $\mathbb{F}$ denote the field of size $2^{\nu}$.  Let $a_2,..., a_{n/\nu}\in\mathbb{F}$ such that $a_i\neq 0$ and let $b_2,..., b_{n/\nu}\in\mathbb{F}$.  
 Interpret $x_1,..., x_{\nu}$ as a element in $\mathbb{F}$ and let 
 \[w = (x_1,..., x_{\nu})  \begin{pmatrix} \vec{1} \\a_1  \\ \vdots \\ a_{n/\nu} \end{pmatrix} + \begin{pmatrix} 0  \\ 
 b_2\\ \vdots \\ b_{n/\nu} \end{pmatrix} 
 \]
-Define the distribution $W$ as the uniform distribution over values of $x$ for a particular value of $a_2,..., a_{n/\nu}, b_2,..., b_{n/\nu}$.  Note, this example is essentially the same family as in the previous example squished to the binary alphabet.  \bnote{Come back to this explanation.}
+Define the distribution $W$ as the uniform distribution over values of $x$ for a particular value of $a_2,..., a_{n/\nu}$, $b_2,..., b_{n/\nu}$.  
 
-We now proceed using the same outline as the previous section\bnote{be more precise}
+We now proceed using the same outline as the previous section over the binary space.  We use the binary space to exploit the isoperimetric inequality on Hamming space.
 \begin{itemize}
 \item For all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$. Alternatively, $\forall z, \Hfuzz(V | Z=z) = \omega(\log n)$.
 \item The distribution $V$ is uniform~(from the fuzzy extractor designer's point of view).  That is $V\overset{d}=U$.
@@ -804,7 +802,7 @@ We now proceed using the same outline as the previous section\bnote{be more prec
 For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some fixed $W\in\mathcal{V}$.  The value $w_{1,..., \nu}$ is uniform, so $\Hoo(W) =\omega(\log n)$.  Recall that $t< n/\nu$\bnote{need to say this earlier}.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i w_1 + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$ and thus $\dis(w, w') \ge n/\nu$.  Thus, $\Hfuzz(W) = \Hoo(W)= 2^\nu = \omega(\log n)$.
+Consider some fixed $W\in\mathcal{V}$.  The value $w_{1,..., \nu}$ is uniform, so $\Hoo(W) =n^{1/5}$.  Recall that $t= n/\nu$.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i w_1 + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$ and thus $\dis(w, w') \ge n/\nu$.  Thus, $\Hfuzz(W) = \Hoo(W)= 2^\nu = n^{1/5}$.
 \end{proof}
 
 \begin{proposition}$V$ is the uniform distribution over $\mathbb{F}^\gamma$.
@@ -816,7 +814,7 @@ Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution 
 We now proceed to showing the technical portion of the theorem.  We show for any $(\gen, \rep)$ many keys have few possible values that could produce them in the metric space once $p$ is published.  Then an adversary that sees $z$ is able to eliminate many possible keys and thus effectively distinguish the key from random.
 
 \begin{lemma}
-Fix some $(\gen, \rep)$ algorithm with $\kappa = \omega(\log n)$.  Let $\nu = \kappa+1$ and $t = n/\nu-1$.  Then $\epsilon = \poly(n)$.\bnote{come back to this statement with precise parameters}
+Fix some $(\gen, \rep)$ algorithm with $\kappa = \omega(\log n)$.  \bnote{do we actually use this anywhere?}There exists an information-theoretic distinguisher between $(R, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/4-\Theta(2^{-n^{1/3}})$.
 \end{lemma}
 \begin{proof}
 We assume that $\rep$ is deterministic in our analysis.  Any randomness necessary for the \rep algorithm can be provided by $\gen$.  We do not consider these coins in our security analysis~(and thus, they can be considered private).  Denote by $(R, P) \leftarrow \gen(V)$.
@@ -839,62 +837,91 @@ The distribution $R|P=p^*$ induces a partition on the metric space.  That is, fo
 
 Many of these sets must be small.  That is, there exists a set $R_{small}$  where $|R_{small} | \ge 2^{\kappa-1}$ such that for all $r\in R_{small}$,  $|Q_{p^*, r}|\le \mathcal{M}/2^{\kappa-1} = 2^{n-\kappa +1}$.  If not, there exists a set of $r$ of size $2^{\kappa-1}$ that all have at least $\mathcal{M}/2^{\kappa-1}$ points.  This is more points than exist in the metric space.  
 
-For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  Define two sets, called the interior and crust respectively: \bnote{change term crust?}
-
+For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  We first define the interior of a set:%Define two sets, called the interior and crust respectively: \bnote{change term crust?}
 \begin{align*}
 \inter(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =r\},\\
-\crust(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\}.
+%\crust(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\}.
 \end{align*}
 
-Note that $\crust(Q_{p^*, r}) \cap \inter(Q_{p^*,r}) =\emptyset$.  We now show that for $r\in R_{small}$ there are few points in $\inter(Q_{p^*, r})$.  Consider some $r^*\in R_{small}$.  Recall that $B_{n-\kappa-t}$ denotes the ball of radius $n-\kappa -t$.
+%Note that $\crust(Q_{p^*, r}) \cap \inter(Q_{p^*,r}) =\emptyset$.  
+We now show that for $r\in R_{small}$ there are few points in $\inter(Q_{p^*, r})$.  Consider some $r^*\in R_{small}$.  We will use the term deficient sphere:
+\begin{definition}
+A set $S$ is a $\beta$-deficient sphere if there exists a point $x$ such that $B_{\beta-1}(x) \subseteq S \subseteq B_{\beta}(x)$.
+\end{definition}
+
+We now proceed to show that the interior of each $Q_{p^*, r^*}$ is small~(using the isoperimetric inequality on the Hamming space):
+%Recall that $B_{n-\kappa-t}$ denotes the ball of radius $n-\kappa -t$.
 
 \begin{lemma}
-$|\inter(Q_{p^*, r^*})| \le |B_{n-\kappa -t+2}|$.
+$|\inter(Q_{p^*, r^*})| \le 2^{n-n^{3/5}}$.
 \end{lemma}
 \begin{proof}
-\bnote{deficient sphere/ball?}
-First recall that $Q_{p^*, r^*} \le 2^{n-\kappa+1}$.  We call a set $S$ a \emph{deficient sphere} if there exists a point $x$ and a radius $\beta$ \bnote{check for conflicts with $\beta$} such that $B_{\beta}(x) \subseteq S \subseteq B_{\beta+1}(x)$.  By the isoperimetric inequality on the Hamming space\bnote{cite!!!!}, there exists a deficient sphere $S_{p^*, r^*}$ and a set $D$ such that $|S_{p^*, r^*}| = |\inter(Q_{p^*, r^*})|$, $|D| = |Q_{p^*, r^*}^\complement|$ and $\forall s\in S_{p^*, r^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, r^*} \cup D$ is a deficient sphere~(and its radius is $t$ larger than $S_{p^*, r^*}$).
-We now find the radius of $S_{p^*, r^*}$.
+Recall that $Q_{p^*, r^*} \le 2^{n-\kappa+1}$.  By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal})\bnote{better citation?}, there exists a $\beta$-deficient sphere $S_{p^*, r^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, r^*}| = |\inter(Q_{p^*, r^*})|$, $|D| = |Q_{p^*, r^*}^\complement|$ and $\forall s\in S_{p^*, r^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, r^*} \cup D$ is a deficient sphere~(and its radius is $t$ larger than $S_{p^*, r^*}$).
+We now find the size of $S_{p^*, r^*}$.
 
-Recall that $|S_{p^*, r^*} \cup D| = |Q_{p^*, r^*} | \le 2^{n-(\kappa-1)}$.  We now find the maximum radius ball that contains at most $2^{n-(\kappa-1)}$ points.  That is, $\max \{d\in \mathbb{Z^+}| B_d \le 2^{n-(\kappa-1)}\}$.  Recall that $2^{n-(\kappa-1)} \ge |B_d| \ge (n/d)^d$\bnote{this bounds sucks! do better}.  Thus,
-\[n-(\kappa-1) \ge d (\log n - \log d).\]  
-We first show that $d\le n/2$.  Since $|S_{p^*, r^*} | \le 2^{n-(\kappa-1)}/2^n \le 1/2$, then $d\le \lceil n/2\rceil$.  This is because $\sum_{i=0}^{\lceil n/2 \rceil} {n\choose i} \ge 2^{n-1}$.  
+Recall that $|S_{p^*, r^*} \cup D| = |Q_{p^*, r^*} | \le 2^{n-(\kappa-1)}$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, r^*}|$ is a deficient sphere of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
 
-Since $d\le 1/2$, $d\le d(\log n - \log d)$ and thus: $d\le n-(\kappa+1)$.  That is, $S_{p^*, r^*} \cup D$ is a deficient sphere of radius at most $n-(\kappa-1)$.  This means that $S_{p^*, r^*}$ is a deficient sphere of radius at most $n-(\kappa-1)-t$.  That is $S_{p^*, r^*}$ is contained in a sphere of radius $n-\kappa-t+2$. And thus, $|\inter(Q_{p^*, r^*}|\le |B_{n-\kappa-t+2}|$.\bnote{we need a much better bound here.  This is a radius of almost $n$}
+\begin{align*}
+|S_{p^*, r^*}| \le \{ x | \dis (x, 0)\le n-t\} &= 2^n \Pr[ wt(X) \le (1/2-t/n)n] \le 2^n e^{-n ((t/n)^2)} = 2^n e^{-n^{3/5}} \le 2^{n - n^{3/5}}
+\end{align*}
+
+% That is, We now find the maximum radius ball that contains at most $2^{n-(\kappa-1)}$ points.  That is, $\max \{d\in \mathbb{Z^+}| B_d \le 2^{n-(\kappa-1)}\}$.  Recall that $2^{n-(\kappa-1)} \ge |B_d| \ge (n/d)^d$\bnote{this bounds sucks! do better}.  Thus,
+%\[n-(\kappa-1) \ge d (\log n - \log d).\]  
+%We first show that $d\le n/2$.  Since $|S_{p^*, r^*} | \le 2^{n-(\kappa-1)}/2^n \le 1/2$, then $d\le \lceil n/2\rceil$.  This is because $\sum_{i=0}^{\lceil n/2 \rceil} {n\choose i} \ge 2^{n-1}$.  
+%
+%Since $d\le 1/2$, $d\le d(\log n - \log d)$ and thus: $d\le n-(\kappa+1)$.  That is, $S_{p^*, r^*} \cup D$ is a deficient sphere of radius at most $n-(\kappa-1)$.  This means that $S_{p^*, r^*}$ is a deficient sphere of radius at most $n-(\kappa-1)-t$.  That is $S_{p^*, r^*}$ is contained in a sphere of radius $n-\kappa-t+2$. And thus, $|\inter(Q_{p^*, r^*}|\le |B_{n-\kappa-t+2}|$.\bnote{we need a much better bound here.  This is a radius of almost $n$}
 \end{proof}
 
-We have shown that $|\inter(Q_{p^*, r^*}| \le |B_{n-\kappa -t+2}|$.  Define the set $K_{bad} = \cup_{r^*\in R_{small}} |Q_{p^*, r^*}|$ and note that $|K_{bad} | \le  |B_{n-\kappa -t+2}||R_{small}|$.
-
+We have shown that $|\inter(Q_{p^*, r^*})| \le 2^{n-n^{3/5}}$.  %Define the set $K_{bad} = \cup_{r^*\in R_{small}} |Q_{p^*, r^*}|$ and note that $|K_{bad} | \le  |B_{n-\kappa -t+2}||R_{small}|$.
 To complete the proof it suffices to show that for most values of the auxiliary information $Z$ there are many parts $Q_{p^*, r^*}$ that do not receive any points.  
 
-Recall that $Z$ consists of $2n/\nu$ coefficients and there are $(2^n-1)^{\nu-1} 2^{n-\nu}$ equally likely values for $Z$.
+Recall that $Z$ consists of $2n/\nu$ coefficients and there are $(2^t-1)^{\nu-1} 2^{n-\nu}$ equally likely values for $Z$.
  As described above, the view of $\gen, \rep$ is a uniform distribution $V$.  We know show there are many possible values for $Z |P=p^*$.  The only information about $Z$ is contained in the point  $V=v$.  The length of this point is $2^n$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
  \[
- \forall v, H_0(Z | V=v) =\log \left(\frac{(2^{n/\nu}-1)^{\nu-1} 2^{n-\nu}}{2^n} \right) = \log \frac{(2^{n/\nu}-1)^{\nu-1}}{2^{\nu}} \ge \log \frac{2^{(n/\nu-1)(\nu -1)}}{2^v} = n -n/\nu - 2\nu +1.
+ \forall v, H_0(Z | V=v) =\log \left(\frac{(2^{n/\nu}-1)^{\nu-1} 2^{n-\nu}}{2^n} \right) = \log \frac{(2^{n/\nu}-1)^{\nu-1}}{2^{\nu}} \ge \log \frac{2^{(n-\theta(\nu))}}{2^v} = n -\Theta(\nu).
  \]
+ \bnote{need to come back to why this is true}
 Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
 
-This means that the $\gen$ algorithm may include points for possible $Z$ values into $K_{bad}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  That is, 
-\[
-\expe_z |K_{bad} \cap V | P=p^* \wedge Z=z | \le \frac{|B_{n-\kappa -t+2}||R_{small}|}{2^{n\nu -n -2\nu +1}}.
-\]
-
-We now show that $\expe | K_{bad} \cap V | P=p^* \wedge Z=z| \le (1- \epsilon) |R_{small}|$. 
-We use the combinatorial bound that $|B_d| \le \left(\frac{ne}{d}\right)^d$ \bnote{this bound is terrible!}.  We then have that, 
+This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, r^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of $r^*$ with small support, that is $Q_{small} = \cup_{r\in R_{small}} \inter(Q_{r, p^*})$.  Note that $Q_{small} \le 2^{n-n^{1/3}}|R_{small}|$.
+That is, 
 \begin{align*}
-\expe_z |K_{bad} \cap V | P=p^* \wedge Z=z | &\le \frac{|B_{n-\kappa -t+2}||R_{small}|}{2^{n\nu -n -2\nu +1}}\\
-&\le  \frac{\left(\frac{ne}{n-\kappa -t+2}\right)^{n-\kappa -t+2}}{2^{n\nu -n-2\nu+1}}|R_{small}|\\
-&\le \frac{2^{3(n-\kappa -t +2)}}{2^{n -n/\nu-2\nu+1}}|R_{small}|
-%&= \frac{\left(2^{\log n+ \log e - \log (n-\kappa -t+2)}\right)^{n-\kappa -t+2}}{2^{n\nu -n-2\nu+1}}|R_{small}|\\
-%&=2^{(n-\kappa-t+2)(\log n+ \log e - \log (n-\kappa -t+2)) - (n\nu -n 2\nu+1)} |R_{small}|
+\expe_z |Q_{small} \cap V | P=p^* \wedge Z=z | &\le \frac{2^{n-n^{1/3}}|R_{small}|}{2^{n - \theta(\nu)}}\\
+&=\frac{|R_{small}|}{2^{n^{1/3}-\Theta(n^{1/5})}}.
 \end{align*}
-\bnote{the two combinatorial bounds we are using aren't good enough}
-To show that $\epsilon \ge 1/2$ we have that 
+Thus, at most $1/2^{n^{1/3}- \Theta(n^{1/5})}$ fraction of keys in $R_{small}$ have any support  conditioned on $p^*$ and $z$.  We now present a distinguisher $D_{p^*}$ for a particular $p^*$:
+\begin{enumerate}
+\item On input $x, z$.
+\item Compute $R_{small}$.  
+\item If $x\not \in R_{small}$ output random bit $b$.
+\item Else compute $V|P=p^* \wedge Z=z$. 
+\item If $Q_{p^*, x} \cap V|P=p^* \wedge Z=z =\emptyset$ output $b=0$.
+\item Else output $b=1$.
+\end{enumerate}
+
+The overall distinguisher $D(x, p, z)$ is formed by calling $D_p(x, z)$ when $p\in A_p$ and outputting a random bit otherwise .  The advantage of $D$ is 
+\begin{align*}
+\Pr[D(R, P, Z) = 1] - \Pr[D(U, P, Z) =1]&=(\Pr[D(R, P, Z) = 1| P\in A_p] - \Pr[D(U, P, Z) =1 | P\in A_p])\Pr[P\in A_p]\\
+&\ge \frac{1}{2}\sum_{p^*\in A_p} \Pr[P=p^*] \Pr[D_{p^*}(R, Z) = 1] - \Pr[D_{p^*}(U, Z)=1]\\
+&\ge \frac{1}{2}\sum_{p^*\in A_p} \Pr[P=p^*] (\Pr[D_{p^*}(R, Z) = 1 | R\in R_{small}] \\&- \Pr[D_{p^*}(U, Z)=1 | R\in R_{small}])\Pr[R\in R_{small}]\\
+&\ge 1/4\sum_{p^* \in A_p} \Pr[P=p^*]\left(1- \Theta(2^{-n^{1/3}})\right) = 1/4-\Theta(2^{-n^{1/3}}).
+\end{align*}
+%We now show that $\expe | Q_{p^*, r^*} \cap V | P=p^* \wedge Z=z| \le (1- \epsilon) |R_{small}|$. 
+%We use the combinatorial bound that $|B_d| \le \left(\frac{ne}{d}\right)^d$ \bnote{this bound is terrible!}.  We then have that, 
 %\begin{align*}
-%(n-\kappa-t+2)(\log n+ \log e - \log (n-\kappa -t+2)) - (n -n/\nu- 2\nu+1) 
+%\expe_z |K_{bad} \cap V | P=p^* \wedge Z=z | &\le \frac{|B_{n-\kappa -t+2}||R_{small}|}{2^{n\nu -n -2\nu +1}}\\
+%&\le  \frac{\left(\frac{ne}{n-\kappa -t+2}\right)^{n-\kappa -t+2}}{2^{n\nu -n-2\nu+1}}|R_{small}|\\
+%&\le \frac{2^{3(n-\kappa -t +2)}}{2^{n -n/\nu-2\nu+1}}|R_{small}|
+%%&= \frac{\left(2^{\log n+ \log e - \log (n-\kappa -t+2)}\right)^{n-\kappa -t+2}}{2^{n\nu -n-2\nu+1}}|R_{small}|\\
+%%&=2^{(n-\kappa-t+2)(\log n+ \log e - \log (n-\kappa -t+2)) - (n\nu -n 2\nu+1)} |R_{small}|
 %\end{align*}
-\bnote{why was that sufficient to break security}
-\bnote{still working this isn't complete}
+%\bnote{the two combinatorial bounds we are using aren't good enough}
+%To show that $\epsilon \ge 1/2$ we have that 
+%%\begin{align*}
+%%(n-\kappa-t+2)(\log n+ \log e - \log (n-\kappa -t+2)) - (n -n/\nu- 2\nu+1) 
+%%\end{align*}
+%\bnote{why was that sufficient to break security}
+%\bnote{still working this isn't complete}
 \end{proof}
 \end{proof}
 
