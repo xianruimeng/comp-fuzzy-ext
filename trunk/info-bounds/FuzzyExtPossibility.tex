@@ -717,7 +717,7 @@ In the previous section, we saw that if a secure sketch is secure for a family o
 
 \begin{theorem}
 \label{thm:imposs sketch}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch with error $\delta < 1/4$ for $\tilde{m} =\omega(1)$ for $t\ge 3 + (\gamma-1) / \log |\mathbb{F}|$.  
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{V}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch with error $\delta < 1/4$ for $\tilde{m} =\omega(1)$ for $t\ge 4$.  
 \end{theorem}
 
 \begin{proof}
@@ -755,7 +755,7 @@ A \emph{HILL secure sketch} is obtained by replacing the security condition in \
 Let $n$ be a security parameter and let $\mathcal{M} = |\mathbb{F}|^\gamma$.  There exists a family of distributions $\mathcal{V}$ over $\mathcal{M}$ such that for each element $W\in \mathcal{V}$, $\Hfuzz(W)= \omega(\log n)$ and for any $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-HILL secure sketch $(\sketch, \rec)$ that is $(s_{sec}, \epsilon_{sec})$-hard and error $\delta$.  If 
 \begin{itemize}
 \item $s_{sec}\ge t(|\rec| + \gamma \log |\mathbb{F}|)$, 
-\item $t\ge 3 + (\gamma-1)/\log |\mathbb{F}|$,
+\item $t\ge 4$,
 \item and $\epsilon + t\delta < 1/16$,
 \end{itemize}
  then $\tilde{m} =O(1)$.
@@ -800,7 +800,7 @@ The proof uses the same basic outline as the previous result.  However, we work 
 For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some fixed $W\in\mathcal{V}$.  The value $w_{1,..., \nu}$ is uniform, so $\Hoo(W) =n^{1/5}$.  Recall that $t= n/\nu$.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i w_1 + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$ and thus $\dis(w, w') \ge n/\nu$.  Thus, $\Hfuzz(W) = \Hoo(W)= 2^\nu = n^{1/5}$.
+Consider some fixed $W\in\mathcal{V}$.  The value $w_{1,..., \nu}$ is uniform, so $\Hoo(W) =n^{1/5}$.  Recall that $t= n/\nu$.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i w_1 + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$ and thus $\dis(w, w') \ge n/\nu$.  Thus, $\Hfuzz(W) = \Hoo(W)= n^{1/5}$.
 \end{proof}
 
 \begin{proposition}$V$ is the uniform distribution over $\mathbb{F}^\gamma$.
@@ -854,7 +854,7 @@ We now proceed to show that the interior of each $Q_{p^*, r^*}$ is small~(using 
 $|\inter(Q_{p^*, r^*})| \le 2^{n-n^{3/5}}$.
 \end{lemma}
 \begin{proof}
-Recall that $Q_{p^*, r^*} \le 2^{n-\kappa+1}$.  By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal})\bnote{better citation?}, there exists a $\beta$-deficient ball $S_{p^*, r^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, r^*}| = |\inter(Q_{p^*, r^*})|$, $|D| = |Q_{p^*, r^*}^\complement|$ and $\forall s\in S_{p^*, r^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, r^*} \cup D$ is a deficient ball~(and its radius is $t$ larger than $S_{p^*, r^*}$).
+By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal})\bnote{better citation?}, there exists a $\beta$-deficient ball $S_{p^*, r^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, r^*}| = |\inter(Q_{p^*, r^*})|$, $|D| = |Q_{p^*, r^*}^\complement|$ and $\forall s\in S_{p^*, r^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, r^*} \cup D$ is a deficient ball~(and its radius is $t$ larger than $S_{p^*, r^*}$).
 We now find the size of $S_{p^*, r^*}$.
 
 Recall that $|S_{p^*, r^*} \cup D| = |Q_{p^*, r^*} | \le 2^{n-(\kappa-1)}\leq 2^{1/2}$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, r^*}|$ is a deficient sphere of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
@@ -862,7 +862,7 @@ Recall that $|S_{p^*, r^*} \cup D| = |Q_{p^*, r^*} | \le 2^{n-(\kappa-1)}\leq 2^
 \begin{align*}
 |S_{p^*, r^*}| \le \{ x | \dis (x, 0)\le n-t\} &= 2^n \Pr[ wt(X) \le (1/2-t/n)n] \le 2^n e^{-n ((t/n)^2)} = 2^n e^{-n^{3/5}} \le 2^{n - n^{3/5}}
 \end{align*}
-
+\bnote{we can push this to $t=n^{2/3+\Theta(1)}$.  Need $t = n^c$ for $2c-1>1/3$ for the second part to go through}
 % That is, We now find the maximum radius ball that contains at most $2^{n-(\kappa-1)}$ points.  That is, $\max \{d\in \mathbb{Z^+}| B_d \le 2^{n-(\kappa-1)}\}$.  Recall that $2^{n-(\kappa-1)} \ge |B_d| \ge (n/d)^d$\bnote{this bounds sucks! do better}.  Thus,
 %\[n-(\kappa-1) \ge d (\log n - \log d).\]  
 %We first show that $d\le n/2$.  Since $|S_{p^*, r^*} | \le 2^{n-(\kappa-1)}/2^n \le 1/2$, then $d\le \lceil n/2\rceil$.  This is because $\sum_{i=0}^{\lceil n/2 \rceil} {n\choose i} \ge 2^{n-1}$.  
@@ -875,18 +875,18 @@ To complete the proof it suffices to show that for most values of the auxiliary 
 Recall that $Z$ consists of $2n/\nu$ coefficients and there are $(2^t-1)^{\nu-1} 2^{n-\nu}$ equally likely values for $Z$.
  As described above, the view of $\gen, \rep$ is a uniform distribution $V$.  We know show there are many possible values for $Z |P=p^*$.  The only information about $Z$ is contained in the point  $V=v$.  The length of this point is $2^n$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
  \[
- \forall v, H_0(Z | V=v) =\log \left(\frac{(2^{n/\nu}-1)^{\nu-1} 2^{n-\nu}}{2^n} \right) = \log \frac{(2^{n/\nu}-1)^{\nu-1}}{2^{\nu}} \ge \log \frac{2^{(n-\theta(\nu))}}{2^v} = n -\Theta(\nu).
+ \forall v, H_0(Z | V=v) =\log \left(\frac{(2^{n/\nu}-1)^{\nu-1} 2^{n-\nu}}{2^n} \right) = \log \frac{(2^{n/\nu}-1)^{\nu-1}}{2^{\nu}} >\log  \frac{(2^{n/\nu})^{\nu-2}}{2^{\nu}}  \log \frac{2^{(n-2\nu))}}{2^\nu} = n -3\nu.
  \]
- \bnote{need to come back to why this is true}
+ where the inequality follows by \lemref{lem:log-minus-one}.
 Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
 
 This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, r^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of $r^*$ with small support, that is $Q_{small} = \cup_{r\in R_{small}} \inter(Q_{r, p^*})$.  Note that $Q_{small} \le 2^{n-n^{1/3}}|R_{small}|$.
 That is, 
 \begin{align*}
-\expe_z |Q_{small} \cap V | P=p^* \wedge Z=z | &\le \frac{2^{n-n^{1/3}}|R_{small}|}{2^{n - \theta(\nu)}}\\
-&=\frac{|R_{small}|}{2^{n^{1/3}-\Theta(n^{1/5})}}.
+\expe_z |Q_{small} \cap V | P=p^* \wedge Z=z | &\le \frac{2^{n-n^{1/3}}|R_{small}|}{2^{n - 3\nu}}\\
+&=\frac{|R_{small}|}{2^{n^{1/3}-3n^{1/5}}}.
 \end{align*}
-Thus, at most $1/2^{n^{1/3}- \Theta(n^{1/5})}$ fraction of keys in $R_{small}$ have any support  conditioned on $p^*$ and $z$.  We now present a distinguisher $D_{p^*}$ for a particular $p^*$:
+Thus, at most $1/2^{n^{1/3}- 3n^{1/5}} = \Theta(2^{-n^{1/3}})$ fraction of keys in $R_{small}$ have any support  conditioned on $p^*$ and $Z$~(note this is an expectation across the values of $Z$).  We now present a distinguisher $D_{p^*}$ for a particular $p^*$:
 \begin{enumerate}
 \item On input $x, z$.
 %\item If $x\not \in R_{small}$ output random bit $b$.
