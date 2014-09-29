@@ -237,13 +237,9 @@
 
 \title{When are Fuzzy Extractors Possible?}
 \blind{
-\author{Benjamin Fuller\footnote{Boston University and MIT Lincoln Laboratory. The Lincoln Laboratory portion of this
-work was sponsored by the Department of the Air Force under Air Force
-Contract
-\#FA8721-05-C-0002.  Opinions,
-interpretations, conclusions and recommendations are those of the author
-and
-are not necessarily endorsed by the United States Government.  Email: {\tt bfuller@cs.bu.edu}.}~~~~~~~~~~Leonid Reyzin\footnote{Boston University.  Email: {\tt reyzin@cs.bu.edu}.}~~~~~~~~~~Adam Smith\footnote{Pennsylvania State University. Work done in part while the author was at Boston University and Harvard University.  Email: {\tt asmith@psu.edu}.  }}
+\author{Benjamin Fuller\footnote{Boston University and MIT Lincoln Laboratory. 
+%The Lincoln Laboratory portion of this work was sponsored by the Department of the Air Force under Air Force Contract \#FA8721-05-C-0002.  Opinions, interpretations, conclusions and recommendations are those of the author and are not necessarily endorsed by the United States Government.  
+Email: {\tt bfuller@cs.bu.edu}.}~~~~~~~~~~Leonid Reyzin\footnote{Boston University.  Email: {\tt reyzin@cs.bu.edu}.}~~~~~~~~~~Adam Smith\footnote{Pennsylvania State University. Work done in part while the author was at Boston University and Harvard University.  Email: {\tt asmith@psu.edu}.  }}
 }
 \begin{document}
 \maketitle
@@ -351,29 +347,23 @@ In this section, we define of fuzzy extractors and secure sketches.  Definitions
 \label{def:fuzzy extractor}
 An $(\mathcal{M}, \mathcal{W}, \kappa, t, \epsilon)$-\emph{fuzzy extractor} with error $\delta$ is a pair of randomized procedures, ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$, with the following properties: 
 \begin{enumerate}
-\item The generate procedure \gen on input $w\in \mathcal{M}$ outputs an extracted string $r\in\{0,1\}^\kappa$ and a helper string $p\in\{0,1\}^*$.
-\item The reproduction procedure \rep takes an element $w'\in \mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.  The \emph{correctness} property of fuzzy extractors guarantees that
-\[
-\forall w, w'\in \mathcal{M}, \dis(w, w')\le t \Rightarrow \Pr[(R, P)\leftarrow \gen(w) \wedge \rep(w', P) =R] \ge 1-\delta
-\]
-where the probability is taken over the coins of $\gen, \rep$.
-\item The \emph{security} property guarantees that for any distribution $W\in\mathcal{W}$, the string $R$ is nearly uniform even for those who observe $P$:  if $(R,P)\leftarrow\gen (W)$, then $\mathbf{SD}((R,P),(U_\kappa,P))\leq \epsilon$.
+\item \gen on input $w\in \mathcal{M}$ outputs an extracted string $r\in\{0,1\}^\kappa$ and a helper string $p\in\{0,1\}^*$.
+\item \rep takes an element $w'\in\mathcal{M}$ and a bit string $p\in\{0,1\}^*$ as inputs.   
+\item \emph{Correctness:} if $\dis(w, w')\leq t$ and $(r, p)\leftarrow \gen(w)$, then $\Pr[\rep( w', p) = r] \geq 1-\delta$.
+\item \emph{Security:} for any distribution $W\in\mathcal{W}$, if $(R,P)\leftarrow\gen (W)$, then $\mathbf{SD}((R,P),(U_\kappa,P))\leq \epsilon$.
 \end{enumerate}
 A fuzzy extractor is efficient if $\gen$ and $\rep$ run in expected polynomial time.
 \end{definition}
 
-Replacing the statistical distance in \defref{def:fuzzy extractor} with computational distinguishability results in a \emph{computational fuzzy extractor}~\cite[Definition 2.5]{fuller2013computational}.  \bnote{do we care about computational fuzzy extractors?} A fuzzy extractor performs two tasks, information-reconciliation and privacy amplification.  The canonical construction is called \emph{sketch-and-extract} the uniform key is extracted from $w$~(using a randomness extractor~\cite{nisan1993randomness} and the error-tolerance is obtained by using a secure sketch~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}.  Secure sketches produce a string $ss$ that does not decrease the entropy of $w$ too much, while allowing recovery of $w$ from a  close $w'$:
+Replacing the statistical distance in \defref{def:fuzzy extractor} with computational distinguishability results in a \emph{computational fuzzy extractor}~\cite[Definition 2.5]{fuller2013computational}.  \bnote{do we care about computational fuzzy extractors?} A fuzzy extractor performs two tasks, information-reconciliation and privacy amplification.  The canonical construction is called \emph{sketch-and-extract:} the uniform key is extracted from $w$~(using a randomness extractor~\cite{nisan1993randomness} and the error-tolerance is obtained by using a secure sketch~\cite[Lemma 4.1]{DBLP:journals/siamcomp/DodisORS08}.  Secure sketches produce a string $ss$ that does not decrease the entropy of $w$ too much, while allowing recovery of $w$ from a  close $w'$:
 \begin{definition}
 \label{def:secure sketch}
 An $(\mathcal{M},\mathcal{W}, \tilde{m}, t)$-\emph{secure sketch} with error $\delta$ is a pair of randomized procedures, ``sketch'' $(\sketch)$ and ``recover'' $(\rec)$, with the following properties:
 \begin{enumerate}
 \item The sketching procedure \sketch on input $w\in\mathcal{M}$ returns a bit string $ss\in\{0,1\}^*$.
-\item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $ss\in\{0,1\}^*$.  The \emph{correctness} property of secure sketches guarantees that 
-\[
- \forall w, w'\in\mathcal{M}, \dis(w,w')\leq t \Rightarrow \Pr[\rec(w',\sketch(w))=w]\geq 1-\delta
- \] 
-where the probability is taken over the coins of $\sketch$ and $\rec$.  
-\item The \emph{security} property guarantees that for any distribution $W\in\mathcal{W}$, the value of $W$ can be recovered by the adversary who observes $w$ with probability no greater than $2^{-\tilde{m}}$.  That is, $\Hav(W|\sketch(W))\geq \tilde{m}$.
+\item The recovery procedure \rec takes an element $w'\in\mathcal{M}$ and a bit string $ss\in\{0,1\}^*$.  
+\item \emph{Correctness}: $ \forall w, w'\in\mathcal{M}, \dis(w,w')\leq t \Rightarrow \Pr[\rec(w',\sketch(w))=w]\geq 1-\delta.$
+\item \emph{Security}: for any distribution $W\in\mathcal{W}$, $\Hav(W|\sketch(W))\geq \tilde{m}$.
 \end{enumerate}
 A secure sketch is \emph{efficient} if \sketch and \rec run in expected polynomial time. 
 \end{definition}
@@ -405,11 +395,11 @@ We separate between two types of fuzzy extractors and secure sketches.  Because 
 \begin{definition}
 Let $W$ denote a distribution.  A pair of algorithms, $\sketch, \rec$ is a $(\sketch_W, \rec_W)$ is called a $(\mathcal{M}, W, \tilde{m}, t)$-\emph{distribution-aware secure sketch} if the correctness and security properties hold for the distribution $W$.  That is, 
 \begin{enumerate}
-\item \emph{Correctness} 
-\[
-\forall w\in W, \forall w' \in\mathcal{M}| \dis(w',w')\le t, \Pr[\rec(w',\sketch(w))=w]\ge 1-\delta.\]
+\item \emph{Correctness:} 
+$
+\forall w\in W, \forall w' \in\mathcal{M}| \dis(w',w')\le t, \Pr[\rec(w',\sketch(w))=w]\ge 1-\delta.$
 Correctness is guaranteed only for the support of $W$.
-\item \emph{Security} The distribution $W$ is unknown conditioned on $ss$: $\Hav(W|\sketch(W))\geq \tilde{m}$.
+\item \emph{Security:} The distribution $W$ is unknown conditioned on $ss$: $\Hav(W|\sketch(W))\geq \tilde{m}$.
 \end{enumerate}
 \end{definition}
 The algorithms $(\sketch, \rec)$ know the description of $W$ and security only holds for $W$.  When we consider distribution-aware algorithms, we assume they are \emph{inefficient}.  It would be interesting to investigate natural models for specifying distributions that would allow for efficient~(yet generic) distribution-aware constructions of sketches and extractors.
@@ -434,20 +424,11 @@ For a metric space $\mathcal{M}$, let $\max |\mathcal{M}|$ denote the maximum le
 Let $n$ be a security parameter and let $W$ be a distribution over $(\mathcal{M}, \dis)$.
 If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-computational fuzzy extractor that is $(\max |\mathcal{M}| +  |\rep|, \epsilon)$-hard for $\epsilon = \ngl(n)$ with error $\delta = \ngl(n)$~(and thus no fuzzy extractor) for $\kappa =\omega(\log n)$.
 \end{lemma}
-\begin{proof}
-Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m^*\in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m^*)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
-\begin{itemize}
-\item Input $r, p$.
-\item If $\rep(m^*, p) = r$, output $1$.
-\item Else output $0$.
-\end{itemize}
-First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(R, P) = 1]\geq 1/\poly(n) - \delta$, while $\Pr[D(U_\kappa, P)=1 ]= 1/2^{-\kappa}$.  Thus, when $\kappa = \omega(\log n)$:
-\[
-\delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
-\]
-\end{proof}
+
+The proof of \lemref{lem:fuzz necessary} is in \apref{sec:proof fuzz necessary}.
 Even if we consider a two party protocol where Alice holds $w$ and Bob holds $w'$, 
-\lemref{lem:fuzz necessary} still applies.  This is because $D$ only provides an input to the protocol and looks at the output.  This means that fuzzy min-entropy is also a necessary condition for interactive solution.  As described in the introduction, it is possible to provide a common key from $w, w'$ in the interactive setting using secure two party computation.
+\lemref{lem:fuzz necessary} still applies.  
+This means that fuzzy min-entropy is also a necessary condition for interactive solution.  As described in the introduction, it is possible to provide a common key from $w, w'$ in the interactive setting using secure two party computation.
 
 There are many distributions with fuzzy min-entropy for which no in the fuzzy extractor is known to be secure.  There are also no known impossibility results for distributions with fuzzy min-entropy.  Thus, the situation for fuzzy extractors is quite unclear.
 As a reminder, our goal is to provide a super-logarithmic length key when provided with super-logarithmic fuzzy min-entropy.  We begin with the simpler distribution-aware setting and then consider the complicated distribution-oblivious setting.
@@ -520,7 +501,8 @@ For notational convenience, we denote the ball with the largest number of points
 \Hfuzz(W) = \Hoo(W) -\log |B_{t, max}|.\label{eq:fuzz for flat}
 \end{align}
 
-We now present a construction for flat distributions.  We universal hashes:
+\noindent We use universal hashes to construct secure sketches for flat distributions.  Skoric et al. previously used universal hash functions to construct secure sketches in the setting of a polynomial number of error patterns~\cite{skoric2009efficient}.
+
 
 \begin{definition}
 Let $F : \mathcal{K} \times D \to R$ be a function.  We say that $F$ is \emph{universal} if for all distinct $x_1, x_2 \in D$:
@@ -528,8 +510,6 @@ Let $F : \mathcal{K} \times D \to R$ be a function.  We say that $F$ is \emph{un
  \Pr_{K \leftarrow \mathcal{K}}[F(K, x_1) = F(K, x_2)] = \frac{1}{|R|} \;.
 \]
 \end{definition}
-
-A sufficiently-long universal hash function suffices to construct an information-theoretic fuzzy extractor.  Skoric et al. previously used universal hash functions to construct secure sketches in the setting of a polynomial number of error patterns~\cite{skoric2009efficient}.
 
 \begin{construction}
 \label{cons:universal hash}
@@ -560,6 +540,7 @@ Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a universal hash function
 \end{construction}
 
 \begin{lemma}
+\label{lem:flat hashing}
 Let $W$ be a flat distributions with min-entropy $m$.  Then
 \consref{cons:universal hash} is a $(\mathcal{M}, W, m - \log |R|, t)$-distribution aware secure sketch with error $\delta \le \frac{|B_{t, max}|-1}{|R|}$. 
 \end{lemma}
@@ -643,62 +624,11 @@ B_{t, i, max} = \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t
 \begin{theorem}
 \label{thm:layered hashing}
 Let $W$ be a distribution over $\mathcal{M}$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (|B_{t, i, max}|-1) /\delta$.  Then \consref{cons:leveling} is a $(\mathcal{M}, W, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
+
+We provide a full proof in \apref{sec:proof of layered hashing}.  The argument is similar to the proof of \lemref{lem:flat hashing}, however, there is an additional step showing that releasing the probability information is not too harmful.  Namely, that an adversary with access to the probability information improves their success by a polynomial factor.  Note we release $n$ levels where $n =\log |\mathcal{M}|$.
+
 \end{theorem}
 \bnote{right now this is stated without $\ell$.  I found the expression to be really gross with $\ell$ included.  Thoughts?  I know $\ell$ needs to be there because the construction uses it.}
-\begin{proof}
-\textbf{Correctness:}  We begin by arguing correctness.  Let $\ell$ be a parameter describing the number of levels.\footnote{later we will set $\ell = m$ to simplify expressions and obtain the theorem statement.  The proof can be carried out for an arbitrary $\ell$.}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(n+\ell)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  Now consider the case when $\Pr[W=w]> 2^{-(n+\ell)}$, let $L_i^*$ be the level of $\Pr[W=w]$.
-Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ such that $\forall w \in W^*, \Pr[W^*=w]\in L_i^*$. The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ is:
-\begin{align*}
-\Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
- &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{|B_{t, i, max}|-1}{|R_i|} = \delta
-\end{align*}
-Where the inequality proceeds by union bound, the first equality proceeds by the universality of $F$, and the second inequality proceeds by noting the number of neighbors is bounded by $|B_{t, i, max}|$.  
-
-\textbf{Ideal Adversary with access to Level Information:} Before arguing security of the actual construction, we consider the optimum performance of an adversary that receives the level information.  %We first consider the optimum strategy for an adversary that receives just the information about the probability of $w$.  
-An adversary that receives $i$ as input the best strategy is to guess a point that has the most nearby weight in that layer.  That is, $w^*\leftarrow A(i)$ such that $\max_{w^* \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i}}[\dis(w, w^*)]$.The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  Note there are $n-m+\ell$ outcomes for $i$ so the overall success of such an adversary is at most $n-m+\ell$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
-\begin{align}
-\expe_{i | m\le i \le n+\ell}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | m\le i \le n+\ell}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \label{eq:link fuzz 1}\\
-&\le \left(n-m+\ell\right)\left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\label{eq:link fuzz 2}\\
-&= \left(n-m+\ell\right)\Hfuzz(W)\label{eq:link fuzz 3}
-\end{align}
-\textbf{Security:}
-We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+\ell)}$ is at most $2^{-\ell}$~(there are at most $2^n$ points in the distribution).  That is, $\sum_{w | \Pr[W=w]\le 2^{-(n+\ell)}}\Pr[W = w] \le 2^{-\ell}$.  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-n}$.  Then 
-\begin{align*}
-\Hav(W | \sketch(W)) = -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\\
--\log\left( 2^{-\ell} + (1-2^{-\ell})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)
-\end{align*}
-For the remainder of the proof, we seek a bound on 
-\[
-2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0} = \max_{w\in W | \Pr[W=w]>2^{-(n+\ell)}}\Pr[W=w | \sketch(W)].
-\]
-We separate out this quantity into levels:
-\begin{align*}
-\max_{w\in W | \Pr[W=w]>2^{-(n+\ell)}}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
-&= \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{|\sketch(W)|i|}\right)\\
-&\le \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
-&\le \expe_{i | m\le i \le n+\ell} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
-&\le\frac{ \expe_{i | m\le i \le n+\ell} \left(2^{-(i+1)}*|B_{t, i, max}|\right)}{2\delta}\\
-%&=\delta \sum_{i | m\le i \le n+\ell} \Pr[W\in L_i]\left(2^{-i}*|B_{t, i, max}|\right)
-%\end{align*}
-%Now consider This allows us to conclude that 
-%\begin{align*}
-%\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
-&= \frac{(n-m+\ell) 2^{-\Hfuzz(W)}}{2\delta}.
-\end{align*}
-Where the last line follows by Equations~\eqref{eq:link fuzz 1}-\eqref{eq:link fuzz 3}.
-Combining both cases we have:
-\begin{align*}
-\Hav(W | \sketch(W)) = -\log \left(2^{-\ell}+\frac{(1-2^{-\ell})(n-m+\ell)2^{-\Hfuzz(W)}}{2\delta}\right).
-\end{align*}
-Setting $\ell = m$ yields
-\begin{align*}
-\Hav(W | \sketch(W)) &= -\log \left(m+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
-&\ge -\log \min\{m, \frac{(1-2^{-m}) n2^{-\Hfuzz(W)}}{2\delta}\})-1\\
-&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-m}) - 2\\
-&\ge \Hfuzz(W) - \log n + \log \delta - 3\\
-\end{align*}
-Where the third line follows from the second because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$ then $\log (1-2^{-m})\le 1$ and if $m< 1$ the entire bound is vacuous as $\Hfuzz(W)< 1$.
-\end{proof}
 
 \begin{corollary}
 \label{cor:extension to fuzz ext}
@@ -715,26 +645,25 @@ In the previous section, we saw it is possible to construct secure sketches and 
 \subsection{A definitional equivalence}
 Before proceeding to our result, we consider the definition of a fuzzy extractor.  The standard definition requires a secure sketch to work for all members $W$ of a family $\mathcal{V}$.  For clarity we will refer to $\mathcal{V}$ as the \emph{family}, the distribution $W$ as a \emph{source} and the particular sample taken $w\in W$ as the \emph{outcome}.    We will add the family $\mathcal{V}$ to the description of a fuzzy extractor where appropriate~(replacing the entropy requirement).
 
-The security game of a fuzzy extractor can be thought of as a two stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{V}$.  The challenger wins if the adversary can guess the outcome of $W$ with low probability, and the adversary wins if they can guess $w\in W$ with noticeable probability.  More formally, let $\mathcal{A}, \mathcal{C}$ be the adversary and challenger respectively. We will formulate this as a two player game.\footnote{We denote the outcome of the game as a reward to each player.  This is opposed to the standard formulation saying that $\mathcal{A}$ wins or loses.  This is to apply results from game theory.}
+The security game of a fuzzy extractor can be thought of as a two stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{V}$.  The challenger wins if the adversary can guess the outcome of $W$ with low probability, and the adversary wins if they can guess $w\in W$ with noticeable probability.  The minimax theorem says we can reverse which of these actions is announced first.  That is, the following two player games are equivalent:
+
+%More formally, let $\mathcal{A}, \mathcal{C}$ be the adversary and challenger respectively. We provide two formulations of a two player game.\footnote{We denote the outcome of the game as a reward to each player.  This is opposed to the standard formulation saying that $\mathcal{A}$ wins or loses.  This is to apply results from game theory.}
 
 \begin{center}
-\begin{minipage}{1in}
+\begin{tabular}{c|c}
+\begin{minipage}{3in}
 \begin{tabbing}
 123\=123\=123\=123\=123\=\kill
 \textbf{Experiment} $\Exp^{\mathcal{V}}_1(\mathcal{A}, \mathcal{C}, k)$: \\
 $(\sketch, \rec)\leftarrow \mathcal{C}(\mathcal{V})$\\
 $W \leftarrow \mathcal{A}(\mathcal{V}, \sketch, \rec)$\\
 If $W\not\in \mathcal{V}$ reward $(1, -1)$.\\
-If $\Hav(W | \sketch(W))\ge k$ set reward $(1, -1)$ else reward $(-1, 1)$.
-\end{tabbing} \end{minipage} 
-\end{center}
-
-%Alternatively, we can think of this as a zero sum game where the adversary wins $1$ and the challenger loses $1$ when the guess is correct with the opposite reward otherwise.
-Instead of using this standard formulation, it will be useful to think of a distribution~(of distributions) over the family $\mathcal{V}$.  This formulation yields the following game:
-%In the results that follow it will be useful to think of a different formulation of this game.  Let $\mathcal{W}$ be a distribution~(of distributions) over the family $\mathcal{V}$.
-
-\begin{center}
-\begin{minipage}{1in}
+If $\Hav(W | \sketch(W))\ge k$ reward $(1, -1)$\\
+Else reward $(-1, 1)$.
+\end{tabbing} 
+\vspace{.065in}
+\end{minipage}  &
+\begin{minipage}{3in}
 \begin{tabbing}
 123\=123\=123\=123\=123\=\kill
 \textbf{Experiment} $\Exp^{\mathcal{V}}_2(\mathcal{A}, \mathcal{C})$: \\
@@ -742,22 +671,38 @@ $\mathcal{W} \leftarrow \mathcal{A}(\mathcal{V})$\\
 $(\sketch, \rec)\leftarrow \mathcal{C}(\mathcal{V}, \mathcal{W})$\\
 $W \leftarrow \mathcal{W}$\\
 If $W\not\in \mathcal{V}$ reward $(1, -1)$.\\
-If $\Hav(W | \sketch(W))\ge k$ set reward $(1, -1)$ else reward $(-1, 1)$.
-\end{tabbing} \end{minipage} 
+If $\Hav(W | \sketch(W))\ge k$ reward $(1, -1)$\\
+Else reward $(-1, 1)$.
+\end{tabbing}
+\end{minipage}
+\end{tabular}
 \end{center}
 
-The difference between these two games is which player announces their action first, in $\Exp^{\mathcal{V}}_1$, the challenger announces a pair of algorithms, the adversary is then allowed to specify a source.  In $\Exp^{\mathcal{V}}_2$, the adversary specifies a distribution over sources, and the challenger then specifies their algorithm.  These two formulations are equivalent by the minimax theorem~\cite{neumann1928theorie}.
+%\begin{center}
+%\begin{minipage}{1in}
+%\end{center}
+
+%Alternatively, we can think of this as a zero sum game where the adversary wins $1$ and the challenger loses $1$ when the guess is correct with the opposite reward otherwise.
+%Instead of using this standard formulation, it will be useful to think of a distribution~(of distributions) over the family $\mathcal{V}$.  This formulation yields the following game:
+%In the results that follow it will be useful to think of a different formulation of this game.  Let $\mathcal{W}$ be a distribution~(of distributions) over the family $\mathcal{V}$.
+
+%\begin{center}
+%\begin{minipage}{1in}
+% \end{minipage} 
+%\end{center}
+
+The difference between these two games is which player announces their action first, in $\Exp^{\mathcal{V}}_1$, the challenger announces a pair of algorithms and the adversary specifies a source.  In $\Exp^{\mathcal{V}}_2$, the adversary specifies a distribution over sources, and the challenger then specifies their algorithm.  These two formulations are equivalent by the minimax theorem~\cite{neumann1928theorie}.
 
 \begin{lemma}
 \label{lem:quant switch fuzz}
-Let $\mathcal{V}$ be a family of distributions.  Let $(\sketch, \rec)$ be a $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch.  Then let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  Then there exists $(\sketch', \rec')$ that is a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-fuzzy extractor.\footnote{The other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
+Let $\mathcal{V}$ be a family of distributions.  If for all adversaries $\mathcal{A}$, there Let $(\sketch, \rec)$ be a $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch.  Let $V$ be a distribution over elements of $\mathcal{V}$.  Then there exists $(\sketch', \rec')$ that is a $(\mathcal{M}, V, \tilde{m}, t)$-secure sketch on the mixed distribution $V$ when the adversary knows the sampled distribution $W$.\footnote{The other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
 \end{lemma}
 
-Thus, instead of thinking of an adversary specifying a family of sources, we think of an adversary specifying a distribution over sources.  Importantly, the adversary sees the distribution $W$ and $\sketch(W)$ when they are trying to recover the particular outcome.  We can think of the description of $W$ as side-information or leakage to the adversary.  The system designer, however never sees the particular outcome $W$.  This asymmetry will form the basis of our negative results in the next subsection.
+Thus, instead of thinking of an adversary specifying a family of sources, we think of an adversary specifying a distribution over sources.  Importantly, the adversary sees the distribution $W$ and $\sketch(W)$ when they are trying to recover the particular outcome.  We can think of the description of $W$ as side-information or leakage to the adversary.  The system designer, however never sees the particular outcome $W$.  This asymmetry will form the basis of our negative results.
 
 \begin{corollary}
 \label{cor:no fuzz for dist}
-Let $\mathcal{V}$ be a family of distributions.  Let $\mathcal{W}$ be an arbitrary distribution over elements of $\mathcal{V}$.  If there does not exist a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch, then there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch.
+Let $\mathcal{V}$ be a family of distributions.  Let $V$ be an arbitrary distribution over elements of $\mathcal{V}$.  If there does not exist a $(\mathcal{M}, V, \tilde{m}, t)$-secure sketch on the mixed distribution $V$, then there is no $(\mathcal{M}, \mathcal{V}, \tilde{m}, t)$-secure sketch.
 \end{corollary}
 %Ideally, a fuzzy extractor should work for any distribution~(or at least a large family of distributions).  However, as we show below the above construction does not extend to the setting of all well-spread distributions.  In the previous model the particular well-spread distribution $W$ was encoded in the \sketch and \rec algorithms.  In this section we ask if a similar construction is possible when $(\sketch, \rec)$ must work for any well-spread distribution.  In this setting, $(\sketch, \rec)$ are described and the adversary then specifies a particular well-spread distribution $W$.  
 
@@ -765,9 +710,9 @@ Let $\mathcal{V}$ be a family of distributions.  Let $\mathcal{W}$ be an arbitra
 
 %We show that any secure sketch that works for all well-spread distributions must write down a large number of bits~(matching our known constructions of secure sketches).  
 
-Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for fuzzy extractors as well as secure sketches.  Additionally they generalize to the case of imperfect correctness.
+Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for fuzzy extractors as well as secure sketches.  Additionally they generalize to imperfect correctness.
 
-\subsection{Fuzzy min-entropy is not sufficient for secure sketches}
+\subsection{Insufficiency of $\Hfuzz(W)$ for distribution-oblivious secure sketches}
 In the previous section, we saw that if a secure sketch is secure for a family of sources, you must be able to design a secure sketch for every distribution over those sources.  In this section, we will show there are distributions over families of distributions that do not admit a secure sketch.
 
 \begin{theorem}
@@ -783,106 +728,16 @@ We show that there exists distribution $V$ such that for any secure sketch $\Hav
 Let $\mathbb{F}$ be some field of size $q =\omega(\poly(n))$.  
 
 Let $\mathcal{V}$ be family of distributions of the form $W = w_1,..., w_\gamma$ where $w_1$ is uniform and $w_i = a_i w_1 + b_i$ for $2\le i \le \gamma$ and $a_i\neq 0$.  This type of distribution is an affine line in space $\mathbb{F}^\gamma$.  Define $V$ as the uniform distribution over all such $W$.  Furthermore, the side information $Z = a_2, b_2, ..., a_\gamma, b_\gamma$. Fix some $4\le t < \gamma$.
-We then show the following:
+We then show the following~(in \apref{sec:proof secure sketch imposs}):
 
 \begin{itemize}
 \item \propref{prop:each element good}: for all $W\in \mathcal{V}$, $\Hfuzz(W) = \omega (\log n)$. Alternatively, $\forall z, \Hfuzz(V | Z=z) = \omega(\log n)$.
 \item \propref{prop:distribution uniform}: the distribution $V$ is uniform~(from the sketch designer's point of view).  That is $V\overset{d}=U$.
 \item \lemref{lem:secure sketch entropy loss}: for any secure sketch on $V$, the support size of $V | \sketch(V)$ decreases significantly.
 \item \lemref{lem:side info determines sketch}:  for most auxiliary information $Z$, there are few possible values of $V|Z$ in the support of $V | \sketch(V)$.  That is, $\tilde{H}_0(V | \sketch(V), Z) = \Theta(1)$.
-%   More concretely, conditioned on $V=v$, there are many possible values for $z_1, z_2$ for the side information $Z$~(and these possible values are equally likely).  Furthermore, the distributions $V|Z=z_1 $ and $V| Z=z_1$ have disjoint support outside of $v$.  For most values of possible $Z$ there are few values possible in the distribution $V | \sketch(V)$.  Thus, $\Hav(V| \sketch(V) , Z)$ is small.
 \end{itemize}
-\begin{proposition} 
-\label{prop:each element good} For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
-\end{proposition}
-\begin{proof}
-Consider some fixed $W\in\mathcal{V}$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W) =\omega(\log n)$.  Recall that $t< \gamma$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \gamma$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\gamma$.
 \end{proof}
-
-\begin{proposition}
-\label{prop:distribution uniform} $V$ is the uniform distribution over $\mathbb{F}^\gamma$.
-\end{proposition}
-\begin{proof}
-Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_1$ is uniformly random and $w_i$ are uniformly random since $b_2,..., b_\gamma$ are uniformly random.
-\end{proof}
-\begin{lemma}
-\label{lem:secure sketch entropy loss}
-Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $\tilde{H}_0(V | \sketch(V)) \le (\gamma-t+1)\log |\mathbb{F}|+1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
-\end{lemma}
-\begin{proof}
-We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We do not consider these coins in our security analysis~(and thus, they can be considered private).
-By the definition of correctness for $(\sketch, \rec)$, 
-\[
-\forall w, w', \Pr_{ss\leftarrow \sketch(w)} [\rec(w', ss) = w] >1-\delta.
-\]
-%For most $p$, $\rec$ works on most neighbors of $w$.  
-Fix some $w$.  
-By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[ss\in A_{ss}]\ge 1/2$ and $\forall ss\in A_{ss}$, 
-\[
-\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
-
-Consider some $ss^*\in A_{ss}$.  We now show that $H_0(V | \sketch(V) = ss^*) \le (\gamma-t+1)\log |\mathbb{F}|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|\sketch(V) = ss^*$ this is also true.  This makes the support of $V|\sketch(V)=ss^*$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|\sketch(V)=ss^*$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|\sketch(V)=ss^*$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V |\sketch(V)=ss^*) \le (\gamma -t+1 )|\mathbb{F}|$.  Averaging over $\sketch(V)=ss^*$ one has that $\tilde{H}_0(V|P) \le (\gamma -t +1) \log|\mathbb{F}| +1$.
-%By the Markov inequality, 
-%\[
-%\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
-%\]
-%That is, for most $p$, $\Pr[\rec(w^*, p) = w] > 1-2\delta>1/2$.
-%
-%Outline of what I want to say.
-%\begin{itemize}
-%\item Suppose we are at some good sketch value, that is, the sketch decodes well for $w^*$ close to the true value $w$.
-%\item Then for the true value that was sketched, for most neighbors $w^*$ of $w$, $\Pr[\rec(w^*, p) =w] >1/2$.  
-%\item For a value $w'$ to be in the support of $W | P=p$, it must be for all neighbors of $\Pr[\rec( w', p) =w ]>1/2$.
-%\item This implies that if $w_1, w_2 \in W|P = p$, then $\dis (w_1, w_2)\ge t$.
-%\item Conditioned on $P=p$, $W| P=p$ is a good code for random errors.
-%Consider some subset $G\subseteq supp(W| P=p)$ with $\Pr (W| P=p \in G)\ge 1/2$.  Then for all $w\in G$ the probability they recover correctly is at least $1-4\delta$~(by another application of Markov).  
-%\item This, means that the size of $|G|$ is at most $n -\log |B_t|$.
-%\end{itemize}
-\end{proof}
-We showed that for most values of $\sketch$ many values of $V$ are removed from the support.  We now show that the information contained in $Z$ is enough to nearly determine the actual sketched value.
-
-\begin{lemma}
-\label{lem:side info determines sketch}
-$\Hav(V | \sketch(V), Z) \le \Theta(1)$.
-\end{lemma}
-\begin{proof}
-Recall that $Z$ consists of $2\gamma$ coefficients and there are $(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}$ equally likely values for $Z$.
- As described above, the view of $\sketch, \rec$ is a uniform distribution $V$.  We know show there are many possible values for $Z$.  The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
- \[
- \forall v, H_0(Z | V=v) =\log \left(\frac{(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}}{|\mathbb{F}|^\gamma}\right) = \log \left( (|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|\right).
- \]
-Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
-
-We now show for any sketch algorithm, for possible values of $Z$ conditioned on $V=v$ there are few points included in the support of $V |\sketch(V)$.  For any two values of $z_1, z_2$ the distributions $V| Z= z_1$ and $V | Z=z_2$ intersect at most one point.  The distributions $V | Z=z_1$ and $V| Z=z_2$ for possible $z_1, z_2$~(having seen $v$) overlap only at the point $v$.  This means for any $v^*\in V| \sketch(V)$ (other than the true $v$) there is at most one $z$ such that $v^*\in V | \sketch(V), Z=z$.  Thus, we ask The optimum strategy is to include these values uniformly from different $Z$ values.
-
-We show this across different sketch values.  Consider some fixed sketch value $s$ and let $h_s \overset{def}= H_0(V | \sketch(V) = s)$.  That is, there are $2^{h_s}$ possible values for $V$ conditioned on $\sketch(V) = s$.  Furthermore, recall that 
-\[
-\log \expe_{s\in \sketch(V)} 2^{h_s} = \log \expe_{s\in \sketch(V)} 2^{H_0(V | \sketch(V) = s)}  = \tilde{H}_0(V | \sketch(V)) %\le   (\gamma-t+1)\log |\mathbb{F}|+1.
-\]  
-Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as bins to be filled with the $2^{h_{ss}}$ balls~(possible values of $V | \sketch(V)=ss$).  The average number of balls in each bin is maximized when the bins are filled equally.  That is, the average number of balls in each bin is bounded by the number of balls divided by the number of bins.  That is, 
-\begin{align*}
-\tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# bins}}{\text{\# balls}}\right)\\
-&= \log \left(\frac{2^{h_{ss}}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)
-\end{align*}
-Then averaging over the possible values of $s$, we have the following:
-\begin{align*}
-\tilde{H}_0(V |Z , \sketch(V) ) &= \log \expe_{s\in \sketch(V)} 2^{\tilde{H}_0(V |  \sketch(V) =ss , (Z| \sketch(V) =ss) )}\\
-&= \log\expe_{s\in \sketch(V)} \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)\\
-&= \log \frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\\
-&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \log \expe_{s\in \sketch(V)} 2^{h_s}\\
-&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \tilde{H}_0(V | \sketch(V))\\ 
-&\le \log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + (\gamma-t+1)\log |\mathbb{F}|+1\\
-&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|-1)+1\\
-&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (\frac{|\mathbb{F}|}{2})+1\\
-&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|) + (\gamma -1)+1\\
-&\le (3-t)\log |\mathbb{F}| + (\gamma -1)+1\\
-\end{align*}
-This value is $\Theta(1)$ if $t\ge 3+ (\gamma-1)/\log | \mathbb{F}|$. \bnote{ I feel like this analysis can be tightened up.  Saying that $\log (|\mathbb{F}| -1 ) \ge \log (|\mathbb{F}|)-1$ seems like a big loss.}
- \end{proof}
-\noindent \thref{thm:imposs sketch} follows using the change of quantifiers in \corref{cor:no fuzz for dist}.
-\end{proof}
-
-\subsubsection{Feasibility of Computational secure sketches}
+\subsubsection{Feasibility of computational secure sketches}
 Fuller et al. showed that computational secure sketches imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.  %This means that ruling out any information-theoretic secure sketches also rules out a computational secure sketch.  
 The definitional of Fuller et al. is uses a weak version of HILL entropy~\cite{DBLP:journals/siamcomp/HastadILL99} due to Gentry and Wichs~\cite{gentry2011separating}.
 
@@ -916,7 +771,7 @@ Let $n$ be a security parameter and let $\mathcal{M} = |\mathbb{F}|^\gamma$.  Th
 
 \textbf{Note:} The above result does not rule out a computational secure sketch based on unpredictability~(where $W$ is hard to guess given the string $S$).  Unpredictable secure sketches are implied by virtual-grey box obfuscation of proximity functions~\cite{BitanskyCKP14}.  
 
-\section{Impossibility of Distribution-Oblivious Fuzzy Extractors}
+\section{Insufficiency of $\Hfuzz(W)$ for distribution-oblivious fuzzy extractors}
 In the previous section, we showed a family of distributions that does not admit a secure sketch.  In this section, we extend this result to fuzzy extractors.  This result has significantly weaker parameters than the previous result but still demonstrates hard.  \bnote{write this}
 
 We begin with the case of perfect correctness in the Hamming metric.  
@@ -1043,77 +898,13 @@ To show that $\epsilon \ge 1/2$ we have that
 \end{proof}
 \end{proof}
 
-\textbf{Note:} Canetti et al.~\cite[Construction 5.3]{canetti2014key} construct computational fuzzy extractors for this family of distributions when $\mathbb{F}$ is large enough.This result presents a contrast between what is possible for sketches and fuzzy extraction.
-
-%\subsection{Contrived Weird Example I'm worried about}
-%\begin{center}
-%\begin{tabular}{c|c}
-%\begin{minipage}{3in}
-%\textbf{\gen}
-%\begin{enumerate}
-%\item \underline{Input}: $w = w_1,..., w_\gamma$
-%\item Sample $pad_1, pad_2 \leftarrow \mathcal{M}$.
-%\item Create random pad $x \leftarrow \zo^\gamma$.
-%\item Set $c \leftarrow Syndrome(w)$.
-%\item Set $r = Ext(w, seed)$, \\$p = \langle w, x\rangle, seed, c, x$.
-%\item If $pad_1 = w \wedge pad_2 =w$:
-%\begin{enumerate}[(i)]
-%\item Set $r=0$, \\
-%$p = \langle w, x\rangle\oplus 1, seed, c, x$.
-%\end{enumerate}
-%\end{enumerate}
-% \end{minipage} &
-%\begin{minipage}{3in}
-%\textbf{\rep}
-%\begin{enumerate}
-%\item \underline{Input}: $(w', p = (b, seed, c, x))$
-%\item Decode $w = Decode(w', c)$.
-%\item 
-%%\begin{enumerate}[(i)]
-%%\end{enumerate}
-%\item Output $r = \rep'(v', ss)$.
-%\end{enumerate}
-%\vspace{0.7in}
-%\end{minipage}
-%\end{tabular}
-%\end{center}
+\textbf{Note:} Canetti et al.~\cite[Construction 5.3]{canetti2014key} construct computational fuzzy extractors for this family of distributions when $\mathbb{F}$ is large enough.  This result presents a contrast between what is possible for sketches and fuzzy extraction.
 
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
 \appendix
-\section{Coding Theory}
-\begin{definition}
-\label{def:shannon-code}
-Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $c\in \mathcal{C}$, $\Pr_{w' | \dis(w', w)\le t}[\rec(c') \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
-\end{definition}
 
-
- \begin{definition}
-Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
-$\Pr_{c\leftarrow C}[\rec(\neigh(c, t')) \neq c]\le \epsilon$.
-\end{definition}
-An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} %(we provide a proof in \secref{sec:proof of average to maximal error}):
-\begin{lemma}
-\label{lem:averageToMaximalError}
-Let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$ such that $\Hoo(C)\geq k$.  There is a set $\mathcal{C}'$ with $|\mathcal{C}'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
-\end{lemma}
-
-\bnote{This comes from asiacrypt paper, what to cite?}
-\section{Block Unguessable Distributions}
-\begin{definition}~\cite[Definition 4.2]{canetti2014key}
-\label{def:block guessable}
-Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(j, w_j')=
-\begin{cases}
-1 & w_j = w_j'\\
-0 & \text{otherwise}.
-\end{cases}
-\]
-A source $W = W_1||...|W_\gamma$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \gamma\}$ of size at least $\gamma -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
-\[
-\forall j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}))\geq \alpha.
-\]
-\end{definition}
 \section{Leveraging convex combinations?}
 \label{sec:convex comb}
 In many situations solving a problem for min-entropy distributions can be reduced to solving the problem for flat distributions and then using the fact that any min-entropy distribution is a convex combination of flat distributions.  For example, consider the following hypothetical extension to \consref{cons:universal hash}.  Let $W$ be some distribution that is a finite convex combination of flat sources $W_1,..., W_n$ where each $\forall i, \Hoo(W_i)\ge k$.\footnote{A distribution may be an  convex combination of an infinite number of distributions.  However, the difficulty arises even when considering a finite combination so we restrict ourselves to this simpler case.}  For convenience we assume that the coefficients on all $W_i$ are the same and distributions may be repeated. 
@@ -1140,8 +931,206 @@ In the following discussion, we present a more complicated technique that layers
 \label{fig:convex comb}    
 \end{figure}
 
+\section{Proofs}
+\subsection{Proof of \lemref{lem:fuzz necessary}}
+\label{sec:proof fuzz necessary}
+\begin{proof}
+Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $m^*\in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, m^*)\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$~(note that $D$ only provides an input and looks at the output, thus this distinguisher extends to the interactive setting):
+\begin{itemize}
+\item Input $r, p$.
+\item If $\rep(m^*, p) = r$, output $1$.
+\item Else output $0$.
+\end{itemize}
+First note that $|D|$ is of size $\max |\mathcal{M}|+ |\rep|$.  Clearly, $\Pr[D(R, P) = 1]\geq 1/\poly(n) - \delta$, while $\Pr[D(U_\kappa, P)=1 ]= 1/2^{-\kappa}$.  Thus, when $\kappa = \omega(\log n)$:
+\[
+\delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
+\]
+\end{proof}
+
+\subsection{Proof of \thref{thm:layered hashing}}
+\label{sec:proof of layered hashing}
+\begin{proof}
+\textbf{Correctness:}  We begin by arguing correctness.  Let $\ell$ be a parameter describing the number of levels.\footnote{later we will set $\ell = m$ to simplify expressions and obtain the theorem statement.  The proof can be carried out for an arbitrary $\ell$.}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(n+\ell)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  Now consider the case when $\Pr[W=w]> 2^{-(n+\ell)}$, let $L_i^*$ be the level of $\Pr[W=w]$.
+Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ such that $\forall w \in W^*, \Pr[W^*=w]\in L_i^*$. The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ is:
+\begin{align*}
+\Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{|B_{t, i, max}|-1}{|R_i|} = \delta
+\end{align*}
+Where the inequality proceeds by union bound, the first equality proceeds by the universality of $F$, and the second inequality proceeds by noting the number of neighbors is bounded by $|B_{t, i, max}|$.  
+
+\textbf{Ideal Adversary with access to Level Information:} Before arguing security of the actual construction, we consider the optimum performance of an adversary that receives the level information.  %We first consider the optimum strategy for an adversary that receives just the information about the probability of $w$.  
+An adversary that receives $i$ as input the best strategy is to guess a point that has the most nearby weight in that layer.  That is, $w^*\leftarrow A(i)$ such that $\max_{w^* \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i}}[\dis(w, w^*)]$.The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  Note there are $n-m+\ell$ outcomes for $i$ so the overall success of such an adversary is at most $n-m+\ell$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+\begin{align}
+\expe_{i | m\le i \le n+\ell}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | m\le i \le n+\ell}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \label{eq:link fuzz 1}\\
+&\le \left(n-m+\ell\right)\left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\label{eq:link fuzz 2}\\
+&= \left(n-m+\ell\right)\Hfuzz(W)\label{eq:link fuzz 3}
+\end{align}
+\textbf{Security:}
+We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+\ell)}$ is at most $2^{-\ell}$~(there are at most $2^n$ points in the distribution).  That is, $\sum_{w | \Pr[W=w]\le 2^{-(n+\ell)}}\Pr[W = w] \le 2^{-\ell}$.  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-n}$.  Then 
+\begin{align*}
+\Hav(W | \sketch(W)) = -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\\
+-\log\left( 2^{-\ell} + (1-2^{-\ell})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)
+\end{align*}
+For the remainder of the proof, we seek a bound on 
+\[
+2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0} = \max_{w\in W | \Pr[W=w]>2^{-(n+\ell)}}\Pr[W=w | \sketch(W)].
+\]
+We separate out this quantity into levels:
+\begin{align*}
+\max_{w\in W | \Pr[W=w]>2^{-(n+\ell)}}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
+&= \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{|\sketch(W)|i|}\right)\\
+&\le \expe_{i | m\le i \le n+\ell} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
+&\le \expe_{i | m\le i \le n+\ell} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
+&\le\frac{ \expe_{i | m\le i \le n+\ell} \left(2^{-(i+1)}*|B_{t, i, max}|\right)}{2\delta}\\
+%&=\delta \sum_{i | m\le i \le n+\ell} \Pr[W\in L_i]\left(2^{-i}*|B_{t, i, max}|\right)
+%\end{align*}
+%Now consider This allows us to conclude that 
+%\begin{align*}
+%\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
+&= \frac{(n-m+\ell) 2^{-\Hfuzz(W)}}{2\delta}.
+\end{align*}
+Where the last line follows by Equations~\eqref{eq:link fuzz 1}-\eqref{eq:link fuzz 3}.
+Combining both cases we have:
+\begin{align*}
+\Hav(W | \sketch(W)) = -\log \left(2^{-\ell}+\frac{(1-2^{-\ell})(n-m+\ell)2^{-\Hfuzz(W)}}{2\delta}\right).
+\end{align*}
+Setting $\ell = m$ yields
+\begin{align*}
+\Hav(W | \sketch(W)) &= -\log \left(m+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
+&\ge -\log \min\{m, \frac{(1-2^{-m}) n2^{-\Hfuzz(W)}}{2\delta}\})-1\\
+&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-m}) - 2\\
+&\ge \Hfuzz(W) - \log n + \log \delta - 3\\
+\end{align*}
+Where the third line follows from the second because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$ then $\log (1-2^{-m})\le 1$ and if $m< 1$ the entire bound is vacuous as $\Hfuzz(W)< 1$.
+\end{proof}
+
+\section{Proof of \thref{thm:imposs sketch}}
+\label{sec:proof secure sketch imposs}
+\begin{proposition} 
+\label{prop:each element good} For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
+\end{proposition}
+\begin{proof}
+Consider some fixed $W\in\mathcal{V}$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W) =\omega(\log n)$.  Recall that $t< \gamma$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \gamma$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\gamma$.
+\end{proof}
+
+\begin{proposition}
+\label{prop:distribution uniform} $V$ is the uniform distribution over $\mathbb{F}^\gamma$.
+\end{proposition}
+\begin{proof}
+Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_1$ is uniformly random and $w_i$ are uniformly random since $b_2,..., b_\gamma$ are uniformly random.
+\end{proof}
+\begin{lemma}
+\label{lem:secure sketch entropy loss}
+Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $\tilde{H}_0(V | \sketch(V)) \le (\gamma-t+1)\log |\mathbb{F}|+1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
+\end{lemma}
+\begin{proof}
+We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We do not consider these coins in our security analysis~(and thus, they can be considered private).
+By the definition of correctness for $(\sketch, \rec)$, 
+\[
+\forall w, w', \Pr_{ss\leftarrow \sketch(w)} [\rec(w', ss) = w] >1-\delta.
+\]
+%For most $p$, $\rec$ works on most neighbors of $w$.  
+Fix some $w$.  
+By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[ss\in A_{ss}]\ge 1/2$ and $\forall ss\in A_{ss}$, 
+\[
+\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
+
+Consider some $ss^*\in A_{ss}$.  We now show that $H_0(V | \sketch(V) = ss^*) \le (\gamma-t+1)\log |\mathbb{F}|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|\sketch(V) = ss^*$ this is also true.  This makes the support of $V|\sketch(V)=ss^*$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|\sketch(V)=ss^*$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|\sketch(V)=ss^*$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V |\sketch(V)=ss^*) \le (\gamma -t+1 )|\mathbb{F}|$.  Averaging over $\sketch(V)=ss^*$ one has that $\tilde{H}_0(V|P) \le (\gamma -t +1) \log|\mathbb{F}| +1$.
+%By the Markov inequality, 
+%\[
+%\forall w, w^*, \Pr_{p \leftarrow \sketch(w)} [ \Pr[\rec(w^*, p) = w] \le 1-2\delta ] < \delta /2.
+%\]
+%That is, for most $p$, $\Pr[\rec(w^*, p) = w] > 1-2\delta>1/2$.
+%
+%Outline of what I want to say.
+%\begin{itemize}
+%\item Suppose we are at some good sketch value, that is, the sketch decodes well for $w^*$ close to the true value $w$.
+%\item Then for the true value that was sketched, for most neighbors $w^*$ of $w$, $\Pr[\rec(w^*, p) =w] >1/2$.  
+%\item For a value $w'$ to be in the support of $W | P=p$, it must be for all neighbors of $\Pr[\rec( w', p) =w ]>1/2$.
+%\item This implies that if $w_1, w_2 \in W|P = p$, then $\dis (w_1, w_2)\ge t$.
+%\item Conditioned on $P=p$, $W| P=p$ is a good code for random errors.
+%Consider some subset $G\subseteq supp(W| P=p)$ with $\Pr (W| P=p \in G)\ge 1/2$.  Then for all $w\in G$ the probability they recover correctly is at least $1-4\delta$~(by another application of Markov).  
+%\item This, means that the size of $|G|$ is at most $n -\log |B_t|$.
+%\end{itemize}
+\end{proof}
+We showed that for most values of $\sketch$ many values of $V$ are removed from the support.  We now show that the information contained in $Z$ is enough to nearly determine the actual sketched value.
+
+\begin{lemma}
+\label{lem:side info determines sketch}
+$\Hav(V | \sketch(V), Z) \le \Theta(1)$.
+\end{lemma}
+\begin{proof}
+Recall that $Z$ consists of $2\gamma$ coefficients and there are $(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}$ equally likely values for $Z$.
+ As described above, the view of $\sketch, \rec$ is a uniform distribution $V$.  We know show there are many possible values for $Z$.  The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
+ \[
+ \forall v, H_0(Z | V=v) =\log \left(\frac{(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}}{|\mathbb{F}|^\gamma}\right) = \log \left( (|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|\right).
+ \]
+Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
+
+We now show for any sketch algorithm, for possible values of $Z$ conditioned on $V=v$ there are few points included in the support of $V |\sketch(V)$.  For any two values of $z_1, z_2$ the distributions $V| Z= z_1$ and $V | Z=z_2$ intersect at most one point.  The distributions $V | Z=z_1$ and $V| Z=z_2$ for possible $z_1, z_2$~(having seen $v$) overlap only at the point $v$.  This means for any $v^*\in V| \sketch(V)$ (other than the true $v$) there is at most one $z$ such that $v^*\in V | \sketch(V), Z=z$.  Thus, we ask The optimum strategy is to include these values uniformly from different $Z$ values.
+
+We show this across different sketch values.  Consider some fixed sketch value $s$ and let $h_s \overset{def}= H_0(V | \sketch(V) = s)$.  That is, there are $2^{h_s}$ possible values for $V$ conditioned on $\sketch(V) = s$.  Furthermore, recall that 
+\[
+\log \expe_{s\in \sketch(V)} 2^{h_s} = \log \expe_{s\in \sketch(V)} 2^{H_0(V | \sketch(V) = s)}  = \tilde{H}_0(V | \sketch(V)) %\le   (\gamma-t+1)\log |\mathbb{F}|+1.
+\]  
+Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as bins to be filled with the $2^{h_{ss}}$ balls~(possible values of $V | \sketch(V)=ss$).  The average number of balls in each bin is maximized when the bins are filled equally.  That is, the average number of balls in each bin is bounded by the number of balls divided by the number of bins.  That is, 
+\begin{align*}
+\tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# bins}}{\text{\# balls}}\right)\\
+&= \log \left(\frac{2^{h_{ss}}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)
+\end{align*}
+Then averaging over the possible values of $s$, we have the following:
+\begin{align*}
+\tilde{H}_0(V |Z , \sketch(V) ) &= \log \expe_{s\in \sketch(V)} 2^{\tilde{H}_0(V |  \sketch(V) =ss , (Z| \sketch(V) =ss) )}\\
+&= \log\expe_{s\in \sketch(V)} \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)\\
+&= \log \frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\\
+&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \log \expe_{s\in \sketch(V)} 2^{h_s}\\
+&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \tilde{H}_0(V | \sketch(V))\\ 
+&\le \log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + (\gamma-t+1)\log |\mathbb{F}|+1\\
+&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|-1)+1\\
+&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (\frac{|\mathbb{F}|}{2})+1\\
+&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|) + (\gamma -1)+1\\
+&\le (3-t)\log |\mathbb{F}| + (\gamma -1)+1\\
+\end{align*}
+This value is $\Theta(1)$ if $t\ge 3+ (\gamma-1)/\log | \mathbb{F}|$. \bnote{ I feel like this analysis can be tightened up.  Saying that $\log (|\mathbb{F}| -1 ) \ge \log (|\mathbb{F}|)-1$ seems like a big loss.}
+ \end{proof}
+\noindent \thref{thm:imposs sketch} follows using the change of quantifiers in \corref{cor:no fuzz for dist}.
+
+
+%\section{Coding Theory}
+%\begin{definition}
+%\label{def:shannon-code}
+%Let $\mathcal{C}$ be a set over space $\mathcal{M}$.  We say that $\mathcal{C}$ is an $(t,\epsilon)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $c\in \mathcal{C}$, $\Pr_{w' | \dis(w', w)\le t}[\rec(c') \neq c]\le \epsilon$. To distinguish it from the average-error Shannon code defined below, we will sometimes call it \emph{maximal-error} Shannon code.
+%\end{definition}
+%
+%
+% \begin{definition}
+%Let $C$ be a distribution over space $\mathcal{M}$.  We say that $C$ is an $(t,\epsilon)$-\emph{average error Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$
+%$\Pr_{c\leftarrow C}[\rec(\neigh(c, t')) \neq c]\le \epsilon$.
+%\end{definition}
+%An average error Shannon code is one whose average probability of error is bounded by $\epsilon$.  See~\cite[Pages 192-194]{cover2006elements} for definitions of average and maximal error probability.  An average-error Shannon code is convertible to a maximal-error Shannon code with a small loss.  We use the following pruning argument from~\cite[Pages 202-204]{cover2006elements} %(we provide a proof in \secref{sec:proof of average to maximal error}):
+%\begin{lemma}
+%\label{lem:averageToMaximalError}
+%Let $C$ be a $(t, \epsilon)$-average error Shannon code with recovery procedure $\rec$ such that $\Hoo(C)\geq k$.  There is a set $\mathcal{C}'$ with $|\mathcal{C}'|\ge2^{k-1}$ that  is a $(t, 2\epsilon)$-(maximal error) Shannon code with recovery procedure $\rec$.
+%\end{lemma}
+%
+%\bnote{This comes from asiacrypt paper, what to cite?}
+%\section{Block Unguessable Distributions}
+%\begin{definition}~\cite[Definition 4.2]{canetti2014key}
+%\label{def:block guessable}
+%Let $I_w (\cdot, \cdot)$ be an oracle that returns \[I_w(j, w_j')=
+%\begin{cases}
+%1 & w_j = w_j'\\
+%0 & \text{otherwise}.
+%\end{cases}
+%\]
+%A source $W = W_1||...|W_\gamma$ is a $(q, \alpha, \beta)$-\emph{unguessable block distribution} if there exists a set $J\subset\{1,..., \gamma\}$ of size at least $\gamma -\beta$ such that for any unbounded adversary $S$ with oracle access to $I_w$ making at most $q$ queries
+%\[
+%\forall j\in J, \Hav(W_j |View(S^{I_{W}(\cdot, \cdot)}))\geq \alpha.
+%\]
+%\end{definition}
 
 \section{Old Proofs}
+\bnote{I don't think we need anything from these sections}
 \subsection{Flat Sources with Sketches that Write a Fixed Number of Bits}
 We begin by trying to remove the restriction that every point in the metric space has a fixed number of neighbors in a distribution.  We start with sketches that write down a fixed number of bits~(independent of their input $w$).   We will show a lower bound on the number of bits that a $\sketch$ algorithm must write down.  We assume that all coins of $\sketch$ are provided to $\rec$ and that $\rec$ is deterministic~(any coins needed for $\rec$ can be flipped by $\sketch$ in this model).
 
@@ -1197,7 +1186,6 @@ Furthermore, the above lemma easily extends to the setting where the distributio
 The above lemma only talks about how many bits the algorithms must write down.  It does not say that the entropy of the distribution must decrease~(this is the important question).  We now proceed to this question.
 
 
-\section{Examples to Consider}
 
 \end{document}
 
