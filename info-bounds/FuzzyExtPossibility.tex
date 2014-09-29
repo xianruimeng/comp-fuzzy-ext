@@ -1102,7 +1102,7 @@ Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mat
 \tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# bins}}{\text{\# balls}}\right)\\
 &= \log \left(\frac{2^{h_{ss}}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)
 \end{align*}
-Then averaging over the possible values of $s$, we have the following:
+Then averaging over the possible values of $s$, we have the following as long as $t\ge 4$:
 \begin{align*}
 \tilde{H}_0(V |Z , \sketch(V) ) &= \log \expe_{s\in \sketch(V)} 2^{\tilde{H}_0(V |  \sketch(V) =ss , (Z| \sketch(V) =ss) )}\\
 &= \log\expe_{s\in \sketch(V)} \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)\\
@@ -1111,11 +1111,28 @@ Then averaging over the possible values of $s$, we have the following:
 &=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \tilde{H}_0(V | \sketch(V))\\ 
 &\le \log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + (\gamma-t+1)\log |\mathbb{F}|+1\\
 &\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|-1)+1\\
-&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (\frac{|\mathbb{F}|}{2})+1\\
-&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|) + (\gamma -1)+1\\
-&\le (3-t)\log |\mathbb{F}| + (\gamma -1)+1\\
+&< (\gamma-t+2)\log |\mathbb{F}| - (\gamma-2) \log |\mathbb{F}| +1 \ \ \ \ \mbox{(by \lemref{lem:log-minus-one})}\\
+&\le (4-t)\log |\mathbb{F}| +1\\
+& <1\,.
 \end{align*}
-This value is $\Theta(1)$ if $t\ge 3+ (\gamma-1)/\log | \mathbb{F}|$. \bnote{ I feel like this analysis can be tightened up.  Saying that $\log (|\mathbb{F}| -1 ) \ge \log (|\mathbb{F}|)-1$ seems like a big loss.}
+\lnote{need for \lemref{lem:log-minus-one}:  $\gamma-1\le |F|$ and $|F|\ge 4$}
+\lnote{change the any needed theorem statements it affects in light of the tightening}
+
+\lnote{this lemma should probably live elsewhere since it is also needed for the FE case}
+\begin{lemma}
+\label{lem:log-minus-one}
+For any real numbers $\alpha \leq \beta$ with $\beta \ge e+1$ (in particular, $b\ge 4$ suffices), the following holds:
+$\alpha \log (\beta-1) > (\alpha-1)\log \beta$. 
+\end{lemma}
+
+\begin{proof}
+Because $\beta-1$ is positive, and $1+x<e^x$ for positive $x$,
+$$1+\frac{1}{\beta-1} < e^{\frac{1}{\beta -1}}\,.$$  Therefore, 
+$$\left(1+\frac{1}{\beta-1}\right)^{\alpha-1} < e^{\frac{\alpha-1}{\beta-1}}\le e < \beta-1$$ (since $\alpha\le \beta$). Multiplying both sides by $(\beta-1)^{\alpha-1}$, we obtain
+$$\beta^{\alpha-1} < (\beta-1)^\alpha\,.$$
+Taking the logarithm of both sides, we get the desired result.
+\end{proof}
+
  \end{proof}
 \noindent \thref{thm:imposs sketch} follows using the change of quantifiers in \corref{cor:no fuzz for dist}.
 
