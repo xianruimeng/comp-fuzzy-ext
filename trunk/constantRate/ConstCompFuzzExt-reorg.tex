@@ -243,8 +243,7 @@
 
 
 \begin{abstract}
-\lnote{Opinions?}
-Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated readings of a noisy source of entropy into the same uniformly distributed key. To eliminate noise, they require an initial enrollment phase that takes a reading from the source and produces a nonsecret helper string to be used in subsequent readings. This helper string reduces  the entropy of the original source---in the worst case, by as much as the logarithm of the number of tolerated error patterns. For many practical sources, reliability demands that the number of tolerated error patterns is large, making this loss greater than the original entropy of the source. We say that such sources have \emph{more errors than entropy}.  Most known approaches for building fuzzy extractors cannot be used for such sources.
+Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. To eliminate noise, they require an initial enrollment phase that takes the first noisy reading of the secret and produces a nonsecret helper string to be used in subsequent readings. This helper string reduces  the entropy of the original secret---in the worst case, by as much as the logarithm of the number of tolerated error patterns. For many practical sources of secrets, reliability demands that the number of tolerated error patterns is large, making this loss greater than the original entropy of the secret. We say that such sources have \emph{more errors than entropy}.  Most known approaches for building fuzzy extractors cannot be used for such sources.
 
 %\emph{Reusable} fuzzy extractors (Boyen, CCS 2004)
 % remain secure even when the initial enrollment phase is repeated multiple times on correlated readings, producing multiple helper strings. Prior approaches to building reusable fuzzy extractors severely restricted allowed correlations among initial enrollment readings.
@@ -256,7 +255,7 @@ We provide constructions of fuzzy extractors for large classes of sources with m
 %One is information-theoretic; the other two rely computational assumptions. They differ in the types of sources they support.
 
 \emph{Reusable} fuzzy extractors (Boyen, CCS 2004)
- remain secure even when the initial enrollment phase is repeated multiple times on correlated readings, producing multiple helper strings. By relying on computational security, we construct the first reusable fuzzy extractors that make no assumption about how multiple readings of the source are correlated.
+ remain secure even when the initial enrollment phase is repeated multiple times with the same or correlated secrets, producing multiple helper strings. By relying on computational security, we construct the first reusable fuzzy extractors that make no assumption about how multiple readings of the source are correlated.
 
 
 \iffalse
@@ -291,7 +290,7 @@ The computational constructions can be implemented efficiently based on number-t
 Cryptography relies on long-term secrets for key derivation and authentication. However, many sources with sufficient randomness to form long-term secrets provide similar but not identical values at repeated readings. Prominent examples include biometrics and other human-generated data~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password},
 physically unclonable functions (PUFs)~\cite{pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical},
 and quantum information~\cite{bennett1988privacy}. Turning similar readings into identical values is known as \emph{information reconciliation}; further converting those values into uniformly random secret strings is known as \emph{privacy amplification}~\cite{bennett1988privacy}.
-Both of these problems have interactive and non-interactive versions.  In this paper, we are interested in the non-interactive case, which is useful for a single user trying to produce the same key from multiple readings of a physical source at different times.
+Both of these problems have interactive and non-interactive versions.  In this paper, we are interested in the non-interactive case, which is useful for a single user trying to produce the same key from multiple noisy readings of a secret at different times.
  A \emph{fuzzy extractor} is the primitive that accomplishes both information reconciliation and privacy amplification non-interactively; fuzzy extractors are defined in~\cite{DBLP:journals/siamcomp/DodisORS08}.
 
 
