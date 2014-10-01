@@ -283,7 +283,25 @@ In this work, we show that this uncertainty comes at a significant cost.  We con
 \anote{need to mention early work on trying to do distribution specific. For example, Juels and Wattenberg, Tuyls et al.}
 
 
-In this work, we ask if super-logarithmic fuzzy min-entropy is sufficient for key derivation in both settings.  A distribution-oblivious fuzzy extractor for a family $\mathcal{W}$ is also a distribution-aware fuzzy extractor for all distributions in $\mathcal{W}$.   We ask the question for secure sketches and fuzzy extractors.
+In this work, we ask if super-logarithmic fuzzy min-entropy is sufficient for key derivation in both settings.  A distribution-oblivious fuzzy extractor for a family $\mathcal{W}$ is also a distribution-aware fuzzy extractor for all distributions in $\mathcal{W}$.   We ask the question for secure sketches and fuzzy extractors.  Our results are information-theoretic, we consider the implications of computational security after discussing our results.
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{c | c | c }
+& Distribution-Aware & Distribution-Oblivious\\
+\hline
+Secure Sketch & Yes~(\thref{cons:leveling}) & No~(\thref{thm:imposs sketch})\\
+\hline
+Fuzzy Extractor & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs fuzz ext})
+%Flat distribution & $\Hfuzz(W) - \log (1/\delta)$ &$\log |B_t|$\\
+%Arbitrary distribution & $\Hfuzz(W) - \log (1/\delta) - \log \log \mathcal{M}$ & $\log |B_t|$
+\end{tabular}
+\end{center}
+\caption{Is fuzzy min-entropy sufficient to extract a super-logarithmic length key?  Results are information-theoretic.}
+\label{tab:main results}
+\end{table}
+
 
 %When building a fuzzy extractor, the algorithm designer has some information about the distribution $W$ that will be used.  However, rarely does the algorithm designer know the entire description of $W$'s probability distribution~(indeed this description may be exponential size).  Thus, fuzzy extractors are designed to work for a class of distributions with some known property~(such as entropy and error levels).  As long as the distribution falls in this class, security and correctness hold.
 
@@ -310,22 +328,11 @@ Computational fuzzy extractors offer more hope for avoiding the impossibility re
 
 \bnote{compare this with universal decoding?}
 
-\paragraph{Our approach} \bnote{say something about our methods?}
-\begin{table}
-\begin{center}
-\begin{tabular}{c | c | c }
-& Distribution-Aware & Distribution-Oblivious\\
-\hline
-Secure Sketch & Yes~(\thref{cons:leveling}) & No~(\thref{thm:imposs sketch})\\
-\hline
-Fuzzy Extractor & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs fuzz ext})
-%Flat distribution & $\Hfuzz(W) - \log (1/\delta)$ &$\log |B_t|$\\
-%Arbitrary distribution & $\Hfuzz(W) - \log (1/\delta) - \log \log \mathcal{M}$ & $\log |B_t|$
-\end{tabular}
-\end{center}
-\caption{Is fuzzy min-entropy sufficient to extract a super-logarithmic length key?  Results are information-theoretic.}
-\label{tab:main results}
-\end{table}
+\paragraph{Our approach} Our secure sketch in the distribution aware setting relies on two observations.  First for distributions where every point has roughly the same probability, the fuzzy min-entropy is determined by the ball with the greatest number of points.  We call this type of distribution \emph{nearly flat}.  For nearly flat distributions, the goal is to disambiguate any point within a ball of radius $t$.  A universal hash with output length larger than the size of this ball suffices.  However, for an arbitrary distribution, we cannot afford to write down information proportion to the ball with the greatest number of points.  We solve this problem by converting an arbitrary distribution into a number of nearly flat distributions by writing down the probability of our original reading $w$.  Then in reconstruction we limit ourselves to points of this probability.  We then show this probability information is not two helpful.  We call this construction leveled hashing: it separates the distribution $W$ into levels that are nearly flat and then hashes to disambiguate the most likely ball at that level~(\consref{cons:leveling}).
+
+Our negative results are in the distribution-oblivious setting.  A fuzzy extractor $(\gen, \rep)$ receives a point $w\leftarrow W$, the goal of $\gen$ is to produce a string $p$ that does not reveal much about $w$~(or the derived key).  However, $\gen$ does not see the distribution $W$, only the sample $w$.  In our negative results, we construct a family of distributions $\mathcal{W}$ where conditioned on seeing a single point, the support of the remainder of the distribution is uniform.  Informally, to provide security $\rep(\cdot, p)$ partitions the metric space.  Each part of this partition maps a single key.  We can split each part into interiors and boundaries. In the Hamming space, the boundary makes up the overwhelming majority of the space.  Thus, for most distributions $W$ the support of $W$ lies overwhelmingly in the boundary of these parts.  All points in the boundary can be effectively excluded, reducing the entropy of $W$
+
+\bnote{I'm writing these, very rough draft}
 
 \paragraph{Organization} The reminder of the paper is organized as follows.  In \secref{sec:preliminaries}, we cover preliminaries and fuzzy extractor definitions.  In \secref{sec:distribution aware}, we described the distribution aware setting, and show a construction for an arbitrary distribution with fuzzy min-entropy.  In Sections~\ref{sec:dist oblivious} and~\ref{sec:imposs fuzz ext} we provide negative results for the distribution-oblivious secure sketches and fuzzy extractors respectively.
 
