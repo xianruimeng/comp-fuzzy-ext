@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 %\documentclass{llncs}
-\def\shownotes{1}
+\def\shownotes{0}
 \def\blinded{0}
 
 
@@ -287,7 +287,7 @@ The computational constructions can be implemented efficiently based on number-t
 \section{Introduction}\label{sec:introduction}
 
 \paragraph{Fuzzy Extractors}
-Cryptography relies on long-term secrets for key derivation and authentication. However, many sources with sufficient randomness to form long-term secrets provide similar but not identical values at repeated readings. Prominent examples include biometrics and other human-generated data~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password},
+Cryptography relies on long-term secrets for key derivation and authentication. However, many sources with sufficient randomness to form long-term secrets provide similar but not identical values of the secret at repeated readings. Prominent examples include biometrics and other human-generated data~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password},
 physically unclonable functions (PUFs)~\cite{pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical},
 and quantum information~\cite{bennett1988privacy}. Turning similar readings into identical values is known as \emph{information reconciliation}; further converting those values into uniformly random secret strings is known as \emph{privacy amplification}~\cite{bennett1988privacy}.
 Both of these problems have interactive and non-interactive versions.  In this paper, we are interested in the non-interactive case, which is useful for a single user trying to produce the same key from multiple noisy readings of a secret at different times.
@@ -504,7 +504,7 @@ Fix some $W_1 \in \mathcal{W}$.  Let $f_2,.., f_q , D$ be a split adversary.  De
 $(\gen, \rep)$ is $(q, \epsilon_{sec}, s_{sec}, f_2,..., f_q)$-reusable if for all $D\in\mathcal{D}_{s_{sec}}$ the advantage is at most $\epsilon_{sec}$.
 \end{definition}
 
-The definition is parameterized by $f_2,..., f_q$.  This adversary implicitly defines distributions $W_2,..., W_q$~(which depend on $W_1$ and the public values $P_1,... P_i$).  Security seems hopeless if fuzzy extractor is not secure on each of these distributions on their own.  This is the only requirement we make on these functions.  We call these types of functions admissible:
+The definition is parameterized by $f_2,..., f_q$.  This adversary implicitly defines distributions $W_2,..., W_q$ (which depend on $W_1$ and the public values $P_1,... P_i$).  Security seems hopeless if fuzzy extractor is not secure on each of these distributions on their own.  This is the only requirement we make on these functions.  We call these types of functions admissible:
 
 \begin{definition}
 Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$.  In the reusability game above, we say a set of functions $f_2,..., f_q$ are \emph{admissible} if for all $W_1\in \mathcal{W}$ for all $w_1\in W_1$ and $\forall p_1,..., p_q$ that are the public outputs of $\gen$ the distribution $W_{i,w_1,p_1,..., p_{i-1}} = f_i(w_1,p_1,..., p_{i-1})$ is a member of $\mathcal{W}$.
@@ -865,9 +865,10 @@ If $\gamma$ is not long enough to get a sufficiently long output, the constructi
 \section*{Acknowledgements}
 The authors are grateful to Nishanth Chandran, Sharon Goldberg, Gene Itkis, Bhavana Kanukurthi, and Mayank Varia for helpful discussions, creative ideas, and important references.
 
-This work is supported in part by National Science Foundation grants 0831281, 1012910, 1012798, 1218461, and 1422965.
+Ran Canetti is supported by the NSF MACS project, an NSF Algorithmic foundations grant 1218461, the Check Point Institute for Information Security, and  ISF grant 1523/14.
 Omer Paneth is additionally supported by the Simons award for graduate students in theoretical computer science.
-The work of Benjamin Fuller is sponsored in part by the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government. 
+The work of Benjamin Fuller is sponsored in part by US NSF grants 1012910 and 1012798 and  the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government. 
+Leonid Reyzin is supported in part by US NSF grants 0831281, 1012910, 1012798, and 1422965.
 }
 \bibliographystyle{alpha}
 \bibliography{crypto}
