@@ -1,6 +1,6 @@
  \documentclass[11pt]{article}
  
-\def\shownotes{0}
+\def\shownotes{1}
 \def\blinded{0}
 
 
@@ -241,7 +241,7 @@
 \blind{
 \author{Benjamin Fuller\footnote{Boston University and MIT Lincoln Laboratory. 
 The Lincoln Laboratory portion of this work was sponsored by the Department of the Air Force under Air Force Contract \#FA8721-05-C-0002.  Opinions, interpretations, conclusions and recommendations are those of the author and are not necessarily endorsed by the United States Government.  
-Email: {\tt bfuller@cs.bu.edu}.}~~~~~~~~~~Leonid Reyzin\footnote{Boston University.  Email: {\tt reyzin@cs.bu.edu}.}~~~~~~~~~~Adam Smith\footnote{Pennsylvania State University. Work done in part while the author was at Boston University and Harvard University.  Email: {\tt asmith@psu.edu}.  }}
+Email: {\tt bfuller@cs.bu.edu}.}~~~~~~~~~~Leonid Reyzin\footnote{Boston University.  Email: {\tt reyzin@cs.bu.edu}.}~~~~~~~~~~Adam Smith\footnote{Pennsylvania State University. Work done in part while the author was at Boston University.  Email: {\tt asmith@psu.edu}.  }}
 }
 \begin{document}
 \maketitle
@@ -257,17 +257,23 @@ A key impediment to providing security is distributional uncertainty.  We consid
 \bnote{keep editing}
 \end{abstract}
 
+\newpage
+\tableofcontents\newpage
+
 \section{Introduction}
 \anote{should our results be seen as justifying the distribution specific approach?}
 \anote{make the point that narrowing the family $\mathcal{W}$ makes the security guarantees much more brittle}
-Repeatable entropy sources enable applications cryptographic applications such as authentication and key agreement\bnote{more?}.  However, many entropic sources present a problem: noise~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password,pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical,bennett1988privacy}.  That is, when a secret is read multiple times, readings are close~(according to some metric) but not identical.  To utilize such sources it is often necessary to remove noise, and achieve the same value in subsequent readings.  \bnote{I tried to remove entropy from this but it needs to be cleaned up}
+Sources of secret random bits are necessary for most cryptographic applications.  In many situations, these bits are not explicitly and reliably stored for future use, but are reproduced as a result of some process (such as reading a biometric or a physically unclonable function).
+However, many such sources present a problem: noise~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password,pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical,bennett1988privacy}.  That is, when a secret is read multiple times, readings are close~(according to some metric) but not identical.  To utilize such sources it is often necessary to remove noise, and achieve the same value in subsequent readings.  \bnote{I tried to remove entropy from this but it needs to be cleaned up}
 
-Bennett, Brassard, and Roberts~\cite{bennett1988privacy} introduced this problem in the interactive setting. \lnote{I just realized (after a talk at Allerton) that we are neglecting Wyner's 1975 wiretap channel and follow-up work, which also studied this problem}  They identify two fundamental tasks.  The first, called information-reconciliation, removes the noise without leaking significant information. The second, known as privacy amplification, converts the high entropy secret to a uniform random value.  In this work, we consider the non-interactive version of these problems, in which these tasks are performed with a single message.
+Bennett, Brassard, and Robert~\cite{bennett1988privacy} introduced this problem in the interactive setting. \lnote{I just realized (after a talk at Allerton) that we are neglecting Wyner's 1975 wiretap channel and follow-up work, which also studied this problem}  They identify two fundamental tasks.  The first, called information-reconciliation, removes the noise without leaking significant information. The second, known as privacy amplification, converts the high entropy secret to a uniform random value.  In this work, we consider the non-interactive version of these problems, in which these tasks are performed with a single message.
 
 The non interactive setting is modeled by a primitive called a fuzzy extractor~\cite{DBLP:journals/siamcomp/DodisORS08}.  %Consider some distribution $W$.%The goal of a fuzzy extractor is to derive stable keys from a distribution $W$ whenever the two readings~(denoted $w$ and $w'$ respectively) are within distance $t$.  
 A fuzzy extractor consists of two algorithms: generate~($\gen$) which takes an initial reading $w$ and produces $\key$ along with a nonsecret helper value $p$.  The reproduce~($\rep$) algorithm takes the subsequent reading $w'$ along with the helper value $p$ to reproduce $\key$.   The correctness guarantee is that the key is reproduced if the distance between $w$ and $w'$ is at most $t$. 
 
 The security requirement for fuzzy extractors that is $key$ uniform even to an adversary who has observed $p$.   Achieving a strong $\key$ is harder as the allowed error tolerance $t$ increases. It becomes easier for the adversary to guess a $w'$ within distance $t$ of $w$ and an adversary who guesses a nearby $w'$ can obtain $\key$ by running $\rep$.
+
+\anote{Suggested title: "Fuzzy Minentropy"}
 
 \paragraph{A New Entropy Notion}
 We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$. Suppose $w$ is sampled from a distribution $W$. If the adversary only had access to $\rep$, they would recover $\key$ with maximal probability by guessing $w'$ that maximizes the total probability mass of $W$ within a ball $B_t(w')$ of radius $t$ around $w'$. We  define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_w' \Pr[W\in B_t(w')]$. 
@@ -277,11 +283,16 @@ Most known fuzzy extractors obtain security proportional to $\Hoo(W)-\log |B_t(\
 Observe that, $\Hoo(W)-\log |B_t(\cdot)| \le \Hfuzz(W)$.  However, the difference between these quantities is very large for practical settings.  As an example, iris scans~\cite[Section 5]{blanton2009biometric} appear to have significant $\Hfuzz(W)$ but the value $\Hoo(W) -\log |B_t|<0$.\footnote{Iris scans appear to have $\Hfuzz$ because all iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing} and thus $\Hfuzz(W) = \Hoo(W)$.}
 We ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?}
 
+\anote{Suggested title: "Characterization  for Distribution-aware Extractability". Emphasize if we know the distribution on $W$}
+
 \paragraph{A New Characterization}
 We show that for every source $W$ with super-logarithmic $\Hfuzz(W)$, it is possible to construct a fuzzy extractor with a super-logarithmic length $\key$ (\corref{cor:extension to fuzz ext}). We thus show that $\Hfuzz(W)$ is a necessary and sufficient condition for building a fuzzy extractor for a distribution $W$.  While our constructions are not polynomial-time (they are dependent on knowing the complete distribution of $W$), we discuss  how in related settings polynomial-time constructions that provide only computational (rather information-theoretic) security are possible in \secref{sec:related settings}. 
 
 This characterization justifies $\Hfuzz$ as the right measure of the quality of a noisy distribution rather than relying on cruder measures such as $\Hoo(W)-\log |B_t(\cdot)|$.
 It is important to note that this characterization requires the fuzzy extractor to be designed with $W$ in mind. We call such fuzzy extractors \emph{distribution aware}.
+
+
+\anote{Suggested title: "Impossibility Results for Distribution-Oblivious Sketches and Extractors". Also, "typically fuzzy extractors cannot be tailored". Also "for a family of sources" $\to$ "to a family of sources".}
 
 
 \paragraph{A New Impossibility Result}
@@ -292,6 +303,7 @@ We showthat this extra adversarial knowledge can be devastating  (\thref{thm:imp
 Specifically, we show a family of distributions $\mathcal{W}$ such that no fuzzy extractor can be secure for most elements of $\mathcal{W}$.  We emphasize that each distribution $W\in \mathcal{W}$ has fuzzy min-entropy and all points in $W$ are distance at least $t$ apart. \lnote{can we say this a bit better and more precisely, by relating $\Hfuzz$ and $\Hoo$?}  For comparison with the previous setting we call this type of fuzzy extractor \emph{distribution-oblivious}.
 
 
+\anote{Suggested title: "Results on Information Reconciliation (Secure Sketches)"}
 
 \paragraph{Results on Information Reconciliation}
 Traditionally, fuzzy extractors use a secure sketch to perform information reconciliation~(mapping $w'$ back to $w$) and a randomness extractor~\cite{nisan1993randomness} to transform $w$ into a uniform key.  The security losses incurred in information-reconciliation dominate for most sources.\footnote{The task of privacy amplification is well-understand.  We have bounds on the length of a key extractible from a source with entropy and extractors that match this bound.}  A secure sketch is a pair of algorithms: $\sketch$ takes $w$ and produces a non secret value $ss$, $\rec$ takes $ss$ and a nearby value $w'$ and outputs the original reading $w$.  
@@ -782,8 +794,8 @@ Let $n$ be a security parameter.  There exists a family of distributions $\mathc
 
 \begin{proof}[Proof Outline]
 Our counterexample uses a slightly different family of distributions $V$ than the counterexample for secure sketches.  In particular, we need to assume a larger error tolerance.  Let $\nu = \omega(\log n)$ and $\nu = o(n^{1/2}/\log n)$.  Let $t=4\nu n^{1/2}$ and note that $n/\nu >t$.  This family is closely related to the family we constructed in \thref{thm:imposs sketch}.  However, we work over the binary alphabet so the affine lines are ``squished'' to the binary realm.  For convenience we assume that $\nu\in\mathbb{Z}^+$.  We describe a single element $W\in V$. Let $x_1,..., x_\nu \in \zo^\nu$.  Let $\mathbb{F}$ denote the field of size $2^{\nu}$.  Let $a_2,..., a_{n/\nu}\in\mathbb{F}$ such that $a_i\neq 0$ and let $b_2,..., b_{n/\nu}\in\mathbb{F}$.  
-Interpret $x_1,..., x_{\nu}$ as a element in $\mathbb{F}$ and let 
-\[w = (x_1,..., x_{\nu})  \begin{pmatrix} \vec{1} \\a_1  \\ \vdots \\ a_{n/\nu} \end{pmatrix} + \begin{pmatrix} 0  \\ 
+Interpret $x_1,..., x_{\nu}$ as a element $x\in \mathbb{F}$ and let 
+\[w =  \begin{pmatrix} \vec{1} \\a_1  \\ \vdots \\ a_{n/\nu} \end{pmatrix} x + \begin{pmatrix} 0  \\ 
 b_2\\ \vdots \\ b_{n/\nu} \end{pmatrix} 
 \]
 Define the distribution $W$ as the uniform distribution over values of $x$ for a particular value of $a_2,..., a_{n/\nu}$, $b_2,..., b_{n/\nu}$.  
@@ -1147,7 +1159,7 @@ Taking the logarithm of both sides, we get the desired result.
 For each $W\in\mathcal{V}$, $\Hfuzz(W) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some fixed $W\in\mathcal{V}$.  The value $w_{1,..., \nu}$ is uniform, so $\Hoo(W) =\omega(\log n)$.  Recall that $t=o (n/\nu)$.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i w_1 + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$ and thus $\dis(w, w') \ge n/\nu$.  Thus, $\Hfuzz(W) = \Hoo(W)= \omega(\log n)$.
+Consider some fixed $W\in\mathcal{V}$.  The bits $w_{1,..., \nu}$ are uniform, so $\Hoo(W) =\omega(\log n)$.  Recall that $t=o (n/\nu)$.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i x + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$. That is, at least one of the bits in each block differs between $w$ and $w'$, and so $\dis(w, w') \ge n/\nu$. Since no two values in the support of $W$ lie in the same ball of radius $t$, we have $\Hfuzz(W) = \Hoo(W)= \omega(\log n)$.
 \end{proof}
 
 \begin{proposition}\label{prop:dist uniform fuzz}
