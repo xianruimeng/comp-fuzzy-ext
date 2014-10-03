@@ -262,53 +262,47 @@ A key impediment to providing security is distributional uncertainty.  We consid
 \tableofcontents\newpage
 
 \section{Introduction}
-Sources of reproducible secret random bits are necessary for many cryptographic applications.  In many situations, these bits are not explicitly stored for future use, but are obtained by repeating the same process  (such as reading a biometric or a physically unclonable function) that generated them the first time.
-However, bits obtained this way present a problem: noise \cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password,pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical,bennett1988privacy}.  That is, when a secret is read multiple times, readings are close~(according to some metric) but not identical.  To utilize such sources it is often necessary to remove noise, in order to derive the same value in subsequent readings.
+Sources of reproducible secret random bits are necessary for many cryptographic applications.  In many situations these bits are not explicitly stored for future use, but are obtained by repeating the same process  (such as reading a biometric or a physically unclonable function) that generated them the first time.
+However, bits obtained this way present a problem: noise \cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password,pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical,bennett1988privacy}.  That is, when a secret is read multiple times, readings are close~(according to some metric) but not identical.  To utilize such sources, it is often necessary to remove noise, in order to derive the same value in subsequent readings.
 
-The same problem occurs in the interactive setting, in which the secret channel used for transmitting the bits between two users is noisy and/or leaky~\cite{wyner1975wire}. Bennet, Brassard, and Robert~\cite{bennett1988privacy} identify two fundamental tasks.  The first, called information-reconciliation, removes the noise without leaking significant information. The second, known as privacy amplification, converts the high entropy secret to a uniform random value.  In this work, we consider the non-interactive version of these problems, in which these tasks are performed with a single message.
+The same problem occurs in the interactive setting, in which the secret channel used for transmitting the bits between two users is noisy and/or leaky~\cite{wyner1975wire}. Bennet, Brassard, and Robert~\cite{bennett1988privacy} identify two fundamental tasks.  The first, called information reconciliation, removes the noise without leaking significant information. The second, known as privacy amplification, converts the high entropy secret to a uniform random value.  In this work, we consider the noninteractive version of these problems, in which these tasks are performed together with a single message.
 
-The non interactive setting is modeled by a primitive called a fuzzy extractor~\cite{DBLP:journals/siamcomp/DodisORS08}.  %Consider some distribution $W$.%The goal of a fuzzy extractor is to derive stable keys from a distribution $W$ whenever the two readings~(denoted $w$ and $w'$ respectively) are within distance $t$.  
-A fuzzy extractor consists of two algorithms. The  generate algorithm ($\gen$)  takes an initial reading $w$ and produces $\key$ along with a nonsecret helper value $p$.  The reproduce~($\rep$) algorithm takes the subsequent reading $w'$ along with the helper value $p$ to reproduce $\key$.   The correctness guarantee is that the key is reproduced if the distance between $w$ and $w'$ is at most $t$. 
+The noninteractive setting is modeled by a primitive called a fuzzy extractor~\cite{DBLP:journals/siamcomp/DodisORS08}, which consists of two algorithms.  %Consider some distribution $W$.%The goal of a fuzzy extractor is to derive stable keys from a distribution $W$ whenever the two readings~(denoted $w$ and $w'$ respectively) are within distance $t$.   T
+The  generate algorithm ($\gen$)  takes an initial reading $w$ and produces an output $\key$ along with a nonsecret helper value $p$.  The reproduce~($\rep$) algorithm takes the subsequent reading $w'$ along with the helper value $p$ to reproduce $\key$.   The correctness guarantee is that the key is reproduced precisely as long as the distance between $w$ and $w'$ is at most $t$. 
 
-The security requirement for fuzzy extractors that is $\key$ uniform even to an adversary who has observed $p$.   This requirement is  harder to satisfy as the allowed error tolerance $t$ increases, because it becomes easier for the adversary to guess $\key$ by guessing a $w'$ within distance $t$ of $w$ and running $\rep(w',p)$.
+The security requirement for fuzzy extractors that is $\key$ uniform even to a (computationally unbounded) adversary who has observed $p$.   This requirement is  harder to satisfy as the allowed error tolerance $t$ increases, because it becomes easier for the adversary to guess $\key$ by guessing a $w'$ within distance $t$ of $w$ and running $\rep(w',p)$.
 
 
 \paragraph{Fuzzy Min-entropy}
-We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$, thus subverting security of $\key$ by running $\rep$. Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within a ball $B_t(w')$ of radius $t$ around $w'$.
-We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$. 
-
-Super-logarithmic fuzzy min-entropy  is necessary for nontrivial key extraction~(\lemref{lem:fuzz necessary}). 
-Most known fuzzy extractors obtain security proportional to $\Hoo(W)-\log |B_t(\cdot)|$.  \lnote{know they don't -- that's better than they achieve, because coding is not that good} \bnote{I agree but I didn't know how to introduce this value otherwise.  Seems like we need a reason to talk about $\Hoo(W) - \log |B_t|$.}
-Observe that $\Hoo(W)-\log |B_t(\cdot)| \le \Hfuzz(W) \le \Hoo(W)$.  However, the lower bound is too imprecise (sometimes even negative) for practical settings.  As an example, iris scans~\cite[Section 5]{blanton2009biometric} appear to have significant $\Hfuzz(W)$ but the value $\Hoo(W) -\log |B_t|<0$.\footnote{Iris scans appear to have $\Hfuzz$ because all iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing} and thus $\Hfuzz(W) = \Hoo(W)$.}
-We ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?}
+We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$, thus subverting the security of $\key$ by running $\rep$. Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within the ball $B_t(w')$ of radius $t$ around $w'$.
+We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$.  Observe that this quantity can be bounded in terms of min-entropy: $\Hoo(W) \le \Hfuzz(W) \le \Hoo(W)-\log |B_t(\cdot)|$ with equality when $t=0$.
 
 
-\paragraph{Characterization  for Distribution-aware Extractability}
-We show that for every source $W$ with super-logarithmic $\Hfuzz(W)$, it is possible to construct a fuzzy extractor with a super-logarithmic length $\key$ (\corref{cor:extension to fuzz ext}). We thus show that $\Hfuzz(W)$ is a necessary and sufficient condition for building a fuzzy extractor for a distribution $W$.  While our constructions are not polynomial-time (they are dependent on knowing the complete distribution of $W$), we discuss  how in related settings polynomial-time constructions that provide only computational (rather than information-theoretic) security are possible in \secref{sec:related settings}. 
 
-This characterization justifies $\Hfuzz$ as the right measure of the quality of a noisy distribution rather than relying on cruder measures such as $\Hoo(W)-\log |B_t(\cdot)|$.
-It is important to note that this characterization requires the fuzzy extractor to be designed with $W$ in mind. We call such fuzzy extractors \emph{distribution aware}.
+Super-logarithmic fuzzy min-entropy  is \emph{necessary} for nontrivial key extraction~(we show this in  \lemref{lem:fuzz necessary}, which formalizes the above intuition). 
+However, existing constructions do not measure their security in terms of fuzzy min-entropy; instead, their security is shown to be  $\Hoo(W)$ minus some loss that is at least $\log |B_t(\cdot)|$ due to error-tolerance. Since $\Hoo(W)-\log |B_t(\cdot)| \le \Hfuzz(W)$, it is natural to ask whether this loss is necessary. This question is particularly relevant when the gap between the two sides of the inequality is high.  As an example, iris scans appear to have significant $\Hfuzz(W)$ (because iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing}) but negative $\Hoo(W) -\log |B_t|$ \cite[Section 5]{blanton2009biometric}. We therefore ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?} There is evidence that it may be when the security requirement is computational rather than information-theoretic---see \secref{sec:related settings}. 
 
 
-\anote{Suggested title: "Impossibility Results for Distribution-Oblivious Sketches and Extractors". Also, "typically fuzzy extractors cannot be tailored". Also "for a family of sources" $\to$ "to a family of sources".}
+
+\paragraph{Tight Characterization for the Case of a Known Distribution}
+We show that for every source $W$ with super-logarithmic $\Hfuzz(W)$, it is possible to construct a fuzzy extractor with a super-logarithmic length $\key$ (\corref{cor:extension to fuzz ext}). We thus show that $\Hfuzz(W)$ is a necessary and sufficient condition for building a fuzzy extractor for a distribution $W$.  It is important to emphasize that these constructions incorporate the knowledge of the complete distribution of $W$ (and, in particular, they are not polynomial-time).
+
+
+This characterization justifies $\Hfuzz$ as the right measure of the quality of a noisy distribution,  better than cruder measures such as $\Hoo(W)-\log |B_t(\cdot)|$.
+
 
 
 \paragraph{Impossibility of Fuzzy Extractors for Families of Distributions}
-Typically, fuzzy extractor designs cannot be tailored to a particular source, rather they provide security for a family of sources (for example, all sources of min-entropy at least $k$ with at most $t$ errors). Making minimal assumptions about the distribution $W$ is desirable for two reasons: 1) for high entropy distributions, only a small part of the distribution has been observed 2) the adversary know some additional information about the distribution $W$ and thus the adversaries view of the distribution is different than that of the algorithm designer.  
+Assuming full knowledge of a distribution is often unrealistic. Indeed, high-entropy distributions can never be fully observed directly and must therefore be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary, with greater resources, would likely be able to build a better model. Therefore, fuzzy extractor designs cannot usually be tailored to one  particular source. Existing designs work for a family of sources (for example, all sources of min-entropy at least $k$ with at most $t$ errors). Thus, the design is fixed before the distribution is fully known, and the adversary may therefore know more about the distribution than the designer of the fuzzy extractor.
 
 We show that this extra adversarial knowledge can be devastating  (\thref{thm:imposs fuzz ext}). 
-Specifically, we show a family of distributions $\mathcal{W}$ such that no fuzzy extractor can be secure for most elements of $\mathcal{W}$.  We emphasize that each distribution $W\in \mathcal{W}$ has fuzzy min-entropy and all points in $W$ are distance at least $t$ apart. \lnote{can we say this a bit better and more precisely, by relating $\Hfuzz$ and $\Hoo$?}  For comparison with the previous setting we call this type of fuzzy extractor \emph{distribution-oblivious}.
+Specifically, we show a family of distributions $\mathcal{W}$ such that not even a 1-bit fuzzy extractor can be secure for most distributions in  $\mathcal{W}$.  We emphasize that each distribution $W\in \mathcal{W}$ has superlogarithmic fuzzy min-entropy---in fact, $\Hfuzz(W)=\Hoo(W)$, because all points in $W$ are distance at least $t$ apart. Our proof relies on high dimensionality of $W$ and on perfect correctness of the $\rep$ procedure.
 
 
-\paragraph{Results on Information Reconciliation (Secure Sketches)}
-Traditionally, fuzzy extractors use a secure sketch to perform information reconciliation~(mapping $w'$ back to $w$) and a randomness extractor~\cite{nisan1993randomness} to transform $w$ into a uniform key.  The security losses incurred in information-reconciliation dominate for most sources.\footnote{The task of privacy amplification is well-understand.  We have bounds on the length of a key extractible from a source with entropy and extractors that match this bound.}  A secure sketch is a pair of algorithms: $\sketch$ takes $w$ and produces a non secret value $ss$, $\rec$ takes $ss$ and a nearby value $w'$ and outputs the original reading $w$.  
-
-A secure sketch performs non-interactive information-reconciliation.  We show comparable results for secure sketches.  Secure sketches are possible if the distribution $W$ is precisely known~(\thref{cons:leveling}), and yet there is a family of distributions for which no secure sketch in possible~(\thref{thm:imposs sketch}). We build our distribution-aware fuzzy extractor by applying a randomness extractor to our distribution-aware secure sketch.  Our negative results for secure sketches have significantly better parameters than our negative result for fuzzy extractors.  
-
-\begin{table}
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{c  l l }
- & Distribution-Aware & Distribution-Oblivious\\
+ & Known Distribution & Family of Distributions\\
 \hline
 Secure Sketch & Yes~(\thref{cons:leveling}) & No~(\thref{thm:imposs sketch})\\
 \hline
@@ -318,7 +312,13 @@ Fuzzy Extractor & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:impo
 \caption{Is fuzzy min-entropy sufficient to extract a super-logarithmic length key?  Results are information-theoretic.}
 \label{tab:main results}
 \end{table}
-\bnote{is this table doing anything or just getting in the way?  provides a quick glance to results}
+
+
+\paragraph{Stronger Results on Information Reconciliation (Secure Sketches)}
+Traditionally, fuzzy extractors use a secure sketch to perform information reconciliation~(mapping $w'$ back to $w$), followed by randomness extractor~\cite{nisan1993randomness} to transform $w$ into a uniform key.  The security losses incurred in the first of these two steps dominate for typical sources and, indeed, this step is less well understood.\footnote{Randomness extractors have matching upper and lower bounds on the security loss: for every extra two bits of output key, they lose one bit of security} Formally, a secure sketch performs non-interactive information reconciliation via pair of algorithms: $\sketch$ takes $w$ and produces a nonsecret value $ss$, while $\rec$ takes a value $w'$ within distance $t$ of $w$ and uses $\sketch$ to output the original reading $w$.  
+
+We show comparable, but stronger, results for secure sketches.  Namely, we show in \thref{cons:leveling} that secure sketches are possible if the distribution $W$ is precisely known. (In fact, we obtain our fuzzy extractors for the case of a known distribution from this result by simply applying a randomness extractor.) On the other hand, there is a family of sources with superlogarithmic $\Hfuzz=\Hoo$ for which no secure sketch correcting even a few errors is possible~(\thref{thm:imposs sketch}). The impossibility result applies even when $\rec$ is allowed to be incorrect with probability up to $1/4$ (as opposed to our fuzzy extractor impossibility result).
+
 
 \paragraph{Techniques} In the distribution-aware setting, we construct a secure sketch for an arbitrary distribution $W$.  We begin with distributions where all points have roughly the same probability.  We call this type of distribution nearly flat.  Consider some subsequent reading $w'$. To achieve correctness, the sketch algorithm must describe which point $w\in W$ within distance $t$ of $w'$ was sketched.  The fuzzy min-entropy of nearly flat distributions is determined by the ball with the greatest number of points.   Thus, for nearly flat distributions, security is maintained if we always provide enough information to disambiguate the ball with the greatest number of points.  We use universal hashing to disambiguate points.
 
