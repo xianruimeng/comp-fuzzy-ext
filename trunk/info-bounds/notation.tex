@@ -1,0 +1,278 @@
+\documentclass[10pt]{article}
+\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{algpseudocode} 
+
+\mathchardef\mhyphen="2D
+
+\newcommand{\secref}[1]{\mbox{Section~\ref{#1}}}
+\newcommand{\subsecref}[1]{\mbox{Subsection~\ref{#1}}}
+\newcommand{\apref}[1]{\mbox{Appendix~\ref{#1}}}
+\newcommand{\thref}[1]{\mbox{Theorem~\ref{#1}}}
+\newcommand{\exref}[1]{\mbox{Example~\ref{#1}}}
+\newcommand{\defref}[1]{\mbox{Definition~\ref{#1}}}
+\newcommand{\corref}[1]{\mbox{Corollary~\ref{#1}}}
+\newcommand{\lemref}[1]{\mbox{Lemma~\ref{#1}}}
+\newcommand{\assref}[1]{\mbox{Assumption~\ref{#1}}}
+\newcommand{\probref}[1]{\mbox{Problem~\ref{#1}}}
+\newcommand{\clref}[1]{\mbox{Claim~\ref{#1}}}
+\newcommand{\propref}[1]{\mbox{Proposition~\ref{#1}}}
+\newcommand{\remref}[1]{\mbox{Remark~\ref{#1}}}
+\newcommand{\consref}[1]{\mbox{Construction~\ref{#1}}}
+\newcommand{\figref}[1]{\mbox{Figure~\ref{#1}}}
+\DeclareMathOperator*{\expe}{\mathbb{E}}
+\DeclareMathOperator*{\var}{\text{Var}}
+
+
+\newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
+\newcommand{\gen}{\ensuremath{\class{Gen}}\xspace}
+\newcommand{\rep}{\ensuremath{\class{Rep}}\xspace}
+\newcommand{\sketch}{\ensuremath{\class{SS}}\xspace}
+\newcommand{\rec}{\ensuremath{\class{Rec}}\xspace}
+\newcommand{\enc}{\ensuremath{\class{Enc}}\xspace}
+\newcommand{\dec}{\ensuremath{\class{Dec}}\xspace}
+\newcommand{\prg}{\ensuremath{\class{prg}}\xspace}
+\newcommand{\zo}{\ensuremath{\{0, 1\}}}
+\newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\zq}{\ensuremath{\mathbb{Z}_q}}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}}
+\newcommand{\sample}{\ensuremath{\class{Sample}}\xspace}
+\newcommand{\neigh}{\ensuremath{\class{Neigh}}\xspace}
+\newcommand{\dis}{\ensuremath{\mathsf{dis}}}
+\newcommand{\decode}{\ensuremath{\mathsf{Decode}}}
+
+\newcommand{\A}{\mathcal{A}}
+
+
+\newcommand{\metric}{\ensuremath{\mathtt{Metric}}\xspace}
+\newcommand{\hill}{\ensuremath{\mathtt{HILL}}\xspace}
+\newcommand{\hillrlx}{\ensuremath{\mathtt{HILL\mhyphen rlx}}\xspace}
+\newcommand{\yao}{\ensuremath{\mathtt{Yao}}\xspace}
+\newcommand{\unp}{\ensuremath{\mathtt{unp}}\xspace}
+\newcommand{\unprlx}{\ensuremath{\mathtt{unp\mhyphen rlx}}\xspace}
+\newcommand{\metricstar}{\ensuremath{\mathtt{Metric}^*}\xspace}
+\newcommand{\metricd}{\ensuremath{\mathtt{Metric}^*\mathtt{-d}}\xspace}
+\newcommand{\hillstar}{\ensuremath{\mathtt{HILL}^*}\xspace}
+\newcommand{\hillprime}{\ensuremath{\mathtt{HILL'}}\xspace}
+\newcommand{\metricprime}{\ensuremath{\mathtt{Metric'}}\xspace}
+\newcommand{\metricprimestar}{\ensuremath{\mathtt{Metric'}^*}\xspace}
+\newcommand{\hillprimestar}{\ensuremath{\mathtt{HILL'}^*}\xspace}
+\newcommand{\poly}{\ensuremath{\mathtt{poly}}\xspace}
+\newcommand{\rank}{\ensuremath{\mathtt{rank}}\xspace}
+\newcommand{\ngl}{\ensuremath{\mathtt{ngl}}\xspace}
+\newcommand{\Hoo}{\mathrm{H}_\infty}
+\newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
+\newcommand{\Dom}{\mathsl{Dom}}
+\newcommand{\Range}{\mathsl{Rng}}
+\newcommand{\Keys}{\mathsl{Keys}}
+\def\col{\mathrm{Col}}
+
+\newcommand{\ddetbin}{\ensuremath{\mathcal{D}^{det,\{0,1\}}}}
+\newcommand{\drandbin}{\ensuremath{\mathcal{D}^{rand,\{0,1\}}}}
+\newcommand{\ddetrange}{\ensuremath{\mathcal{D}^{det,[0,1]}}}
+\newcommand{\drandrange}{\ensuremath{\mathcal{D}^{rand,[0,1]}}}
+
+\newcommand{\expinfo}{\ensuremath{\mathcal{E}}}
+\newcommand{\ext}{\ensuremath{\mathtt{ext}}}
+\newcommand{\cext}{\ensuremath{\mathtt{cext}}}
+\newcommand{\rext}{\ensuremath{\mathtt{rext}}}
+\newcommand{\cons}{\ensuremath{\mathtt{cons}}}
+\newcommand{\decons}{\ensuremath{\mathtt{decons}}}
+
+
+\newcommand{\lwe}{\class{LWE}}
+\newcommand{\LWE}{\class{LWE}}
+\newcommand{\distLWE}{\ensuremath{\class{dist\mbox{-}LWE}}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{construction}[theorem]{Construction}
+
+\newcounter{ctr}
+\newcounter{savectr}
+\newcounter{ectr}
+
+\newenvironment{newitemize}{%
+\begin{list}{\mbox{}\hspace{5pt}$\bullet$\hfill}{\labelwidth=15pt%
+\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{3pt} }}{\end{list}}
+
+
+\newenvironment{newenum}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=17pt%
+\labelsep=5pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{tiret}{%
+\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+\labelsep=3pt \leftmargin=22pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt}}}{\end{list}}
+
+
+\newenvironment{blocklist}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{20pt}}}{\end{list}}
+
+\newenvironment{blocklistindented}{\begin{list}{}{\labelwidth=0pt%
+\labelsep=30pt \leftmargin=30pt\topsep=5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt}}}{\end{list}}
+
+\newenvironment{onelist}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr} \labelwidth=18pt%
+\labelsep=7pt \leftmargin=25pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{twolist}{%
+\begin{list}{{\rm (\arabic{ctr}.\arabic{ectr})}%
+\hfill}{\usecounter{ectr} \labelwidth=26pt%
+\labelsep=7pt \leftmargin=33pt \topsep=2pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{2pt} }}{\end{list}}
+
+\newenvironment{centerlist}{%
+\begin{list}{\mbox{}}{\labelwidth=0pt%
+\labelsep=0pt \leftmargin=0pt \topsep=10pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{10pt} }}{\end{list}}
+
+\newenvironment{newcenter}[1]{\begin{centerlist}\centering%
+\item #1}{\end{centerlist}}
+
+\newenvironment{codecenter}[1]{\begin{small}\begin{centerlist}\centering%
+\item #1}{\end{centerlist}\end{small}}
+
+\newcommand{\ve}{\vect{e}}
+\newcommand{\vm}{\vect{m}}
+\newcommand{\vy}{\vect{y}}
+\newcommand{\vE}{\vect{E}}
+\newcommand{\vS}{\vect{S}}
+\newcommand{\vA}{\vect{A}}
+\newcommand{\vc}{\vect{c}}
+\newcommand{\vW}{\vect{W}}
+\newcommand{\vQ}{\vect{Q}}
+\newcommand{\vR}{\vect{R}}
+\newcommand{\vU}{\vect{U}}
+\newcommand{\vT}{\vect{T}}
+\newcommand{\vX}{\vect{X}}
+\newcommand{\vB}{\vect{B}}
+\newcommand{\vz}{\vect{z}}
+\newcommand{\vd}{\vect{d}}
+\newcommand{\vs}{\vect{s}}
+\newcommand{\vx}{\vect{x}}
+\newcommand{\va}{\vect{a}}
+\newcommand{\vb}{\vect{b}}
+\newcommand{\vgamma}{\mathbf{\Gamma}}
+\newcommand{\vt}{\vect{t}}
+\newcommand{\vu}{\vect{u}}
+\newcommand{\vF}{\vect{F}}
+\newcommand{\recout}{x}
+\newcommand{\ignore}[1]{}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\key}{\ensuremath{\class{key}}\xspace}
+\newcommand{\Key}{\ensuremath{\class{Key}}\xspace}
+
+
+
+\begin{document}
+\begin{itemize}
+\item $\mathcal{A}$-adversary
+\item $A$ good set for Markov
+\item $a_i$ multiplicative offset for lines
+\item $b_i$ additive offset for lines
+\item $B$-ball for distance calculation.  Usually parameterized by $t$.  
+\item $B_{t, max}$ ball with most points.
+\item $B_{t, i, max}$ ball with most points at a probability level.
+\item $C$-code for error correction.
+\item $\mathcal{C}$-challenger in fuzzy extractor game
+\item $D$-distinguisher
+\item $d$-length of seed in extractor
+\item $\mathcal{D}$-class of distinguishers
+\item $\dis$-distance function for metric space
+\item $\mathbb{F}$-field
+\item $F$ universal function, may be parameterized by $i$.
+\item $\mathbb{F}$ field for counter examples.
+\item $\Hoo$-min-entropy of random variable
+\item $\Hav$-conditional min-entropy of random variable
+\item $H_0$ support size
+\item $\tilde{H}_0$ conditional support size
+\item $i$ level index
+\item $\key$-key generated by fuzzy extractor.  Use $\Key$ for random variable.
+\item $K$ key for universal hash.  The random variable is $\mathcal{K}$.
+\item $\ell$- number of levels
+\item $L_i$ a probability level
+\item $\mathcal{M}$-metric space
+\item $m$-starting entropy of source
+\item $\tilde{m}$-residual entropy
+\item $n$-security parameter, log of metric space size.
+\item $P$-public info generated by fuzzy extractor.  Lowercase for a specific instance.
+\item $Q$ partition generated for fuzzy ext impossibility. 
+\item $q$-size of field $\mathbb{F}$.
+\item $R$-range variable.
+\item $ss$ public value produced by $\sketch$.
+\item $S$-deficient ball
+\item $\mathbf{SD}$-statistical distance.
+\item $t$-desired error tolerance
+\item $U$-uniform distribution
+\item $V$-distribution over elements of $\mathcal{W}$.
+\item $W$-distribution of source
+\item $\mathcal{W}$-class of distributions accepted to fuzzy extractor
+\item $w$ initial reading
+\item $w_0, w_1$ index points in distribution
+\item $w'$-second reading of source
+\item $X$-temporary variable.
+\item $x$ generating source for fuzzy extractor counterexample.
+\item $Y$-temporary variable.
+\item $y$-output of universal hash.
+\item $\mathcal{Z}$-alphabet for each block
+\item $Z$ side information for negative results
+
+\item $\alpha$-temp variable in lemma about size of logs
+\item $\beta$-temp variable in lemma about size of logs
+\item $\beta$-size of deficient ball in isoperimetric inequality.Ê
+\item $\delta$-error of fuzzy extractor
+\item $\gamma$-length of string for secure sketch counter example
+\item $\nu$-size of blocks for fuzzy extractor counter example
+\item $\epsilon$-advantage of distinguisher (with various subscripts)
+\item $\chi$-finite set for extractor side condition
+\item $\kappa$-key length (also output of extractor)
+
+\item $\gen$-generate of fuzzy extractor
+\item $\rep$-reproduce of fuzzy extractor
+\item $\sketch$-sketch for secure sketch
+\item $\rec$-recover for secure sketch
+\item $\ext$-randomness extractor
+\end{itemize}
+
+\end{document}
