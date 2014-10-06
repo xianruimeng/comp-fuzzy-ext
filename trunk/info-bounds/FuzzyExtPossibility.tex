@@ -305,7 +305,7 @@ This characterization justifies $\Hfuzz(W)$ as the measure of the quality of a n
 Assuming full knowledge of a distribution is often unrealistic. Indeed, high-entropy distributions can never be fully observed directly and must therefore be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary, with greater resources, would likely be able to build a better model. Therefore, fuzzy extractor designs cannot usually be tailored to one  particular source. Existing designs work for a family of sources (for example, all sources of min-entropy at least $m$ with at most $t$ errors). Thus, the design is fixed before the distribution is fully known, and the adversary may therefore know more about the distribution than the designer of the fuzzy extractor.
 
 We show that this extra adversarial knowledge can be devastating  (\thref{thm:imposs fuzz ext}). 
-Specifically, we show a family of distributions $\mathcal{W}$ such that not even a 1-bit fuzzy extractor can be secure for most distributions in  $\mathcal{W}$.  We emphasize that each distribution $W\in \mathcal{W}$ has superlogarithmic fuzzy min-entropy---in fact, $\Hfuzz(W)=\Hoo(W)$, because all points in $W$ are distance at least $t$ apart. Our proof relies on high dimensionality of $W$ and on perfect correctness of the $\rep$ procedure.
+Specifically, we show a family of distributions $\mathcal{W}$ such that not even a 2-bit fuzzy extractor can be secure for most distributions in  $\mathcal{W}$.  We emphasize that each distribution $W\in \mathcal{W}$ has superlogarithmic fuzzy min-entropy---in fact, $\Hfuzz(W)=\Hoo(W)$, because all points in $W$ are distance at least $t$ apart. Our proof relies on high dimensionality of $W$ and on perfect correctness of the $\rep$ procedure.
 
 
 \begin{table}[h]
@@ -694,7 +694,7 @@ We now show a family of distributions $\mathcal{W}$ that does not admit a secure
 
 \begin{theorem}
 \label{thm:imposs sketch}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch with error $\delta < 1/4$ for $\tilde{m} \ge 1$ for $t\ge 4$.  
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch with error $\delta < 1/4$ for $\tilde{m} \ge 2$ for $t\ge 4$.  
 \end{theorem}
 
 \begin{proof}
@@ -712,7 +712,7 @@ We show the following~(in \apref{sec:proof secure sketch imposs}):
 \item \propref{prop:each element good}: for all $W\in \mathcal{W}$, $\Hfuzz(W) = \omega (\log n)$. That is, $\forall z, \Hfuzz(V | Z=z) = \omega(\log n)$.
 \item \propref{prop:distribution uniform}: the distribution $V$ is uniform.
 \item \lemref{lem:secure sketch entropy loss}: for any secure sketch on $V$, the support size of $V | \sketch(V)$ decreases significantly.  Here we show the minimum distance of $V|\sketch(V)$ is at least $t$.
-\item \lemref{lem:side info determines sketch}:  for most lines $Z$, the intersection of the support of $V|Z$ and $V | \sketch(V)$ is small.  \\That is, $\tilde{H}_0(V | \sketch(V), Z) < 1$.
+\item \lemref{lem:side info determines sketch}:  for most lines $Z$, the intersection of the support of $V|Z$ and $V | \sketch(V)$ is small.  \\That is, $\tilde{H}_0(V | \sketch(V), Z) < 2$.
 \item By \corref{cor:no fuzz for dist}, since no secure sketch can support the uniform distribution $V$ over $\mathcal{W}$, there is no secure sketch for the family $\mathcal{W}$.\end{itemize}
 \end{proof}
 \bnote{should note we can decrease field size at the cost of distance.}
@@ -755,7 +755,7 @@ In the previous section, we showed a family of distributions that does not admit
 
 \begin{theorem}
 \label{thm:imposs fuzz ext}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ over $\zo^n$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{W}, \kappa, t, \epsilon)$-fuzzy extractor with error $\delta = 0$, for $\kappa \ge 1$ such that $\epsilon \le 1/4 - \ngl(n)$ for $t = \omega(n^{1/2}\log n)$. \end{theorem}
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ over $\zo^n$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$ and there is no $(\mathcal{M}, \mathcal{W}, \kappa, t, \epsilon)$-fuzzy extractor with error $\delta = 0$, for $\kappa \ge 2$ such that $\epsilon \le 1/8 - \ngl(n)$ for $t = \omega(n^{1/2}\log n)$. \end{theorem}
 
 \begin{proof}[Proof Outline]
 Our counterexample uses a slightly different family of distributions $\mathcal{W}$ than the counterexample for secure sketches.  In particular, we need to assume a larger error tolerance.  Let $\nu = \omega(\log n)$ and $\nu = o(n^{1/2}/\log n)$.  Let $t=4\nu n^{1/2}$ and note that $n/\nu >t$.  
@@ -775,11 +775,12 @@ We now present an outline of the proof~(proofs in \apref{sec:fuzz ext proof}):
 \item \propref{prop:dist uniform fuzz}: the distribution $V$ is uniform.
 \item \lemref{lem:fuzz can't get key}: for many values of $Z$ and for half of the $\key \in\zo^\kappa$, there are no viable $v\in\mathcal{M}$.  In more detail,
 \begin{itemize}
-\item Half the keys have at most $2^{n- (\kappa-1)}$ pre images in the metric space~(this is at most half the metric space).  Denote this set as $R_{small}$.  
+\item Half the keys have at most $2^{n- \kappa}$ pre images in the metric space~(this is at most half the metric space).  Denote this set as $R_{small}$.  
 \item Consider some $\key \in R_{small}$.  %Our goal is to show there are few values of $v \in V|Z$ that could produce this key.  
 Consider the set of $V_{\key } = \{w | \rep(w, p) = \key \}$.  All points in $V | \sketch(V)$ are distance $t$ from a boundary of $V_\key$~(the functionality of $\rep$ guarantees that for the true $w$ all nearby points map to the same $\key$).  We show that most of $V_\key$ is near a boundary.  A result of Frankel and F{\"u}redi says that the boundary of a region is minimized by a ball containing the same number of points~\cite{frankl1981short} .  Hoeffding's inequality says that most of a ball lies near its boundary~\cite{hoeffding1963probability}.  Together these two results imply that $V_\key$ is small.
 \item As before, there are many possible values for $z_1, z_2$ for the side information $Z$~(and these possible values are equally likely).  Furthermore, the distributions $V|Z=z_1 $ and $V| Z=z_1$ have disjoint support outside of $v$.
-\item For most values of possible $Z$, the intersection between the viable pre images of $V|Z$ and $V_\key$ is empty.  Thus, for most values of $Z$, any key lying in $R_{small}$ can be labeled as ``random''.
+\item For most values of possible $Z$, the intersection between the viable pre images of $V|Z$ and $V_\key$ contains at most one point~(the received point $v$).  Thus, for most values of $Z$, keys lying in $R_{small}$ can be labeled as ``random''.
+%The previous two propositions were similar to the secure sketch counterexample.  However, the structure on the metric space imposed byThe remainder of the proof is significantly different.  We show for any $(\gen, \rep)$ many keys have few possible values that could produce them in the metric space once $p$ is published.  Then an adversary that sees $z$ is able to eliminate many possible keys and thus effectively distinguish the key from random.
 \end{itemize}
 \item By \corref{cor:no fuzz for dist}, since no fuzzy extractor can support the uniform distribution over $\mathcal{W}$, there is no fuzzy extractor for the family $\mathcal{W}$.
 \end{itemize}
@@ -961,7 +962,7 @@ By the Singleton bound, this implies that $H_0(V |\sketch(V)=ss^*) \le (\gamma -
 
 \begin{lemma}
 \label{lem:side info determines sketch}
-$\Hav(V | \sketch(V), Z) <1$.
+$\Hav(V | \sketch(V), Z) <2$.
 \end{lemma}
 \begin{proof}
 Recall that $Z$ consists of $2\gamma$ coefficients and there are $(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}$ equally likely values for $Z$.
@@ -980,22 +981,27 @@ Recall that
 \[
 \tilde{H}_0(V | \sketch(V)) =  \log \expe_{s\in \sketch(V)} 2^{H_0(V | \sketch(V) = s)}  = \log \expe_{s\in \sketch(V)} 2^{h_s} %\le   (\gamma-t+1)\log |\mathbb{F}|+1.
 \]  
-Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as bins to be filled with the $2^{h_{ss}}$ balls~(possible values of $V | \sketch(V)=ss$).  The average number of balls in each bin is maximized when the bins are filled equally.  That is, the average number of balls in each bin is bounded by the number of balls divided by the number of bins.  That is, 
+Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as bins to be filled with the $2^{h_{ss}}$ balls~(possible values of $V | \sketch(V)=ss$).  Each bin receives automatically receives one free point~(all the distributions share $v$).  The average number of balls in each bin is maximized when the bins are filled equally.  That is, the average number of balls in each bin is bounded by the number of balls divided by the number of bins.  That is, 
 \begin{align*}
-\tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# bins}}{\text{\# balls}}\right)\\
-&= \log \left(\frac{2^{h_{ss}}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)
+\tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# balls}+\text{\# bins}}{\text{\# bins}}\right)\\
+&= \log \left(\frac{2^{h_{ss}}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} +1 \right)
 \end{align*}
 Then averaging over the possible values of $s$, we have the following as long as $t\ge 4$~(using  \lemref{lem:log-minus-one}, which appears below):
 \begin{align*}
 \tilde{H}_0(V |Z , \sketch(V) ) &= \log \expe_{s\in \sketch(V)} 2^{\tilde{H}_0(V |  \sketch(V) =ss , (Z| \sketch(V) =ss) )}\\
-&= \log\expe_{s\in \sketch(V)} \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \right)\\
-&= \log \frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\\
-&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \log \expe_{s\in \sketch(V)} 2^{h_s}\\
-&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \tilde{H}_0(V | \sketch(V))\\ 
-&\le \log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + (\gamma-t+1)\log |\mathbb{F}|+1\\
-&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|-1)+1\\
-&< (\gamma-t+2)\log |\mathbb{F}| - (\gamma-2) \log |\mathbb{F}| +1 \ \ \ \ \mbox{(by \lemref{lem:log-minus-one})}\\
-&\le (4-t)\log |\mathbb{F}| +1< 1\,.\\
+&= \log\expe_{s\in \sketch(V)} \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} +1\right)\\
+&\le \max\left\{ \log \left(\frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\right)+1, 1\right\}.
+\end{align*}
+Where the inequality follows because $\log x+1 \le \max\{ 1+ \log x,1\}$.
+The left operand to $\max$ is bounded by $2$~(bounded the $\max$ by $2$):
+\begin{align*}
+\log \left(\frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\right)+1
+&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \log \left(\expe_{s\in \sketch(V)} 2^{h_s}\right) +1\\
+&=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \tilde{H}_0(V | \sketch(V)) +1 \\ 
+&\le \log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + (\gamma-t+1)\log |\mathbb{F}|+2\\
+&\le (\gamma-t+2)\log |\mathbb{F}| - (\gamma-1) \log (|\mathbb{F}|-1)+2\\
+&< (\gamma-t+2)\log |\mathbb{F}| - (\gamma-2) \log |\mathbb{F}| +2 \ \ \ \ \mbox{(by \lemref{lem:log-minus-one})}\\
+&\le (4-t)\log |\mathbb{F}| +2< 2\,.
 \end{align*}
 \end{proof}
 
@@ -1026,24 +1032,24 @@ Taking the logarithm of both sides yields the statement of the lemma.
 For each $W\in\mathcal{W}$, $\Hfuzz(W) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some fixed $W\in\mathcal{W}$.  The bits $w_{1,..., \nu}$ are uniform, so $\Hoo(W) =\omega(\log n)$.  Recall that $t=o (n/\nu)$.  We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i x + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$. That is, at least one of the bits in each block differs between $w$ and $w'$, and so $\dis(w, w') \ge n/\nu$. Since no two values in the support of $W$ lie in the same ball of radius $t$, we have $\Hfuzz(W) = \Hoo(W)= \omega(\log n)$.
+Consider some fixed $W\in\mathcal{W}$.  The bits $w_{1,..., \nu}$ are uniform, so $\Hoo(W) =\omega(\log n)$.  Recall that $t=o (n/\nu)$. 
+ %We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  
+Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i x + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$. That is, at least one of the bits in each block differs between $w$ and $w'$, and so $\dis(w, w') \ge n/\nu$. Since no two values in the support of $W$ lie in the same ball of radius $t$, we have $\Hfuzz(W) = \Hoo(W)= \omega(\log n)$.
 \end{proof}
 
 \begin{proposition}\label{prop:dist uniform fuzz}
 $V$ is the uniform distribution over $\mathbb{F}^\gamma$.
 \end{proposition}
 \begin{proof}
-Consider some $w\in V$ over $\zo^n$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_{1,...,\nu} =x $ is uniformly random and $w_{i\nu+1,...,(i+1)\nu}$ are uniformly random since $b_2,..., b_\gamma$ are uniformly random.
+Consider some $w\in V$ over $\zo^n$.  Then $w\leftarrow W$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_{1,...,\nu} =x $ is uniformly random and $w_{i\nu+1,...,(i+1)\nu}$ are uniformly random since $b_2,..., b_\gamma$ are random.
 \end{proof}
-
-The previous two propositions were similar to the secure sketch case.  The remainder of the proof is significantly different.  We show for any $(\gen, \rep)$ many keys have few possible values that could produce them in the metric space once $p$ is published.  Then an adversary that sees $z$ is able to eliminate many possible keys and thus effectively distinguish the key from random.
 
 \begin{lemma}
 \label{lem:fuzz can't get key}
-Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 1$.  There exists an information-theoretic distinguisher between $(R, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/4-\ngl(n)$.
+Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an information-theoretic distinguisher between $(R, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/4-\ngl(n)$.
 \end{lemma}
 \begin{proof}
-We assume that $\rep$ is deterministic in our analysis.  Any randomness necessary for the \rep algorithm can be provided by $\gen$.  We do not consider these coins in our security analysis~(and thus, they can be considered private).  Denote by $(\Key, P) \leftarrow \gen(V)$.
+We assume that $\rep$ is deterministic.  Any randomness necessary for the \rep algorithm can be provided by $\gen$.  We do not consider these coins in our security analysis~(and thus, they can be considered private).  Denote by $(\Key, P) \leftarrow \gen(V)$.
 
 %By the definition of correctness for $(\sketch, \rec)$, 
 %\[
@@ -1061,20 +1067,20 @@ Consider some $p^*\in A_{p}$.  %Since $(R | P=p^*, p^*)\approx_{2\epsilon} (U, p
 The distribution $\Key|P=p^*$ is the set of possible keys.
 The distribution $\Key|P=p^*$ induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique value $\key$ such that $\rep(w, p^*) =\key$.  Denote this partition by $Q_{p^*,\key} = \{w | \rep(w, p^*) = \key\}$.  
 
-Many of these sets must be small.  That is, there exists a set $R_{small}$  where $|R_{small} | \ge 2^{\kappa-1}$ such that for all $\key\in R_{small}$,  $|Q_{p^*, r}|\le \mathcal{M}/2^{\kappa-1} = 2^{n-\kappa +1}$.  If not, there exists a set of $\key$ of size $2^{\kappa-1}$ that all have at least $\mathcal{M}/2^{\kappa-1}$ points.\footnote{In the case where $\kappa=1$, $R_{small}$ still has at least one element.}  This is more points than exist in the metric space.  
-
-For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  We first define the interior of a set:%Define two sets, called the interior and crust respectively: \bnote{change term crust?}
+There exists a set $R_{small}$  where $|R_{small} | \ge 2^{\kappa-1}$ such that for all $\key\in R_{small}$,  $|Q_{p^*, r}|\le \mathcal{M}/2^{\kappa} = 2^{n-\kappa }$.  If not, then $\cup_{\key} |Q_{p^*, \key}| > |\mathcal{M}|$.
+For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  Only points that are distance $t$ from points outside of $Q_{p^*, r}$ are viable points in the metric space.  These are the interior of $Q_{p^*, r}$:
 \begin{align*}
 \inter(Q_{p^*, \key}) = \{w | \rep(w, p^*) = \key \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =\key\},\\
 %\crust(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\}.
 \end{align*}
 
 %Note that $\crust(Q_{p^*, r}) \cap \inter(Q_{p^*,r}) =\emptyset$.  
-We now show that for $\key \in R_{small}$ there are few points in $\inter(Q_{p^*, \key })$.  Consider some $\key^*\in R_{small}$.  We will use the term deficient ball:\bnote{use a term other than deficient}
+We will use the term deficient ball\footnote{In most statements of the isoperimetric inequality, this type of set is simply called a ball.  We use the term deficient ball for emphasis.}:\bnote{use a term other than deficient}
 \begin{definition}
 A set $S$ is a $\beta$-deficient ball if there exists a point $x$ such that $B_{\beta-1}(x) \subseteq S \subseteq B_{\beta}(x)$.
 \end{definition}
 
+Consider some $\key^*\in R_{small}$.  
 We now proceed to show that the interior of each $Q_{p^*, \key^*}$ is small:
 %Recall that $B_{n-\kappa-t}$ denotes the ball of radius $n-\kappa -t$.
 
@@ -1082,10 +1088,10 @@ We now proceed to show that the interior of each $Q_{p^*, \key^*}$ is small:
 $|\inter(Q_{p^*, \key^*})| \le 2^{n-4\nu}$.
 \end{lemma}
 \begin{proof}
-By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal}), there exists a $\beta$-deficient ball $S_{p^*, \key^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*, \key^*}^\complement|$ and $\forall s\in S_{p^*, \key^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, \key^*} \cup D$ is a deficient ball~(and its radius is $t$ larger than $S_{p^*, \key^*}$).
+By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal}), there exists a $\beta$-deficient ball $S_{p^*, \key^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*, \key^*}^\complement|$ and $\forall s\in S_{p^*, \key^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, \key^*} \cup D$ is a deficient ball~(and its radius is $\beta+t$).
 We now find bound the size of $S_{p^*, \key^*}$.
 
-Recall that $|S_{p^*, \key^*} \cup D| = |Q_{p^*, \key^*} | \le 2^{n-(\kappa-1)}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a deficient sphere of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
+Recall that $|S_{p^*, \key^*} \cup D| = |Q_{p^*, \key^*} | \le 2^{n-\kappa}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a deficient sphere of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
 
 \begin{align*}
 |S_{p^*, \key^*}| \le \{ x | \dis (x, 0)\le n-t\} &= 2^n \Pr[ wt(X) \le (1/2-t/n)n] \le 2^n e^{-n ((t/n)^2)} = 2^n e^{-4\nu} \le 2^{n - 4\nu}
@@ -1104,12 +1110,15 @@ Recall that $Z$ consists of $2n/\nu$ coefficients and there are $(2^{n/\nu}-1)^{
  \end{align*}
 Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
 
-This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, \key^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of all preimages of $R_{small}$ denoted $Q_{small} = \cup_{\key\in R_{small}} \inter(Q_{\key, p^*})$.  Note that $Q_{small} \le 2^{n-4\nu}|R_{small}|$.  We now show that the intersection between $Q_{\key, p^*}$ is small for most possible values $z$.
+This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, \key^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of all preimages of $R_{small}$ denoted $Q_{small} = \cup_{\key\in R_{small}} \inter(Q_{\key, p^*})$.  Note that $Q_{small} \le 2^{n-4\nu}|R_{small}|$.  We now show that the intersection between $Q_{\key, p^*}$ is small for most possible values $z$.  As before each bin~(the values of $z$)  receives one ball for free~(the point $v$).
 \begin{align*}
-\expe_z |Q_{small} \cap (V | P=p^* \wedge Z=z) | &\le \frac{2^{n-4\nu}|R_{small}|}{2^{n - 3\nu}}\\
-&=\frac{|R_{small}|}{2^{\nu}}.
+\expe_z |Q_{small} \cap (V | P=p^* \wedge Z=z) | &\le \left(\frac{\text{\# balls}+\text{\# bins}}{\text{\# bins}}\right)\\
+&\le \frac{2^{n-4\nu}|R_{small}|}{2^{n - 3\nu}}+1\\
+&=\frac{|R_{small}|}{2^{\nu}}+1
 \end{align*}
-Thus, at most $1/2^{\nu} = \ngl(n)$ fraction of keys in $R_{small}$ have any support  conditioned on $p^*$ and $Z$~(note this is an expectation across the values of $Z$).  We now present a distinguisher $D_{p^*}$ for a particular $p^*$:
+In expectation across $Z$, 
+\[\frac{\frac{|R_{small}|}{2^{\nu}}+1}{|R_{small}|} \le \frac{1}{2^\nu}+\frac{1}{|R_{small}|} \] fraction of $R_{small}$ receive any support.  %Thus, at most $1+1/2^{\nu} = \ngl(n)$ keys in $R_{small}$ have any support  conditioned on $p^*$ and $Z$~(note this is an expectation across the values of $Z$).  
+We now present a distinguisher $D_{p^*}$ for a particular $p^*$:
 \begin{enumerate}
 \item On input $x, z$.
 %\item If $x\not \in R_{small}$ output random bit $b$.
@@ -1124,9 +1133,13 @@ The distinguisher $D(x, p, z)$ is formed by calling $D_p(x, z)$ when $p\in A_p$ 
 &=(\Pr[D(\Key, P, Z) = 1| P\in A_p] - \Pr[D(U, P, Z) =1 | P\in A_p])\Pr[P\in A_p]\\
 &\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1 - \Pr[D_{p^*}(U, Z)=1]\right)\\
 &\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \Pr[D_{p^*}(U, Z)=1 | U\in R_{small}]\Pr[U\in R_{small}] - \Pr[U\not\in R_{small}]\right)\\
-&\ge \sum_{p^* \in A_p} \Pr[P=p^*]\left(1/2-\ngl(n)\right) = 1/4-\ngl(n).
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \left(\left(\frac{1}{|R_{small}|}+\frac{1}{2^\nu}\right)\Pr[U\in R_{small}]\right) - \Pr[U\not\in R_{small}]\right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in R_{small}] - \Pr[U\not \in R_{small}]\right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in R_{small}] - \Pr[U\not \in R_{small}]\right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -1+\frac{1}{2}\Pr[U\in R_{small}] \right)\\
+&\ge \sum_{p^* \in A_p} \Pr[P=p^*]\left(1/4-\ngl(n)\right) \ge \frac{1}{8}-\ngl(n).
 \end{align*}
-The fourth line follows since $R_{small} \ge 2^{\kappa-1}$ and thus $\Pr[U\in R_{small}]\ge 1/2$.  The last line follows by recalling that $\Pr[P\in A_p]\ge 1/2$.
+The sixth line follows since $R_{small} \ge 2^{\kappa-1}\ge 2$.  The eighth line follows because $\Pr[U\in R_{small}]\ge 1/2$.  The last inequality proceeds because $\Pr[P\in A_p]\ge 1/2$.
 This completes the proof of \lemref{lem:fuzz can't get key}.
 \end{proof}
 
