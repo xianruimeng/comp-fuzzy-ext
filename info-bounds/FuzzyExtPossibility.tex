@@ -314,7 +314,7 @@ Specifically, we show a family of distributions $\mathcal{W}$ such that not even
 \begin{tabular}{c  l l }
  & Known Distribution & Family of Distributions\\
 \hline
-Secure Sketch & Yes~(\thref{cons:leveling}) & No~(\thref{thm:imposs sketch})\\
+Secure Sketch & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs sketch})\\
 \hline
 Fuzzy Extractor & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs fuzz ext}) 
 \end{tabular}
@@ -327,7 +327,7 @@ Fuzzy Extractor & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:impo
 \paragraph{Stronger Results on Information Reconciliation (Secure Sketches)}
 Traditionally, fuzzy extractors use a secure sketch to perform information reconciliation~(mapping $w'$ back to $w$), followed by randomness extractor~\cite{nisan1993randomness} to transform $w$ into a uniform key.  The security losses incurred in the first of these two steps dominate for typical sources and, indeed, this step is less well understood.\footnote{Randomness extractors have matching upper and lower bounds on the security loss: for every extra two bits of output key, they lose one bit of security} Formally, a secure sketch performs non-interactive information reconciliation via pair of algorithms: $\sketch$ takes $w$ and produces a nonsecret value $ss$, while $\rec$ takes a value $w'$ within distance $t$ of $w$ and uses $\sketch$ to output the original reading $w$.  
 
-We show comparable, but stronger, results for secure sketches.  Namely, we show in \thref{cons:leveling} that secure sketches are possible if the distribution $W$ is precisely known. (In fact, we obtain our fuzzy extractors for the case of a known distribution from this result by applying a randomness extractor.) \bnote{should be citing same thing for sketch and fuzzy extractor.  its the same corollary} 
+We show comparable, but stronger, results for secure sketches.  Namely, we show in \corref{cons:leveling} that secure sketches are possible if the distribution $W$ is precisely known. (In fact, we obtain our fuzzy extractors for the case of a known distribution from this result by applying a randomness extractor.) \bnote{should be citing same thing for sketch and fuzzy extractor.  its the same corollary} 
 
 On the other hand, there is a family of sources with superlogarithmic $\Hfuzz(W)=\Hoo(W)$ for which no secure sketch correcting even a few errors is possible~(\thref{thm:imposs sketch}). The impossibility result applies even when $\rec$ is allowed to be incorrect with probability up to $1/4$ (as opposed to our fuzzy extractor impossibility result).
 
@@ -629,7 +629,7 @@ For any distribution $W$ over $\mathcal{M}$ with $\Hfuzz(W)=\omega(\log n)$, the
 
 \noindent
 In our positive results we considered an arbitrary finite metric space.  The relevant parameters were the size of balls and the size of the metric space.  Our negative results are specific to the Hamming metric.
-\section{Insufficiency of $\Hfuzz(W)$ to secure sketch from distribution families}
+\section{Impossibility of secure sketches for all families with $\Hfuzz$}
 \label{sec:family of dist}
 
 In the previous section, we showed the sufficiency of $\Hfuzz(W)$ for known distribution algorithms.  Unfortunately, it is unrealistic to assume that $W$ is completely known.  Traditionally, algorithms deal with this uncertainty by providing security for a family of distributions $\mathcal{W}$.  
@@ -672,10 +672,10 @@ We show the following~(in \apref{sec:proof secure sketch imposs}):
 \end{proof}
 \noindent
 \textbf{Note:} There is tradeoff between the size of $\mathbb{F}$ and the error tolerance required for the counter example.  By increasing $t$ it is possible to show a counter example for a smaller $\mathbb{F}$.
-\subsubsection{Implications for Computational secure sketches}
+\subsection{Implications for Computational secure sketches}
 \label{sec:feas comp sec sketch}
 Fuller et al. showed that computational secure sketches that provide pseudoentropy imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.  %This means that ruling out any information-theoretic secure sketches also rules out a computational secure sketch.  
-The definitional of Fuller et al. uses a weak version of pseudoentropy~\cite{DBLP:journals/siamcomp/HastadILL99} due to Gentry and Wichs~\cite{gentry2011separating}.
+The definition of Fuller et al. uses a weak version of pseudoentropy~\cite{DBLP:journals/siamcomp/HastadILL99} due to Gentry and Wichs~\cite{gentry2011separating}.
 
 \begin{definition}
 \label{def:relaxed hill}
@@ -684,7 +684,7 @@ Let $(W, S)$ be a pair of random variables.  $W$ has
 denoted $H^{\hillrlx}_{\epsilon_{sec}, s_{sec}}(W|S)\geq \tilde{m}$ if there exists a joint distribution $(X, Y)$, such that $\tilde{H}_\infty(X|Y)\geq \tilde{m}$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,Y))\leq \epsilon_{sec}$.
 \end{definition}
 
-A \emph{HILL secure sketch} is obtained by replacing the security condition in \defref{def:secure sketch} with HILL entropy~(adding parameters $\epsilon_{sec}, s_{sec}$ parameters to the definition, representing the distinguishing circuit).  By the contrapositive of~\cite[Corollary 3.8]{fuller2013computational}, no sketch can retain HILL entropy for the same family of distributions:
+A \emph{HILL secure sketch} is obtained by replacing the security condition in \defref{def:secure sketch} with HILL entropy~(adding parameters $\epsilon_{sec}, s_{sec}$ to the definition, representing the distinguishing circuit).  By the contrapositive of~\cite[Corollary 3.8]{fuller2013computational}, no sketch can retain HILL entropy for the same family of distributions:
 
 \begin{corollary}
 \label{cor:imposs comp sketch}
@@ -705,7 +705,7 @@ $t\ge 4$, and
 
 Secure sketches that provide computational unpredictability are implied by virtual-grey box obfuscation of proximity functions~\cite{BitanskyCKP14}.  Our impossibility result says nothing about this weaker form of a secure sketch.  Extracting from unpredictability requires a extractor with a reconstruction property~\cite{barak-computational, DBLP:conf/eurocrypt/HsiaoLR07}.
 
-\section{Insufficiency of $\Hfuzz(W)$ to fuzzy extract from distribution families}
+\section{Impossibility of fuzzy extractors for all families with $\Hfuzz$}
 \label{sec:imposs fuzz ext}
 In the previous section, we showed a family of distributions that does not admit a secure sketch.  We provide a similar result for fuzzy extractors.  
 
@@ -1002,9 +1002,9 @@ Recall that
 \[
 \tilde{H}_0(V | \sketch(V)) =  \log \expe_{s\in \sketch(V)} 2^{H_0(V | \sketch(V) = s)}  = \log \expe_{s\in \sketch(V)} 2^{h_s} %\le   (\gamma-t+1)\log |\mathbb{F}|+1.
 \]  
-Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as bins to be filled with the $2^{h_{ss}}$ balls~(possible values of $V | \sketch(V)=ss$).  Each bin receives automatically receives one free point~(all the distributions share $v$).  The average number of balls in each bin is maximized when the bins are filled equally.  That is, the average number of balls in each bin is bounded by the number of balls divided by the number of bins.  That is, 
+Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as containers to be filled with the $2^{h_{ss}}$ items~(possible values of $V | \sketch(V)=ss$).  Each container receives automatically receives one free point~(all the distributions share $v$).  The average number of items in each container is maximized when the containers are filled equally.  That is, the average number of items in each container is bounded by the number of items divided by the number of container.  That is, 
 \begin{align*}
-\tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# balls}+\text{\# bins}}{\text{\# bins}}\right)\\
+\tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# items}+\text{\# containers}}{\text{\# containers}}\right)\\
 &= \log \left(\frac{2^{h_{ss}}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} +1 \right)
 \end{align*}
 Then averaging over the possible values of $s$, we have the following as long as $t\ge 4$~(using  \lemref{lem:log-minus-one}, which appears below):
@@ -1124,9 +1124,9 @@ Recall that $Z$ consists of $2n/\nu$ coefficients and there are $(2^{n/\nu}-1)^{
  \end{align*}
 Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
 
-This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, \key^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of all preimages of $R_{small}$ denoted $Q_{small} = \cup_{\key\in R_{small}} \inter(Q_{\key, p^*})$.  Note that $Q_{small} \le 2^{n-4\nu}|R_{small}|$.  We now show that the intersection between $Q_{\key, p^*}$ is small for most possible values $z$.  As before each bin~(the values of $z$)  receives one ball for free~(the point $v$).
+This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, \key^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of all preimages of $R_{small}$ denoted $Q_{small} = \cup_{\key\in R_{small}} \inter(Q_{\key, p^*})$.  Note that $Q_{small} \le 2^{n-4\nu}|R_{small}|$.  We now show that the intersection between $Q_{\key, p^*}$ is small for most possible values $z$.  As before each container~(the values of $z$)  receives one item for free~(the point $v$).
 \begin{align*}
-\expe_z |Q_{small} \cap (V | P=p^* \wedge Z=z) | &\le \left(\frac{\text{\# balls}+\text{\# bins}}{\text{\# bins}}\right)\\
+\expe_z |Q_{small} \cap (V | P=p^* \wedge Z=z) | &\le \left(\frac{\text{\# items}+\text{\# containers}}{\text{\# containers}}\right)\\
 &\le \frac{2^{n-4\nu}|R_{small}|}{2^{n - 3\nu}}+1\\
 &=\frac{|R_{small}|}{2^{\nu}}+1
 \end{align*}
