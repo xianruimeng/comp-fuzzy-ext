@@ -634,7 +634,7 @@ In the previous section, we showed the sufficiency of $\Hfuzz(W)$ for known dist
 In this section, we show uncertainty of $W$ comes at a real cost.  The security game of a fuzzy extractor can be thought of as a three stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary sees $(\sketch, \rec)$ and specifies $W\in \mathcal{W}$ 3) the adversary wins if $\Hav(W|\sketch(W))< \tilde{m}$.  
 We prove impossibility in a game that is harder for the adversary to win: 1) the challenger specifies $(\sketch, \rec)$ 2) the adversary samples a random distribution from $W\leftarrow \mathcal{W}$ 3) the adversary wins if $\Hav(W|\sketch(W)) < \tilde{m}$.  
 
-Let $V$ be the process of uniformly sampling $W\leftarrow \mathcal{W}$ and then sampling $w\leftarrow W$.  Let the random variable $Z$ specify which $W$ was sampled.  The view of the challenger is $V$, while the view of the adversary is a distribution $V|Z$.  Our results rule out security for an average member of $\mathcal{W}$.  It may be possible to improve parameters by ruling out only a worst case $W$.  In \apref{sec:def equiv}, we show that providing security for a family $\mathcal{W}$ is equivalent to providing security for all distributions over that family.
+Let $V$ be the process of uniformly sampling $W\leftarrow \mathcal{W}$ and then sampling $w\leftarrow W$.  Let the random variable $Z$ indicate which $W$ was sampled.  The view of the challenger is $V$, while the view of the adversary is a distribution $V|Z$.  Our results rule out security for an average member of $\mathcal{W}$.  It may be possible to improve parameters by ruling out only a worst case $W$.  In \apref{sec:def equiv}, we show that providing security for a family $\mathcal{W}$ is equivalent to providing security for all distributions over that family.
 
 We now show a family of distributions $\mathcal{W}$ that does not admit a secure sketch.  
 
@@ -642,7 +642,7 @@ We now show a family of distributions $\mathcal{W}$ that does not admit a secure
 \label{thm:imposs sketch}
 Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$, and yet for any $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch $(\sketch, \rec)$ with error $\delta <1/4$ and distance $t\ge 4$, the remaining entropy $\tilde{m}<2$.  
 
-Furthermore, this is true on average.  Let $V$ be process of uniformly sampling $W\leftarrow \mathcal{W}$ and sampling $w\leftarrow W$, and let $Z$ specify which $W$ is sampled.  Then
+Furthermore, this is true on average.  Let $V$ be process of uniformly sampling $W\leftarrow \mathcal{W}$ and sampling $w\leftarrow W$, and let $Z$ indicate which $W$ is sampled.  Then
 \[
 \Hav(V|\sketch(V), Z)< 2.
 \]
@@ -700,7 +700,7 @@ $t\ge 4$, and
 %$4(\epsilon+t\delta)$. 
 %\end{corollary}
 
-Secure sketches that provide computational unpredictability are implied by virtual-grey box obfuscation of proximity functions~\cite{BitanskyCKP14}.  Our impossibility result says nothing about this weaker form of a secure sketch.  Extracting from unpredictability requires a extractor with a reconstruction property~\cite{barak-computational, DBLP:conf/eurocrypt/HsiaoLR07}.
+Secure sketches that provide computational unpredictability are implied by virtual-grey box obfuscation of proximity functions~\cite{BitanskyCKP14}.  Our impossibility result says nothing about this weaker form of a secure sketch.  Extraction from unpredictability entropy can be done using an extractor with a reconstruction property~\cite{barak-computational, DBLP:conf/eurocrypt/HsiaoLR07}; however, in the computational setting, the obfuscated function can simply hide a randomly generated key, and therefore extraction is not necessary to obtain a fuzzy extractor.
 
 \section{Impossibility of Fuzzy Extractors for all Families with $\Hfuzz$}
 \label{sec:imposs fuzz ext}
@@ -708,11 +708,11 @@ In the previous section, we showed a family of distributions that does not admit
 
 \begin{theorem}
 \label{thm:imposs fuzz ext}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ over $\zo^n$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$.  Let $\kappa \ge 2$, $t = \omega(n^{1/2}\log n)$.  Any $(\mathcal{M}, \mathcal{W}, \kappa, t, \epsilon)$-fuzzy extractor with error $\delta = 0$ has $\epsilon > 1/8 - \ngl(n)$.
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ over $\zo^n$ satisfying the following conditions. For each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$. Let $\kappa \ge 2$ and $t = \omega(n^{1/2}\log n)$.  Any $(\mathcal{M}, \mathcal{W}, \kappa, t, \epsilon)$-fuzzy extractor with error $\delta = 0$ has $\epsilon > 1/8 - \ngl(n)$.
 
-Furthermore, this is true on average.  Let $V$ be process of uniformly sampling $W\leftarrow \mathcal{W}$ and sampling $w\leftarrow W$ and let $Z$ be the description of which $W$ is sampled.  Let $(\Key, P)\leftarrow \gen(V)$.  Then, 
+Furthermore, this is true on average.  Let $V$ be process of uniformly sampling $W\leftarrow \mathcal{W}$ and sampling $w\leftarrow W$ and let $Z$ indicate which $W$ is sampled.  Let $(\Key, P)\leftarrow \gen(V)$.  Then, 
 \[
-\sd ((\Key,P, Z), (U_\kappa, P, Z))>1/8-\ngl(n).
+\sd ((\Key,P, Z), (U_\kappa, P, Z))>1/8-\ngl(n)\,.
 \]
 
 \end{theorem}
@@ -722,7 +722,7 @@ We prove the stronger average case statement.
 Let $\nu = \omega(\log n)$ and $\nu = o(n^{1/2}/\log n)$.  Let $t=4\nu n^{1/2}$ and note that $n/\nu >t$.  
 
 Our counterexample uses a slightly different family of distributions $\mathcal{W}$ than the counterexample for secure sketches.  
-We can't work directly on the Hamming distance over a large alphabet~(as we did for secure sketches).  We embed this larger space to the binary Hamming metric.
+We can't work directly on the Hamming distance over a large alphabet~(as we did for secure sketches). \lnote{it would be good to explain why not}  We embed this larger space to the binary Hamming metric.
 Let $x_1,..., x_\nu \in \zo^\nu$.  Let $\mathbb{F}$ denote the field of size $2^{\nu}$.  Let $a_2,..., a_{n/\nu}\in\mathbb{F}$ such that $a_i\neq 0$ and let $b_2,..., b_{n/\nu}\in\mathbb{F}$.  
 Interpret $x_1,..., x_{\nu}$ as a element $x\in \mathbb{F}$ and let 
 \[w =  \begin{pmatrix} \vec{1} \\a_2  \\ \vdots \\ a_{n/\nu} \end{pmatrix} x + \begin{pmatrix} 0  \\ 
@@ -732,7 +732,7 @@ The multiplication is in $\mathbb{F}$.
 Define a distribution $W$ as the uniform distribution over values of $x$ for a particular value of $a_2,..., a_{n/\nu}$, $b_2,..., b_{n/\nu}$.  
 Let $\mathcal{W}$ be the set of all such $W$.  
 
- Define $V$ as the process of uniformly choosing $W\leftarrow \mathcal{W}$ and then sampling from $w\leftarrow W$.  The adversary sees $\sketch(V)$ and which distribution was sampled, call this information $Z$. $Z$ is the description of the line $Z = a_2,..., a_{n/\nu}, b_2, ..., b_{n/\nu}$.
+ Define $V$ as the process of uniformly choosing $W\leftarrow \mathcal{W}$ and then sampling from $w\leftarrow W$.  The adversary sees $\sketch(V)$  and $Z$, where $Z$ is the description of the line $Z = a_2,..., a_{n/\nu}, b_2, ..., b_{n/\nu}$.
  
 We now present an outline of the proof~(proofs in \apref{sec:fuzz ext proof}):
 \begin{itemize}
