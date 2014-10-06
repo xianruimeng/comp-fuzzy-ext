@@ -251,19 +251,22 @@ Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and 
 \maketitle
 
 \begin{abstract}
-Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. To help eliminate noise, they produce a non secret helper string. This helper value allows the key to be regenerated from a nearby point.  
+Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. After the initial enrollment of a secret, any sufficiently similar value will be converted to the same output key. Therefore, a minimum condition for the security of the key is the hardness of guessing a value that is similar to the secret. 
 
-The nonsecret helper string allows an adversary to learn the generated key if they can guess a point nearby to the original reading.  A necessary condition for key derivation is hardness of guessing nearby points.  We call the maximum probability mass of nearby points \emph{fuzzy min-entropy}.  Many practical sources have no known construction of fuzzy extractors but have fuzzy min-entropy.  There is evidence fuzzy min-entropy is sufficient to construct computational fuzzy extractors.\bnote{how to work in the interactive case?}
-In this work, we ask: \emph{is fuzzy min-entropy sufficient to build an information-theoretic fuzzy extractor?}  
+We formalize this property of a noisy source of secrets by defining \emph{fuzzy min-entropy}. High fuzzy min-entropy is clearly necessary for the existence of a fuzzy extractor; moreover, there is evidence that it may be sufficient when only computational security is required. Nevertheless, information-theoretic fuzzy extractors are not known for many practically relevant sources of high fuzzy min-entropy. In this work, we ask: \emph{is fuzzy min-entropy sufficient to build an information-theoretic fuzzy extractor?} 
+%\lnote{Or it seems sufficient under strong computational assumptions and, under weaker assumptions, in the interactive setting.}  
+%\lnote{may be use``analyzing this quantity may be more fruitful than analyzing min-entropy and error-tolerance separately''}
 
-We first consider a setting where the fuzzy extractor knows the precise distribution of the physical source.  In this setting, we construct a fuzzy extractor for any distribution with fuzzy min-entropy.  
+We give a positive answer to this question when the fuzzy extractor knows the precise distribution of the physical source.  On the other hand, because it is imprudent to assume a precise knowledge of a complicated distribution,  fuzzy extractors are typically expected to work for families of sources. We show that this uncertainty is an impediment to security by building a family of high fuzzy min-entropy sources for which no fuzzy extractor can exist.
 
-However, high-entropy distributions can never be fully observed and must be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary may have a better model.  Thus, fuzzy extractors are normally built for families of distributions.  This uncertainty is an impediment to security.  We show a family of distributions such that no fuzzy extractor can extract a single key bit out for an average member of the family.
+We provide similar results for secure sketches, whose goal is not to derive a key, but to recover the original secret from a nearby one.
 
 \bnote{mention secure sketches?}
 \bnote{keep editing}
 \bnote{nearby or close?  be consistent}
 \bnote{I renamed section titles to get rid of distribution aware and oblivious.  don't quite like them}
+\lnote{mention computational setting?}
+\lnote{mention the typical analysis that separates min-entropy and error-tolerance?}
 \end{abstract}
 
 \newpage
