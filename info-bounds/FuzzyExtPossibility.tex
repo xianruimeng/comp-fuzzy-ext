@@ -285,7 +285,7 @@ The  generate algorithm ($\gen$)  takes an initial reading $w$ and produces an o
 The security requirement for fuzzy extractors is that $\key$ is uniform even to a (computationally unbounded) adversary who has observed $p$.   This requirement is  harder to satisfy as the allowed error tolerance $t$ increases, because it becomes easier for the adversary to guess $\key$ by guessing a $w'$ within distance $t$ of $w$ and running $\rep(w',p)$.
 
 
-\paragraph{Fuzzy Min-entropy}
+\paragraph{Fuzzy Min-Entropy}
 We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$, thus subverting the security of $\key$ by running $\rep$. Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within the ball $B_t(w')$ of radius $t$ around $w'$.
 We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$.  Observe that this quantity can be bounded in terms of min-entropy: $\Hoo(W) \ge \Hfuzz(W) \ge \Hoo(W)-\log |B_t|$.
 
@@ -349,7 +349,7 @@ In the fuzzy extractor case, the nonsecret value $p$ partitions the metric space
 
 The result for fuzzy extractors is delicate.  It uses the fact that $p$ partitions the space into nonoverlapping regions, which is implied by perfect correctness.  Extending this result to imperfect correctness seems challenging and is an interesting open problem. It also uses the fact that there are few points far from the boundary of every region, which is implied by the geometry of  the high-dimensional Hamming space.  This fact seems crucial: in contrast, in low-dimensional Euclidean space, which does not have this property, a single fuzzy extractor can work for any distribution with sufficient $\Hfuzz$. (Such a construction would use quantization or tiling, similar to, for example, \cite{CK03,LT03,CZC04,LC06,BDHTV10,VTOSS10}.  Each sample from $W$ would map to the ``tile'' containing it, from which the output key would be extracted. A randomly chosen quantizer would have the property that few samples lie near the boundary, giving almost-perfect correctness; if perfect correctness is desired, we can give up on security for those rare samples and simply use a special value of $p$ to indicate that one of them was the input.)
 
-\subsection{Sufficiency of $\Hfuzz(W)$ in related settings}
+\subsection{Sufficiency of $\Hfuzz$ in Related Settings}
 \label{sec:related settings}
 The security definition of fuzzy extractors and secure sketches can be weakened to protect only against computationally bounded adversaries~\cite{fuller2013computational}.   In this computational setting, fuzzy extractors and secure sketches can be constructed for the family of all distributions $W$ with superlogarithmic $\Hfuzz$ by using virtual grey-box obfuscation for all circuits~\cite{BitanskyCKP14}. The construction places into $p$ the obfuscated program for testing proximity to $w$ and outputting the appropriate value if the test passes.  In addition to relying on strong assumptions for security (namely, the existence of semantically-secure multilinear maps), this construction is not of practical efficiency. Note that if this construction is used for a secure sketch, $W$ will remain unpredictable conditioned on $p$, but will not have pseudoentropy (see  \secref{sec:feas comp sec sketch} for details).
 
@@ -372,7 +372,7 @@ For a distinguisher $D$ we write the \emph{computational distance} between $X$ a
 
 For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $w$} is the set of all points within radius $t$, that is, $B_t(w) = \{w'| \dis(w, w')\leq t\}$.  If the size of a ball in a metric space does not depend on $w$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\gamma$, defined via $\dis(w,w') = \{i | w_i \neq w'_i\}$ where $\mathcal{Z}$ is some alphabet.  For this metric, $|B_t| = \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i $.  $U_\kappa$ denotes the uniformly  distributed random variable on $\{0,1\}^\kappa$.  Throughout this work, we consider a sequence of metric spaces $\mathcal{M}_n$ parameterized by $n$, but we write $\mathcal{M}$ for notational convenience.
 
-\subsection{Fuzzy Extractors for families of distributions}\label{sec:fuzz extractor}
+\subsection{Fuzzy Extractors for Families of Distributions}\label{sec:fuzz extractor}
 
 In this section, we define fuzzy extractors and secure sketches.  Definitions and lemmas are drawn from the work of Dodis et. al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08} with modifications.  First we allow for error, as discussed in \cite[Section 8]{DBLP:journals/siamcomp/DodisORS08}.  Second, in the \emph{family of distributions} setting we consider an arbitrary family $\mathcal{W}$ of distributions instead of families containing all distributions of a given min-entropy.
 %\footnote{Our negative results rule out a family that is a subset of all distributions with given min-entropy and thus rules out all distributions of a given entropy.}  
@@ -419,7 +419,7 @@ Assume $(\sketch, \rec)$ is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure
 \end{itemize}
 \end{lemma}
 
-\subsection{Fuzzy min-entropy: a necessary condition}
+\subsection{Fuzzy min-entropy: a Necessary Condition}
 \label{sec:minimal conditions}
 
 In an ideal world, $p$ is not useful to an adversary.  The adversary's only attack method is to execute $\rep(\cdot, p)$ on different $w'$.  In this world, $\rep$ outputs $\key$ if the input is close enough and provides no other  information.  The security of a fuzzy extractor in this world is the maximum weight of $W$ inside a ball of radius $t$:
@@ -487,7 +487,7 @@ We first consider flat distributions and show that hashing maintains fuzzy min-e
 %This is only true if at least one of $\dis(w_0, w')$ or $\dis(w', w_1)$ is greater than $\lfloor (t_{cor}-1)/2\rfloor$.
 %\end{proof}
 
-\subsection{Secure Sketches for Flat distributions}
+\subsection{Flat distributions}
 A distribution is flat if all points in its support have the same probability:
 \begin{definition}
 A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in W$, $\Pr[W=w_0] = \Pr[W=w_1]$.  
@@ -555,7 +555,7 @@ $
 $
 For a flat distribution this is within a superlogarithmic factor of optimal~(see Equation~\eqref{eq:fuzz for flat}). By choosing $\delta$ based on $\Hfuzz(W)$ we build $(\sketch, \rec)$ such that $\Hav(W | \sketch(W)) = \omega(\log n)$.
 
-\subsection{Secure sketches for all distributions with $\Hfuzz(W)$}
+\subsection{Arbitrary Distributions}
 The worst-case hashing approach does not work for arbitrary sources.  The reason is that some balls may have  many points but low total weight.  Let $W$ be a distribution, denote by $B^1_t$ a ball with $2^{\Hoo(W)}$ points with probability $\Pr[W\in B^1_t] =2^{-\Hoo(W)}$.  Let $B^2_t,..., B^{2^{-\Hoo(W)}}_t$ be balls with one point each with probability $\Pr[W\in B^i_t] = 2^{-\Hoo(W)}$.  Then the hashing algorithm needs to write down $\Hoo(W)$ bits to achieve correctness.  However, with probability $1-2^{-\Hoo(W)}$ the initial reading is outside of $B^1_t$ and the hash completely reveals the point.  
 
 Dealing with non-flat distributions requires a new strategy. 
@@ -622,7 +622,7 @@ For any distribution $W$ over $\mathcal{M}$ with $\Hfuzz(W)=\omega(\log n)$, the
 
 \noindent
 In our positive results we considered an arbitrary finite metric space.  The relevant parameters were the size of balls and the size of the metric space.  Our negative results are specific to the Hamming metric.
-\section{Impossibility of secure sketches for all families with $\Hfuzz$}
+\section{Impossibility of Secure Sketches for all Families with $\Hfuzz$}
 \label{sec:family of dist}
 
 In the previous section, we showed the sufficiency of $\Hfuzz(W)$ for known distribution algorithms.  Unfortunately, it is unrealistic to assume that $W$ is completely known.  Traditionally, algorithms deal with this uncertainty by providing security for a family of distributions $\mathcal{W}$.  
@@ -665,7 +665,7 @@ We show the following~(in \apref{sec:proof secure sketch imposs}):
 \end{proof}
 \noindent
 \textbf{Note:} There is tradeoff between the size of $\mathbb{F}$ and the error tolerance required for the counter example.  By increasing $t$ it is possible to show a counter example for a smaller $\mathbb{F}$.
-\subsection{Implications for Computational secure sketches}
+\subsection{Implications for Computational Secure Sketches}
 \label{sec:feas comp sec sketch}
 Fuller et al. showed that computational secure sketches that provide pseudoentropy imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.  %This means that ruling out any information-theoretic secure sketches also rules out a computational secure sketch.  
 The definition of Fuller et al. uses a weak version of pseudoentropy~\cite{DBLP:journals/siamcomp/HastadILL99} due to Gentry and Wichs~\cite{gentry2011separating}.
@@ -698,7 +698,7 @@ $t\ge 4$, and
 
 Secure sketches that provide computational unpredictability are implied by virtual-grey box obfuscation of proximity functions~\cite{BitanskyCKP14}.  Our impossibility result says nothing about this weaker form of a secure sketch.  Extracting from unpredictability requires a extractor with a reconstruction property~\cite{barak-computational, DBLP:conf/eurocrypt/HsiaoLR07}.
 
-\section{Impossibility of fuzzy extractors for all families with $\Hfuzz$}
+\section{Impossibility of Fuzzy Extractors for all Families with $\Hfuzz$}
 \label{sec:imposs fuzz ext}
 In the previous section, we showed a family of distributions that does not admit a secure sketch.  We provide a similar result for fuzzy extractors.  
 
