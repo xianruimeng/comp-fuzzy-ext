@@ -39,6 +39,7 @@
 \newcommand{\figref}[1]{\mbox{Figure~\ref{#1}}}
 \DeclareMathOperator*{\expe}{\mathbb{E}}
 \DeclareMathOperator*{\var}{\text{Var}}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 
 \newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
@@ -497,9 +498,9 @@ A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in W$, $\Pr[W=w_0] = \Pr
 
 Fuzzy min-entropy is a lower bound of the adversaries success probability for any scheme.  We denote the ball with the largest number of points as $B_{t, max}$.  Fuzzy min-entropy is the weight of the maximum probability ball~(\defref{def:fuzzy min-ent}).  For flat distributions, this is proportional to the largest number of points in any ball.  More precisely, 
 \begin{align}
-\Hfuzz(W) &= -\log \left(\max_{w^* \in \mathcal{M}} \left| \{w | w\in W \wedge \dis(w, w^*)\le t\} \right|* \Pr[W=w]\right) \nonumber \\
-&= -\log\left( \max_{w^* \in \mathcal{M}} |\{w | w\in W \wedge \dis(w, w^*)\le t\}| *2^{-\Hoo(W)}\right) \nonumber \\
-&=\Hoo(W) -\log\left( \max_{w^* \in \mathcal{M}}| \{w | w\in W \wedge \dis(w, w^*)\le t\} |\right)\nonumber \\
+\Hfuzz(W) &= -\log \left(\max_{w' \in \mathcal{M}} \left| \{w | w\in W \wedge \dis(w, w')\le t\} \right|* \Pr[W=w]\right) \nonumber \\
+&= -\log\left( \max_{w' \in \mathcal{M}} |\{w | w\in W \wedge \dis(w, w')\le t\}| *2^{-\Hoo(W)}\right) \nonumber \\
+&=\Hoo(W) -\log\left( \max_{w' \in \mathcal{M}}| \{w | w\in W \wedge \dis(w, w')\le t\} |\right)\nonumber \\
 &= \Hoo(W) -\log |B_{t, max}|.\label{eq:fuzz for flat}
 \end{align}
 
@@ -602,6 +603,12 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 \end{tabular}
 \end{center}
 \end{construction}
+
+\noindent
+We extend our notation for the maximum likelihood ball to the leveled case.  Let $B_{t, i, max}$ be the ball that contains the most points in $L_i$.  That is,
+\[
+B_{t, i, max} = \max_{w' \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}.
+\]
 
 \begin{theorem}
 \label{thm:layered hashing}
@@ -824,7 +831,7 @@ Clearly, $\Pr[D(\Key, P) = 1]\geq 1/\poly(n) - \delta$, while $\Pr[D(U_\kappa, P
 \[
 \delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
 \]
-Note that $D$ only provides an input and looks at the output, thus it works in the interactive setting.  Also, $D$ is of size $\max |\mathcal{M}|+ |\rep|$ where $\max |\mathcal{M}|$ is the longest description of an item in the metric space.  Thus, $D$ is also a distinguisher in the computational setting.
+Note that $D$ only provides an input and looks at the output, thus it extends to an interactive protocol.  Also, $D$ is of size $\max |\mathcal{M}|+ |\rep|$ where $\max |\mathcal{M}|$ is the longest description of an item in the metric space.  Thus, $D$ is also a distinguisher in the computational setting.
 \end{proof}
 
 \section{Proof of \lemref{lem:flat hashing}}
@@ -832,47 +839,47 @@ Note that $D$ only provides an input and looks at the output, thus it works in t
 \begin{proof}
 We first argue security.  Fix some $W\in\mathcal{W}$. Since $\mathcal{K}$ and $W$ are independent $\Hav(W | \mathcal{K}) = \Hoo(W) = m$.  Then by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(W | \mathcal{K}, F(\mathcal{K}, W)) \ge \Hoo(W) - \log |F(\mathcal{W}, W)| \ge m - \log |R|$.
 
-We now argue correctness.  Fix some $w, w'$.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ recall that the size of $W^*$ is at most $B_{t, max}$ and since $w, w'$ are chosen independently of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash, our goal is to bound the probability that another element $w^*$ collides, that is $F(K, w^*) = F(K, w)$.
+We now argue correctness.  Fix some $w, w'$.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$.  The size of $W^*$ is at most $B_{t, max}$.  Since $w, w'$ are independent of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  The algorithm  $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ collides is:
 \begin{align*}
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
  &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R|} \le \frac{|B_{t, max}|-1}{|R|}
 \end{align*}
-Where the inequality proceeds by union bound, the first equality proceeds by the universality of $F$, and the second inequality proceeds by noting the number of neighbors is bounded by $|B_{t, max}|-1$.  This completes the proof.
+The inequality proceeds by union bound. The first equality proceeds by the universality of $F$ and the second inequality proceeds by noting the number of wrong neighbors is bounded by $|B_{t, max}|-1$.  This completes the proof.
 \end{proof}
 
 \section{Proof of \thref{thm:layered hashing}}
 \label{sec:proof of layered hashing}
 \begin{proof}
-We extend our notation for the maximum likelihood ball to the leveled case.  Let $B_{t, i, max}$ be the ball that contains the most points in $L_i$.  That is,
-\[
-B_{t, i, max} = \max_{w^* \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w^*)\le t \wedge \Pr[W=w]\in L_i\}.
-\]
+Throughout the proof we assume that $\ell = n$ is the number of levels.  The proof can be carried out for an arbitrary $\ell$ but it leads to a complicated theorem statement.
 
 \noindent
-\textbf{Correctness:}  We begin by arguing correctness.  We set $n = \ell$ to be the number of levels.\footnote{This proof can be carried out for an arbitrary $\ell$ but it leads to a more complicated theorem statement.}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(m+\ell)} = 2^{-(m+n)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  Now consider the case when $\Pr[W=w]> 2^{-(m+n)}$, let $L_i^*$ be the level of $\Pr[W=w]$.
-Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$ such that $\forall w \in W^*, \Pr[W^*=w]\in L_i^*$. The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  Note $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ is:
+\textbf{Correctness:}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(m+\ell)} = 2^{-(m+n)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  When $\Pr[W=w]> 2^{-(m+n)}$ let $L_i^*$ be the level of $\Pr[W=w]$.
+
+Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$.  The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  The probability that another element $w^*$ matches the hash is:
 \begin{align*}
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
  &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{|B_{t, i, max}|-1}{|R_i|} = \delta
 \end{align*}
-Where the inequality proceeds by union bound, the first equality proceeds by the universality of $F$, and the second inequality proceeds by noting the number of neighbors is bounded by $|B_{t, i, max}|$.  
+The inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $|B_{t, i, max}|$.  
 
-\textbf{Ideal Adversary with access to Level Information:} Before arguing security of the actual construction, we consider the optimum performance of an adversary that receives the level information.  %We first consider the optimum strategy for an adversary that receives just the information about the probability of $w$.  
-An adversary that receives $i$ as input the best strategy is to guess a point that has the most nearby weight in that level.  That is, $w^*\leftarrow A(i)$ such that $\max_{w^* \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i}}[\dis(w, w^*)]$. The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  Note there are $n$ outcomes for $i$ so the overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+\noindent
+\textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.
+
+The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses \[w^*= \argmax_{w' \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w^*)}[W=w].\] The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
 \begin{align}
-\expe_{i | m\le i \le m+n}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}\le \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \label{eq:link fuzz 1}\\
-&\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\label{eq:link fuzz 2}\\
+\expe_{i | m\le i \le m+n}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}< \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
+&\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
 &= n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
 \end{align}
 \textbf{Security:}
-We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  That is, $\sum_{w | \Pr[W=w]\le 2^{-(n+m)}}\Pr[W = w] \le 2^{-m}$.  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-n}$.  Then 
+We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
 \begin{align*}
 \Hav(W | \sketch(W)) = -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\\
 -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)
 \end{align*}
 For the remainder of the proof, we seek a bound on 
 \[
-2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0} = \max_{w\in W | \Pr[W=w]>2^{-(n+m)}}\Pr[W=w | \sketch(W)].
+2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0} = \max_{w\in W | 2^{-(n+m)}<\Pr[W=w]}\Pr[W=w | \sketch(W)].
 \]
 We separate out this quantity into levels:
 \begin{align*}
@@ -888,7 +895,7 @@ We separate out this quantity into levels:
 %\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
 &= \frac{n 2^{-\Hfuzz(W)}}{2\delta}.
 \end{align*}
-Where the last line follows by Equations~\eqref{eq:link fuzz 1}-\eqref{eq:link fuzz 3}.
+Where the last line follows by Equation~\eqref{eq:link fuzz 3}.
 Combining both cases we have:
 \begin{align*}
 \Hav(W | \sketch(W)) &= -\log \left(2^{-m}+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
@@ -901,19 +908,21 @@ Where the third line follows from the second because $\Hfuzz(W)\le \Hoo(W) = m$.
 
 \section{Proof of \thref{thm:imposs sketch}}
 \label{sec:proof secure sketch imposs}
+Let $c'\leftarrow \neigh_t(c)$ sample a uniform point within distance $t$ of $c$.  
 The proof of \thref{thm:imposs sketch} uses the definition of a Shannon code: 
 \begin{definition}
 \label{def:shannon-code}
-Let $C$ be a set over space $\mathcal{M}$.  We say that $C$ is an $(t,\delta)$-\emph{Shannon code} if there exists an efficient procedure $\rec$ such that for all $t'\le t$ and for all $c\in C$, $\Pr[c'\leftarrow B_t(c) \wedge \rec(c') \neq c]\le \delta$. %To distinguish it from the average-error Shannon code defined below, we will sometimes call it a \emph{maximal-error} Shannon code.
+Let $C$ be a set over space $\mathcal{M}$.  We say that $C$ is an $(t,\delta)$-\emph{Shannon code} if there exists a procedure $\rec$ such that for all $t'\le t$ and for all $c\in C$, $\Pr[c'\leftarrow \neigh_t(c) \wedge \rec(c') \neq c]\le \delta$. %To distinguish it from the average-error Shannon code defined below, we will sometimes call it a \emph{maximal-error} Shannon code.
 \end{definition}
 
+\noindent
 We now prove item in the outline of \thref{thm:imposs sketch}.
 
 \begin{proposition} 
 \label{prop:each element good} For each $W\in\mathcal{W}$, $\Hfuzz(W) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some $W\in\mathcal{W}$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W) =\omega(\log n)$.  Recall that $t< \gamma$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \gamma$ and thus $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\gamma$.
+Consider some $W\in\mathcal{W}$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W) =\omega(\log n)$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \gamma>t$.  This shows that $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\gamma$.
 \end{proof}
 
 \begin{proposition}
@@ -929,10 +938,10 @@ Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution 
 Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $\tilde{H}_0(V | \sketch(V)) \le (\gamma-t+1)\log |\mathbb{F}|+1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
 \end{lemma}
 \begin{proof}
-We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We do not consider these coins in our security analysis~(and thus, they can be considered private).
+We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  We do not consider these coins in our security analysis~(and thus, they can be considered private).  \bnote{is this really okay?  I know its just another markov but it makes me nervous}
 By the definition of correctness for $(\sketch, \rec)$, 
 \[
-\forall w, w', \Pr_{ss\leftarrow \sketch(w)} [\rec(w', ss) = w] >1-\delta.
+\forall w, w', \Pr_{ss\leftarrow \sketch(w)} [\rec(w', ss) \neq w] < 1/4.
 \]
 %For most $p$, $\rec$ works on most neighbors of $w$.  
 Fix some $w$.  
@@ -940,7 +949,11 @@ By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[ss\in A_{ss}]
 \[
 \{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $ss^*\in A_{ss}$.  We now show that $H_0(V | \sketch(V) = ss^*) \le (\gamma-t+1)\log |\mathbb{F}|$.  Note for the true value $w$ sketched $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  Thus for every value in $V|\sketch(V) = ss^*$ this is also true.  This makes the support of $V|\sketch(V)=ss^*$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  In particular, this implies that for all $w_1, w_2 \in V|\sketch(V)=ss^*$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|\sketch(V)=ss^*$ is a set with minimum distance at least $t$.  By the Singleton bound, this implies that $H_0(V |\sketch(V)=ss^*) \le (\gamma -t+1 )|\mathbb{F}|$.  Averaging over $\sketch(V)=ss^*$ one has that $\tilde{H}_0(V|P) \le (\gamma -t +1) \log|\mathbb{F}| +1$.
+Consider some $ss^*\in A_{ss}$.  We now show that $H_0(V | \sketch(V) = ss^*) \le (\gamma-t+1)\log |\mathbb{F}|$.  For the sketched value $w$, $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  
+
+For every value in $V|\sketch(V) = ss^*$ this is also true.  This makes the support of $V|\sketch(V)=ss^*$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  This implies that for all $w_1, w_2 \in V|\sketch(V)=ss^*$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|\sketch(V)=ss^*$ is a set with minimum distance at least $t$.  
+
+By the Singleton bound, this implies that $H_0(V |\sketch(V)=ss^*) \le (\gamma -t+1 )|\mathbb{F}|$.  Averaging over $\sketch(V)=ss^*$ one has that $\tilde{H}_0(V|P) \le (\gamma -t +1) \log|\mathbb{F}| +1$.
 \end{proof}
 
 \begin{lemma}
@@ -949,17 +962,20 @@ $\Hav(V | \sketch(V), Z) <1$.
 \end{lemma}
 \begin{proof}
 Recall that $Z$ consists of $2\gamma$ coefficients and there are $(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}$ equally likely values for $Z$.
- As described above, the view of $\sketch, \rec$ is a uniform distribution $V$.  We show having seen $V$ there are many possible values for $Z$~(and the distributions $V|Z$ have disjoint support outside of the observed point).  The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
+ As described above, the view of $\sketch, \rec$ is a uniform distribution $V$.  %Having seen $V$ there are many possible values for $Z$.  Furthermore, the distributions $V|Z$ have disjoint support outside of the observed point.  
+ The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
  \[
  \forall v, H_0(Z | V=v) =\log \left(\frac{(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}}{|\mathbb{F}|^\gamma}\right) = \log \left( (|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|\right).
  \]
-Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
+Consider two possible $z_1, z_2$ that are possible values of $Z$~(having seen $v$).  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
 
-We now show for any sketch algorithm, for possible values of $Z$ conditioned on $V=v$ there are few points included in the support of $V |\sketch(V)$.  The distributions $V | Z=z_1$ and $V| Z=z_2$ for possible $z_1, z_2$~(having seen $v$) overlap only at the point $v$.  This means for any $v^*\in V| \sketch(V)$ (other than the true $v$) there is at most one $z$ such that $v^*\in V | \sketch(V), Z=z$.  Thus, the optimum strategy is to include these values uniformly from different $Z$ values.
+We now show for any sketch algorithm there are few possible values of $V|Z$ in the support of $V |\sketch(V)$.  The distributions $V | Z=z_1$ and $V| Z=z_2$ for possible $z_1, z_2$~(having seen $v$) overlap only at the point $v$.  This means for any $v^*\in V| \sketch(V)$ (other than the true $v$) there is at most one $z$ such that $v^*\in V | \sketch(V), Z=z$.  
 
-We show this across different sketch values.  Consider some fixed sketch value $s$ and let $h_s \overset{def}= H_0(V | \sketch(V) = s)$.  That is, there are $2^{h_s}$ possible values for $V$ conditioned on $\sketch(V) = s$.  Furthermore, recall that 
+The optimum strategy is to include these values uniformly from different $Z$ values.
+We show this across different sketch values.  Consider some fixed sketch value $s$ and let $h_s= H_0(V | \sketch(V) = s)$.  %That is, there are $2^{h_s}$ possible values for $V$ conditioned on $\sketch(V) = s$.  
+Recall that 
 \[
-\log \expe_{s\in \sketch(V)} 2^{h_s} = \log \expe_{s\in \sketch(V)} 2^{H_0(V | \sketch(V) = s)}  = \tilde{H}_0(V | \sketch(V)) %\le   (\gamma-t+1)\log |\mathbb{F}|+1.
+\tilde{H}_0(V | \sketch(V)) =  \log \expe_{s\in \sketch(V)} 2^{H_0(V | \sketch(V) = s)}  = \log \expe_{s\in \sketch(V)} 2^{h_s} %\le   (\gamma-t+1)\log |\mathbb{F}|+1.
 \]  
 Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|$ possible values for $Z$ with disjoint support outside of the sketched point.  Consider these possible values for $Z$ as bins to be filled with the $2^{h_{ss}}$ balls~(possible values of $V | \sketch(V)=ss$).  The average number of balls in each bin is maximized when the bins are filled equally.  That is, the average number of balls in each bin is bounded by the number of balls divided by the number of bins.  That is, 
 \begin{align*}
@@ -978,7 +994,7 @@ Then averaging over the possible values of $s$, we have the following as long as
 &< (\gamma-t+2)\log |\mathbb{F}| - (\gamma-2) \log |\mathbb{F}| +1 \ \ \ \ \mbox{(by \lemref{lem:log-minus-one})}\\
 &\le (4-t)\log |\mathbb{F}| +1< 1\,.\\
 \end{align*}
- \end{proof}
+\end{proof}
 
 \lnote{need for \lemref{lem:log-minus-one}:  $\gamma-1\le |F|$ and $|F|\ge 4$}
 \lnote{change the any needed theorem statements it affects in light of the tightening}
