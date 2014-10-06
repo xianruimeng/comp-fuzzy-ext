@@ -22,6 +22,8 @@
 
 \mathchardef\mhyphen="2D
 
+\newcommand{\supp}{\operatorname{supp}}
+
 \newcommand{\secref}[1]{\mbox{Section~\ref{#1}}}
 \newcommand{\subsecref}[1]{\mbox{Subsection~\ref{#1}}}
 \newcommand{\apref}[1]{\mbox{Appendix~\ref{#1}}}
@@ -465,9 +467,9 @@ Correctness is guaranteed only for the support of $W$.
 \end{definition}
 $(\sketch, \rec)$ know the description of $W$ and security only holds for $W$.  We assume known distribution algorithms are \emph{inefficient}.  Finding a natural model of specifying distributions that allows for efficient~(yet generic) known distribution constructions of sketches and extractors is an interesting problem.
 
-\section{Sufficiency of $\Hfuzz(W)$ for Known Distribution Algorithms}
+\section{Sufficiency of $\Hfuzz(W)$ When the Algorithms Know the Distribution}
 \label{sec:known distributions}
-In this section, we show it is possible to build known distribution secure sketches~(and thus fuzzy extractors through \lemref{lem:fuzzy ext construction}) whenever $\Hfuzz(W)= \omega(\log n)$.
+In this section, we show it is possible to build known-distribution secure sketches~(and thus fuzzy extractors through \lemref{lem:fuzzy ext construction}) whenever $\Hfuzz(W)= \omega(\log n)$.
 We first consider flat distributions and show that hashing maintains fuzzy min-entropy and suffices to disambiguate points.  We then turn to arbitrary distributions.
 %\subsection{Well-Spread Distributions}
 %\bnote{can remove this section if we need space}
@@ -490,17 +492,17 @@ We first consider flat distributions and show that hashing maintains fuzzy min-e
 %\end{proof}
 
 \subsection{Flat distributions}
-A distribution is flat if all points in its support have the same probability:
+A distribution is flat if all points in its support have the same probability. Let $\supp(W)$ denote the support of $W$< i.e., the set of points with nonzero probability.
 \begin{definition}
-A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in W$, $\Pr[W=w_0] = \Pr[W=w_1]$.  
+A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in \supp(W)$,  $\Pr[W=w_0] = \Pr[W=w_1]$.  
 \end{definition}
 
-Fuzzy min-entropy is a lower bound of the adversaries success probability for any scheme.  We denote the ball with the largest number of points as $B_{t, max}$.  Fuzzy min-entropy is the weight of the maximum probability ball~(\defref{def:fuzzy min-ent}).  For flat distributions, this is proportional to the largest number of points in any ball.  More precisely, 
+Denote the ball of radius $t$ with the largest number of points in the support of $W$ as $B_{t, max}$.   For flat distributions, the weight of this maximum-probability ball (which determines $\Hfuzz(W)$ by \defref{def:fuzzy min-ent}) is proportional to the number of points in it.  More precisely, 
 \begin{align}
-\Hfuzz(W) &= -\log \left(\max_{w' \in \mathcal{M}} \left| \{w | w\in W \wedge \dis(w, w')\le t\} \right|* \Pr[W=w]\right) \nonumber \\
-&= -\log\left( \max_{w' \in \mathcal{M}} |\{w | w\in W \wedge \dis(w, w')\le t\}| *2^{-\Hoo(W)}\right) \nonumber \\
-&=\Hoo(W) -\log\left( \max_{w' \in \mathcal{M}}| \{w | w\in W \wedge \dis(w, w')\le t\} |\right)\nonumber \\
-&= \Hoo(W) -\log |B_{t, max}|.\label{eq:fuzz for flat}
+\Hfuzz(W) &= -\log \left(\max_{w' \in \mathcal{M}} \left| \{w | w\in \supp(W) \wedge \dis(w, w')\le t\} \right|\cdot \Pr[W=w]\right) \nonumber \\
+&= -\log\left( \max_{w' \in \mathcal{M}} |\{w | w\in \supp(W) \wedge \dis(w, w')\le t\}| \cdot 2^{-\Hoo(W)}\right) \nonumber \\
+&=\Hoo(W) -\log\left( \max_{w' \in \mathcal{M}}| \{w | w\in \supp(W) \wedge \dis(w, w')\le t\} |\right)\nonumber \\
+&= \Hoo(W) -\log |B_{t, max}\cap \supp(W)|.\label{eq:fuzz for flat}
 \end{align}
 
 \noindent We use universal hashes to construct secure sketches for flat distributions.  Skoric et al. constructed secure sketches from universal hashes to correct a polynomial number of error patterns~\cite{skoric2009efficient}.
@@ -519,7 +521,7 @@ Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a universal hash function
 
 \begin{center}
 \begin{tabular}{c|c}
-\begin{minipage}{3in}
+\begin{minipage}{2.5in}
 \textbf{$\sketch_W$}
 \begin{enumerate}
 \item \underline{Input}: $w$.
@@ -528,11 +530,11 @@ Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a universal hash function
 \end{enumerate}
 \vspace{.3in}
 \end{minipage} &
-\begin{minipage}{3in}
+\begin{minipage}{3.5in}
 \textbf{$\rec_W$}
 \begin{enumerate}
 \item \underline{Input}: $(w', p = y, K)$
-\item Create $W^* = \{w \in W | \dis(w, w')\le t\}$.
+\item Let $W^* = \{w \in \supp(W) | \dis(w, w')\le t\}$.
 \item For $w^*\in W^*$, if $F(K, w^*) = y$, \\ output $w^*$.
 \item Output $\perp$.
 \end{enumerate}
@@ -547,13 +549,13 @@ Let $W$ be a flat distribution with $\Hoo(W)\ge m$.  Then
 \consref{cons:universal hash} is a $(\mathcal{M}, W, m - \log |R|, t)$-known distribution secure sketch with error $\delta \le \frac{|B_{t, max}|-1}{|R|}$. 
 \end{lemma}
 \begin{corollary}
-Let $n = \log |\mathcal{M}|$.  If $|R| \ge |B_{t, max}|* n^{\omega(1)}$ then \consref{cons:universal hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log |B_{t, max}| + \omega(\log n)$ suffices.
+Let $n = \log |\mathcal{M}|$.  If $|R| \ge |B_{t, max}|* n^{\omega(1)}$ then \consref{cons:universal hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log |B_{t, max}\cap\supp(W)| + \omega(\log n)$ suffices.
 \end{corollary}
 
 \noindent
 \consref{cons:universal hash} writes down enough information to disambiguate any ball of points.  The remaining entropy for this construction is 
 $
-\Hav(W |\sketch(W)) = \Hoo(W) - \log |B_{t, max}| - \omega(\log n).
+\Hav(W |\sketch(W)) = \Hoo(W) - \log |B_{t, max}\cap\supp(W)| - \omega(\log n).
 $
 For a flat distribution this is within a superlogarithmic factor of optimal~(see Equation~\eqref{eq:fuzz for flat}). By choosing $\delta$ based on $\Hfuzz(W)$ we build $(\sketch, \rec)$ such that $\Hav(W | \sketch(W)) = \omega(\log n)$.
 
@@ -585,7 +587,7 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 \end{enumerate}
 \vspace{.4in}
 \end{minipage} &
-\begin{minipage}{3in}
+\begin{minipage}{3.5in}
 \textbf{$\rec_W$}
 \begin{enumerate}
 \item \underline{Input}: $(w', ss)$
@@ -593,7 +595,7 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 \item Else
 \begin{enumerate}
 \item Parse $(i, y, K) = ss_{1,..., |y|}$.
-\item $W^* = \{w \in W | \dis(w, w')\le t\}$.
+\item $W^* = \{w \in \supp(W) | \dis(w, w')\le t\}$.
 \item For $w^*\in W^*$, if $F(K, w^*) = z$, \\ output $w^*$.
 \item Output $\perp$.
 \end{enumerate}
@@ -606,7 +608,7 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 \noindent
 We extend our notation for the maximum likelihood ball to the leveled case.  Let $B_{t, i, max}$ be the ball that contains the most points in $L_i$.  That is,
 \[
-B_{t, i, max} = \max_{w' \in \mathcal{M}} \{w | w\in W \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}.
+B_{t, i, max} = \max_{w' \in \mathcal{M}} \{w | w\in \supp(W) \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}.
 \]
 
 \begin{theorem}
@@ -632,15 +634,15 @@ In the previous section, we showed the sufficiency of $\Hfuzz(W)$ for known dist
 In this section, we show uncertainty of $W$ comes at a real cost.  The security game of a fuzzy extractor can be thought of as a three stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary sees $(\sketch, \rec)$ and specifies $W\in \mathcal{W}$ 3) the adversary wins if $\Hav(W|\sketch(W))< \tilde{m}$.  
 We prove impossibility in a game that is harder for the adversary to win: 1) the challenger specifies $(\sketch, \rec)$ 2) the adversary samples a random distribution from $W\leftarrow \mathcal{W}$ 3) the adversary wins if $\Hav(W|\sketch(W)) < \tilde{m}$.  
 
-Let $V$ be the process of uniformly sampling $W\leftarrow \mathcal{W}$ and then sampling $w\leftarrow W$.  Let $Z$ be the description of which $W$ was sampled.  The view of the challenger is $V$, while the view of the adversary is a distribution $V|Z$ where $Z$ is the description of which $W$ was sampled.  Our results rule out security for an average member of $\mathcal{W}$.  It may be possible to improve parameters by ruling out only a worst case $W$.  In \apref{sec:def equiv}, we show that providing security for a family $\mathcal{W}$ is equivalent to providing security for all distributions over that family.
+Let $V$ be the process of uniformly sampling $W\leftarrow \mathcal{W}$ and then sampling $w\leftarrow W$.  Let the random variable $Z$ specify which $W$ was sampled.  The view of the challenger is $V$, while the view of the adversary is a distribution $V|Z$.  Our results rule out security for an average member of $\mathcal{W}$.  It may be possible to improve parameters by ruling out only a worst case $W$.  In \apref{sec:def equiv}, we show that providing security for a family $\mathcal{W}$ is equivalent to providing security for all distributions over that family.
 
 We now show a family of distributions $\mathcal{W}$ that does not admit a secure sketch.  
 
 \begin{theorem}
 \label{thm:imposs sketch}
-Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$, for any $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch with error $\delta <1/4$ and $t\ge 4$ then $\tilde{m}<2$.  
+Let $n$ be a security parameter.  There exists a family of distributions $\mathcal{W}$ such that for each element $W\in \mathcal{W}$, $\Hfuzz(W)= \omega(\log n)$, and yet for any $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch $(\sketch, \rec)$ with error $\delta <1/4$ and distance $t\ge 4$, the remaining entropy $\tilde{m}<2$.  
 
-Furthermore, this is true on average.  Let $V$ be process of uniformly sampling $W\leftarrow \mathcal{W}$ and sampling $w\leftarrow W$ and let $Z$ be the description of which $W$ is sampled.  Then, 
+Furthermore, this is true on average.  Let $V$ be process of uniformly sampling $W\leftarrow \mathcal{W}$ and sampling $w\leftarrow W$, and let $Z$ specify which $W$ is sampled.  Then
 \[
 \Hav(V|\sketch(V), Z)< 2.
 \]
@@ -666,7 +668,7 @@ We show the following~(in \apref{sec:proof secure sketch imposs}):
 \end{itemize}
 \end{proof}
 \noindent
-\textbf{Note:} There is tradeoff between the size of $\mathbb{F}$ and the error tolerance required for the counter example.  By increasing $t$ it is possible to show a counter example for a smaller $\mathbb{F}$.
+\textbf{Note:} There is a tradeoff between the size of $\mathbb{F}$ and the error tolerance required for the counter example.  By increasing $t$ it is possible to show a counter example for a smaller $\mathbb{F}$.
 \subsection{Implications for Computational Secure Sketches}
 \label{sec:feas comp sec sketch}
 Fuller et al. showed that computational secure sketches that provide pseudoentropy imply information-theoretic secure sketches with almost the same parameters~\cite[Corollary 3.8]{fuller2013computational}.  %This means that ruling out any information-theoretic secure sketches also rules out a computational secure sketch.  
@@ -878,16 +880,16 @@ Throughout the proof we assume that $\ell = n$ is the number of levels.  The pro
 Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$.  The size of $W^*$ is at most $B_{t, i, max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  The probability that another element $w^*$ matches the hash is:
 \begin{align*}
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
- &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{|B_{t, i, max}|-1}{|R_i|} = \delta
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{|B_{t, i, max}\cap \supp(W)|-1}{|R_i|} = \delta
 \end{align*}
 The inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $|B_{t, i, max}|$.  
 
 \noindent
 \textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.
 
-The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses \[w^*= \argmax_{w' \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w^*)}[W=w].\] The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}|$ as there at $B_{t, i, max}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses \[w^*= \argmax_{w' \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w^*)}[W=w].\] The success of this adversary is at least $2^{-(i+1)}|B_{t,i, max}\cap\supp(W)|$ as there at $|B_{t, i, max}\cap\supp(W)|$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
 \begin{align}
-\expe_{i | m\le i \le m+n}2^{-(i+1)}|B_{t, i, max}|&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}< \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
+\expe_{i | m\le i \le m+n}2^{-(i+1)}|B_{t, i, max}\cap\supp(W)|&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}< \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
 &\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
 &= n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
 \end{align}
@@ -904,10 +906,10 @@ For the remainder of the proof, we seek a bound on
 We separate out this quantity into levels:
 \begin{align*}
 \max_{w\in W | \Pr[W=w]>2^{-(m+n)}}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
-&= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{|\sketch(W)|i|}\right)\\
-&\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]*2^{H_0(\sketch(W) | i)}\right)\\
-&\le \expe_{i | m\le i \le m+n} \left(2^{-i}*|B_{t, i, max}|/\delta\right)\\
-&\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}*|B_{t, i, max}|\right)}{2\delta}\\
+&= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{|\sketch(W)|i|}\right)\\
+&\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
+&\le \expe_{i | m\le i \le m+n} \left(2^{-i}*|B_{t, i, max}\cap\supp(W)|/\delta\right)\\
+&\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot |B_{t, i, max}\cap \supp(W)|\right)}{2\delta}\\
 %&=\delta \sum_{i | m\le i \le m+n} \Pr[W\in L_i]\left(2^{-i}*|B_{t, i, max}|\right)
 %\end{align*}
 %Now consider This allows us to conclude that 
