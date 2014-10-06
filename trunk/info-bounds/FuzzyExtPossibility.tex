@@ -251,15 +251,16 @@ Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and 
 \maketitle
 
 \begin{abstract}
-Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. After the initial enrollment of a secret, any sufficiently similar value will be converted to the same output key. Therefore, a minimum condition for the security of the key is the hardness of guessing a value that is similar to the secret. 
+Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. A minimum condition for the security of the key is the hardness of guessing a value that is similar to the secret, because the fuzzy extractor converts such a guess to the key.
+We define \emph{fuzzy min-entropy} to quantify this property of a noisy source of secrets.
 
-We formalize this property of a noisy source of secrets by defining \emph{fuzzy min-entropy}. High fuzzy min-entropy is clearly necessary for the existence of a fuzzy extractor; moreover, there is evidence that it may be sufficient when only computational security is required. Nevertheless, information-theoretic fuzzy extractors are not known for many practically relevant sources of high fuzzy min-entropy. In this work, we ask: \emph{is fuzzy min-entropy sufficient to build an information-theoretic fuzzy extractor?} 
+High fuzzy min-entropy is necessary for the existence of a fuzzy extractor; moreover, there is evidence that it may be sufficient when only computational security is required. Nevertheless, information-theoretic fuzzy extractors are not known for many practically relevant sources of high fuzzy min-entropy. In this work, we ask: \emph{is fuzzy min-entropy sufficient to build information-theoretic fuzzy extractors?} 
 %\lnote{Or it seems sufficient under strong computational assumptions and, under weaker assumptions, in the interactive setting.}  
 %\lnote{may be use``analyzing this quantity may be more fruitful than analyzing min-entropy and error-tolerance separately''}
 
-We give a positive answer to this question when the fuzzy extractor knows the precise distribution of the physical source.  On the other hand, because it is imprudent to assume a precise knowledge of a complicated distribution,  fuzzy extractors are typically expected to work for families of sources. We show that this uncertainty is an impediment to security by building a family of high fuzzy min-entropy sources for which no fuzzy extractor can exist.
+We give a positive answer to this question when the fuzzy extractor knows the precise distribution of the physical source.  On the other hand, because it is imprudent to assume precise knowledge of a complicated distribution,  fuzzy extractors are typically designed to work for families of sources. We show that this uncertainty is an impediment to security by building a family of high fuzzy min-entropy sources for which no fuzzy extractor can exist.
 
-We provide similar results for secure sketches, whose goal is not to derive a key, but to recover the original secret from a nearby one.
+We provide similar but stronger results for secure sketches, whose goal is not to derive a consistent key, but to recover a consistent reading of the secret.
 
 \bnote{mention secure sketches?}
 \bnote{keep editing}
@@ -286,7 +287,7 @@ The security requirement for fuzzy extractors is that $\key$ is uniform even to 
 
 \paragraph{Fuzzy Min-entropy}
 We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$, thus subverting the security of $\key$ by running $\rep$. Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within the ball $B_t(w')$ of radius $t$ around $w'$.
-We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$.  Observe that this quantity can be bounded in terms of min-entropy: $\Hoo(W) \ge \Hfuzz(W) \ge \Hoo(W)-\log |B_t|$ with equality when $t=0$. \bnote{I don't follow this equation, equality also for well-spread distributions}
+We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$.  Observe that this quantity can be bounded in terms of min-entropy: $\Hoo(W) \ge \Hfuzz(W) \ge \Hoo(W)-\log |B_t|$.
 
 Superlogarithmic fuzzy min-entropy  is \emph{necessary} for nontrivial key extraction~(\propref{prop:fuzz necessary} formalizes the above intuition). 
 However, existing constructions do not measure their security in terms of fuzzy min-entropy; instead, their security is shown to be  $\Hoo(W)$ minus some loss that is at least $\log |B_t|$ due to error-tolerance. Since $\Hoo(W)-\log |B_t| \le \Hfuzz(W)$, it is natural to ask whether this loss is necessary. This question is particularly relevant when the gap between the two sides of the inequality is high.  As an example, iris scans appear to have significant $\Hfuzz(W)$ (because iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing}) but negative $\Hoo(W) -\log |B_t|$ \cite[Section 5]{blanton2009biometric}. We therefore ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?} There is evidence that it may be when the security requirement is computational rather than information-theoretic---see \secref{sec:related settings}. 
@@ -330,6 +331,7 @@ We show comparable, but stronger, results for secure sketches.  Namely, we show 
 
 On the other hand, there is a family of sources with superlogarithmic $\Hfuzz(W)=\Hoo(W)$ for which no secure sketch correcting even a few errors is possible~(\thref{thm:imposs sketch}). The impossibility result applies even when $\rec$ is allowed to be incorrect with probability up to $1/4$ (as opposed to our fuzzy extractor impossibility result).
 
+\subsection{Our Techniques}
 
 \paragraph{Techniques for Positive Results for Known Distributions} We now explain how to construct a secure sketch for an arbitrary known distribution $W$ (we already explained how to construct a fuzzy extractor from it).  We begin with distributions in which all points in the support have roughly the same probability.  We call distributions of this type ``nearly flat.''  Consider some subsequent reading $w'$. To achieve correctness, the sketch algorithm must disambiguiate which point $w\in W$ within distance $t$ of $w'$ was sketched. Disambiguating multiple points can be accomplished by universal hashing, as long as the number of possible hash outputs is slightly greater than the number of possible points. Thus, our sketch is computed via a universal hash of $w$. To determine the length of that sketch, consider the heaviest (according to $W$) ball of radius $t$. Because the distribution is nearly flat, it is also the ball with the most points of nonzero probability. Thus, the length of the sketch needs to be slightly greater than the logarithm of the number of non-zero probability point in that ball. Since $\Hfuzz(W)$ is determined by the weight of that ball, the number of points cannot be too high and there will be entropy left after the sketch is published.
 
@@ -640,7 +642,7 @@ We will show a family $\mathcal{W}$~(where each member has fuzzy min-entropy) wh
 \label{sec:def equiv}
 %We refer to $\mathcal{W}$ as the \emph{family}, the distribution $W$ as a \emph{source} and the particular outcome taken $w\in W$ as the \emph{sample}.   
 
-The security game of a fuzzy extractor can be thought of as a two stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{W}$.  The challenger wins if the adversary cannot guess the outcome of $W$ with high probability, and the adversary wins otherwise.  Let $V$ is a distribution over elements of $\mathcal{W}$.  The minimax theorem says we can reverse which of these actions is announced first~\cite{neumann1928theorie} if $\mathcal{A}$ announces a distribution $V$ instead of a single element $W$.  That is, the following two player games have the same equilibrium:
+The security game of a fuzzy extractor for a family of distributions $\mathcal{W}$ can be thought of as a two stage process: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{W}$.  The challenger wins if the adversary cannot guess the outcome of $W$ with high probability, and the adversary wins otherwise.  Let $V$ is a distribution over elements of $\mathcal{W}$.  The minimax theorem says we can reverse which of these actions is announced first~\cite{neumann1928theorie} if $\mathcal{A}$ announces a distribution $V$ instead of a single element $W$.  That is, the following two player games have the same equilibrium:
 
 %More formally, let $\mathcal{A}, \mathcal{C}$ be the adversary and challenger respectively. We provide two formulations of a two player game.\footnote{We denote the outcome of the game as a reward to each player.  This is opposed to the standard formulation saying that $\mathcal{A}$ wins or loses.  This is to apply results from game theory.}
 
@@ -677,7 +679,7 @@ Else reward $(-1, 1)$.
 
 \begin{lemma}
 \label{lem:quant switch fuzz}
-Let $\mathcal{W}$ be a family of distributions.  If for all adversaries $\mathcal{A}$, there Let $(\sketch, \rec)$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch.  Let $V$ be a distribution over $\mathcal{W}$.  Then there exists $(\sketch', \rec')$ that is a $(\mathcal{M}, V, \tilde{m}, t)$-secure sketch on the mixed distribution $V$ when the adversary knows the sampled distribution $W$.\footnote{The other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
+Let $\mathcal{W}$ be a family of distributions.   Let $(\sketch, \rec)$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch.  Let $V$ be a distribution over $\mathcal{W}$.  Then there exists $(\sketch', \rec')$ that is a $(\mathcal{M}, V, \tilde{m}, t)$-secure sketch on the mixed distribution $V$ when the adversary knows the sampled distribution $W$.\footnote{The other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
 \end{lemma}
 
 In our negative results, the adversary that specifies a distribution $V$ over $\mathcal{W}$.  Importantly, the adversary sees the distribution $W$ and $\sketch(W)$ when they are trying to recover the particular outcome.  An alternate view is that $(\sketch, \rec)$ sees a distribution $V$ while the adversary sees side information $Z$~(corresponding to the distribution $W$).
