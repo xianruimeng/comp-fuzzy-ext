@@ -720,7 +720,7 @@ We prove the stronger average case statement.
 Let $\nu = \omega(\log n)$ and $\nu = o(n^{1/2}/\log n)$.  Let $t=4\nu n^{1/2}$ and note that $n/\nu >t$.  
 
 Our counterexample uses a slightly different family of distributions $\mathcal{W}$ than the counterexample for secure sketches.  
-We will work over a binary alphabet~(we used a large alphabet in our counterexample for secure sketches).  In the binary Hamming space a large fraction of any set of bounded size is the near ``boundary'' of that set.  This will be important for our proof.  We will embed the larger alphabet we used into the binary Hamming metric.
+We will work over a binary alphabet~(we used a large alphabet in our counterexample for secure sketches).  A  property of the binary Hamming space is that a large fraction of any set of bounded size is the near ``boundary'' of that set.  This will be crucial in our proof.  We will embed the larger alphabet we used into the binary Hamming metric.
 Let $x_1,..., x_\nu \in \zo^\nu$.  Let $\mathbb{F}$ denote the field of size $2^{\nu}$.  Let $a_2,..., a_{n/\nu}\in\mathbb{F}$ such that $a_i\neq 0$ and let $b_2,..., b_{n/\nu}\in\mathbb{F}$.  
 Interpret $x_1,..., x_{\nu}$ as a element $x\in \mathbb{F}$ and let 
 \[w =  \begin{pmatrix} \vec{1} \\a_2  \\ \vdots \\ a_{n/\nu} \end{pmatrix} x + \begin{pmatrix} 0  \\ 
@@ -822,7 +822,7 @@ Else $\mathcal{A}$ wins.
 \end{center}
 
 %The difference between these two games is which player announces their action first, in $\Exp^{\mathcal{W}}_1$, the challenger announces a pair of algorithms and the adversary specifies a source.  In $\Exp^{\mathcal{W}}_2$, the adversary specifies a distribution $V$ over sources, and the challenger then specifies their algorithm.  
-This means that showing security for a family of distributions $\mathcal{W}$ is equivalent to showing security for all  distributions $V$ when the distribution is known to the algorithms $V$.  In our negative results, the adversary  uses the uniform distribution $V$ over $\mathcal{W}$.  However, it may be possible to improve parameters by using a different $V$. This would just rule out some member of $\mathcal{W}$ not an average member.  This is true for fuzzy extractors as well and holds changes in parameters including imperfect correctness.
+This means that showing security for a family of distributions $\mathcal{W}$ is equivalent to showing security for all  distributions $V$ when the distribution is known to the algorithms $V$.  In our negative results, the adversary  uses the uniform distribution $V$ over $\mathcal{W}$.  However, it may be possible to improve parameters by using a different $V$. This would just rule out some member of $\mathcal{W}$ not an average member.  This is true for fuzzy extractors as well and is resilient to changes in parameters including imperfect correctness.
 
 
 %Since the distribution used in our negative results was uniform it is stronger, ruling out security for an average $\mathcal{W}$.  However, constructing a nonuniform $V$ may improve these results.
@@ -1062,7 +1062,7 @@ Consider some $w\in V$ over $\zo^n$.  Then $w\leftarrow W$ with coefficients $a_
 
 \begin{lemma}
 \label{lem:fuzz can't get key}
-Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an information-theoretic distinguisher between $(R, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/4-\ngl(n)$.
+Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an information-theoretic distinguisher between $(R, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/8-\ngl(n)$.
 \end{lemma}
 \begin{proof}
 As in the proof of \thref{thm:imposs sketch}, we assume that $\rep$ is deterministic.  Denote by $(\Key, P) \leftarrow \gen(V)$.
