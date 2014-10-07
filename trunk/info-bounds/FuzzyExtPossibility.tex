@@ -374,18 +374,19 @@ For a distinguisher $D$ we write the \emph{computational distance} between $X$ a
 
 For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $w$} is the set of all points within radius $t$, that is, $B_t(w) = \{w'| \dis(w, w')\leq t\}$.  If the size of a ball in a metric space does not depend on $w$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\gamma$, defined via $\dis(w,w') = \{i | w_i \neq w'_i\}$ where $\mathcal{Z}$ is some alphabet.  For this metric, $|B_t| = \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i $.  $U_\kappa$ denotes the uniformly  distributed random variable on $\{0,1\}^\kappa$.  Throughout this work, we consider a sequence of metric spaces $\mathcal{M}_n$ parameterized by $n$, but we write $\mathcal{M}$ for notational convenience. A \emph{negligible} function $\ngl(n)$ is one that decreases faster than any positive inverse polynomial as $n\rightarrow \infty$.
 
-\subsection{Fuzzy Extractors for Families of Distributions}\label{sec:fuzz extractor}
+\subsection{Fuzzy Extractors and Secure Sketches}\label{sec:fuzz extractor}
 
 In this section, we define fuzzy extractors and secure sketches.  Definitions and lemmas are drawn from the work of Dodis et. al.~\cite[Sections 2.5--4.1]{DBLP:journals/siamcomp/DodisORS08} with modifications.  First we allow for error, as discussed in \cite[Section 8]{DBLP:journals/siamcomp/DodisORS08}.  Second, in the \emph{family of distributions} setting we consider an arbitrary family $\mathcal{W}$ of distributions instead of families containing all distributions of a given min-entropy.
 %\footnote{Our negative results rule out a family that is a subset of all distributions with given min-entropy and thus rules out all distributions of a given entropy.}  
 %This is a generalization of the definition of Dodis et al. which require a fuzzy extractor to work for all distributions of a particular entropy.  
-We discuss known distribution algorithms in \secref{sec:known distributions def}.  Let $\mathcal{M}$ be a metric space with distance function $\dis$.
+%We discuss known distribution algorithms in \secref{sec:known distributions def}.  
+Let $\mathcal{M}$ be a metric space with distance function $\dis$.
 
 \begin{definition}
 \label{def:fuzzy extractor}
 An $(\mathcal{M}, \mathcal{W}, \kappa, t, \epsilon)$-\emph{fuzzy extractor} with error $\delta$ is a pair of randomized procedures, ``generate'' $(\gen)$ and ``reproduce'' $(\rep)$. \gen on input $w\in \mathcal{M}$ outputs an extracted string $\key \in\{0,1\}^\kappa$ and a helper string $p\in\{0,1\}^*$. \rep takes $w'\in\mathcal{M}$ and $p\in\{0,1\}^*$ as inputs.   $(\gen, \rep)$ have the following properties:
 \begin{enumerate}
-\item \emph{Correctness:} if $\dis(w, w')\leq t$ and $(\key, p)\leftarrow \gen(w)$, then $\Pr[\rep( w', p) = \key] \geq 1-\delta$.
+\item \emph{Correctness:} if $\dis(w, w')\leq t$ and $(\key, p)\leftarrow \gen(w)$, then $\Pr[\rep(w', p) = \key] \geq 1-\delta$ (note that correctness holds for any $w'$ with probability $1-\delta$ over the coins on $\gen$ and $\rep$, but $w'$ cannot be a function of $p$).
 \item \emph{Security:} for any distribution $W\in\mathcal{W}$, if $(\Key,P)\leftarrow\gen (W)$, then $\sd((\Key,P),(U_\kappa,P))\leq \epsilon$.
 \end{enumerate}
 \end{definition}
@@ -396,12 +397,22 @@ Fuzzy extractors perform two tasks, information-reconciliation and privacy ampli
 \label{def:secure sketch}
 An $(\mathcal{M},\mathcal{W}, \tilde{m}, t)$-\emph{secure sketch} with error $\delta$ is a pair of randomized procedures, ``sketch'' $(\sketch)$ and ``recover'' $(\rec)$.  \sketch on input $w\in\mathcal{M}$ returns a bit string $ss\in\{0,1\}^*$.  \rec takes an element $w'\in\mathcal{M}$ and $ss\in\{0,1\}^*$.  $(\sketch, \rec)$ have the following properties:
 \begin{enumerate}
-\item \emph{Correctness}: $ \forall w, w'\in\mathcal{M}$ if $\dis(w,w')\leq t$ then $\Pr[\rec(w',\sketch(w))=w]\geq 1-\delta.$
+\item \emph{Correctness}: $ \forall w, w'\in\mathcal{M}$ if $\dis(w,w')\leq t$ then $\Pr[\rec(w',\sketch(w))=w]\geq 1-\delta$ (note that correctness holds for any $w'$ with probability $1-\delta$ over the coins of $\sketch$ and $\rec$, but $w'$ cannot be a function of $\sketch(w)$).
 \item \emph{Security}: for any distribution $W\in\mathcal{W}$, $\Hav(W|\sketch(W))\geq \tilde{m}$.
 \end{enumerate}
 \end{definition}
 
-\noindent In the above definitions, the errors are chosen before $ss$ (resp., $p$) is known: if the error pattern between $w$ and $w'$ depends on the output of $\sketch$ (resp., $\gen$),  there is no correctness guarantee.  
+
+\noindent
+In the above definitions, the errors are chosen before $ss$ (resp., $p$) is known in order for the correctness guarantee to hold: correctness holds for any $w'$ with probability $1-\delta$ over the coins of the algorithms, but $w'$ cannot be a function of the output of  $\sketch(w)$. 
+
+
+\paragraph{The Case of Known Distribution}
+If in the above definitions we take $\mathcal{W}$ to be a one-element set containing a single distribution $W$, then the fuzzy extractor/secure sketch is said to be constructed for a \emph{known distribution}.  In this case, we need to require correctness only for $w$ that have nonzero probability\footnote{If we wish to be pedantic and extend correctness to all of $\mathcal{M}$, we can define $\gen$/$\sketch$ to be the identity function on zero-probability inputs, which will ensure that $\rep$/$\rec$ can always be correct; this will not harm security}.
+
+Note that we have no requirement that the algorithms are compact or efficient, and so the distribution can be fully known to them. Finding a natural model of specifying distributions that allows for efficient~(yet generic) known distribution constructions of sketches and extractors is an interesting problem.  
+
+\paragraph{From Secure Sketches to Fuzzy Extractors}
 A fuzzy extractor can be produced from a \emph{secure sketch} and an \emph{average case randomness extractor}:
 
 \begin{definition}
@@ -447,24 +458,24 @@ If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-fuzzy
 %\lemref{lem:fuzz necessary} still applies.  
 \noindent
 There are many distributions with $\Hfuzz$ with no known fuzzy extractor~(or corresponding impossibility result).
-Our goal is to provide a superlogarithmic length key when provided with superlogarithmic fuzzy min-entropy.  We now describe the known distribution setting.
+Our goal is to provide a superlogarithmic length key when provided with superlogarithmic fuzzy min-entropy. % We now describe the known distribution setting.
 
-\subsection{Known Distribution Algorithms}
-\label{sec:known distributions def}
+%\subsection{Known Distribution Algorithms}
+%\label{sec:known distributions def}
 %To show that fuzzy min-entropy is the right notion for fuzzy extractors and secure sketches we show that it is sufficient for fuzzy extraction if the algorithm has complete knowledge of the distribution $W$.  
-We call an algorithm with complete information on $W$ \emph{known distribution}.  We provide a definition for secure sketches~(extendible to fuzzy extractors):
-
-\begin{definition}
-Let $W$ denote a distribution.  A pair of algorithms, $\sketch, \rec$ is a $(\sketch_W, \rec_W)$ is called a $(\mathcal{M}, W, \tilde{m}, t)$-\emph{known distribution secure sketch} with error $\delta$ if the correctness and security properties hold for the distribution $W$.  That is, 
-\begin{enumerate}
-\item \emph{Correctness:} 
-$
-\forall w\in \supp(W)$, $\forall w' \in\mathcal{M}| \dis(w,w')\le t$, $\Pr[\rec(w',\sketch(w))=w]\ge 1-\delta.$\\
-Correctness is guaranteed only for the support of $W$.
-\item \emph{Security:} $\Hav(W|\sketch(W))\geq \tilde{m}$.
-\end{enumerate}
-\end{definition}
-$(\sketch, \rec)$ know the description of $W$ and security only holds for $W$.  We assume known distribution algorithms are \emph{inefficient}.  Finding a natural model of specifying distributions that allows for efficient~(yet generic) known distribution constructions of sketches and extractors is an interesting problem.
+%We call an algorithm with complete information on $W$ \emph{known distribution}.  We provide a definition for secure sketches~(extendible to fuzzy extractors):
+%
+%\begin{definition}
+%Let $W$ denote a distribution.  A pair of algorithms, $\sketch, \rec$ is a $(\sketch_W, \rec_W)$ is called a $(\mathcal{M}, W, \tilde{m}, t)$-\emph{known distribution %secure sketch} with error $\delta$ if the correctness and security properties hold for the distribution $W$.  That is, 
+%\begin{enumerate}
+%\item \emph{Correctness:} 
+%$
+%\forall w\in \supp(W)$, $\forall w' \in\mathcal{M}| \dis(w,w')\le t$, $\Pr[\rec(w',\sketch(w))=w]\ge 1-\delta.$\\
+%Correctness is guaranteed only for the support of $W$.
+%\item \emph{Security:} $\Hav(W|\sketch(W))\geq \tilde{m}$.
+%\end{enumerate}
+%\end{definition}
+%$(\sketch, \rec)$ know the description of $W$ and security only holds for $W$.  We assume known distribution algorithms are \emph{inefficient}.  Finding a natural model of specifying distributions that allows for efficient~(yet generic) known distribution constructions of sketches and extractors is an interesting problem.
 
 \section{Sufficiency of $\Hfuzz(W)$ When the Algorithms Know the Distribution}
 \label{sec:known distributions}
@@ -506,7 +517,7 @@ Denote the largest number of points in a ball of radius $t$ in the support of $W
 \noindent We use universal hashes to construct secure sketches for flat distributions.  Skoric et al. constructed secure sketches from universal hashes to correct a polynomial number of error patterns~\cite{skoric2009efficient}.
 
 
-\begin{definition}
+\begin{definition}[\cite{DBLP:journals/jcss/CarterW79}]
 Let $F : \mathcal{K} \times \mathcal{M} \to R$ be a function.  We say that $F$ is \emph{universal} if for all distinct $x_1, x_2 \in \mathcal{M}$:
 \[
  \Pr_{K \leftarrow \mathcal{K}}[F(K, x_1) = F(K, x_2)] = \frac{1}{|R|} \;.
@@ -544,7 +555,7 @@ Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a universal hash function
 \begin{lemma}
 \label{lem:flat hashing} (Proof in \apref{sec:proof of flat hashing})
 Let $W$ be a flat distribution with $\Hoo(W)\ge m$.  Then
-\consref{cons:universal hash} is a $(\mathcal{M}, W, m - \log |R|, t)$-known distribution secure sketch with error $\delta \le \frac{\beta_{t}-1}{|R|}$. 
+\consref{cons:universal hash} is a $(\mathcal{M}, \{W\}, m - \log |R|, t)$-known distribution secure sketch with error $\delta \le \frac{\beta_{t}-1}{|R|}$. 
 \end{lemma}
 \begin{corollary}
 Let $n = \log |\mathcal{M}|$.  If $|R| \ge |\beta_{t}|* n^{\omega(1)}$ then \consref{cons:universal hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log \beta_{t} + \omega(\log n)$ suffices.
@@ -611,7 +622,7 @@ We extend our notation for the maximum likelihood ball to the leveled case.  Def
 
 \begin{theorem}
 \label{thm:layered hashing}
-Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, W, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
+Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
 
 \end{theorem}
 We provide a proof in \apref{sec:proof of layered hashing}.  The main idea is to show that an adversary that knows the level of $w$ cannot perform much better than an adversary without this information.  
@@ -619,7 +630,7 @@ We provide a proof in \apref{sec:proof of layered hashing}.  The main idea is to
 \begin{corollary}
 \label{cor:extension to fuzz ext}
 Let $\mathcal{M}$ be a metric space where $n = \log |\M|$.
-For any distribution $W$ over $\mathcal{M}$ with $\Hfuzz(W)=\omega(\log n)$, there exists a $(\mathcal{M}, W, \tilde{m}, t)$-known distribution secure sketch with $\tilde{m} = \omega(\log n)$ and $\delta = \ngl(n)$.  (Extendible to a fuzzy extractor using~\lemref{lem:fuzzy ext construction}.)
+For any distribution $W$ over $\mathcal{M}$ with $\Hfuzz(W)=\omega(\log n)$, there exists a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with $\tilde{m} = \omega(\log n)$ and $\delta = \ngl(n)$.  (Extendible to a fuzzy extractor using~\lemref{lem:fuzzy ext construction}.)
 \end{corollary}
 
 \noindent
