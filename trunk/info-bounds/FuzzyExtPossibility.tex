@@ -408,7 +408,7 @@ In the above definitions, the errors are chosen before $ss$ (resp., $p$) is know
 
 
 \paragraph{The Case of Known Distribution}
-If in the above definitions we take $\mathcal{W}$ to be a one-element set containing a single distribution $W$, then the fuzzy extractor/secure sketch is said to be constructed for a \emph{known distribution}.  In this case, we need to require correctness only for $w$ that have nonzero probability\footnote{We can extend correctness to all of $\mathcal{M}$ by defining $\gen$/$\sketch$ to output the point $w$ as part of $p/ss$ on zero-probability inputs, which will ensure that $\rep$/$\rec$ can always be correct; this does not effect security.}.
+If in the above definitions we take $\mathcal{W}$ to be a one-element set containing a single distribution $W$, then the fuzzy extractor/secure sketch is said to be constructed for a \emph{known distribution}.  In this case, we need to require correctness only for $w$ that have nonzero probability\footnote{We can extend correctness to all of $\mathcal{M}$ by defining $\gen$/$\sketch$ to output the point $w$ as part of $p/ss$ on zero-probability inputs, which will ensure that $\rep$/$\rec$ can always be correct; this does not affect security.}.
 
 Note that we have no requirement that the algorithms are compact or efficient, and so the distribution can be fully known to them. Finding a natural model of specifying distributions that allows for efficient~(yet generic) known distribution constructions of sketches and extractors is an interesting problem.  
 
@@ -558,7 +558,7 @@ Let $W$ be a flat distribution with $\Hoo(W)\ge m$.  Then
 \consref{cons:universal hash} is a $(\mathcal{M}, \{W\}, m - \log |R|, t)$-known distribution secure sketch with error $\delta \le \frac{\beta_{t}-1}{|R|}$. 
 \end{lemma}
 \begin{corollary}
-Let $n = \log |\mathcal{M}|$.  If $|R| \ge |\beta_{t}|* n^{\omega(1)}$ then \consref{cons:universal hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log \beta_{t} + \omega(\log n)$ suffices.
+Let $n = \log |\mathcal{M}|$.  If $|R| \ge |\beta_{t}|\cdot n^{\omega(1)}$ then \consref{cons:universal hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log \beta_{t} + \omega(\log n)$ suffices.
 \end{corollary}
 
 \noindent
@@ -569,7 +569,7 @@ $
 For a flat distribution this is within a superlogarithmic factor of optimal~(see Equation~\eqref{eq:fuzz for flat}). By choosing $\delta$ based on $\Hfuzz(W)$ we build $(\sketch, \rec)$ such that $\Hav(W | \sketch(W)) = \omega(\log n)$.
 
 \subsection{Arbitrary Distributions}
-The worst-case hashing approach does not work for arbitrary sources.  The reason is that some balls may have  many points but low total weight.  Let $W$ be a distribution, denote by $B^1_t$ a ball with $2^{\Hoo(W)}$ points with probability $\Pr[W\in B^1_t] =2^{-\Hoo(W)}$.  Let $B^2_t,..., B^{2^{-\Hoo(W)}}_t$ be balls with one point each with probability $\Pr[W\in B^i_t] = 2^{-\Hoo(W)}$.  Then the hashing algorithm needs to write down $\Hoo(W)$ bits to achieve correctness.  However, with probability $1-2^{-\Hoo(W)}$ the initial reading is outside of $B^1_t$ and the hash completely reveals the point.  
+The worst-case hashing approach does not work for arbitrary sources.  The reason is that some balls may have  many points but low total weight. For example, let $W$ be a distribution consisting of the following balls. Denote by $B^1_t$ a ball with $2^{\Hoo(W)}$ points with probability $\Pr[W\in B^1_t] =2^{-\Hoo(W)}$.  Let $B^2_t,..., B^{2^{-\Hoo(W)}}_t$ be balls with one point each with probability $\Pr[W\in B^i_t] = 2^{-\Hoo(W)}$.  Then the hashing algorithm needs to write down $\Hoo(W)$ bits to achieve correctness on $B^1_t$.  However, with probability $1-2^{-\Hoo(W)}$ the initial reading is outside of $B^1_t$, and the hash completely reveals the point.  
 
 Dealing with non-flat distributions requires a new strategy. 
 Many solutions for manipulating high entropy distributions leverage a solution for flat distributions and use the fact that high entropy distributions are convex combinations of flat distributions.  However, a distribution with high fuzzy min-entropy may be formed from component distributions with little or no fuzzy min-entropy.  It is unclear how to leverage the convex combination property in this setting.  \bnote{I took out the appendix on convex combs, didn't think it was helping}%In \apref{sec:convex comb}, we show that it is difficult to exploit this property in our scenario.  The issue is that a distribution with high fuzzy min-entropy may be formed from component distributions each of which have no fuzzy min-entropy.
