@@ -408,7 +408,7 @@ In the above definitions, the errors are chosen before $ss$ (resp., $p$) is know
 
 
 \paragraph{The Case of Known Distribution}
-If in the above definitions we take $\mathcal{W}$ to be a one-element set containing a single distribution $W$, then the fuzzy extractor/secure sketch is said to be constructed for a \emph{known distribution}.  In this case, we need to require correctness only for $w$ that have nonzero probability\footnote{If we wish to be pedantic and extend correctness to all of $\mathcal{M}$, we can define $\gen$/$\sketch$ to be the identity function on zero-probability inputs, which will ensure that $\rep$/$\rec$ can always be correct; this will not harm security}.
+If in the above definitions we take $\mathcal{W}$ to be a one-element set containing a single distribution $W$, then the fuzzy extractor/secure sketch is said to be constructed for a \emph{known distribution}.  In this case, we need to require correctness only for $w$ that have nonzero probability\footnote{We can extend correctness to all of $\mathcal{M}$ by defining $\gen$/$\sketch$ to output the point $w$ as part of $p/ss$ on zero-probability inputs, which will ensure that $\rep$/$\rec$ can always be correct; this does not effect security.}.
 
 Note that we have no requirement that the algorithms are compact or efficient, and so the distribution can be fully known to them. Finding a natural model of specifying distributions that allows for efficient~(yet generic) known distribution constructions of sketches and extractors is an interesting problem.  
 
