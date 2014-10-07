@@ -496,11 +496,11 @@ A distribution is flat if all points in its support have the same probability. L
 A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in \supp(W)$,  $\Pr[W=w_0] = \Pr[W=w_1]$.  
 \end{definition}
 
-Denote the ball of radius $t$ with the largest number of points in the support of $W$ as $B_{t,W,max} = \max_{w'\in\M} |\{w | w\in \supp(W) \wedge \dis(w ,w')\le t\}|$.   For flat distributions, the weight of this maximum-probability ball (which determines $\Hfuzz(W)$ by \defref{def:fuzzy min-ent}) is proportional to the number of points in it.  More precisely, 
+Denote the largest number of points in a ball of radius $t$ in the support of $W$ as $\beta_{t} = \max_{w'\in\M} |\{w | w\in \supp(W) \wedge \dis(w ,w')\le t\}|$.   For flat distributions, the weight of this maximum-probability ball (which determines $\Hfuzz(W)$ by \defref{def:fuzzy min-ent}) is proportional to the number of points in it.  More precisely, 
 \begin{align}
 \Hfuzz(W) &= -\log \left(\max_{w' \in \mathcal{M}} \left| \{w | w\in \supp(W) \wedge \dis(w, w')\le t\} \right|\cdot \Pr[W=w]\right) \nonumber \\
 &= -\log\left( \max_{w' \in \mathcal{M}} |\{w | w\in \supp(W) \wedge \dis(w, w')\le t\}| \cdot 2^{-\Hoo(W)}\right) \nonumber \\
-&= \Hoo(W) -\log |B_{t,W,max}|.\label{eq:fuzz for flat}
+&= \Hoo(W) -\log \beta_{t}.\label{eq:fuzz for flat}
 \end{align}
 
 \noindent We use universal hashes to construct secure sketches for flat distributions.  Skoric et al. constructed secure sketches from universal hashes to correct a polynomial number of error patterns~\cite{skoric2009efficient}.
@@ -544,16 +544,16 @@ Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a universal hash function
 \begin{lemma}
 \label{lem:flat hashing} (Proof in \apref{sec:proof of flat hashing})
 Let $W$ be a flat distribution with $\Hoo(W)\ge m$.  Then
-\consref{cons:universal hash} is a $(\mathcal{M}, W, m - \log |R|, t)$-known distribution secure sketch with error $\delta \le \frac{|B_{t,W,max}|-1}{|R|}$. 
+\consref{cons:universal hash} is a $(\mathcal{M}, W, m - \log |R|, t)$-known distribution secure sketch with error $\delta \le \frac{\beta_{t}-1}{|R|}$. 
 \end{lemma}
 \begin{corollary}
-Let $n = \log |\mathcal{M}|$.  If $|R| \ge |B_{t,W,max}|* n^{\omega(1)}$ then \consref{cons:universal hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log |B_{t,W,max}| + \omega(\log n)$ suffices.
+Let $n = \log |\mathcal{M}|$.  If $|R| \ge |\beta_{t}|* n^{\omega(1)}$ then \consref{cons:universal hash} is correct with overwhelming probability.  That is, setting $\log |R| = \log \beta_{t} + \omega(\log n)$ suffices.
 \end{corollary}
 
 \noindent
 \consref{cons:universal hash} writes down enough information to disambiguate any ball of points.  The remaining entropy for this construction is 
 $
-\Hav(W |\sketch(W)) = \Hoo(W) - \log |B_{t,W,max}| - \omega(\log n).
+\Hav(W |\sketch(W)) = \Hoo(W) - \log \beta_{t} - \omega(\log n).
 $
 For a flat distribution this is within a superlogarithmic factor of optimal~(see Equation~\eqref{eq:fuzz for flat}). By choosing $\delta$ based on $\Hfuzz(W)$ we build $(\sketch, \rec)$ such that $\Hav(W | \sketch(W)) = \omega(\log n)$.
 
@@ -604,14 +604,14 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 \end{construction}
 
 \noindent
-We extend our notation for the maximum likelihood ball to the leveled case.  Let $B_{t,i,W, max}$ be the ball that contains the most points in $L_i$.  That is,
+We extend our notation for the maximum likelihood ball to the leveled case.  Define $\beta_{t,i}$ as the maximum number of points in a ball in level $i$.  That is,
 \[
-B_{t,W_i,max} = \max_{w' \in \mathcal{M}} \{w | w\in \supp(W) \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}.
+\beta_{t,i} = \max_{w' \in \mathcal{M}} \left|\{w | w\in \supp(W) \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|.
 \]
 
 \begin{theorem}
 \label{thm:layered hashing}
-Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (|B_{t,W_i,max}|-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, W, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
+Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, W, \tilde{m}, t)$-secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
 
 \end{theorem}
 We provide a proof in \apref{sec:proof of layered hashing}.  The main idea is to show that an adversary that knows the level of $w$ cannot perform much better than an adversary without this information.  
@@ -859,12 +859,12 @@ Note that $D$ only provides an input and looks at the output, thus it extends to
 \begin{proof}
 We first argue security.  Fix some $W\in\mathcal{W}$. Since $\mathcal{K}$ and $W$ are independent $\Hav(W | \mathcal{K}) = \Hoo(W) = m$.  Then by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(W | \mathcal{K}, F(\mathcal{K}, W)) \ge \Hoo(W) - \log |F(\mathcal{W}, W)| \ge m - \log |R|$.
 
-We now argue correctness.  Fix some $w, w'$.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$.  The size of $W^*$ is at most $B_{t,W,max}$.  Since $w, w'$ are independent of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  The algorithm  $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ collides is:
+We now argue correctness.  Fix some $w, w'$.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$.  The size of $W^*$ is at most $\beta_{t}$.  Since $w, w'$ are independent of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  The algorithm  $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ collides is:
 \begin{align*}
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
- &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R|} \le \frac{|B_{t,W,max}|-1}{|R|}
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R|} \le \frac{\beta_{t}-1}{|R|}
 \end{align*}
-The inequality proceeds by union bound. The first equality proceeds by the universality of $F$ and the second inequality proceeds by noting the number of wrong neighbors is bounded by $|B_{t,W,max}|-1$.  This completes the proof.
+The inequality proceeds by union bound. The first equality proceeds by the universality of $F$ and the second inequality proceeds by noting the number of wrong neighbors is bounded by $\beta_{t}-1$.  This completes the proof.
 \end{proof}
 
 \section{Proof of \thref{thm:layered hashing}}
@@ -875,19 +875,19 @@ Throughout the proof we assume that $\ell = n$ is the number of levels.  The pro
 \noindent
 \textbf{Correctness:}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(m+\ell)} = 2^{-(m+n)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  When $\Pr[W=w]> 2^{-(m+n)}$ let $L_i^*$ be the level of $\Pr[W=w]$.
 
-Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$.  The size of $W^*$ is at most $B_{t,W_i,max}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  The probability that another element $w^*$ matches the hash is:
+Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$.  The size of $W^*$ is at most $\beta_{t,i}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  The probability that another element $w^*$ matches the hash is:
 \begin{align*}
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
- &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{|B_{t,W_i,max}|-1}{|R_i|} = \delta
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{\beta_{t,i}-1}{|R_i|} = \delta
 \end{align*}
-The inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $|B_{t,W_i,max}|$.  
+The inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $\beta_{t,i}$.  
 
 \noindent
 \textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.
 
-The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses \[w^*= \argmax_{w' \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w^*)}[W=w].\] The success of this adversary is at least $2^{-(i+1)}|B_{t,W_i, max}|$ as there at $|B_{t,W_i,max}|$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses \[w^*= \argmax_{w' \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w^*)}[W=w].\] The success of this adversary is at least $2^{-(i+1)}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
 \begin{align}
-\expe_{i | m\le i \le m+n}2^{-(i+1)}|B_{t,W_i,max}|&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}< \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
+\expe_{i | m\le i \le m+n}2^{-(i+1)}\beta_{t,i}&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}< \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
 &\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
 &= n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
 \end{align}
@@ -906,9 +906,9 @@ We separate out this quantity into levels:
 \max_{w\in W | \Pr[W=w]>2^{-(m+n)}}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
 &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{|\sketch(W)|i|}\right)\\
 &\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
-&\le \expe_{i | m\le i \le m+n} \left(2^{-i}*|B_{t,W_i,max}|/\delta\right)\\
-&\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot |B_{t,W_i,max}|\right)}{2\delta}\\
-%&=\delta \sum_{i | m\le i \le m+n} \Pr[W\in L_i]\left(2^{-i}*|B_{t,W_i,max}|\right)
+&\le \expe_{i | m\le i \le m+n} \left(2^{-i}*\beta_{t,i}/\delta\right)\\
+&\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot \beta_{t,i}\right)}{2\delta}\\
+%&=\delta \sum_{i | m\le i \le m+n} \Pr[W\in L_i]\left(2^{-i}*\beta_{t,i}\right)
 %\end{align*}
 %Now consider This allows us to conclude that 
 %\begin{align*}
@@ -1028,15 +1028,15 @@ The left operand to $\max$ is bounded by $2$~(bounded the $\max$ by $2$):
 \bnote{fine with it being here as the FE case lives in the appendix too}
 \begin{lemma}
 \label{lem:log-minus-one}
-For any real numbers $\alpha \leq \beta$ with $\beta \ge e+1$ (in particular, $\beta\ge 4$ suffices), the following holds:
-$\alpha \log (\beta-1) > (\alpha-1)\log \beta$. 
+For any real numbers $\alpha \leq \eta$ with $\eta \ge e+1$ (in particular, $\eta\ge 4$ suffices), the following holds:
+$\alpha \log (\eta-1) > (\alpha-1)\log \eta$. 
 \end{lemma}
 
 \begin{proof}
-Because $\beta-1$ is positive, and $1+x<e^x$ for positive $x$,
-$$1+\frac{1}{\beta-1} < e^{\frac{1}{\beta -1}}\,.$$  Therefore, 
-$$\left(1+\frac{1}{\beta-1}\right)^{\alpha-1} < e^{\frac{\alpha-1}{\beta-1}}\le e < \beta-1$$ (since $\alpha\le \beta$). Multiplying both sides by $(\beta-1)^{\alpha-1}$, we obtain
-$$\beta^{\alpha-1} < (\beta-1)^\alpha\,.$$
+Because $\eta-1$ is positive, and $1+x<e^x$ for positive $x$,
+$$1+\frac{1}{\eta-1} < e^{\frac{1}{\eta -1}}\,.$$  Therefore, 
+$$\left(1+\frac{1}{\eta-1}\right)^{\alpha-1} < e^{\frac{\alpha-1}{\eta-1}}\le e < \eta-1$$ (since $\alpha\le \eta$). Multiplying both sides by $(\eta-1)^{\alpha-1}$, we obtain
+$$\eta^{\alpha-1} < (\eta-1)^\alpha\,.$$
 Taking the logarithm of both sides yields the statement of the lemma.
 \end{proof}
 
@@ -1086,7 +1086,7 @@ For the remainder of the proof we restrict ourselves to elements in $R_{small}$.
 %Note that $\crust(Q_{p^*, r}) \cap \inter(Q_{p^*,r}) =\emptyset$.  
 We will use the term deficient ball\footnote{In most statements of the isoperimetric inequality, this type of set is simply called a ball.  We use the term deficient ball for emphasis.}:\bnote{use a term other than deficient}
 \begin{definition}
-A set $S$ is a $\beta$-deficient ball if there exists a point $x$ such that $B_{\beta-1}(x) \subseteq S \subseteq B_{\beta}(x)$.
+A set $S$ is a $\eta$-deficient ball if there exists a point $x$ such that $B_{\eta-1}(x) \subseteq S \subseteq B_{\eta}(x)$.
 \end{definition}
 
 Consider some $\key^*\in R_{small}$.  
@@ -1097,7 +1097,7 @@ We now proceed to show that the interior of each $Q_{p^*, \key^*}$ is small:
 $|\inter(Q_{p^*, \key^*})| \le 2^{n-4\nu}$.
 \end{lemma}
 \begin{proof}
-By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal}), there exists a $\beta$-deficient ball $S_{p^*, \key^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*, \key^*}^\complement|$ and $\forall s\in S_{p^*, \key^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, \key^*} \cup D$ is a deficient ball~(and its radius is $\beta+t$).
+By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal}), there exists a $\eta$-deficient ball $S_{p^*, \key^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*, \key^*}^\complement|$ and $\forall s\in S_{p^*, \key^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, \key^*} \cup D$ is a deficient ball~(and its radius is $\eta+t$).
 We now find bound the size of $S_{p^*, \key^*}$.
 
 Recall that $|S_{p^*, \key^*} \cup D| = |Q_{p^*, \key^*} | \le 2^{n-\kappa}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a deficient sphere of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
