@@ -1,6 +1,6 @@
  \documentclass[11pt]{article}
  
-\def\shownotes{1}
+\def\shownotes{0}
 \def\blinded{0}
 
 
@@ -42,7 +42,7 @@
 \DeclareMathOperator*{\expe}{\mathbb{E}}
 \DeclareMathOperator*{\var}{\text{Var}}
 \DeclareMathOperator*{\argmax}{arg\,max}
-
+  
 
 \newcommand{\class}[1]{{\ensuremath{\mathsf{#1}}}}
 \newcommand{\key}{\ensuremath{\class{key}}\xspace}
@@ -1020,7 +1020,7 @@ Then averaging over the possible values of $s$, we have the following as long as
 &\le \max\left\{ \log \left(\frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\right)+1, 1\right\}.
 \end{align*}
 Where the inequality follows because $\log x+1 \le \max\{ 1+ \log x,1\}$ for $x\ge 0$.
-The left operand to $\max$ is bounded by $2$~(bounded the $\max$ by $2$):
+The left operand to $\max$ is bounded by $2$~(bounding the $\max$ by $2$):
 \begin{align*}
 \log \left(\frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\right)+1
 &=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \log \left(\expe_{s\in \sketch(V)} 2^{h_s}\right) +1\\
