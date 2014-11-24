@@ -301,7 +301,9 @@ We show that for every source $W$ with superlogarithmic $\Hfuzz(W)$, it is possi
 A number of previous works in this known-distribution setting have provided efficient algorithms and
 tight bounds for specific distributions---generally the uniform distribution or
 i.i.d. sequences (for example, \cite{JW99,LT03,DBLP:conf/eccv/TuylsG04,hao2006combining,DBLP:journals/corr/abs-1112-5630,IgnatenkoW2012}). 
-Our characterization may be seen as unifying previous work, and justifies using $\Hfuzz(W)$ as the measure of the quality of a noisy distribution,  rather than cruder measures such as $\Hoo(W)-\log |B_t|$.
+Our characterization may be seen as unifying previous work, and justifies using $\Hfuzz(W)$ as the measure of the quality of a noisy distribution,  rather than cruder measures such as $\Hoo(W)-\log |B_t|$. 
+
+
 
 
 \paragraph{Impossibility of Fuzzy Extractors for Families of Distributions}
@@ -351,14 +353,19 @@ In the fuzzy extractor case, the nonsecret value $p$ partitions the metric space
 
 The result for fuzzy extractors is delicate.  It uses the fact that $p$ partitions the space into nonoverlapping regions, which is implied by perfect correctness.  Extending this result to imperfect correctness seems challenging and is an interesting open problem. It also uses the fact that there are few points far from the boundary of every region, which is implied by the geometry of  the high-dimensional Hamming space.  This fact seems crucial: in contrast, in low-dimensional Euclidean space, which does not have this property, a single fuzzy extractor can work for any distribution with sufficient $\Hfuzz$. (Such a construction would use quantization or tiling, similar to, for example, \cite{CK03,LT03,CZC04,LC06,BDHTV10,VTOSS10}.  Each sample from $W$ would map to the ``tile'' containing it, from which the output key would be extracted. A randomly chosen quantizer would have the property that few samples lie near the boundary, giving almost-perfect correctness; if perfect correctness is desired, we can give up on security for those rare samples and simply use a special value of $p$ to indicate that one of them was the input.)
 
-\subsection{Sufficiency of $\Hfuzz$ in Related Settings}
+\subsection{Related Settings}
 \label{sec:related settings}
+\paragraph{Other settings with close readings:  $\Hfuzz$ is sufficient}
 The security definition of fuzzy extractors and secure sketches can be weakened to protect only against computationally bounded adversaries~\cite{fuller2013computational}.   In this computational setting, fuzzy extractors and secure sketches can be constructed for the family of all distributions $W$ with superlogarithmic $\Hfuzz$ by using virtual grey-box obfuscation for all circuits~\cite{BitanskyCKP14}. The construction places into $p$ the obfuscated program for testing proximity to $w$ and outputting the appropriate value if the test passes.  In addition to relying on strong assumptions for security (namely, the existence of semantically-secure multilinear maps), this construction is not of practical efficiency. Note that if this construction is used for a secure sketch, $W$ will remain unpredictable conditioned on $p$, but will not have pseudoentropy (see  \secref{sec:feas comp sec sketch} for details).
 
 Furthermore, the functional definition of fuzzy extractors and secure sketches can be weakened to permit interaction between the party having $w$ and the party having $w'$. Such a weakening is useful for secure remote authentication~\cite{Boyen05secureremote}. When both interaction and computational assumptions are allowed, secure two-party computation can produce a key that will be secure whenever the distribution $W$ has fuzzy min-entropy.  The two-party computation protocol needs to be secure without assuming authenticated channels; it can be built under the assumptions that collision-resistant hash functions and enhanced trapdoor permutations exist~\cite{DBLP:journals/joc/BarakCLPR11}.
 
+\paragraph{Correlated rather than close readings}
+A different model for the problem of key derivation from noisy sources does not explicitly consider the distance between $w$ and $w'$, but rather views $w$ and $w'$ as samples of drawn from a correlated pair of random variables.   This model is considered in multiple works, including~\cite{wyner1975wire,DBLP:journals/tit/CsiszarK78,DBLP:journals/tit/AhlswedeC93,DBLP:journals/tit/Maurer93}; recent characterizations of when key derivation is possible in this model include \cite{DBLP:conf/asiacrypt/RennerW05} and \cite{DBLP:journals/corr/TyagiW14}.
 
-\paragraph{Organization} The reminder of the paper is organized as follows.  In \secref{sec:preliminaries}, we cover preliminaries and fuzzy extractor definitions.  In \secref{sec:known distributions}, we construct a fuzzy extractor for every known distribution with fuzzy min-entropy.  In Sections~\ref{sec:family of dist} and~\ref{sec:imposs fuzz ext} we provide negative results  for families of distributions for secure sketches and fuzzy extractors, respectively.
+%The definition of $\Hfuzz$ can be extended to this model (by again thinking of the adversary as choosing the value $w'$ that is most likely to lead to a success).
+
+\paragraph{Organization} The remainder of the paper is organized as follows.  In \secref{sec:preliminaries}, we cover preliminaries and fuzzy extractor definitions.  In \secref{sec:known distributions}, we construct a fuzzy extractor for every known distribution with fuzzy min-entropy.  In Sections~\ref{sec:family of dist} and~\ref{sec:imposs fuzz ext} we provide negative results  for families of distributions for secure sketches and fuzzy extractors, respectively.
 
 
 \section{Preliminaries}
