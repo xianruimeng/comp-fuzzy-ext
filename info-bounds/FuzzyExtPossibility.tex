@@ -246,7 +246,7 @@
 \title{When are Fuzzy Extractors Possible?}
 \blind{
 \author{
-Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and MIT Lincoln Laboratory. The Lincoln Laboratory portion of this work was sponsored by the Department of the Air Force under Air Force Contract \#FA8721-05-C-0002.  Opinions, interpretations, conclusions and recommendations are those of the author and are not necessarily endorsed by the United States Government.}  \and Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.} \and Adam Smith\footnote{Email: {\tt asmith@cse.psu.edu}.  Pennsylvania State University; work performed while at Boston University's Hariri Institute for Computing and RISCS Center, and Harvard University's
+Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and MIT Lincoln Laboratory.}  \and Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.} \and Adam Smith\footnote{Email: {\tt asmith@cse.psu.edu}.  Pennsylvania State University; work performed while at Boston University's Hariri Institute for Computing and RISCS Center, and Harvard University's
 ``Privacy Tools'' project.}}
 }
 \begin{document}
@@ -771,6 +771,13 @@ Consider the set of $V_{\key } = \{w | \rep(w, p) = \key \}$.  All points in $V 
 \textbf{Note:} As stated in \secref{sec:related settings}, using strong computational assumptions it is possible to avoid this result.  We note that the specific family $\mathcal{W}$, Canetti et al.~\cite[Construction 5.3]{canetti2014key} construct computational fuzzy extractors  for this family of distributions when $\mathbb{F}$ is large enough under weaker assumptions.  (Their construction is stated with imperfect correctness.  A construction with perfect correctness is obtained by using a code that corrects $t$ bidirectional errors instead of a code that corrects $t$ unidirectional errors.)
 
 \paragraph{Comparison with \thref{thm:imposs sketch}} The parameters in this result are weaker than those in \thref{thm:imposs sketch}.  This result requires: 1) higher error tolerance $t= \omega(n^{1/2}\log n)$ 2) the fuzzy extractor must have perfect correctness.  The secure sketch counter example needs $t=4$ and allows the $\rec$ to be wrong almost $1/4$ of the time.
+
+\section*{Acknowledgements}
+The authors are grateful to Gene Itkis and Yevgeniy Dodis for helpful discussions.
+The work of Benjamin Fuller is sponsored in part by US NSF grants 1012910 and 1012798 and  the United States Air Force under Air Force Contract FA8721-05-C-0002. Opinions, interpretations, conclusions and recommendations are those of the authors and are not necessarily endorsed by the United States Government. 
+Leonid Reyzin is supported in part by US NSF grants 0831281, 1012910, 1012798, and 1422965.
+
+
 \bibliographystyle{alpha}
 \bibliography{crypto}
 
