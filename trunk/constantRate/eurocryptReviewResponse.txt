@@ -1,19 +1,31 @@
 Thank you for the reviews and feedback.  We will incorporate your comments into our work.
+We address only the most important comments below.
 
 Q: The second and third construction use obfuscation (for point functions) to add "reusability" 
-A: The second and third construction also secure different types of sources.  The first construction requires many blocks to contribute fresh entropy conditioned on previous blocks (for some order of blocks).  The second construction requires that sampling produces a high entropy string (this class is larger than supported sources for the first construction).  The third construction allows all blocks to be determined by a single block as long as most blocks are hard to guess.
+A: The second and third construction not only add reusability--they also handle more interesting sources than the first construction, and thus are interesting even when reusability is not relevant.  The first construction requires many blocks to contribute fresh entropy conditioned on previous blocks (for some order of blocks).  The second construction requires that sampling produces a high entropy string (this class is larger than supported sources for the first construction).  The third construction requires most blocks to be hard to guess on their own--but permits, for example, all blocks to be determined by a single one.
 
 Q: Missing is an answer to the question what happens if an attacker maliciously modifies helper data in order to force the extractor to output a different key.
-A: This question is known as a robust fuzzy extractor (Boyen et al., Eurocrypt 2004).  It is a separate question than reusability of a fuzzy extractor. Robust fuzzy extractors are easy in the random oracle model.  In the standard model, constructions are more fragile and utilize one-time MACs (Dodis et al., Crypto 2006).
+A: This question is known as a robust fuzzy extractor (Boyen et al., Eurocrypt 2004).  It is a separate question than reusability of a fuzzy extractor. As Boyen et al. show, adding robustness to any fuzzy extractor (including ours) is easy in the random oracle model. In the standard model, constructions are more fragile and utilize one-time MACs (Dodis et al., Crypto 2006).
 
 Q:  I would like to suggest the authors to add some detailed discussion whether the result of this work can be used in general applications, where the condition of a super-constant size of alphabet might does not naturally hold.  Is it a hard challenge to find an alternative of removing this condition? 
-Q: Also the constructions are somewhat unrelated: how do they compare in terms of the classes of sources they work for, how do they apply to those sources (biometric, PUF examples) where standard fuzzy extractors fail? It would be great to gain intuition about whether these construction can be improved or not.
-A: Finding "good distributions" that are obtainable in practice and support provable security is an important and fascinating research direction.  One can view our results as providing a target for biometrics and PUFs. Our constructions show promise for two reasons.
+Q: Also the constructions are somewhat unrelated: how do they compare in terms of the classes of sources they work for, how do they apply to those sources (biometric, PUF examples) where standard fuzzy extractors fail?
 
-First, the second construction provides reusability regardless of alphabet size.  (It only corrects more errors than entropy on a super-constant size alphabet.)  We have run initial experiments and the second construction appears promising for irises (where the distance is binary Hamming over 2048 bit strings).  Known fuzzy extractors provide no guarantees for irises.  However, there is still work to verify that bits sampled from an iris code have high entropy.  The main barrier to applicability is showing that known PUFs and biometrics fulfill our distributional conditions.
+A: The main barrier to applicability is showing that known PUFs and biometrics fulfill our distributional conditions. Finding such PUFs and biometric transforms is a fascinating research question that we are currently working on.
 
-Second, the constructions support different types of sources (the second construct does support a superset of the first). This provides multiple options for building a PUF or biometric transform.
+One can view our results as providing a target for the way biometrics should be measured and PUFs should be designed if fuzzy extractors are desired. Our constructions show promise for the following reasons:
 
-Supporting more errors than entropy on a constant size alphabet remains a challenge.  As the reviewers note, we crucially make use of two metric spaces, the input metric and a second metric space where we correct errors.  This is to avoid stronger lower bounds that arise when working on a single space.  Known techniques for working on a single space recover the original reading, known as a secure sketch, and are subject to stronger negative results.  It is not clear how to make use of multiple metric spaces when the starting alphabet is constant size.
+They support different types of sources. This provides multiple options for building a PUF or a biometric transform.
+
+In particular, the second construction supports sources whose symbols are k-wise independent for a sufficient k. This means that even if the resulting string, after all the signal processing, overdefines the original signal (and thus has little entropy relative to its length), our construction may still apply.
+
+Finally, the second construction provides reusability regardless of alphabet size (although the "more errors than entropy" claim holds only for a super-constant size alphabet).
+
+We have run initial experiments and the second construction appears promising for irises (where the distance is binary Hamming over 2048 bit strings).  Known fuzzy extractors provide no guarantees for irises.  However, there is still work to verify that bits sampled from an iris code have high entropy.  
+
+
+
+Q: It would be great to gain intuition about whether these construction can be improved or not.
+
+Supporting more errors than entropy on a constant size alphabet remains a challenge.  As the reviewers note, we crucially make use of two metric spaces: the input metric and a second metric space where we correct errors.  This is to avoid stronger lower bounds that arise when working on a single space, since known techniques for working on a single space recover the original reading, and are subject to stronger negative results.  It is not clear how to make use of multiple metric spaces when the starting alphabet is constant size.
 
 Subsequent work (Herder et al., ePrint 2014/938) increased error-tolerance by using confidence information that may be available for some PUFs and biometrics.  It may be possible to incorporate such information to our constructions to improve applicability.
