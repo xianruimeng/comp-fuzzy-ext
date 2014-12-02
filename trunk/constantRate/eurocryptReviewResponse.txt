@@ -1,23 +1,19 @@
 Thank you for the feedback, which we will incorporate. We address most salient comments below.
 
 Q: The second and third construction use obfuscation (for point functions) to add "reusability".
-A: These constructions not only add reusability--they also handle other sources than the first construction, and thus are interesting even when reusability is not relevant.  The first construction requires many blocks to contribute fresh entropy conditioned on previous blocks (for some order of blocks).  The second construction requires that sampling produces a high entropy string (this class is larger than supported sources for the first construction).  The third construction requires most blocks to be hard to guess on their own--but permits, for example, all blocks to be determined by a single one.
+A: These constructions not only add reusability--they also handle different sources than the first construction, and thus are interesting even when reusability is not relevant.  The first construction requires many blocks to contribute fresh entropy conditioned on previous blocks (for some order of blocks).  The second construction requires that sampling produces a high entropy string (this class is larger than supported sources for the first construction).  The third construction requires most blocks to be hard to guess on their own--but permits, for example, all blocks to be determined by a single one.
 
 Q: Missing is an answer to the question what happens if an attacker maliciously modifies helper data in order to force the extractor to output a different key.
 A: This question is important, but orthogonal to the challenges addressed by this submission. Constructions that can handle malicious manipulation of the helper data are called “robust fuzzy extractors”; in the random oracle model, any fuzzy extractor can be made robust without harming other properties (Boyen et al., Eurocrypt 2004). Conversions in the standard model are more delicate (Dodis et al., Crypto 2006). Finding robust versions of the constructions in this submission without using random oracles is an interesting question, but lies beyond the scope of this submission. 
 
 Q: Is it a hard challenge to find an alternative [for the condition of super-constant size alphabet]? 
 
-A: Super-constant alphabet is not necessary in the second construction. For example, it supports binary sources whose symbols are k-wise independent for a sufficient k (see last sentence of 4.4). This means that even if the resulting string, after all the signal processing, overdefines the original signal (and thus has little entropy relative to its length), our construction may still apply. This construction may be useful for discretization procedures similar to ones that are used in the IrisCode (which takes the sign of each coordinate of a multidimensional continuous vector). 
+A: As the reviewers note, we crucially make use of two metric spaces, the input metric and a second metric space where we correct errors. Known techniques for working on a single space recover the original reading, known as a secure sketch, and are subject to stronger negative results.  The two metric space technique is most applicable for super-constant size alphabet.
 
-Q: How do the [constructions] compare in terms of the classes of sources they work for, how do they apply to those sources (biometric, PUF examples) where standard fuzzy extractors fail?
+However, super-constant alphabet is not necessary in the second construction. For example, it supports binary sources whose symbols are k-wise independent for a sufficient k (see last paragraph of 4.4). 
 
-A: As we discuss, SOME distributional conditions seem necessary, so it’s a matter of finding the magic spot for which fuzzy extractors exist and realistic sources can satisfy. Our work can be seen as providing guidance for the way biometrics should be measured and PUFs should be designed if fuzzy extractors are desired. Since our constructions support different types of sources, they they provide multiple options for building a PUF or a biometric transform.
+Q: How do the [constructions] compare in terms of the classes of sources they work for, how do they apply to those sources (biometric, PUF examples) where standard fuzzy extractors fail?  
 
-Q: It would be great to gain intuition about whether these construction can be improved or not.
+A: As we discuss, some distributional conditions seem necessary, so it’s a matter of finding a condition where secure fuzzy extractors exist that realistic sources satisfy. Our work can be seen as providing guidance for the way biometrics should be measured and PUFs should be designed if fuzzy extractors are desired. Since our constructions support different types of sources, they they provide multiple options for building a PUF or a biometric transform.
 
-A: As the reviewers note, we crucially make use of two metric spaces, the input metric and a second metric space where we correct errors. Known techniques for working on a single space recover the original reading, known as a secure sketch, and are subject to stronger negative results.  
-
-Subsequent work (Herder et al., ePrint 2014/938) increased error-tolerance by using confidence information that may be available for some PUFs and biometrics.  It may be possible to incorporate such information to our constructions to improve applicability.
-
-It may also be possible to explore which transformations can be used to change the alphabet and the distribution to get them closer to our conditions.
+For example, the IrisCode transform takes the sign of Gabor filters at nearby locations so the resulting signal is likely redundant.  This redundancy makes existing constructions fail (as the source is far from uniform).  However, the produced binary vector may satisfy the k-wise independence condition necessary for the second construction.
