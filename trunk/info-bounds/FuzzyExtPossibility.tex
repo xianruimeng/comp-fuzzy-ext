@@ -91,6 +91,7 @@
 \newcommand{\Hoo}{\mathrm{H}_\infty}
 \newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
 \newcommand{\Hfuzz}{\mathrm{H}^{\mathtt{fuzz}}_{t,\infty}}
+\newcommand{\Hcorr}{\mathrm{H}^{\mathtt{corr}}}
 \newcommand{\Huse}{\mathrm{H}_{\mathtt{usable}}}
 \newcommand{\Dom}{\mathsl{Dom}}
 \newcommand{\Range}{\mathsl{Rng}}
@@ -365,7 +366,7 @@ The security definition of fuzzy extractors and secure sketches can be weakened 
 Furthermore, the functional definition of fuzzy extractors and secure sketches can be weakened to permit interaction between the party having $w$ and the party having $w'$. Such a weakening is useful for secure remote authentication~\cite{Boyen05secureremote}. When both interaction and computational assumptions are allowed, secure two-party computation can produce a key that will be secure whenever the distribution $W$ has fuzzy min-entropy.  The two-party computation protocol needs to be secure without assuming authenticated channels; it can be built under the assumptions that collision-resistant hash functions and enhanced trapdoor permutations exist~\cite{DBLP:journals/joc/BarakCLPR11}.
 
 \paragraph{Correlated rather than close readings}
-A different model for the problem of key derivation from noisy sources does not explicitly consider the distance between $w$ and $w'$, but rather views $w$ and $w'$ as samples of drawn from a correlated pair of random variables.   This model is considered in multiple works, including~\cite{wyner1975wire,DBLP:journals/tit/CsiszarK78,DBLP:journals/tit/AhlswedeC93,DBLP:journals/tit/Maurer93}; recent characterizations of when key derivation is possible in this model include \cite{DBLP:conf/asiacrypt/RennerW05} and \cite{DBLP:journals/corr/TyagiW14}.
+A different model for the problem of key derivation from noisy sources does not explicitly consider the distance between $w$ and $w'$, but rather views $w$ and $w'$ as samples of drawn from a correlated pair of random variables.   This model is considered in multiple works, including~\cite{wyner1975wire,DBLP:journals/tit/CsiszarK78,DBLP:journals/tit/AhlswedeC93,DBLP:journals/tit/Maurer93}; recent characterizations of when key derivation is possible in this model include \cite{DBLP:conf/asiacrypt/RennerW05} and \cite{DBLP:journals/corr/TyagiW14}.  We compare our positive results to these characterizations in \secref{sec:known distributions}.
 
 %The definition of $\Hfuzz$ can be extended to this model (by again thinking of the adversary as choosing the value $w'$ that is most likely to lead to a success).
 
@@ -469,24 +470,27 @@ If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-fuzzy
 %\lemref{lem:fuzz necessary} still applies.  
 \noindent
 There are many distributions with $\Hfuzz$ with no known fuzzy extractor~(or corresponding impossibility result).
-Our goal is to provide a superlogarithmic length key when provided with superlogarithmic fuzzy min-entropy. % We now describe the known distribution setting.
+Our goal is to provide a superlogarithmic length key when provided with superlogarithmic fuzzy min-entropy. 
 
-%\subsection{Known Distribution Algorithms}
-%\label{sec:known distributions def}
-%To show that fuzzy min-entropy is the right notion for fuzzy extractors and secure sketches we show that it is sufficient for fuzzy extraction if the algorithm has complete knowledge of the distribution $W$.  
-%We call an algorithm with complete information on $W$ \emph{known distribution}.  We provide a definition for secure sketches~(extendible to fuzzy extractors):
-%
-%\begin{definition}
-%Let $W$ denote a distribution.  A pair of algorithms, $\sketch, \rec$ is a $(\sketch_W, \rec_W)$ is called a $(\mathcal{M}, W, \tilde{m}, t)$-\emph{known distribution %secure sketch} with error $\delta$ if the correctness and security properties hold for the distribution $W$.  That is, 
-%\begin{enumerate}
-%\item \emph{Correctness:} 
-%$
-%\forall w\in \supp(W)$, $\forall w' \in\mathcal{M}| \dis(w,w')\le t$, $\Pr[\rec(w',\sketch(w))=w]\ge 1-\delta.$\\
-%Correctness is guaranteed only for the support of $W$.
-%\item \emph{Security:} $\Hav(W|\sketch(W))\geq \tilde{m}$.
-%\end{enumerate}
-%\end{definition}
-%$(\sketch, \rec)$ know the description of $W$ and security only holds for $W$.  We assume known distribution algorithms are \emph{inefficient}.  Finding a natural model of specifying distributions that allows for efficient~(yet generic) known distribution constructions of sketches and extractors is an interesting problem.
+\paragraph{Generalizing to correlated random variables}
+Instead of considering $w, w'$ that have bounded distance, we can treat $W, W'$ as a pair of correlated random variables.  
+  Renner and Wolf~\cite{DBLP:conf/asiacrypt/RennerW05} study this setting, firsting consider information-reconciliation and privacy amplification separately.  They show that $\Hoo(W)$ is a necessary and sufficient condition for privacy amplification.\footnote{The results of Renner and Wolf use smooth notions of entropy.  A random variable has smooth entropy if it is statistically close to a distribution with true entropy. We describe their results in the terminology of non smooth entropy.}  Second, they show that the length of $p$ must grow with the worst case number of possible outcomes for $W$ conditioned on $W'$.\footnote{This result also uses a smooth notion of entropy.  We describe the non smooth version for simplicity.}  That is, the length of the public value \[|p|\ge \max_{w'\in W} \log |\{w | \Pr[W=w | W'=w']>0\}|.\]
+
+Furthermore, they show there exists a protocol with this length $p$ using optimal encoding functions.  Intuitively, the public information must describe which possible outcome for $W$ actually occurred. This result describes the maximal length of $p$ and does not argue how $p$ effects security.  It may be possible to construct a $p$ that reduces the entropy of $w$ by less than $\log |p|$.  In \secref{sec:known distributions}, we will construct schemes with variable length $p$, providing information-reconciliation for distributions where the bounds of Renner and Wolf provide no security guarantees.
+
+Lastly, the work of Renner and Wolf shows characterize when key derivation is possible from correlated random variables~\cite[Theorem 3]{DBLP:conf/asiacrypt/RennerW05}.  We compare this characterization to fuzzy min-entropy in \secref{sec:known distributions}.
+
+Fuzzy min-entropy can be generalized to this setting.   Fuzzy extractors consider the worst case $w'$.  When considering correlated readings, it is natural to treat $W'$ as a random variable:\footnote{Fuzzy extractors are defined to require high probability of correctness for all pairs $w, w'$.  In the correlated setting, it may make sense to provide an average-case guarantee, where the probability of correctness is also over the draw of $w, w'$.  Renner and Wolf use a smoothed notion of entropy that removes the $\delta$ fraction of the probability mass of $W=w|W'=w'$ with the most points to improve parameters under such a definition.  In this work, we consider worst case correctness and use unsmoothed entropy.}
+
+\begin{definition}
+\label{def:cor fuzz min}
+Let $(W, W')$ be a pair of correlated random variables.  The correlated fuzzy min-entropy of $W, W'$ is:
+\[\Hcorr(W, W') = -\log \left( \max_{w'\in \supp(W')}\sum_{w\in W | \Pr[W=w|W'=w']>0} \Pr[W = w] \right).\]
+\end{definition}
+\noindent 
+In \defref{def:fuzzy min-ent}, the sum is implicitly over $W=w|W'=w'$ since we assume any $w'$ within distance $t$ is possible.  
+For now, we consider sufficiency of $\Hfuzz(W)$ for key derivation from noisy sources (\defref{def:fuzzy min-ent}). We then consider the implications of our results on the correlated reading setting (\defref{def:cor fuzz min}).
+
 
 \section{Sufficiency of $\Hfuzz(W)$ When the Algorithms Know the Distribution}
 \label{sec:known distributions}
@@ -646,6 +650,14 @@ For any distribution $W$ over $\mathcal{M}$ with $\Hfuzz(W)=\omega(\log n)$, the
 
 \noindent
 In our positive results we considered an arbitrary finite metric space.  The relevant parameters were the size of balls and the size of the metric space.  Our negative results are specific to the Hamming metric.
+
+\paragraph{Connection to the characterization of~\cite{DBLP:conf/asiacrypt/RennerW05}}
+Renner and Wolf characterize when it is possible to derive keys from correlated random variables~\cite[Theorem 3]{DBLP:conf/asiacrypt/RennerW05}.  They consider all possible (randomized) transforms $T, T'$ of $W, W'$ into a new pair of variables $V,V'$.  They show that \[|\key| \le \sup_{(V, V')\leftarrow (T(W), T'(W))}\left(  \Hoo(V | T') - \log \max_{v'\in V'} |\{v| \Pr[V=v|T' \wedge V'=v']>0\}|\right).\]  Furthermore, they show that there is a transformation that achieves a key of nearly this length.  The result is nonconstructive as there is no guidance on how to find the transforms $T, T'$.  Since there is no known bound on the length of $T, T'$ it is not clear how to search the transform space even with unlimited time.
+\consref{cons:leveling} can be used to derive keys from correlated random variables.  The main change is to define \[W^* = \{w | \Pr[W=w | W'=w'] >0 \wedge \Pr[W=w]\in L_i\}.\]  
+Our result shows if one is satisfied with obtaining a strong key when possible (our protocol has losses of $2\log 1/\epsilon + \log n+\log 1/\delta$), then a protocol is possible (and explicitly constructible) in the original space. 
+
+
+
 \section{Impossibility of Secure Sketches for a Family with $\Hfuzz$}
 \label{sec:family of dist}
 
