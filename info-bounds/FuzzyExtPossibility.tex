@@ -1,6 +1,6 @@
  \documentclass[11pt]{article}
  
-\def\shownotes{0}
+\def\shownotes{1}
 \def\blinded{0}
 
 
@@ -262,6 +262,9 @@ Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings 
 We define \emph{fuzzy min-entropy} to quantify this property of a noisy source of secrets.
 
 High fuzzy min-entropy is necessary for the existence of a fuzzy extractor; moreover, there is evidence that it may be sufficient when only computational security is required. Nevertheless, information-theoretic fuzzy extractors are not known for many practically relevant sources of high fuzzy min-entropy. In this work, we ask: \emph{is fuzzy min-entropy sufficient to build information-theoretic fuzzy extractors?} 
+
+\bnote{fuzzy min-entropy measures ideal security ... similar to encryption/etc.}
+\bnote{should introduce the idea of distributional uncertainty...very important for us}
 %\lnote{Or it seems sufficient under strong computational assumptions and, under weaker assumptions, in the interactive setting.}  
 %\lnote{may be use``analyzing this quantity may be more fruitful than analyzing min-entropy and error-tolerance separately''}
 
@@ -294,9 +297,11 @@ The security requirement for fuzzy extractors is that $\key$ is uniform even to 
 \paragraph{Fuzzy Min-Entropy}
 We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$, thus subverting the security of $\key$ by running $\rep$. Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within the ball $B_t(w')$ of radius $t$ around $w'$.
 We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$.  Observe that this quantity can be bounded in terms of min-entropy: $\Hoo(W) \ge \Hfuzz(W) \ge \Hoo(W)-\log |B_t|$.
+\bnote{should note that fuzzy min-entropy is the ideal security, measures how an adversary would do with oracle access, goal is to implement this oracle}
 
 Superlogarithmic fuzzy min-entropy  is \emph{necessary} for nontrivial key extraction~(\propref{prop:fuzz necessary} formalizes the above intuition). 
 However, existing constructions do not measure their security in terms of fuzzy min-entropy; instead, their security is shown to be  $\Hoo(W)$ minus some loss that is at least $\log |B_t|$ due to error-tolerance. Since $\Hoo(W)-\log |B_t| \le \Hfuzz(W)$, it is natural to ask whether this loss is necessary. This question is particularly relevant when the gap between the two sides of the inequality is high.  As an example, iris scans appear to have significant $\Hfuzz(W)$ (because iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing}) but negative $\Hoo(W) -\log |B_t|$ \cite[Section 5]{blanton2009biometric}. We therefore ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?} There is evidence that it may be when the security requirement is computational rather than information-theoretic---see \secref{sec:related settings}. 
+\bnote{introduce distributional uncertainty here}
 
 
 
@@ -315,7 +320,7 @@ Our characterization may be seen as unifying previous work, and justifies using 
 Assuming full knowledge of a distribution is often unrealistic. Indeed, high-entropy distributions can never be fully observed directly and must therefore be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary, with greater resources, would likely be able to build a better model. Therefore, fuzzy extractor designs cannot usually be tailored to one  particular source. Existing designs work for a family of sources (for example, all sources of min-entropy at least $m$ with at most $t$ errors). Thus, the design is fixed before the distribution is fully known, and the adversary may therefore know more about the distribution than the designer of the fuzzy extractor.
 
 We show that this extra adversarial knowledge can be devastating  (\thref{thm:imposs fuzz ext}). 
-Specifically, we show a family of distributions $\mathcal{W}$ such that not even a 2-bit fuzzy extractor can be secure for most distributions in  $\mathcal{W}$.  We emphasize that each distribution $W\in \mathcal{W}$ has superlogarithmic fuzzy min-entropy---in fact, $\Hfuzz(W)=\Hoo(W)$, because all points in $W$ are distance at least $t$ apart. Our proof relies on high dimensionality of $W$ and on perfect correctness of the $\rep$ procedure.
+Specifically, we show a family of distributions $\mathcal{W}_Z$ such that not even a 2-bit fuzzy extractor can be secure for most distributions in  $\mathcal{W}_Z$.  We emphasize that each distribution $W_z\in \mathcal{W}_Z$ has superlogarithmic fuzzy min-entropy---in fact, $\Hfuzz(W_z)=\Hoo(W_z)$, because all points in $W_z$ are distance at least $t$ apart. Our proof relies on high dimensionality of each $W_z$ and on perfect correctness of the $\rep$ procedure.
 
 
 \begin{table}[h]
@@ -338,8 +343,11 @@ Traditionally, fuzzy extractors use a secure sketch to perform information recon
 
 We show comparable, but stronger, results for secure sketches.  Namely, we show in \corref{cor:extension to fuzz ext} that secure sketches are possible if the distribution $W$ is precisely known. (In fact, we obtain our fuzzy extractors for the case of a known distribution from this result by applying a randomness extractor.) 
 
-On the other hand, there is a family of sources with superlogarithmic $\Hfuzz(W)=\Hoo(W)$ for which no secure sketch correcting even a few errors is possible~(\thref{thm:imposs sketch}). The impossibility result applies even when $\rec$ is allowed to be incorrect with probability up to $1/4$ (as opposed to our fuzzy extractor impossibility result). 
+On the other hand, there is a family of sources, $\mathcal{W}_Z$, where each element has $\Hfuzz(W_z)=\Hoo(W_z) = \omega(\log n)$ for which no secure sketch correcting even a few errors is possible~(\thref{thm:imposs sketch}). The impossibility result applies even when $\rec$ is allowed to be incorrect with probability up to $1/4$ (as opposed to our fuzzy extractor impossibility result). 
 
+\bnote{asked to discuss implications of our negative results}
+\bnote{can we reframe the paper as the cost of distributional uncertainty?}
+\bnote{compare to current constructions?}
 \subsection{Our Techniques}
 
 \paragraph{Techniques for Positive Results for Known Distributions} We now explain how to construct a secure sketch for an arbitrary known distribution $W$ (we already explained how to construct a fuzzy extractor from it).  We begin with distributions in which all points in the support have the same probability (so-called ``flat'' distributions).   Consider some subsequent reading $w'$. To achieve correctness, the sketch algorithm must disambiguate which point $w\in W$ within distance $t$ of $w'$ was sketched. Disambiguating multiple points can be accomplished by universal hashing, as long as the size of hash output space is slightly greater than the number of possible points. Thus, our sketch is computed via a universal hash of $w$. To determine the length of that sketch, consider the heaviest (according to $W$) ball of radius $t$. Because the distribution is flat, it is also the ball with the most points of nonzero probability. Thus, the length of the sketch needs to be slightly greater than the logarithm of the number of non-zero probability point in that ball. Since $\Hfuzz(W)$ is determined by the weight of that ball, the number of points cannot be too high and there will be entropy left after the sketch is published.
@@ -347,9 +355,9 @@ On the other hand, there is a family of sources with superlogarithmic $\Hfuzz(W)
 For an arbitrary distribution, we cannot afford to disambiguate points in the ball with the greatest number of points, because there could be too many low-probability points in a single ball despite a high $\Hfuzz(W)$.  We solve this problem by splitting the arbitrary distribution into a number of nearly flat distributions we call ``levels.''  We then write down, as part of the sketch, the level of the original reading $w$ and apply the above construction considering only points in that level.  We call this construction \emph{leveled hashing}.%: it separates the distribution $W$ into levels that are nearly flat and then hashes to disambiguate the most likely ball at that level.
 
 \paragraph{Techniques for Negative Results for Distribution Families}
-We construct a family of distributions $\mathcal{W}$ and prove impossibility for a uniformly random $W\in \mathcal{W}$~(instead of proving impossibility for a worst-case $W$).
-We start by observing the following asymmetry: $\gen$  sees only the sample $w$ (obtained via $W\leftarrow \mathcal{W}$ and $w\leftarrow W$), while
-the adversary knows $W$.   To exploit the asymmetry, we construct $\mathcal{W}$ so that conditioning on the knowledge of $W$ reduces the distribution to a single affine line, but conditioning on $w$ leaves the rest of the distribution uniform on a large fraction of the entire space.
+We construct a family of distributions $\mathcal{W}_Z$ and prove impossibility for a uniformly random $W_z \leftarrow \mathcal{W}_Z$~(instead of proving impossibility for a worst-case $W_z$).
+We start by observing the following asymmetry: $\gen$  sees only the sample $w$ (obtained via $W_z\leftarrow \mathcal{W}_Z$ and $w\leftarrow W_z$), while
+the adversary knows $W_z$.   To exploit the asymmetry, we construct $\mathcal{W}_Z$ so that conditioning on the knowledge of $W_z$~(the outcome $z$) reduces the distribution to a single affine line, but conditioning on $w$ leaves the rest of the distribution uniform on a large fraction of the entire space.
 
 Then we show how the adversary can exploit the knowledge of the affine line to reduce the uncertainty about $w$ (in the secure sketch case) or $\key$ (in the fuzzy extractor case). 
 In the secure sketch case, $ss$ can be used to find fixed points of $\rec(\cdot, ss)$ which, by the correctness requirement of the sketch, must be separated by minimum distance $t$. This means there aren't too many of them, so few can lie on an average line, permitting the adversary to guess one easily.
@@ -366,11 +374,11 @@ The security definition of fuzzy extractors and secure sketches can be weakened 
 Furthermore, the functional definition of fuzzy extractors and secure sketches can be weakened to permit interaction between the party having $w$ and the party having $w'$. Such a weakening is useful for secure remote authentication~\cite{Boyen05secureremote}. When both interaction and computational assumptions are allowed, secure two-party computation can produce a key that will be secure whenever the distribution $W$ has fuzzy min-entropy.  The two-party computation protocol needs to be secure without assuming authenticated channels; it can be built under the assumptions that collision-resistant hash functions and enhanced trapdoor permutations exist~\cite{DBLP:journals/joc/BarakCLPR11}.
 
 \paragraph{Correlated rather than close readings}
-A different model for the problem of key derivation from noisy sources does not explicitly consider the distance between $w$ and $w'$, but rather views $w$ and $w'$ as samples of drawn from a correlated pair of random variables.   This model is considered in multiple works, including~\cite{wyner1975wire,DBLP:journals/tit/CsiszarK78,DBLP:journals/tit/AhlswedeC93,DBLP:journals/tit/Maurer93}; recent characterizations of when key derivation is possible in this model include \cite{DBLP:conf/asiacrypt/RennerW05} and \cite{DBLP:journals/corr/TyagiW14}.  We compare our positive results to these characterizations in \secref{sec:known distributions}.
+A different model for the problem of key derivation from noisy sources does not explicitly consider the distance between $w$ and $w'$, but rather views $w$ and $w'$ as samples of drawn from a correlated pair of random variables.   This model is considered in multiple works, including~\cite{wyner1975wire,DBLP:journals/tit/CsiszarK78,DBLP:journals/tit/AhlswedeC93,DBLP:journals/tit/Maurer93}; recent characterizations of when key derivation is possible in this model include \cite{DBLP:conf/asiacrypt/RennerW05} and \cite{DBLP:journals/corr/TyagiW14}.  We compare our positive results to these characterizations in \apref{sec:corr variables}.  To the best of our knowledge, prior results on correlated random variables are in the known distribution setting, we are unaware of works that consider security for families of distributions.
 
 %The definition of $\Hfuzz$ can be extended to this model (by again thinking of the adversary as choosing the value $w'$ that is most likely to lead to a success).
 
-\paragraph{Organization} The remainder of the paper is organized as follows.  In \secref{sec:preliminaries}, we cover preliminaries and fuzzy extractor definitions.  In \secref{sec:known distributions}, we construct a fuzzy extractor for every known distribution with fuzzy min-entropy.  In Sections~\ref{sec:family of dist} and~\ref{sec:imposs fuzz ext} we provide negative results  for families of distributions for secure sketches and fuzzy extractors, respectively.
+\paragraph{Organization} The remainder of the paper is organized as follows.  In \secref{sec:preliminaries}, we cover preliminaries and fuzzy extractor definitions.  In \secref{sec:known distributions}, we construct a fuzzy extractor for each known distribution with fuzzy min-entropy.  In Sections~\ref{sec:family of dist} and~\ref{sec:imposs fuzz ext} we provide negative results  for families of distributions for secure sketches and fuzzy extractors, respectively.
 
 
 \section{Preliminaries}
@@ -382,8 +390,7 @@ The {\em min-entropy} of $W$ is $\Hoo(W) = -\log(\max_w \Pr[W=w])$,
 and the {\em average (conditional)} min-entropy of $W$ given $P$ is  $\Hav(W|P) = -\log(\expe_{p\in P} \max_{w} \Pr[W=w|P=p])$~\cite[Section 2.4]{DBLP:journals/siamcomp/DodisORS08}.   Let $H_0(W)$ be the logarithm of the size of the support of $W$,  that is $H_0(W) = \log |\{w | \Pr[W=w]>0\}|$.  We use an average case of remaining support size $\tilde{H}_0(W |P) = \log ( \expe_{p\in P} |\{w | \Pr[W=w |P=p]>0\}|)$.
 
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\sd(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
-For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s}$ the class of randomized circuits which output a single bit and have size at most $s$.
-
+%For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s}$ the class of randomized circuits which output a single bit and have size at most $s$.
 For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $w$} is the set of all points within radius $t$, that is, $B_t(w) = \{w'| \dis(w, w')\leq t\}$.  If the size of a ball in a metric space does not depend on $w$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\gamma$, defined via $\dis(w,w') = \{i | w_i \neq w'_i\}$ where $\mathcal{Z}$ is some alphabet.  For this metric, $|B_t| = \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i $.  $U_\kappa$ denotes the uniformly  distributed random variable on $\{0,1\}^\kappa$.  Throughout this work, we consider a sequence of metric spaces $\mathcal{M}_n$ parameterized by $n$, but we write $\mathcal{M}$ for notational convenience. A \emph{negligible} function $\ngl(n)$ is one that decreases faster than any positive inverse polynomial as $n\rightarrow \infty$.
 
 \subsection{Fuzzy Extractors and Secure Sketches}\label{sec:fuzz extractor}
@@ -458,6 +465,7 @@ The $t$-fuzzy min-entropy of a distribution $W$ in a metric space $(\mathcal{M},
 \]
 \end{definition}
 \noindent
+\bnote{Should note this is the ideal security of a noisy source, both in the interactive/non-interactive settings}
 Fuzzy min-entropy is a necessary condition for security~(proof in \apref{sec:proof fuzz necessary}):
 \begin{proposition}
 \label{prop:fuzz necessary}
@@ -472,25 +480,7 @@ If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-fuzzy
 There are many distributions with $\Hfuzz$ with no known fuzzy extractor~(or corresponding impossibility result).
 Our goal is to provide a superlogarithmic length key when provided with superlogarithmic fuzzy min-entropy. 
 
-\paragraph{Generalizing to correlated random variables}
-Instead of considering $w, w'$ that have bounded distance, we can treat $W, W'$ as a pair of correlated random variables.  
-  Renner and Wolf~\cite{DBLP:conf/asiacrypt/RennerW05} study this setting, firsting consider information-reconciliation and privacy amplification separately.  They show that $\Hoo(W)$ is a necessary and sufficient condition for privacy amplification.\footnote{The results of Renner and Wolf use smooth notions of entropy.  A random variable has smooth entropy if it is statistically close to a distribution with true entropy. We describe their results in the terminology of non smooth entropy.}  Second, they show that the length of $p$ must grow with the worst case number of possible outcomes for $W$ conditioned on $W'$.\footnote{This result also uses a smooth notion of entropy.  We describe the non smooth version for simplicity.}  That is, the length of the public value \[|p|\ge \max_{w'\in W} \log |\{w | \Pr[W=w | W'=w']>0\}|.\]
-
-Furthermore, they show there exists a protocol with this length $p$ using optimal encoding functions.  Intuitively, the public information must describe which possible outcome for $W$ actually occurred. This result describes the maximal length of $p$ and does not argue how $p$ effects security.  It may be possible to construct a $p$ that reduces the entropy of $w$ by less than $\log |p|$.  In \secref{sec:known distributions}, we will construct schemes with variable length $p$, providing information-reconciliation for distributions where the bounds of Renner and Wolf provide no security guarantees.
-
-Lastly, the work of Renner and Wolf shows characterize when key derivation is possible from correlated random variables~\cite[Theorem 3]{DBLP:conf/asiacrypt/RennerW05}.  We compare this characterization to fuzzy min-entropy in \secref{sec:known distributions}.
-
-Fuzzy min-entropy can be generalized to this setting.   Fuzzy extractors consider the worst case $w'$.  When considering correlated readings, it is natural to treat $W'$ as a random variable:\footnote{Fuzzy extractors are defined to require high probability of correctness for all pairs $w, w'$.  In the correlated setting, it may make sense to provide an average-case guarantee, where the probability of correctness is also over the draw of $w, w'$.  Renner and Wolf use a smoothed notion of entropy that removes the $\delta$ fraction of the probability mass of $W=w|W'=w'$ with the most points to improve parameters under such a definition.  In this work, we consider worst case correctness and use unsmoothed entropy.}
-
-\begin{definition}
-\label{def:cor fuzz min}
-Let $(W, W')$ be a pair of correlated random variables.  The correlated fuzzy min-entropy of $W, W'$ is:
-\[\Hcorr(W, W') = -\log \left( \max_{w'\in \supp(W')}\sum_{w\in W | \Pr[W=w|W'=w']>0} \Pr[W = w] \right).\]
-\end{definition}
-\noindent 
-In \defref{def:fuzzy min-ent}, the sum is implicitly over $W=w|W'=w'$ since we assume any $w'$ within distance $t$ is possible.  
-For now, we consider sufficiency of $\Hfuzz(W)$ for key derivation from noisy sources (\defref{def:fuzzy min-ent}). We then consider the implications of our results on the correlated reading setting (\defref{def:cor fuzz min}).
-
+\bnote{I feel we can provide a more general results than this one.  Helpful?}
 
 \section{Sufficiency of $\Hfuzz(W)$ When the Algorithms Know the Distribution}
 \label{sec:known distributions}
@@ -522,7 +512,7 @@ A distribution is flat if all points in its support have the same probability. L
 A distribution $W$ is \emph{flat} if for all $w_0, w_1 \in \supp(W)$,  $\Pr[W=w_0] = \Pr[W=w_1]$.  
 \end{definition}
 
-Denote the largest number of points in a ball of radius $t$ in the support of $W$ as $\beta_{t} = \max_{w'\in\M} |\{w | w\in \supp(W) \wedge \dis(w ,w')\le t\}|$.   For flat distributions, the weight of this maximum-probability ball (which determines $\Hfuzz(W)$ by \defref{def:fuzzy min-ent}) is proportional to the number of points in it.  More precisely, 
+Denote the largest number of points in a ball of radius $t$ in the support of $W$ as $\beta_{t} = \max_{w'\in\M} |\{w | w\in \supp(W) \wedge \dis(w ,w')\le t\}|$.   For flat distributions, the weight of the maximum-probability ball (which determines $\Hfuzz(W)$ by \defref{def:fuzzy min-ent}) is proportional to the number of points in it.  More precisely, 
 \begin{align}
 \Hfuzz(W) &= -\log \left(\max_{w' \in \mathcal{M}} \left| \{w | w\in \supp(W) \wedge \dis(w, w')\le t\} \right|\cdot \Pr[W=w]\right) \nonumber \\
 &= -\log\left( \max_{w' \in \mathcal{M}} |\{w | w\in \supp(W) \wedge \dis(w, w')\le t\}| \cdot 2^{-\Hoo(W)}\right) \nonumber \\
@@ -550,14 +540,14 @@ Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a universal hash function
 \begin{enumerate}
 \item \underline{Input}: $w$.
 \item Sample $K\leftarrow \mathcal{K}$.
-\item Set $p = F(K, w), K$.
+\item Set $ss = F(K, w), K$.
 \end{enumerate}
 \vspace{.3in}
 \end{minipage} &
 \begin{minipage}{3.5in}
 \textbf{$\rec_W$}
 \begin{enumerate}
-\item \underline{Input}: $(w', p = y, K)$
+\item \underline{Input}: $(w', ss =( y, K))$
 \item Let $W^* = \{w \in \supp(W) | \dis(w, w')\le t\}$.
 \item For $w^*\in W^*$, if $F(K, w^*) = y$, \\ output $w^*$.
 \item Output $\perp$.
@@ -594,19 +584,19 @@ To overcome this problem, we write the probability of $w\in W$ in the sketch out
 
 \begin{construction}
 \label{cons:leveling}
-Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be a distribution with $\Hoo(W)= m$.  Let $\ell\in\mathbb{Z}^+$ be a parameter.  Let $L_i = (2^{-(i+1)}, 2^{-i}]$ for $i=m,..., m+\ell$.  Let $F_i :\mathcal{K}_i\times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions.  Define $\sketch_W, \rec_W$ as: 
+Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be a distribution with $\Hoo(W)= m$.  Let $\ell\in\mathbb{Z}^+$ be a parameter.  Let $L_i = (2^{-(i+1)}, 2^{-i}]$ for $i=m,..., m+\ell-1$.  Let $F_i :\mathcal{K}_i\times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions.  Define $\sketch_W, \rec_W$ as: 
 \begin{center}
 \begin{tabular}{c|c}
 \begin{minipage}{3in}
 \textbf{$\sketch_W$}
 \begin{enumerate}
 \item \underline{Input}: $w$.
-\item If $\Pr[W=w] \le 2^{-(m+\ell)}$. Set $p=0,w$.
+\item If $\Pr[W=w] \le 2^{-(m+\ell)}$. Set $ss=1,w$.
 \item Else
 \begin{enumerate}
 \item Find $i$ such that $\Pr[W=w]\in L_i$.
 \item Sample $K\leftarrow \mathcal{K}_i$.
-\item Set $ss =1,  i, F_i(K, w), K$.
+\item Set $ss =0,  i, F_i(K, w), K$.
 \end{enumerate}
 \end{enumerate}
 \vspace{.4in}
@@ -630,17 +620,13 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 \end{construction}
 
 \noindent
-We extend our notation for the maximum likelihood ball to the leveled case.  Define $\beta_{t,i}$ as the maximum number of points in a ball in level $i$.  That is,
-\[
-\beta_{t,i} = \max_{w' \in \mathcal{M}} \left|\{w | w\in \supp(W) \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|.
-\]
 
 \begin{theorem}
 \label{thm:layered hashing}
 Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
 
 \end{theorem}
-We provide a proof in \apref{sec:proof of layered hashing}.  The main idea is to show that an adversary that knows the level of $w$ cannot perform much better than an adversary without this information.  
+We provide a proof in \apref{sec:proof of layered hashing}.  The main idea is to show that an adversary that knows the level of $w$ cannot perform much better than an adversary without this information.  \bnote{this sentence isn't helpful, provide better intuition}
 
 \begin{corollary}
 \label{cor:extension to fuzz ext}
@@ -650,13 +636,6 @@ For any distribution $W$ over $\mathcal{M}$ with $\Hfuzz(W)=\omega(\log n)$, the
 
 \noindent
 In our positive results we considered an arbitrary finite metric space.  The relevant parameters were the size of balls and the size of the metric space.  Our negative results are specific to the Hamming metric.
-
-\paragraph{Connection to the characterization of~\cite{DBLP:conf/asiacrypt/RennerW05}}
-Renner and Wolf characterize when it is possible to derive keys from correlated random variables~\cite[Theorem 3]{DBLP:conf/asiacrypt/RennerW05}.  They consider all possible (randomized) transforms $T, T'$ of $W, W'$ into a new pair of variables $V,V'$.  They show that \[|\key| \le \sup_{(V, V')\leftarrow (T(W), T'(W))}\left(  \Hoo(V | T') - \log \max_{v'\in V'} |\{v| \Pr[V=v|T' \wedge V'=v']>0\}|\right).\]  Furthermore, they show that there is a transformation that achieves a key of nearly this length.  The result is nonconstructive as there is no guidance on how to find the transforms $T, T'$.  Since there is no known bound on the length of $T, T'$ it is not clear how to search the transform space even with unlimited time.
-\consref{cons:leveling} can be used to derive keys from correlated random variables.  The main change is to define \[W^* = \{w | \Pr[W=w | W'=w'] >0 \wedge \Pr[W=w]\in L_i\}.\]  
-Our result shows if one is satisfied with obtaining a strong key when possible (our protocol has losses of $2\log 1/\epsilon + \log n+\log 1/\delta$), then a protocol is possible (and explicitly constructible) in the original space. 
-
-
 
 \section{Impossibility of Secure Sketches for a Family with $\Hfuzz$}
 \label{sec:family of dist}
@@ -799,6 +778,35 @@ Leonid Reyzin is supported in part by US NSF grants 0831281, 1012910, 1012798, a
 
 \appendix
 
+\section{Key Derivation from Correlated Random Variables}
+\label{sec:corr variables}
+
+In this work, we consider two draws from some physical source whose distance was bounded according to some metric space.
+Instead of considering $w, w'$ that have bounded distance, we can treat $W, W'$ as a pair of correlated random variables.  
+  Renner and Wolf~\cite{DBLP:conf/asiacrypt/RennerW05} study this setting, firsting consider information-reconciliation and privacy amplification separately.  They show that $\Hoo(W)$ is a necessary and sufficient condition for privacy amplification.\footnote{The results of Renner and Wolf use smooth notions of entropy.  A random variable has smooth entropy if it is statistically close to a distribution with true entropy. We describe their results in the terminology of non smooth entropy.}  Second, they show that the length of $p$ must grow with the worst case number of possible outcomes for $W$ conditioned on $W'$.\footnote{This result also uses a smooth notion of entropy.  We describe the non smooth version for simplicity.}  That is, the length of the public value \[|p|\ge \max_{w'\in W} \log |\{w | \Pr[W=w | W'=w']>0\}|.\]
+
+Furthermore, they show there exists a protocol with this length $p$ using optimal encoding functions.  Intuitively, the public information must describe which possible outcome for $W$ actually occurred. This result describes the maximal length of $p$ and does not argue how $p$ effects security.  It may be possible to construct a $p$ that reduces the entropy of $w$ by less than $\log |p|$.  In \secref{sec:known distributions}, we will construct schemes with variable length $p$, providing information-reconciliation for distributions where the bounds of Renner and Wolf provide no security guarantees.
+
+Lastly, the work of Renner and Wolf shows characterize when key derivation is possible from correlated random variables~\cite[Theorem 3]{DBLP:conf/asiacrypt/RennerW05}.  Fuzzy min-entropy can be generalized to this setting.   Fuzzy extractors consider the worst case $w'$.  When considering correlated readings, it is natural to treat $W'$ as a random variable:\footnote{Fuzzy extractors are defined to require high probability of correctness for all pairs $w, w'$.  In the correlated setting, it may make sense to provide an average-case guarantee, where the probability of correctness is also over the draw of $w, w'$.  Renner and Wolf use a smoothed notion of entropy that removes the $\delta$ fraction of the probability mass of $W=w|W'=w'$ with the most points to improve parameters under such a definition.  In this work, we consider worst case correctness and use unsmoothed entropy.}
+
+\begin{definition}
+\label{def:cor fuzz min}
+Let $(W, W')$ be a pair of correlated random variables.  The correlated fuzzy min-entropy of $W, W'$ is:
+\[\Hcorr(W, W') = -\log \left( \max_{w'\in \supp(W')}\sum_{w\in W | \Pr[W=w|W'=w']>0} \Pr[W = w] \right).\]
+\end{definition}
+\noindent 
+In \defref{def:fuzzy min-ent}, the sum is implicitly over $W=w|W'=w'$ since we assume any $w'$ within distance $t$ is possible.  
+In \secref{sec:known distributions} we showed sufficiency  of $\Hfuzz(W)$ for key derivation from noisy sources (\defref{def:fuzzy min-ent}). 
+
+\paragraph{Connection to the characterization of~\cite{DBLP:conf/asiacrypt/RennerW05}}
+Renner and Wolf characterize when it is possible to derive keys from correlated random variables~\cite[Theorem 3]{DBLP:conf/asiacrypt/RennerW05}.  They consider all possible (randomized) transforms $T, T'$ of $W, W'$ into a new pair of variables $V,V'$.  They show that \[|\key| \le \sup_{(V, V')\leftarrow (T(W), T'(W))}\left(  \Hoo(V | T') - \log \max_{v'\in V'} |\{v| \Pr[V=v|T' \wedge V'=v']>0\}|\right).\]  Furthermore, they show that there is a transformation that achieves a key of nearly this length.  The result is nonconstructive as there is no guidance on how to find the transforms $T, T'$.  Since there is no known bound on the length of $T, T'$ it is not clear how to search the transform space even with unlimited time.
+\consref{cons:leveling} can be used to derive keys from correlated random variables.  The main change is to define \[W^* = \{w | \Pr[W=w | W'=w'] >0 \wedge \Pr[W=w]\in L_i\}.\]  
+Our result shows if one is satisfied with obtaining a strong key when possible (our protocol has losses of $2\log 1/\epsilon + \log n+\log 1/\delta$), then a protocol is possible (and explicitly constructible) in the original space. 
+
+
+
+
+
 %\section{Leveraging convex combinations?}
 %\label{sec:convex comb}
 %\bnote{be careful uncommenting this, some notation may be out of date}
@@ -893,6 +901,7 @@ Clearly, $\Pr[D(\Key, P) = 1]\geq 1/\poly(n) - \delta$, while $\Pr[D(U_\kappa, P
 \delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
 \]
 Note that $D$ only provides an input and looks at the output, thus it extends to an interactive protocol.  Also, $D$ is of size $\max |\mathcal{M}|+ |\rep|$ where $\max |\mathcal{M}|$ is the longest description of an item in the metric space.  Thus, $D$ is also a distinguisher in the computational setting.
+\bnote{this should probably be in the body of the paper}
 \end{proof}
 
 \section{Proof of \lemref{lem:flat hashing}}
@@ -912,6 +921,11 @@ The inequality proceeds by union bound. The first equality proceeds by the unive
 \label{sec:proof of layered hashing}
 \begin{proof}
 Throughout the proof we assume that $\ell = n$ is the number of levels.  The proof can be carried out for an arbitrary $\ell$ but it leads to a complicated theorem statement.
+We extend our notation for the maximum likelihood ball to the leveled case.  Define $\beta_{t,i}$ as the maximum number of points in a ball in level $i$.  That is,
+\[
+\beta_{t,i} = \max_{w' \in \mathcal{M}} \left|\{w | w\in \supp(W) \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|.
+\]
+
 
 \noindent
 \textbf{Correctness:}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(m+\ell)} = 2^{-(m+n)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  When $\Pr[W=w]> 2^{-(m+n)}$ let $L_i^*$ be the level of $\Pr[W=w]$.
@@ -921,7 +935,7 @@ Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
  &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{\beta_{t,i}-1}{|R_i|} = \delta
 \end{align*}
-The inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $\beta_{t,i}$.  
+The first inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $\beta_{t,i}$.  
 
 \noindent
 \textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.
@@ -935,19 +949,18 @@ The best strategy for an adversary that receives $i$ as is to guess a point that
 \textbf{Security:}
 We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
 \begin{align*}
-\Hav(W | \sketch(W)) = -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\\
--\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)
+\Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\\
+&\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)
 \end{align*}
 For the remainder of the proof, we seek a bound on 
 \[
 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0} = \max_{w\in W | 2^{-(n+m)}<\Pr[W=w]}\Pr[W=w | \sketch(W)].
 \]
-We separate out this quantity into levels:
+We separate out this quantity into levels:\bnote{we need to talk about K here}
 \begin{align*}
 \max_{w\in W | \Pr[W=w]>2^{-(m+n)}}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
-&= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{|\sketch(W)|i|}\right)\\
 &\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
-&\le \expe_{i | m\le i \le m+n} \left(2^{-i}*\beta_{t,i}/\delta\right)\\
+&\le \expe_{i | m\le i \le m+n} \left(\frac{2^{-i}*\beta_{t,i}}{\delta}\right)\\
 &\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot \beta_{t,i}\right)}{2\delta}\\
 %&=\delta \sum_{i | m\le i \le m+n} \Pr[W\in L_i]\left(2^{-i}*\beta_{t,i}\right)
 %\end{align*}
@@ -959,7 +972,7 @@ We separate out this quantity into levels:
 Where the last line follows by Equation~\eqref{eq:link fuzz 3}.
 Combining both cases we have:
 \begin{align*}
-\Hav(W | \sketch(W)) &= -\log \left(2^{-m}+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
+\Hav(W | \sketch(W)) &\ge -\log \left(2^{-m}+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
 &\ge -\log \min\{2^{-m}, \frac{(1-2^{-m}) n2^{-\Hfuzz(W)}}{2\delta}\})-1\\
 &\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-m}) - 2\\
 &\ge \Hfuzz(W) - \log n + \log \delta - 3\\
@@ -1060,6 +1073,7 @@ The left operand to $\max$ is bounded by $2$~(bounding the $\max$ by $2$):
 &< (\gamma-t+2)\log |\mathbb{F}| - (\gamma-2) \log |\mathbb{F}| +2 \ \ \ \ \mbox{(by \lemref{lem:log-minus-one})}\\
 &\le (4-t)\log |\mathbb{F}| +2< 2\,.
 \end{align*}
+The statement of the lemma follows by noting that for any $X, Y$, $\Hav(X|Y)\le \tilde{H}_0(X|Y)$.
 \end{proof}
 
 \lnote{need for \lemref{lem:log-minus-one}:  $\gamma-1\le |F|$ and $|F|\ge 4$}
