@@ -940,13 +940,18 @@ The first inequality is by union bound. The first equality follows from the univ
 \noindent
 \textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.
 
-The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses \[w^*= \argmax_{w' \in \mathcal{M}}\Pr_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w^*)}[W=w].\] The success of this adversary is at least $2^{-(i+1)}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses 
+\[
+w^*= \argmax_{w' \in \mathcal{M}}\sum_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w')}\Pr[W=w].
+\] 
+The success of this adversary is at least $2^{-(i+1)}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
 \begin{align}
 \expe_{i | m\le i \le m+n}2^{-(i+1)}\beta_{t,i}&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}< \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
 &\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
 &= n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
 \end{align}
 \textbf{Security:}
+\bnote{need to clean up this proof}
 We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
 \begin{align*}
 \Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\\
@@ -956,9 +961,9 @@ For the remainder of the proof, we seek a bound on
 \[
 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0} = \max_{w\in W | 2^{-(n+m)}<\Pr[W=w]}\Pr[W=w | \sketch(W)].
 \]
-We separate out this quantity into levels:\bnote{we need to talk about K here}
+We separate out this quantity into levels:\bnote{we need to talk about K here}\bnote{we were asked what $\Pr[W=w| \sketch(W)]$ means, to me that's well formed}\bnote{shouldn't there be a term here $\Pr[L_i = i]$?}
 \begin{align*}
-\max_{w\in W | \Pr[W=w]>2^{-(m+n)}}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
+\max_{w\in W | 2^{-(m+n)}< \Pr[W=w]}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
 &\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
 &\le \expe_{i | m\le i \le m+n} \left(\frac{2^{-i}*\beta_{t,i}}{\delta}\right)\\
 &\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot \beta_{t,i}\right)}{2\delta}\\
@@ -1012,24 +1017,23 @@ Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution 
 Fix some $\sketch, \rec$ algorithm with error $\delta < 1/4$, then $\tilde{H}_0(V | \sketch(V)) \le (\gamma-t+1)\log |\mathbb{F}|+1$.\footnote{This result is an extension of lower bounds from~\cite[Appendix C]{DBLP:journals/siamcomp/DodisORS08}.  Dealing with imperfect correctness makes the bound more complicated.  In particular, we can only argue about the average remaining support size.}
 \end{lemma}
 \begin{proof}
-We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  This is the same as considering $\rep$ that outputs any coin it flips.  Since $w, w'$ are independent of $p$ this does not effect correctness.  Security is defined based on the output of $\rec$ so outputting the coins of $\rep$ does not effect security.
+We assume that $\rec$ is deterministic in our analysis.  Any randomness necessary for the \rec algorithm can be provided by \sketch.  This is the same as considering $\rec$ that outputs any coin it flips.  Since $w, w'$ are independent of $ss$ this does not effect correctness.  Security is defined based on the output of $\rec$ so outputting the coins of $\rec$ does not effect security.
 By the definition of correctness for $(\sketch, \rec)$, 
 \[
-\forall w, w', \Pr_{ss\leftarrow \sketch(w)} [\rec(w', ss) \neq w] < 1/4.
+\forall w, w', \dis(w, w') \le t, \Pr_{ss\leftarrow \sketch(w)} [\rec(w', ss) \neq w] < 1/4.
 \]
 %For most $p$, $\rec$ works on most neighbors of $w$.  
 Fix some $w$.  
 By Markov's inequality, there exists a set $A_{ss}$ such that $\Pr[ss\in A_{ss}]\ge 1/2$ and $\forall ss\in A_{ss}$, 
 \[
-\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
+\frac{|\{w' | \dis (w', w)\le t \wedge \rec(w', ss) \neq w\}|}{|\{w'|\dis(w', w) \le t\}|}\le 2\delta < 1/2.\]
 
-Consider some $ss^*\in A_{ss}$.  We now show that $H_0(V | \sketch(V) = ss^*) \le (\gamma-t+1)\log |\mathbb{F}|$.  For the sketched value $w$, $\{w' | \dis(w, w') \le t \wedge \rec(w', p) \neq w] \le 2\delta$.  
+Consider some $ss^*\in A_{ss}$.  We now show that $H_0(V | \sketch(V) = ss^*) \le (\gamma-t+1)\log |\mathbb{F}|$.  For the sketched value $w$, at most a $2\delta$ fraction of nearby $w'$ do not map to $w$. Thus, this is also true for every value in $V|\sketch(V) = ss^*$ this is also true.    This makes the support of $V|\sketch(V)=ss^*$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  This implies that for all $w_1, w_2 \in V|\sketch(V)=ss^*$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|\sketch(V)=ss^*$ is a set with minimum distance at least $t$.  
 
-For every value in $V|\sketch(V) = ss^*$ this is also true.  This makes the support of $V|\sketch(V)=ss^*$ a $(t, 2\delta)$-Shannon code~(see \defref{def:shannon-code}).  This implies that for all $w_1, w_2 \in V|\sketch(V)=ss^*$, $\dis(w_1, w_2)\ge t$~(since $2\delta< 1/2$).  That is $V|\sketch(V)=ss^*$ is a set with minimum distance at least $t$.  
 
 By the Singleton bound, this implies that $H_0(V |\sketch(V)=ss^*) \le (\gamma -t+1 )|\mathbb{F}|$.  Averaging over $\sketch(V)=ss^*$ one has that $\tilde{H}_0(V|P) \le (\gamma -t +1) \log|\mathbb{F}| +1$.
 \end{proof}
-
+\bnote{the reviewer is complaining that $V | \sketch(V)$ is not a distribution.  don't know why}
 \begin{lemma}
 \label{lem:side info determines sketch}
 $\Hav(V | \sketch(V), Z) <2$.
