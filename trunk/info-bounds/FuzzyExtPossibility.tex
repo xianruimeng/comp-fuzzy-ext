@@ -609,7 +609,7 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 \item Else
 \begin{enumerate}
 \item Parse $(i, y, K) = ss_{1,..., |y|}$.
-\item $W^* = \{w \in \supp(W) | \dis(w, w')\le t \\\, \, \, \wedge \Pr[W=w]\in L_i\}$.
+\item $W^* = \{w | \dis(w, w')\le t \\\, \, \, \wedge \Pr[W=w]\in L_i\}$.
 \item For $w^*\in W^*$, if $F_i(K, w^*) = z$, \\ output $w^*$.
 \item Output $\perp$.
 \end{enumerate}
@@ -923,7 +923,7 @@ The inequality proceeds by union bound. The first equality proceeds by the unive
 Throughout the proof we assume that $\ell = n$ is the number of levels.  The proof can be carried out for an arbitrary $\ell$ but it leads to a complicated theorem statement.
 We extend our notation for the maximum likelihood ball to the leveled case.  Define $\beta_{t,i}$ as the maximum number of points in a ball in level $i$.  That is,
 \[
-\beta_{t,i} = \max_{w' \in \mathcal{M}} \left|\{w | w\in \supp(W) \wedge \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|.
+\beta_{t,i} = \max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|.
 \]
 
 
@@ -937,31 +937,47 @@ Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$
 \end{align*}
 The first inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $\beta_{t,i}$.  
 
+\bnote{new outline to proof. proof to come}
+\begin{enumerate}
+\item show chain rule for fuzzy min-entropy
+\item show that fuzzy min-entropy conditioned on i is related to $\beta_{t, i}$.
+\item show that releasing the sketch only gives delta more than necessary.
+\end{enumerate}
 \noindent
-\textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.
+\textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  
 
-The best strategy for an adversary that receives $i$ as is to guess a point that has the most nearby weight in that level.  The adversary chooses 
+Let $I$ be the random variable describing the level.  Since there are at most $n$ outcomes for the level when $1_{\text{low}} =0$, we have that \[\Hav( W | I \wedge 1_{\text{low}}=0) \ge \Hoo(W) -\log n.\]
+
+In the standard secure sketch game, to maximize probability of predicting $w$, the adversary supplies the $w'$ with the most nearby probability mass.  With the additional information about the probability of $w$, the adversary should supply $w'$ with the most nearby probability in the correct probability level.  That is, the adversary's best guess is:
 \[
-w^*= \argmax_{w' \in \mathcal{M}}\sum_{w\in W | 2^{-(i+1)}< \Pr[W=w]\le 2^{-i}\wedge \dis(w, w')}\Pr[W=w].
+w^*= \argmax_{w' \in \mathcal{M}}\sum_{w\in W | \Pr[W=w]\in L_i\wedge \dis(w, w')}\Pr[W=w].
 \] 
-The success of this adversary is at least $2^{-(i+1)}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at least $2^{-(i+1)}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+The success of this adversary is at most $2^{-i}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at most $2^{-i}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
 \begin{align}
-\expe_{i | m\le i \le m+n}2^{-(i+1)}\beta_{t,i}&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W| 2^{-(i+1)}< \Pr[W=w]\le 2^{-i} \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
-&\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
-&= n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
+\expe_{i | m\le i \le m+n}2^{-i}\beta_{t,i}%&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W|  w\in L_i \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
+%&\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
+&\ge n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
 \end{align}
 \textbf{Security:}
-\bnote{need to clean up this proof}
-We now argue security.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
+We just saw that an adversary that learns $L_i$ performs at most a factor of $n$ better than an adversary without this information.  We now argue security of the construction.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
+\begin{align}
+\Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\nonumber\\
+&\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)
+\end{align}
+For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$
+
+Let $L_I$ denote the random variable denoting the probability of $\Pr[W=w]$.
+All the dependence between $W$ and $K$ is contained in $L_I$.   That is, $\Hav(W | K_I , L_I) = \Hav(W | L_I)$. Let $Y_I$ denote the outcome of the hash function.  We now consider the remaining average min-entropy when $1_{\text{low}} = 0$:
 \begin{align*}
-\Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\\
-&\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)
+\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &= \Hav(W | L_I , K_I, Y_I \wedge 1_{\text{low}}=0)\\
+&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | K_i , Y_i, i)}\right)\right)\\
+&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | Y_i, i)}\right)\right)\\
+&\ge -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(\frac{(\beta_{t, i}-1)}{\delta}2^{-\Hav(W | i)}\right)\right)\\
+&= -\log \left(\frac{1}{\delta}\left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i)}\right)\right)\right)\\
+&= -\log \left(\frac{2}{\delta} \left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i+1)}\right)\right)\right)\\
+&= -\log \left(\frac{2n}{\delta} 2^{-\Hfuzz(W)}\right)\\
 \end{align*}
-For the remainder of the proof, we seek a bound on 
-\[
-2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0} = \max_{w\in W | 2^{-(n+m)}<\Pr[W=w]}\Pr[W=w | \sketch(W)].
-\]
-We separate out this quantity into levels:\bnote{we need to talk about K here}\bnote{we were asked what $\Pr[W=w| \sketch(W)]$ means, to me that's well formed}\bnote{shouldn't there be a term here $\Pr[L_i = i]$?}
+Where the first inequality proceeds by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}
 \begin{align*}
 \max_{w\in W | 2^{-(m+n)}< \Pr[W=w]}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
 &\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
