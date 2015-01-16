@@ -91,6 +91,7 @@
 \newcommand{\Hoo}{\mathrm{H}_\infty}
 \newcommand{\Hav}{\tilde{\mathrm{H}}_\infty}
 \newcommand{\Hfuzz}{\mathrm{H}^{\mathtt{fuzz}}_{t,\infty}}
+\newcommand{\Hfav}{\tilde{\mathrm{H}}^{\mathtt{fuzz}}_{t,\infty}}
 \newcommand{\Hcorr}{\mathrm{H}^{\mathtt{corr}}}
 \newcommand{\Huse}{\mathrm{H}_{\mathtt{usable}}}
 \newcommand{\Dom}{\mathsl{Dom}}
@@ -297,15 +298,16 @@ The security requirement for fuzzy extractors is that $\key$ is uniform even to 
 \paragraph{Fuzzy Min-Entropy}
 We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$, thus subverting the security of $\key$ by running $\rep$. Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within the ball $B_t(w')$ of radius $t$ around $w'$.
 We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$.  Observe that this quantity can be bounded in terms of min-entropy: $\Hoo(W) \ge \Hfuzz(W) \ge \Hoo(W)-\log |B_t|$.
-\bnote{should note that fuzzy min-entropy is the ideal security, measures how an adversary would do with oracle access, goal is to implement this oracle}
 
-Superlogarithmic fuzzy min-entropy  is \emph{necessary} for nontrivial key extraction~(\propref{prop:fuzz necessary} formalizes the above intuition). 
-However, existing constructions do not measure their security in terms of fuzzy min-entropy; instead, their security is shown to be  $\Hoo(W)$ minus some loss that is at least $\log |B_t|$ due to error-tolerance. Since $\Hoo(W)-\log |B_t| \le \Hfuzz(W)$, it is natural to ask whether this loss is necessary. This question is particularly relevant when the gap between the two sides of the inequality is high.  As an example, iris scans appear to have significant $\Hfuzz(W)$ (because iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing}) but negative $\Hoo(W) -\log |B_t|$ \cite[Section 5]{blanton2009biometric}. We therefore ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?} There is evidence that it may be when the security requirement is computational rather than information-theoretic---see \secref{sec:related settings}. 
-\bnote{introduce distributional uncertainty here}
+Fuzzy min-entropy measures the quality of a distribution when provided oracle access to the functionality of a fuzzy extractor.  Superlogarithmic fuzzy min-entropy  is \emph{necessary} for nontrivial key extraction~(\propref{prop:fuzz necessary} formalizes the above intuition).  Fuzzy min-entropy measures the maximum obtainable key from a noisy distribution.  
+However, existing constructions do not measure their security in terms of fuzzy min-entropy; instead, their security is shown to be  $\Hoo(W)$ minus some loss that is at least $\log |B_t|$ due to error-tolerance. Since $\Hoo(W)-\log |B_t| \le \Hfuzz(W)$, it is natural to ask whether this loss is necessary. This question is particularly relevant when the gap between the two sides of the inequality is high.\footnote{For nearly uniform distributions, $\Hfuzz(W) \approx \Hoo(W)- \log |B_t|$.  In this setting, standard coding based constructions of fuzzy extractors (instantiated with optimum codes) yield keys of size approximately $\Hfuzz(W)$.}  As an example, iris scans appear to have significant $\Hfuzz(W)$ (because iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing}) but negative $\Hoo(W) -\log |B_t|$ \cite[Section 5]{blanton2009biometric}. We therefore ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?} There is evidence that it may be when the security requirement is computational rather than information-theoretic---see \secref{sec:related settings}. 
 
+We answer this question in two important settings.  An important aspect of a fuzzy extractor is how much it knows about the target distribution $W$.  In the extreme the fuzzy extractor has a complete description of the probability density function of $W$.  We call this setting the \emph{known distribution} setting.  (Previous works have consider
 
+Assuming full knowledge of a distribution is often unrealistic. Indeed, high-entropy distributions can never be fully observed directly and must therefore be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary, with greater resources, would likely be able to build a better model. Therefore, fuzzy extractor designs cannot usually be tailored to one  particular source. Existing designs work for a family of sources (for example, all sources of min-entropy at least $m$ with at most $t$ errors). Thus, the design is fixed with a partially known distribution, and the adversary may therefore know more about the distribution than the designer of the fuzzy extractor.  We call this setting \emph{family of distributions}.
+We ask whether fuzzy min-entropy is sufficient in each of these settings.
 
-\paragraph{Tight Characterization for the Case of a Known Distribution}
+\paragraph{Sufficiency of $\Hfuzz(W)$ for a Known Distribution}
 We show that for every source $W$ with superlogarithmic $\Hfuzz(W)$, it is possible to construct a fuzzy extractor with a superlogarithmic length $\key$ (\corref{cor:extension to fuzz ext}). We thus show that $\Hfuzz(W)$ is a necessary and sufficient condition for building a fuzzy extractor for a \emph{known distribution} $W$.  It is important to emphasize that these constructions incorporate the knowledge of the complete distribution of $W$ (and, in particular, they are not polynomial-time).
 
 A number of previous works in this known-distribution setting have provided efficient algorithms and
@@ -314,23 +316,19 @@ i.i.d. sequences (for example, \cite{JW99,LT03,DBLP:conf/eccv/TuylsG04,hao2006co
 Our characterization may be seen as unifying previous work, and justifies using $\Hfuzz(W)$ as the measure of the quality of a noisy distribution,  rather than cruder measures such as $\Hoo(W)-\log |B_t|$. 
 
 
-
-
-\paragraph{Impossibility of Fuzzy Extractors for Families of Distributions}
-Assuming full knowledge of a distribution is often unrealistic. Indeed, high-entropy distributions can never be fully observed directly and must therefore be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary, with greater resources, would likely be able to build a better model. Therefore, fuzzy extractor designs cannot usually be tailored to one  particular source. Existing designs work for a family of sources (for example, all sources of min-entropy at least $m$ with at most $t$ errors). Thus, the design is fixed before the distribution is fully known, and the adversary may therefore know more about the distribution than the designer of the fuzzy extractor.
-
-We show that this extra adversarial knowledge can be devastating  (\thref{thm:imposs fuzz ext}). 
+\paragraph{Impossibility of a Fuzzy Extractor for a Family of Distributions}
+Our results are negative when the distribution $W$ is only known to come from a family $\mathcal{W}_Z$ (\thref{thm:imposs fuzz ext}).
 Specifically, we show a family of distributions $\mathcal{W}_Z$ such that not even a 2-bit fuzzy extractor can be secure for most distributions in  $\mathcal{W}_Z$.  We emphasize that each distribution $W_z\in \mathcal{W}_Z$ has superlogarithmic fuzzy min-entropy---in fact, $\Hfuzz(W_z)=\Hoo(W_z)$, because all points in $W_z$ are distance at least $t$ apart. Our proof relies on high dimensionality of each $W_z$ and on perfect correctness of the $\rep$ procedure.
-
+This result shows that uncertainty in the distribution $W$ is devastating to building a fuzzy extractor.  This result motivates the further research into physical sources.  \bnote{come back to this sentence}
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{c  l l }
  & Known Distribution & Family of Distributions\\
 \hline
-Secure Sketch & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs sketch})\\
+Fuzzy Extractor & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs fuzz ext})\\
 \hline
-Fuzzy Extractor & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs fuzz ext}) 
+Secure Sketch & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs sketch})
 \end{tabular}
 \end{center}
 \caption{Is fuzzy min-entropy sufficient to extract a superlogarithmic length key?  Results are information-theoretic.}
@@ -374,7 +372,7 @@ The security definition of fuzzy extractors and secure sketches can be weakened 
 Furthermore, the functional definition of fuzzy extractors and secure sketches can be weakened to permit interaction between the party having $w$ and the party having $w'$. Such a weakening is useful for secure remote authentication~\cite{Boyen05secureremote}. When both interaction and computational assumptions are allowed, secure two-party computation can produce a key that will be secure whenever the distribution $W$ has fuzzy min-entropy.  The two-party computation protocol needs to be secure without assuming authenticated channels; it can be built under the assumptions that collision-resistant hash functions and enhanced trapdoor permutations exist~\cite{DBLP:journals/joc/BarakCLPR11}.
 
 \paragraph{Correlated rather than close readings}
-A different model for the problem of key derivation from noisy sources does not explicitly consider the distance between $w$ and $w'$, but rather views $w$ and $w'$ as samples of drawn from a correlated pair of random variables.   This model is considered in multiple works, including~\cite{wyner1975wire,DBLP:journals/tit/CsiszarK78,DBLP:journals/tit/AhlswedeC93,DBLP:journals/tit/Maurer93}; recent characterizations of when key derivation is possible in this model include \cite{DBLP:conf/asiacrypt/RennerW05} and \cite{DBLP:journals/corr/TyagiW14}.  We compare our positive results to these characterizations in \apref{sec:corr variables}.  To the best of our knowledge, prior results on correlated random variables are in the known distribution setting, we are unaware of works that consider security for families of distributions.
+A different model for the problem of key derivation from noisy sources does not explicitly consider the distance between $w$ and $w'$, but rather views $w$ and $w'$ as samples of drawn from a correlated pair of random variables.   This model is considered in multiple works, including~\cite{wyner1975wire,DBLP:journals/tit/CsiszarK78,DBLP:journals/tit/AhlswedeC93,DBLP:journals/tit/Maurer93}; recent characterizations of when key derivation is possible in this model include \cite{DBLP:conf/asiacrypt/RennerW05} and \cite{DBLP:journals/corr/TyagiW14}.  We compare our positive results to these characterizations in \apref{sec:corr variables}.  To the best of our knowledge, prior results on correlated random variables are in the known distribution setting, we are unaware of works that consider security for a family of distributions.
 
 %The definition of $\Hfuzz$ can be extended to this model (by again thinking of the adversary as choosing the value $w'$ that is most likely to lead to a success).
 
@@ -451,7 +449,7 @@ Assume $(\sketch, \rec)$ is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure
 \end{itemize}
 \end{lemma}
 
-\subsection{Fuzzy Min-Entropy: a Necessary Condition}
+\subsection{Fuzzy Min-Entropy: suitability of a noisy distribution for key derivation}
 \label{sec:minimal conditions}
 The value $p$ allows everyone, including the adversary, to find the output of $\rep(\cdot, p)$ on any input $w'$. Ideally,  $p$ should not provide any useful information beyond this ability, and the outputs of $\rep$ on inputs that are too distant from $w$ should provide no useful information, either.  In this ideal scenario, the adversary is limited to trying to guess a $w'$ that is $t$-close to $w$. 
 Letting $w'$ be the center of the maximum-weight ball in $W$ would be optimal for the adversary.
@@ -465,22 +463,39 @@ The $t$-fuzzy min-entropy of a distribution $W$ in a metric space $(\mathcal{M},
 \]
 \end{definition}
 \noindent
-\bnote{Should note this is the ideal security of a noisy source, both in the interactive/non-interactive settings}
-Fuzzy min-entropy is a necessary condition for security~(proof in \apref{sec:proof fuzz necessary}):
-\begin{proposition}
+Fuzzy min-entropy is a necessary condition for security.  It measures the advantage provided to the adversary by allowing them to run the $\rep$ functionality.  Thus, the fuzzy min-entropy is the ideal security that any fuzzy extractor should be compared against.
+\begin{proposition}~(proof in \apref{sec:proof fuzz necessary})
 \label{prop:fuzz necessary}
-Let $W$ be a distribution over $(\mathcal{M}, \dis)$ and let $n= \log |\mathcal{M}|$.
-If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-fuzzy extractor %that is $(\max |\mathcal{M}| +  |\rep|, \epsilon)$-hard for $\epsilon = \ngl(n)$
- with error $\delta = \ngl(n)$ for $\kappa =\omega(\log n)$.
+Let $W$ be a distribution  over $(\mathcal{M}, \dis)$ with $\Hfuzz(W) =m$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, W, \kappa, t, \epsilon)$-fuzzy extractor with error $\delta$.  Then 
+\[
+\epsilon\ge 2^{-m}-\delta -2^{-\kappa}.
+\]
+In particular, for security parameter $n$, if $m = \Theta(\log n), \delta = \ngl(n), \kappa = \omega(\log n)$, then $\epsilon  = 1/\poly(n)$.
+%If $\Hfuzz (W) = \Theta(\log n)$ there is no $(\mathcal{M}, W, \kappa, t)$-fuzzy extractor %that is $(\max |\mathcal{M}| +  |\rep|, \epsilon)$-hard for $\epsilon = \ngl(n)$
+% with error $\delta = \ngl(n)$ for $\kappa =\omega(\log n)$.
 \end{proposition}
 
 %Even if we consider a two party protocol where Alice holds $w$ and Bob holds $w'$, 
 %\lemref{lem:fuzz necessary} still applies.  
-\noindent
-There are many distributions with $\Hfuzz$ with no known fuzzy extractor~(or corresponding impossibility result).
-Our goal is to provide a superlogarithmic length key when provided with superlogarithmic fuzzy min-entropy. 
+The proof of \propref{prop:fuzz necessary} is not specific to the fuzzy extractor setting, it also applies to computational and interactive definitions.  There are many distributions with $\Hfuzz$ with no known fuzzy extractor~(or corresponding impossibility result).
+Our goal is to provide a superlogarithmic length key whenever a distribution has superlogarithmic fuzzy min-entropy. 
 
-\bnote{I feel we can provide a more general results than this one.  Helpful?}
+\paragraph{Conditional Fuzzy min-entropy}
+In our proofs, we will use a conditional version of fuzzy min-entropy.
+\begin{definition}
+\label{def:cond fuzzy ent}
+The $t$-conditional fuzzy min-entropy of a distribution $W |P$ in a metric space $(\mathcal{M}, \dis)$ is:
+\[
+\Hfav(W|P) = -\log \left( \expe_{p\in P} \max_{w'} \sum_{w\in W |P =p | \dis(w, w')\le t} \Pr[W=w|P=p]\right).
+\]
+\end{definition}
+
+\noindent
+Fuzzy min-entropy obeys a chain rule:
+\begin{lemma}~(proof in \apref{sec:proof fuzz necessary})
+\label{lem:chain rule fuzz}
+$\Hfav(W|P) \ge \Hfuzz(W) - H_0(P)$.
+\end{lemma}
 
 \section{Sufficiency of $\Hfuzz(W)$ When the Algorithms Know the Distribution}
 \label{sec:known distributions}
@@ -887,22 +902,33 @@ This means that showing security for a family of distributions $\mathcal{W}$ is 
 %\end{corollary}
 %
 %Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for fuzzy extractors as well as secure sketches.  Additionally they generalize to imperfect correctness.
-\section{Proof of \propref{prop:fuzz necessary}}
+\section{Fuzzy min-entropy}
 \label{sec:proof fuzz necessary}
-\begin{proof}
-Let $W$ be a distribution where $\Hfuzz(W) = \Theta(\log n)$.  This means that there exists a point $w' \in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, w')\leq t] \geq 1/\poly(n)$.  Consider the following distinguisher $D$:
+\begin{proof}[Proof of \propref{prop:fuzz necessary}]
+Let $W$ be a distribution where $\Hfuzz(W) = m$.  This means that there exists a point $w' \in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, w')\leq t] = 2^{-m}$.  Consider the following distinguisher $D$:
 \begin{itemize}
 \item Input $r, p$.
 \item If $\rep(w', p) = r$, output $1$.
 \item Else output $0$.
 \end{itemize}
-Clearly, $\Pr[D(\Key, P) = 1]\geq 1/\poly(n) - \delta$, while $\Pr[D(U_\kappa, P)=1 ]= 1/2^{-\kappa}$.  Thus, when $\kappa = \omega(\log n)$:
+Clearly, $\Pr[D(\Key, P) = 1]\geq 2^{-m} - \delta$, while $\Pr[D(U_\kappa, P)=1 ]= 1/2^{-\kappa}$.  Thus,
 \[
-\delta^D((R, P), (U_\kappa, P))\geq \frac{1}{\poly(n)} -\delta -  \frac{1}{2^{-\kappa}} = 1/\poly(n).
+\sd((R, P), (U_\kappa, P)) \ge \delta^D((R, P), (U_\kappa, P))\geq 2^{-m} -\delta -2^{-\kappa}.
 \]
-Note that $D$ only provides an input and looks at the output, thus it extends to an interactive protocol.  Also, $D$ is of size $\max |\mathcal{M}|+ |\rep|$ where $\max |\mathcal{M}|$ is the longest description of an item in the metric space.  Thus, $D$ is also a distinguisher in the computational setting.
-\bnote{this should probably be in the body of the paper}
 \end{proof}
+
+\begin{proof}[Proof of \lemref{lem:chain rule fuzz}]
+\begin{align*}
+\Hfav(W|P) &= -\log \left( \expe_{p\leftarrow P} \max_{w'} \sum_{w\in W |P =p | \dis(w, w')\le t} \Pr[W=w|P=p] \right)\\
+&= -\log \left( \sum_{p} \max_{w'} \sum_{w\in W |P =p | \dis(w, w')\le t} \Pr[W=w|P=p]\Pr[P=p] \right)\\
+&= -\log \left( \sum_{p} \max_{w'} \sum_{w\in W |P =p | \dis(w, w')\le t} \Pr[W=w \wedge P=p] \right)\\
+&\ge -\log \left( \sum_{p} \max_{w'} \sum_{w\in W |P =p | \dis(w, w')\le t} \Pr[W=w] \right)\\
+&\ge -\log \left( \sum_{p} \max_{w'} \sum_{w\in W | \dis(w, w')\le t} \Pr[W=w] \right)\\
+&\ge -\log \left( 2^{H_0(P)} \left(\max_{w'} \sum_{w\in W | \dis(w, w')\le t} \Pr[W=w] \right)\right)\\
+&\ge \Hfuzz(W) - H_0(P).
+\end{align*}
+\end{proof}
+
 
 \section{Proof of \lemref{lem:flat hashing}}
 \label{sec:proof of flat hashing}
@@ -959,7 +985,8 @@ The success of this adversary is at most $2^{-i}\beta_{t,i}$ as there at $\beta_
 &\ge n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
 \end{align}
 \textbf{Security:}
-We just saw that an adversary that learns $L_i$ performs at most a factor of $n$ better than an adversary without this information.  We now argue security of the construction.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
+%We just saw that an adversary that learns $L_i$ performs at most a factor of $n$ better than an adversary without this information.  
+We now argue security of the construction.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
 \begin{align}
 \Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\nonumber\\
 &\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)
