@@ -1168,9 +1168,9 @@ Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an informat
 \end{lemma}
 \begin{proof}
 As in the proof of \thref{thm:imposs sketch}, we assume that $\rep$ is deterministic.  Denote by $(\Key, P) \leftarrow \gen(V)$.
-By Markov's inequality, there exists a set $A_{p}$ such that $\Pr[p\in A_{p}]\ge 1/2$ and $\forall p\in A_{p}$, 
+By Markov's inequality, there exists a set $A_{\eps}$ such that $\Pr[p\in A_{\eps}]\ge 1/2$ and $\forall p\in A_{\eps}$, 
 \[
-(\Key |P =p, P = p ) \approx_{2\epsilon} (U_\kappa , P =p).
+(\Key |P =p) \approx_{2\epsilon} (U_\kappa , P =p).
 \]
 %\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
@@ -1199,14 +1199,24 @@ We now proceed to show that the interior of each $Q_{p^*, \key^*}$ is small:
 $|\inter(Q_{p^*, \key^*})| \le 2^{n-4\nu}$.
 \end{lemma}
 \begin{proof}
-By the isoperimetric inequality on the Hamming space~(we use a version due to~\cite[Theorem 1]{frankl1981short}, the original result is due to Harper~\cite{harper1966optimal}), there exists a $\eta$-deficient ball $S_{p^*, \key^*}$ centered at $0$ and a set $D$ such that $|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*, \key^*}^\complement|$ and $\forall s\in S_{p^*, \key^*}, d\in D$, $\dis(s, d) \ge t$~(alternatively, the distance between the sets is $t$).  Furthermore, note that $S_{p^*, \key^*} \cup D$ is a deficient ball~(and its radius is $\eta+t$).
-We now find bound the size of $S_{p^*, \key^*}$.
+By the isoperimetric inequality on the Hamming space~(we use a version
+due to~\cite[Theorem 1]{frankl1981short}, the original result is due
+to Harper~\cite{harper1966optimal}), there exists a $\eta$-deficient
+ball $S_{p^*, \key^*}$ centered at $0^n$ and a deficient ball $D$,
+centered at $1^n$, such that
+$|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*,
+  \key^*}^\complement|$ (where $\cdot^\complement$ denotes the
+complement of a set) and $\forall s\in S_{p^*, \key^*}, d\in D$,
+$\dis(s, d) \ge t$~(that is, the distance between the sets is $t$).  Note that $S_{p^*, \key^*} \cup D^\complement$ is a deficient ball~(and its radius is $\eta+t$).
+We now bound the size of $S_{p^*, \key^*}$.
 
 Recall that $|S_{p^*, \key^*} \cup D| = |Q_{p^*, \key^*} | \le 2^{n-\kappa}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a deficient sphere of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
 
 \begin{align*}
 |S_{p^*, \key^*}| \le \{ x | \dis (x, 0)\le n-t\} &= 2^n \Pr_{X\leftarrow \zo^n} [ wt(X) \le (1/2-t/n)n] \le 2^n e^{-n ((t/n)^2)} = 2^n e^{-4\nu} \le 2^{n - 4\nu}
 \end{align*}
+where the second to last equality follows from the definition of $t$
+(as $4\nu \sqrt{n}$) at the beginning of the proof of Theorem~\ref{thm:imposs fuzz ext}.
 \end{proof}
 
 We have shown that $|\inter(Q_{p^*, \key^*})| \le 2^{n-4\nu}$.  
