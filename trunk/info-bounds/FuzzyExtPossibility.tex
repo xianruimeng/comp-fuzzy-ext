@@ -1179,14 +1179,14 @@ The distribution $\Key|P=p^*$ is the set of possible keys.
 The distribution $\Key|P=p^*$ induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique value $\key$ such that $\rep(w, p^*) =\key$.  Denote this partition by $Q_{p^*,\key} = \{w | \rep(w, p^*) = \key\}$.  
 
 There exists a set $R_{small}$  where $|R_{small} | \ge 2^{\kappa-1}$ such that for all $\key\in R_{small}$,  $|Q_{p^*, r}|\le \mathcal{M}/2^{\kappa} = 2^{n-\kappa }$.  If not, then $\cup_{\key} |Q_{p^*, \key}| > |\mathcal{M}|$.
-For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  Only points that are distance $t$ from points outside of $Q_{p^*, r}$ are viable points in the metric space.  These are the interior of $Q_{p^*, r}$:
+For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  Only points that are distance $t$ from points outside of $Q_{p^*, r}$ are viable points in the metric space.  These are the interior of $Q_{p^*, r}$: \lnote{what's $r$? in this and previous lines? also, I can parse definition of interior below}
 \begin{align*}
 \inter(Q_{p^*, \key}) = \{w | \rep(w, p^*) = \key \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =\key\},\\
 %\crust(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\}.
 \end{align*}
 
 %Note that $\crust(Q_{p^*, r}) \cap \inter(Q_{p^*,r}) =\emptyset$.  
-We will use the term deficient ball\footnote{In most statements of the isoperimetric inequality, this type of set is simply called a ball.  We use the term deficient ball for emphasis.}:\bnote{use a term other than deficient}
+We will use the term deficient ball\footnote{In most statements of the isoperimetric inequality, this type of set is simply called a ball.  We use the term deficient ball for emphasis.}:\bnote{use a term other than deficient} \lnote{how about ``almost ball''}
 \begin{definition}
 A set $S$ is a $\eta$-deficient ball if there exists a point $x$ such that $B_{\eta-1}(x) \subseteq S \subseteq B_{\eta}(x)$.
 \end{definition}
@@ -1207,10 +1207,10 @@ centered at $1^n$, such that
 $|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*,
   \key^*}^\complement|$ (where $\cdot^\complement$ denotes the
 complement of a set) and $\forall s\in S_{p^*, \key^*}, d\in D$,
-$\dis(s, d) \ge t$~(that is, the distance between the sets is $t$).  Note that $S_{p^*, \key^*} \cup D^\complement$ is a deficient ball~(and its radius is $\eta+t$).
+$\dis(s, d) \ge t$~(that is, the distance between the sets is $t$).  Note that $S_{p^*, \key^*} \cup D^\complement$ is a deficient ball~(and its radius is $\eta+t$).\lnote{Why?}
 We now bound the size of $S_{p^*, \key^*}$.
 
-Recall that $|S_{p^*, \key^*} \cup D| = |Q_{p^*, \key^*} | \le 2^{n-\kappa}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a deficient sphere of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
+Recall that $|S_{p^*, \key^*} \cup D| = |Q_{p^*, \key^*} | \le 2^{n-\kappa}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a deficient sphere \lnote{ball} of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}: \lnote{should the first $n$ in the line below be $n/2$?}
 
 \begin{align*}
 |S_{p^*, \key^*}| \le \{ x | \dis (x, 0)\le n-t\} &= 2^n \Pr_{X\leftarrow \zo^n} [ wt(X) \le (1/2-t/n)n] \le 2^n e^{-n ((t/n)^2)} = 2^n e^{-4\nu} \le 2^{n - 4\nu}
