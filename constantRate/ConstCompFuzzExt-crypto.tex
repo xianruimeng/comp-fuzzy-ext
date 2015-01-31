@@ -297,8 +297,7 @@ Both of these problems have interactive and non-interactive versions.  In this p
 Fuzzy extractors consist of a pair of algorithms: \gen (used once, at ``enrollment'') takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep (used subsequently) takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.
 The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space. In this work, we consider the Hamming metric.
  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$. This guarantee holds as long as $w$ comes from a high-quality distribution, which
-traditionally has been defined as \emph{any} distribution with sufficient min-entropy $m$.
-
+traditionally has been defined as \emph{any} distribution with sufficient min-entropy $m$. Note that in this paper we consider only passive attacks on $p$; the problem of protecting against modification of $p$ has been addressed in, e.g., \cite{Boyen05secureremote,DKKRS12}, and, in particular, the random-oracle-based techniques of \cite{Boyen05secureremote} can be applied here, as well. \lnote{ok sentence?}
 
 \paragraph{Limitations of Known Approaches}
 
