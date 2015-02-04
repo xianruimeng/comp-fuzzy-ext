@@ -232,7 +232,7 @@
 \newcommand{\M}{\mathcal{M}}
 \newcommand{\Vol}{\mathsf{Vol}}
 
-\title{Fuzzy Extractors From Noisy Sources With More Errors Than Entropy}
+\title{Fuzzy Extractors for Noisy Sources with More Errors Than Entropy}
 %\author{Ran Canetti \and Benjamin Fuller \and Omer Paneth \and Leonid Reyzin \and Adam Smith}
 \blind{
 \author{Ran Canetti\footnote{Email: {\tt canetti@cs.bu.edu}. Boston University and Tel Aviv University.} \and Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and MIT Lincoln Laboratory.} \and Omer Paneth\footnote{Email: {\tt paneth@cs.bu.edu}. Boston University.} \and Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.} \and Adam Smith\footnote{Email: {\tt asmith@cse.psu.edu}.  Pennsylvania State University; work performed while at Boston University's Hariri Institute for Computing and RISCS Center, and Harvard University's
@@ -408,7 +408,7 @@ All of our constructions support more errors than entropy by using two metrics s
 
 %Using information-theoretic fuzzy extractors with additional privacy properties, Dodis and Smith~\cite[Section 5]{DBLP:conf/stoc/DodisS05} construct program obfuscators for the program $I_w(x)$ that tests if $x$ is within Hamming distance $t$ of $w$. The obfuscation is secure as long as $w$ comes from a distribution of sufficient min-entropy; in particular, the entropy must be high enough so that $\Huse>0$. Our constructions do not provide obfuscators for proximity queries, because they leak more information than whether $x$ is within distance $t$ of $w$ (for example, they may provide some information about the actual distance or about which coordinates agree). Constructing an efficient obfuscator for proximity queries when $\Huse\le 0$ is an open problem.
 
-In this work we restrict the distribution of the original reading $w$ and allow $w'$ to be an arbitrary point within distance $t$.  An alternative approach is to restrict the set of $w'$ where $\gen$ produces the correct key.%  A meaningful restriction of correctable errors is an open problem.
+In this work we restrict the distribution of the original reading $w$ and allow $w'$ to be an arbitrary point within distance $t$.  An alternative approach is to restrict the set of $w'$ where $\gen$ produces the correct key. \lnote{move this somewhere that makes more sense, probably above where we talk about a ball around a $w'$ and the obvious impossibility}%  A meaningful restriction of correctable errors is an open problem. 
 
 \medskip
 \paragraph{Organization }
