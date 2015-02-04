@@ -297,7 +297,7 @@ Both of these problems have interactive and non-interactive versions.  In this p
 Fuzzy extractors consist of a pair of algorithms: \gen (used once, at ``enrollment'') takes a source value $w$, and produces a key $r$ and a public helper value $p$.  The second algorithm \rep (used subsequently) takes this helper value $p$ and a close $w'$ to reproduce the original key $r$.
 The correctness guarantee is that $r$ will be correctly reproduced by \rep as long as $w'$ is no farther than $t$ from $w$ in some metric space. In this work, we consider the Hamming metric.
  The security guarantee is that $r$ produced by \gen is close to uniform (information-theoretically \cite{DBLP:journals/siamcomp/DodisORS08} or computationally \cite{fuller2013computational}), even given $p$. This guarantee holds as long as $w$ comes from a high-quality distribution, which
-traditionally has been defined as \emph{any} distribution with sufficient min-entropy $m$. Note that in this paper we consider only passive attacks on $p$; the problem of protecting against modification of $p$ has been addressed in, e.g., \cite{Boyen05secureremote,DKKRS12}, and, in particular, the random-oracle-based techniques of \cite{Boyen05secureremote} can be applied here, as well. \lnote{ok sentence?}
+traditionally has been defined as \emph{any} distribution with sufficient min-entropy $m$. Note that in this paper we consider only passive attacks on $p$; the problem of protecting against modification of $p$ has been addressed in, e.g., \cite{Boyen05secureremote,DKKRS12}.  In particular, the random-oracle-based transform of \cite[Theorem 1]{Boyen05secureremote} can be applied to our constructions.
 
 \paragraph{Limitations of Known Approaches}
 
@@ -379,7 +379,7 @@ Cons. \ref{cons:info theoretic} (info-theoretic)   & sparse block source  & cons
 
 
 \paragraph{Relation to Obfuscation} 
-Our constructions use simulation-secure obfuscation of digital lockers, which can be achieved by simple efficient constructions using a salted hash function or modular exponentiation under appropriate assumptions~\lnote{refs needed? especially for salted hash?}
+Our constructions use simulation-secure obfuscation of digital lockers, which can be achieved by simple efficient constructions using a salted hash function or modular exponentiation under appropriate assumptions~\lnote{refs needed? especially for salted hash?}\bnote{the canetti 98 paper is okay for one time but we need reusability, the mod exp is bitanski canetti }
 The precise definition we require is not full-fledged virtual black-box obfuscation~\cite{barak2001possibility}. Instead, we rely on the relaxed notion of \emph{virtual grey-box} obfuscation, as long as it remains secure even when several digital lockers with correlated keys are composed~\cite{bitansky2010strong}. 
 
 
