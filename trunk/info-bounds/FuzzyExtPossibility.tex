@@ -260,21 +260,17 @@ Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.}
 
 \begin{abstract}
 Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. A minimum condition for the security of the key is the hardness of guessing a value that is similar to the secret, because the fuzzy extractor converts such a guess to the key.
-We define \emph{fuzzy min-entropy} to quantify this property of a noisy source of secrets.
+We define \emph{fuzzy min-entropy} to quantify this property of a noisy source of secrets.  Fuzzy min-entropy measures the success of the adversary when provided with the functionality of the fuzzy extractor.  It measures the \emph{ideal} security of a distribution.  
 
-High fuzzy min-entropy is necessary for the existence of a fuzzy extractor; moreover, there is evidence that it may be sufficient when only computational security is required. Nevertheless, information-theoretic fuzzy extractors are not known for many practically relevant sources of high fuzzy min-entropy. In this work, we ask: \emph{is fuzzy min-entropy sufficient to build information-theoretic fuzzy extractors?} 
+High fuzzy min-entropy is necessary for the existence of a fuzzy extractor; moreover, there is evidence that it may be sufficient when only computational security is required (assuming the existence of semantically-secure graded encodings). Nevertheless, information-theoretic fuzzy extractors are not known for many practically relevant sources of high fuzzy min-entropy. The challenge is to design information-theoretic fuzzy extractors whose security (almost) matches the fuzzy min-entropy of a distribution.
 
-\bnote{fuzzy min-entropy measures ideal security ... similar to encryption/etc.}
-\bnote{should introduce the idea of distributional uncertainty...very important for us}
-%\lnote{Or it seems sufficient under strong computational assumptions and, under weaker assumptions, in the interactive setting.}  
-%\lnote{may be use``analyzing this quantity may be more fruitful than analyzing min-entropy and error-tolerance separately''}
-
-We give a positive answer to this question when the fuzzy extractor knows the precise distribution of the physical source.  On the other hand, because it is imprudent to assume precise knowledge of a complicated distribution,  fuzzy extractors are typically designed to work for families of sources. We show that this uncertainty is an impediment to security by building a family of high fuzzy min-entropy sources for which no fuzzy extractor can exist.
-
-We provide similar but stronger results for secure sketches, whose goal is not to derive a consistent key, but to recover a consistent reading of the secret.
-
-\lnote{mention computational setting?}
-\lnote{mention the typical analysis that separates min-entropy and error-tolerance?}
+In this work, we ask whether this challenge is inherent.
+ We provide two main technical results.
+\begin{itemize}
+\item \textbf{Sufficiency of fuzzy min-entropy:}  It is possible to build a fuzzy extractor for any \emph{precisely known} physical source.  This result justifies fuzzy min-entropy as the right measure of the quality of a noisy distribution for key derivation.  Previous results considered the entropy and error tolerance of a separately and had not secured many sources with fuzzy min-entropy.
+\item \textbf{Cost of distributional uncertainty:}  High entropy distributions can never be fully observed and must be modeled.  An adversary may have a better model than the fuzzy extractor designer.  To compensate, fuzzy extractors are typically designed to work for families of physical sources. We show that this uncertainty is an impediment to security by building a family of high fuzzy min-entropy sources for which no fuzzy extractor can exist.  This result justifies further study of physical sources to increase the fidelity of our models.
+\end{itemize}
+We provide similar but stronger results for secure sketches, whose goal is not to derive a consistent key, but to recover a consistent reading of the secret.  Our results are information-theoretic, but we discuss implications for the computational setting. 
 
 \medskip
 \textbf{Keywords:} Fuzzy extractors, secure sketches, information theory, biometric authentication, error-tolerance, key derivation, error-correcting codes.
@@ -968,14 +964,25 @@ We now argue security of the construction.  First note that the total weight of 
 \Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\nonumber\\
 &\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)
 \end{align}
-For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$
+For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$  Let $I$ be the random variable of the level information (in what follows, $I$ ranges over $m\le i \le m+n$, where possible we omit this for notation clarity). 
 
-We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  Let $I$ be the random variable of the level information.
+\begin{align}
+\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}=0} \wedge I=i}) \right)\nonumber\\
+&=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \mathcal{K}_i \wedge F_i(K_i, W) \wedge 1_{\text{low}=0} \wedge I=i)}\right)\nonumber\\
+&=-\log \left( \expe_{i\in I} 2^{-\Hav(W |  F_i(K_i, W) \wedge 1_{\text{low}=0} \wedge I=i)}\right)\nonumber\\
+&\ge-\log \left( \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}-1) +\log \delta)}\right)\nonumber\\
+&\ge-\log \left(\frac{1}{\delta} \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}-1))}\right)\nonumber\\
+&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}-1))}\right) - \log \frac{1}{\delta}\nonumber\\
+&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}))}\right) - \log \frac{1}{\delta}\label{eq:fuzzy ball size}
+\end{align}
+
+We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  
+\pagebreak
 \begin{claim}
-$\Hoo(W | I=i ) -\log \beta_{t, i} \ge \Hfuzz(W | I =i ) \ge \Hoo(W | I =i ) -\log \beta_{t, i}-1$.
+\label{cl:fuzz proportional beta}
+$\Hoo(W | I=i ) -\log \beta_{t, i} \ge \Hfuzz(W | I =i )-1$.\bnote{this is where I'm stuck right now.  We started with a nearly flat distribution which would allow us to prove this.  When we condition on $I=i$ it doesn't need to be nearly flat.}
 \end{claim}
 \begin{proof}
-We show the left inequality first.
 \begin{align*}
 \Hfuzz(W|I=i) &= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \Pr[W=w | I=i]\right) \right)\\
 &\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-(m+i)}\right) \right)\\
@@ -984,60 +991,63 @@ We show the left inequality first.
 &=(m+i)-  \log \left(\max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|\right)\\
 &= m+i-\log \beta_{t, i}.
 \end{align*}
-We now show the right inequality.
+\bnote{this proof doesn't follow.}
 \end{proof}
 
-
-
-\bnote{new outline to proof. proof to come}
-\begin{enumerate}
-\item show chain rule for fuzzy min-entropy
-\item show that fuzzy min-entropy conditioned on i is related to $\beta_{t, i}$.
-\item show that releasing the sketch only gives delta more than necessary.
-\end{enumerate}
 \noindent
-\textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  
-
-Let $I$ be the random variable describing the level.  Since there are at most $n$ outcomes for the level when $1_{\text{low}} =0$, we have that \[\Hav( W | I \wedge 1_{\text{low}}=0) \ge \Hoo(W) -\log n.\]
-
-In the standard secure sketch game, to maximize probability of predicting $w$, the adversary supplies the $w'$ with the most nearby probability mass.  With the additional information about the probability of $w$, the adversary should supply $w'$ with the most nearby probability in the correct probability level.  That is, the adversary's best guess is:
-\[
-w^*= \argmax_{w' \in \mathcal{M}}\sum_{w\in W | \Pr[W=w]\in L_i\wedge \dis(w, w')}\Pr[W=w].
-\] 
-The success of this adversary is at most $2^{-i}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at most $2^{-i}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
-\begin{align}
-\expe_{i | m\le i \le m+n}2^{-i}\beta_{t,i}%&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W|  w\in L_i \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
-%&\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
-&\ge n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
-\end{align}
-\textbf{Security:}
-%We just saw that an adversary that learns $L_i$ performs at most a factor of $n$ better than an adversary without this information.  
-
-Let $L_I$ denote the random variable denoting the probability of $\Pr[W=w]$.
-All the dependence between $W$ and $K$ is contained in $L_I$.   That is, $\Hav(W | K_I , L_I) = \Hav(W | L_I)$. Let $Y_I$ denote the outcome of the hash function.  We now consider the remaining average min-entropy when $1_{\text{low}} = 0$:
+Together Equation \ref{eq:fuzzy ball size} and \clref{cl:fuzz proportional beta} yield:
 \begin{align*}
-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &= \Hav(W | L_I , K_I, Y_I \wedge 1_{\text{low}}=0)\\
-&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | K_i , Y_i, i)}\right)\right)\\
-&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | Y_i, i)}\right)\right)\\
-&\ge -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(\frac{(\beta_{t, i}-1)}{\delta}2^{-\Hav(W | i)}\right)\right)\\
-&= -\log \left(\frac{1}{\delta}\left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i)}\right)\right)\right)\\
-&= -\log \left(\frac{2}{\delta} \left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i+1)}\right)\right)\right)\\
-&= -\log \left(\frac{2n}{\delta} 2^{-\Hfuzz(W)}\right)\\
+\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}})-1}\right) -\log 1/\delta \\
+&=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}} =0)}\right) -1- \log 1/\delta \\
+&=\Hfav(W | I \wedge 1_{\text{low}}=0)-1- \log 1/\delta \\
+&\ge\Hfuzz(W | 1_{\text{low}}=0)-1-\log n -\log 1/\delta.
 \end{align*}
-Where the first inequality proceeds by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}
-\begin{align*}
-\max_{w\in W | 2^{-(m+n)}< \Pr[W=w]}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
-&\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
-&\le \expe_{i | m\le i \le m+n} \left(\frac{2^{-i}*\beta_{t,i}}{\delta}\right)\\
-&\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot \beta_{t,i}\right)}{2\delta}\\
-%&=\delta \sum_{i | m\le i \le m+n} \Pr[W\in L_i]\left(2^{-i}*\beta_{t,i}\right)
-%\end{align*}
-%Now consider This allows us to conclude that 
+Where the last line follows by \lemref{lem:chain rule fuzz}.\bnote{need to get rid of low prob here}
+
+%\bnote{old proof stuff}
+%\noindent
+%\textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  
+%
+%Let $I$ be the random variable describing the level.  Since there are at most $n$ outcomes for the level when $1_{\text{low}} =0$, we have that \[\Hav( W | I \wedge 1_{\text{low}}=0) \ge \Hoo(W) -\log n.\]
+%
+%In the standard secure sketch game, to maximize probability of predicting $w$, the adversary supplies the $w'$ with the most nearby probability mass.  With the additional information about the probability of $w$, the adversary should supply $w'$ with the most nearby probability in the correct probability level.  That is, the adversary's best guess is:
+%\[
+%w^*= \argmax_{w' \in \mathcal{M}}\sum_{w\in W | \Pr[W=w]\in L_i\wedge \dis(w, w')}\Pr[W=w].
+%\] 
+%The success of this adversary is at most $2^{-i}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at most $2^{-i}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
+%\begin{align}
+%\expe_{i | m\le i \le m+n}2^{-i}\beta_{t,i}%&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W|  w\in L_i \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
+%%&\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
+%&\ge n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
+%\end{align}
+%\textbf{Security:}
+%%We just saw that an adversary that learns $L_i$ performs at most a factor of $n$ better than an adversary without this information.  
+%
+%Let $L_I$ denote the random variable denoting the probability of $\Pr[W=w]$.
+%All the dependence between $W$ and $K$ is contained in $L_I$.   That is, $\Hav(W | K_I , L_I) = \Hav(W | L_I)$. Let $Y_I$ denote the outcome of the hash function.  We now consider the remaining average min-entropy when $1_{\text{low}} = 0$:
 %\begin{align*}
-%\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
-&= \frac{n 2^{-\Hfuzz(W)}}{2\delta}.
-\end{align*}
-Where the last line follows by Equation~\eqref{eq:link fuzz 3}.
+%\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &= \Hav(W | L_I , K_I, Y_I \wedge 1_{\text{low}}=0)\\
+%&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | K_i , Y_i, i)}\right)\right)\\
+%&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | Y_i, i)}\right)\right)\\
+%&\ge -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(\frac{(\beta_{t, i}-1)}{\delta}2^{-\Hav(W | i)}\right)\right)\\
+%&= -\log \left(\frac{1}{\delta}\left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i)}\right)\right)\right)\\
+%&= -\log \left(\frac{2}{\delta} \left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i+1)}\right)\right)\right)\\
+%&= -\log \left(\frac{2n}{\delta} 2^{-\Hfuzz(W)}\right)\\
+%\end{align*}
+%Where the first inequality proceeds by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}
+%\begin{align*}
+%\max_{w\in W | 2^{-(m+n)}< \Pr[W=w]}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
+%&\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
+%&\le \expe_{i | m\le i \le m+n} \left(\frac{2^{-i}*\beta_{t,i}}{\delta}\right)\\
+%&\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot \beta_{t,i}\right)}{2\delta}\\
+%%&=\delta \sum_{i | m\le i \le m+n} \Pr[W\in L_i]\left(2^{-i}*\beta_{t,i}\right)
+%%\end{align*}
+%%Now consider This allows us to conclude that 
+%%\begin{align*}
+%%\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
+%&= \frac{n 2^{-\Hfuzz(W)}}{2\delta}.
+%\end{align*}
+%Where the last line follows by Equation~\eqref{eq:link fuzz 3}.
 Combining both cases we have:
 \begin{align*}
 \Hav(W | \sketch(W)) &\ge -\log \left(2^{-m}+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
