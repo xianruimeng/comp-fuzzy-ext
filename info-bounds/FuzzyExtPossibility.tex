@@ -449,7 +449,7 @@ Assume $(\sketch, \rec)$ is an $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure
 \label{sec:minimal conditions}
 The value $p$ allows everyone, including the adversary, to find the output of $\rep(\cdot, p)$ on any input $w'$. Ideally,  $p$ should not provide any useful information beyond this ability, and the outputs of $\rep$ on inputs that are too distant from $w$ should provide no useful information, either.  In this ideal scenario, the adversary is limited to trying to guess a $w'$ that is $t$-close to $w$. 
 Letting $w'$ be the center of the maximum-weight ball in $W$ would be optimal for the adversary.
-We therefore measure the quality of a source by (the negative logarithm of) this weight.
+We therefore measure the quality of a source by (the negative logarithm of) this weight.  
 
 \begin{definition}
 \label{def:fuzzy min-ent}
@@ -459,8 +459,8 @@ The $t$-fuzzy min-entropy of a distribution $W$ in a metric space $(\mathcal{M},
 \]
 \end{definition}
 \noindent
-Fuzzy min-entropy is a necessary condition for security.  It measures the advantage provided to the adversary by allowing them to run the $\rep$ functionality.  Thus, the fuzzy min-entropy is the ideal security that any fuzzy extractor should be compared against.
-\begin{proposition}~(proof in \apref{sec:proof fuzz necessary})
+Fuzzy min-entropy is a necessary condition for security.  It measures the advantage provided to the adversary by allowing them to run the $\rep$ functionality.  Thus, the fuzzy min-entropy is the ideal security that any fuzzy extractor should be compared against.  All proofs for statements in this section can be found in \apref{sec:proof fuzz necessary}.
+\begin{proposition}
 \label{prop:fuzz necessary}
 Let $W$ be a distribution  over $(\mathcal{M}, \dis)$ with $\Hfuzz(W) =m$.  Let $(\gen, \rep)$ be a $(\mathcal{M}, W, \kappa, t, \epsilon)$-fuzzy extractor with error $\delta$.  Then 
 \[
@@ -475,6 +475,11 @@ In particular, for security parameter $n$, if $m = \Theta(\log n), \delta = \ngl
 %\lemref{lem:fuzz necessary} still applies.  
 The proof of \propref{prop:fuzz necessary} is not specific to the fuzzy extractor setting, it also applies to computational and interactive definitions.  There are many distributions with $\Hfuzz$ with no known fuzzy extractor~(or corresponding impossibility result).
 Our goal is to provide a superlogarithmic length key whenever a distribution has superlogarithmic fuzzy min-entropy. 
+Fuzzy min-entropy obeys some natural entropy properties:
+\begin{lemma}
+\label{lem:conditional fuzz rule}
+$\Hfuzz(W|P=p) \ge \Hfuzz(W) + \log \Pr[P=p]$.
+\end{lemma}
 
 \paragraph{Conditional Fuzzy min-entropy}
 In our proofs, we will use a conditional version of fuzzy min-entropy.
@@ -487,11 +492,12 @@ The $t$-conditional fuzzy min-entropy of a distribution $W |P$ in a metric space
 \end{definition}
 
 \noindent
-Fuzzy min-entropy obeys a chain rule:
-\begin{lemma}~(proof in \apref{sec:proof fuzz necessary})
+
+\begin{lemma}
 \label{lem:chain rule fuzz}
 $\Hfav(W|P) \ge \Hfuzz(W) - H_0(P)$.
 \end{lemma}
+
 
 \section{Sufficiency of $\Hfuzz(W)$ When the Algorithms Know the Distribution}
 \label{sec:known distributions}
@@ -917,6 +923,16 @@ Clearly, $\Pr[D(\Key, P) = 1]\geq 2^{-m} - \delta$, while $\Pr[D(U_\kappa, P)=1 
 \sd((R, P), (U_\kappa, P)) \ge \delta^D((R, P), (U_\kappa, P))\geq 2^{-m} -\delta -2^{-\kappa}.
 \]
 \end{proof}
+\begin{proof}[Proof of \lemref{lem:conditional fuzz rule}]
+\begin{align*}
+\Hfuzz(W | P=p) &= -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \Pr[W=w | P=p] \right)\\
+ &= -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \frac{\Pr[W=w \wedge P=p]}{\Pr[P=p]} \right)\\
+ &\ge -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \frac{\Pr[W=w]}{\Pr[P=p]} \right)\\
+ &\ge -\log \left(\max_{w'}  \sum_{w\in W| \dis(w, w')\le t} \frac{\Pr[W=w]}{\Pr[P=p]} \right)\\
+ &= \Hfuzz(W) - \log \frac{1}{\Pr[P=p]}.
+\end{align*}
+\end{proof}
+
 
 \begin{proof}[Proof of \lemref{lem:chain rule fuzz}]
 \begin{align*}
@@ -929,6 +945,7 @@ Clearly, $\Pr[D(\Key, P) = 1]\geq 2^{-m} - \delta$, while $\Pr[D(U_\kappa, P)=1 
 &\ge \Hfuzz(W) - H_0(P).
 \end{align*}
 \end{proof}
+
 
 
 \section{Proof of \lemref{lem:flat hashing}}
@@ -967,95 +984,69 @@ We now argue security of the construction.  First note that the total weight of 
 For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$  Let $I$ be the random variable of the level information (in what follows, $I$ ranges over $m\le i \le m+n$, where possible we omit this for notation clarity). 
 
 \begin{align}
-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}=0} \wedge I=i}) \right)\nonumber\\
-&=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \mathcal{K}_i \wedge F_i(K_i, W) \wedge 1_{\text{low}=0} \wedge I=i)}\right)\nonumber\\
-&=-\log \left( \expe_{i\in I} 2^{-\Hav(W |  F_i(K_i, W) \wedge 1_{\text{low}=0} \wedge I=i)}\right)\nonumber\\
-&\ge-\log \left( \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}-1) +\log \delta)}\right)\nonumber\\
-&\ge-\log \left(\frac{1}{\delta} \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}-1))}\right)\nonumber\\
-&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}-1))}\right) - \log \frac{1}{\delta}\nonumber\\
-&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}=0} \wedge I=i)-\log (\beta_{t, i}))}\right) - \log \frac{1}{\delta}\label{eq:fuzzy ball size}
+\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}}=0 \wedge I=i}) \right)\nonumber\\
+&=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \mathcal{K}_i \wedge F_i(K_i, W) \wedge 1_{\text{low}}=0 \wedge I=i)}\right)\nonumber\\
+&=-\log \left( \expe_{i\in I} 2^{-\Hav(W |  F_i(K_i, W) \wedge 1_{\text{low}}=0 \wedge I=i)}\right)\nonumber\\
+&\ge-\log \left( \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}-1) +\log \delta)}\right)\nonumber\\
+&\ge-\log \left(\frac{1}{\delta} \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}-1))}\right)\nonumber\\
+&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}-1))}\right) - \log \frac{1}{\delta}\nonumber\\
+&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}))}\right) - \log \frac{1}{\delta}\label{eq:fuzzy ball size}
 \end{align}
 
+\noindent
 We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  
-\pagebreak
 \begin{claim}
 \label{cl:fuzz proportional beta}
-$\Hoo(W | I=i ) -\log \beta_{t, i} \ge \Hfuzz(W | I =i )-1$.\bnote{this is where I'm stuck right now.  We started with a nearly flat distribution which would allow us to prove this.  When we condition on $I=i$ it doesn't need to be nearly flat.}
+\[\Hoo(W | 1_{\text{low}} =0 \wedge J=j ) -\log \beta_{t, i} \ge \Hfuzz(W | J=j \wedge 1_{\text{low}}=0)+1.\]
+\end{claim}
+\begin{proof}
+For convenience denote by $J=j$ the random variable $1_{\text{low}}=0 \wedge I=i$. 
+\begin{align*}
+\Hfuzz(W|J=j) &= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \Pr[W=w | J=j]\right) \right)\\
+&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \min_{w^*\in W=w| J=j}\Pr[W=w^* | J=j]\right) \right)\\
+&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \max_{w^*\in W=w| J=j}\Pr[W=w^* | J=j]\right) \right)+1\\
+&= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-\Hoo(W|J=j)}\right) \right)+1\\
+&= \Hoo(W|J=j)- \log\left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 1\right) \right)+1\\
+&=\Hoo(W|J=j)-  \log \left(\max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|\right)+1\\
+&=\Hoo(W|J=j)+1-\log \beta_{t, i}.
+\end{align*}
+Where the third line follows by \clref{cl:nearly flat after conditioning}, which follows.  This completes the proof of \clref{cl:fuzz proportional beta}.
+\end{proof}
+
+\begin{claim}
+\label{cl:nearly flat after conditioning}
+Let $W$ be a distribution and let $S\subset W$ such that for all $w_1, w_2 \in S$, $\Pr[W=w_1]\ge \Pr[W=w_2]$.  Let $J$ be as above, then for all $w_1, w_2 \in (S \wedge W|J=j )$, $\Pr[W=w_1 | J=j]\ge \Pr[W=w_2 | J=j]/2$.
 \end{claim}
 \begin{proof}
 \begin{align*}
-\Hfuzz(W|I=i) &= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \Pr[W=w | I=i]\right) \right)\\
-&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-(m+i)}\right) \right)\\
-&= (m+i)- \log\left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-(m+i)}\right) \right)\\
-&=(m+i)- \log\left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-(m+i)}\right) \right)\\
-&=(m+i)-  \log \left(\max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|\right)\\
-&= m+i-\log \beta_{t, i}.
+\Pr[W=w_1 | J=j] &=&\frac{\Pr[W=w_1\wedge J=j] }{\Pr[J=j]}
+&=& \frac{\Pr[W=w_1]}{\Pr[J=j]}\\
+&\ge& \frac{\Pr[W=w_2]}{2 \Pr[J=j]}
+&=& \frac{\Pr[W=w_2 \wedge J=j]}{2\Pr[J=j]}\\
+&=&\frac{\Pr[W=w_2]}{2}.
 \end{align*}
-\bnote{this proof doesn't follow.}
+Where the first and last equality follow by Bayes' rule.  The second and fourth equality follow by noting that $\Pr[W=w \wedge J=j] = \Pr[W=w]$ for all $w\in L_i$.  The inequality proceeds by assumption.  This completes the proof of \clref{cl:nearly flat after conditioning}.
 \end{proof}
 
-\noindent
-Together Equation \ref{eq:fuzzy ball size} and \clref{cl:fuzz proportional beta} yield:
+\noindent 
+We now return to the proof of \lemref{lem:flat hashing}. Together Equation \ref{eq:fuzzy ball size} and \clref{cl:fuzz proportional beta} yield:
 \begin{align*}
-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}})-1}\right) -\log 1/\delta \\
-&=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}} =0)}\right) -1- \log 1/\delta \\
-&=\Hfav(W | I \wedge 1_{\text{low}}=0)-1- \log 1/\delta \\
-&\ge\Hfuzz(W | 1_{\text{low}}=0)-1-\log n -\log 1/\delta.
+\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}}=0)-1}\right) -\log \frac{1}{\delta} \\
+&=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}} =0)}\right) -1- \log \frac{1}{\delta} \\
+&=\Hfav(W | I \wedge 1_{\text{low}}=0)-1- \log \frac{1}{\delta} \\
+&\ge\Hfuzz(W | 1_{\text{low}}=0)-1-\log n -\log \frac{1}{\delta}\\
+&\ge\Hfuzz(W)-1-\log n -\log \frac{1}{\delta} - \log (1-2^{-m})
 \end{align*}
-Where the last line follows by \lemref{lem:chain rule fuzz}.\bnote{need to get rid of low prob here}
-
-%\bnote{old proof stuff}
-%\noindent
-%\textbf{Ideal Adversary with access to Level Information:} To aid in the argument in security, we show the level information on its own is not too harmful.  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  
-%
-%Let $I$ be the random variable describing the level.  Since there are at most $n$ outcomes for the level when $1_{\text{low}} =0$, we have that \[\Hav( W | I \wedge 1_{\text{low}}=0) \ge \Hoo(W) -\log n.\]
-%
-%In the standard secure sketch game, to maximize probability of predicting $w$, the adversary supplies the $w'$ with the most nearby probability mass.  With the additional information about the probability of $w$, the adversary should supply $w'$ with the most nearby probability in the correct probability level.  That is, the adversary's best guess is:
-%\[
-%w^*= \argmax_{w' \in \mathcal{M}}\sum_{w\in W | \Pr[W=w]\in L_i\wedge \dis(w, w')}\Pr[W=w].
-%\] 
-%The success of this adversary is at most $2^{-i}\beta_{t,i}$ as there at $\beta_{t,i}$ nearby points in that layer each with probability at most $2^{-i}$.  There are $n$ outcomes for $i$. The overall success of such an adversary is at most $n$ better than an adversary without such input~(by~\cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}).  That is, 
-%\begin{align}
-%\expe_{i | m\le i \le m+n}2^{-i}\beta_{t,i}%&\le \expe_{i | m\le i \le n+m}\left( \max_{w^*\in W}\sum_{w\in W|  w\in L_i \wedge \dis(w, w^*) \le t}\Pr [W=w]\right) \nonumber\\
-%%&\le n \left(\max_{w^*\in W} \sum_{w\in W | \dis(w, w^*)\le t} \Pr[W=w]\right)\nonumber \\
-%&\ge n 2^{-\Hfuzz(W)}\label{eq:link fuzz 3}
-%\end{align}
-%\textbf{Security:}
-%%We just saw that an adversary that learns $L_i$ performs at most a factor of $n$ better than an adversary without this information.  
-%
-%Let $L_I$ denote the random variable denoting the probability of $\Pr[W=w]$.
-%All the dependence between $W$ and $K$ is contained in $L_I$.   That is, $\Hav(W | K_I , L_I) = \Hav(W | L_I)$. Let $Y_I$ denote the outcome of the hash function.  We now consider the remaining average min-entropy when $1_{\text{low}} = 0$:
-%\begin{align*}
-%\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &= \Hav(W | L_I , K_I, Y_I \wedge 1_{\text{low}}=0)\\
-%&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | K_i , Y_i, i)}\right)\right)\\
-%&= -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(2^{-\Hav(W | Y_i, i)}\right)\right)\\
-%&\ge -\log \left(\expe_{i\leftarrow L_I | m \le i \le m+n} \left(\frac{(\beta_{t, i}-1)}{\delta}2^{-\Hav(W | i)}\right)\right)\\
-%&= -\log \left(\frac{1}{\delta}\left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i)}\right)\right)\right)\\
-%&= -\log \left(\frac{2}{\delta} \left( \expe_{i\leftarrow L_I | m \le i \le m+n} \left(\beta_{t, i}2^{-(i+1)}\right)\right)\right)\\
-%&= -\log \left(\frac{2n}{\delta} 2^{-\Hfuzz(W)}\right)\\
-%\end{align*}
-%Where the first inequality proceeds by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}
-%\begin{align*}
-%\max_{w\in W | 2^{-(m+n)}< \Pr[W=w]}\left(\Pr[W=w | \sketch(W)]\right) &= \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w | \sketch(W), i]\right)\\
-%&\le \expe_{i | m\le i \le m+n} \left(\max_{w\in W | \Pr[W=w]\in L_i} \Pr[W=w]\cdot 2^{H_0(\sketch(W) | i)}\right)\\
-%&\le \expe_{i | m\le i \le m+n} \left(\frac{2^{-i}*\beta_{t,i}}{\delta}\right)\\
-%&\le\frac{ \expe_{i | m\le i \le m+n} \left(2^{-(i+1)}\cdot \beta_{t,i}\right)}{2\delta}\\
-%%&=\delta \sum_{i | m\le i \le m+n} \Pr[W\in L_i]\left(2^{-i}*\beta_{t,i}\right)
-%%\end{align*}
-%%Now consider This allows us to conclude that 
-%%\begin{align*}
-%%\max_{w\in W | \Pr[W=w]>2^{-n}\epsilon}\left(\Pr[W=w | \sketch(W)]\right) 
-%&= \frac{n 2^{-\Hfuzz(W)}}{2\delta}.
-%\end{align*}
-%Where the last line follows by Equation~\eqref{eq:link fuzz 3}.
-Combining both cases we have:
+Where the second-to-last line follows by \lemref{lem:chain rule fuzz}.  The last line follows by \lemref{lem:conditional fuzz rule} and by noting that $\Pr[1_{\text{low}}=0] \ge 1/(1-2^{-m})$.
+Returning to equation \ref{eq:min-entropy} one has:
 \begin{align*}
-\Hav(W | \sketch(W)) &\ge -\log \left(2^{-m}+\frac{(1-2^{-m})(n)2^{-\Hfuzz(W)}}{2\delta}\right)\\
-&\ge -\log \min\{2^{-m}, \frac{(1-2^{-m}) n2^{-\Hfuzz(W)}}{2\delta}\})-1\\
-&\ge \Hfuzz(W) - \log n + \log \delta - \log (1-2^{-m}) - 2\\
-&\ge \Hfuzz(W) - \log n + \log \delta - 3\\
+\Hav(W | \sketch(W)) &\ge -\log\left( 2^{-m} + (1-2^{-m}) 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)\\
+&\ge -\log \left(2^{-m}+2^{-(\Hfuzz(W) -1 - \log n  -\log 1/\delta-2\log (1-2^{-m}) )}\right)\\
+&\ge -\log \min\{2^{-m}, 2^{-(\Hfuzz(W) -1 - \log n  -\log 1/\delta-2\log (1-2^{-m}) )}\}-1\\
+&\ge \Hfuzz(W) - 2- \log n - \log 1/\delta  -2\log (1-2^{-m}) \\
+&\ge \Hfuzz(W) - 3- \log n - \log 1/\delta
 \end{align*}
-Where the third line follows from the second because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$ then $\log (1-2^{-m})\le 1$ and if $m< 1$ the entire bound is vacuous as $\Hfuzz(W)< 1$.
+Where the fourth line follows from the third because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$, then $\log (1-2^{-m}) \le 1$ and if $m<1$ the entire bound is vacuous as $\Hfuzz(W) < 1$.
 \end{proof}
 
 \section{Proof of \thref{thm:imposs sketch}}
