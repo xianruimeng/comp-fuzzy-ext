@@ -636,6 +636,11 @@ Let $\mathcal{M}$ be a metric space and let $n =\log |\mathcal{M}|$. Let $W$ be 
 
 \noindent
 
+Before proving security of \consref{cons:leveling} we extend the notation to the maximum likelihood ball containing points of a given probability.  Define $\beta_{t,i}$ as the maximum number of points in a ball in level $i$.  That is,
+\[
+\beta_{t,i} = \max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|.
+\]
+
 \begin{theorem}
 \label{thm:layered hashing}
 Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
@@ -947,14 +952,8 @@ The inequality proceeds by union bound. The first equality proceeds by the unive
 \label{sec:proof of layered hashing}
 \begin{proof}
 Throughout the proof we assume that $\ell = n$ is the number of levels.  The proof can be carried out for an arbitrary $\ell$ but it leads to a complicated theorem statement.
-We extend our notation for the maximum likelihood ball to the leveled case.  Define $\beta_{t,i}$ as the maximum number of points in a ball in level $i$.  That is,
-\[
-\beta_{t,i} = \max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|.
-\]
 
-
-\noindent
-\textbf{Correctness:}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(m+\ell)} = 2^{-(m+n)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  When $\Pr[W=w]> 2^{-(m+n)}$ let $L_i^*$ be the level of $\Pr[W=w]$.
+\paragraph{Correctness:}  Fix some $w, w'$.  If $\Pr[W=w]\le 2^{-(m+\ell)} = 2^{-(m+n)}$, then $w$ is simply transmitted to $\rec$ and correctness is clear.  When $\Pr[W=w]> 2^{-(m+n)}$ let $L_i^*$ be the level of $\Pr[W=w]$.
 
 Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$.  The size of $W^*$ is at most $\beta_{t,i}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  The probability that another element $w^*$ matches the hash is:
 \begin{align*}
@@ -962,6 +961,33 @@ Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$
  &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{\beta_{t,i}-1}{|R_i|} = \delta
 \end{align*}
 The first inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $\beta_{t,i}$.  
+
+\paragraph{Security:}
+We now argue security of the construction.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
+\begin{align}
+\Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\nonumber\\
+&\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)
+\end{align}
+For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$
+
+We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  Let $I$ be the random variable of the level information.
+\begin{claim}
+$\Hoo(W | I=i ) -\log \beta_{t, i} \ge \Hfuzz(W | I =i ) \ge \Hoo(W | I =i ) -\log \beta_{t, i}-1$.
+\end{claim}
+\begin{proof}
+We show the left inequality first.
+\begin{align*}
+\Hfuzz(W|I=i) &= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \Pr[W=w | I=i]\right) \right)\\
+&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-(m+i)}\right) \right)\\
+&= (m+i)- \log\left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-(m+i)}\right) \right)\\
+&=(m+i)- \log\left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-(m+i)}\right) \right)\\
+&=(m+i)-  \log \left(\max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|\right)\\
+&= m+i-\log \beta_{t, i}.
+\end{align*}
+We now show the right inequality.
+\end{proof}
+
+
 
 \bnote{new outline to proof. proof to come}
 \begin{enumerate}
@@ -986,12 +1012,6 @@ The success of this adversary is at most $2^{-i}\beta_{t,i}$ as there at $\beta_
 \end{align}
 \textbf{Security:}
 %We just saw that an adversary that learns $L_i$ performs at most a factor of $n$ better than an adversary without this information.  
-We now argue security of the construction.  First note that the total weight of points whose probability is less than $2^{-(n+m)}$ is at most $2^{-m}$~(there are at most $2^n$ points in the distribution).  Let $1_{\text{low}}$ be the indicator random variable for $\Pr[W=w]\le 2^{-(n+m)}$.  Then 
-\begin{align}
-\Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\nonumber\\
-&\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)
-\end{align}
-For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$
 
 Let $L_I$ denote the random variable denoting the probability of $\Pr[W=w]$.
 All the dependence between $W$ and $K$ is contained in $L_I$.   That is, $\Hav(W | K_I , L_I) = \Hav(W | L_I)$. Let $Y_I$ denote the outcome of the hash function.  We now consider the remaining average min-entropy when $1_{\text{low}} = 0$:
@@ -1168,7 +1188,7 @@ Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an informat
 \end{lemma}
 \begin{proof}
 As in the proof of \thref{thm:imposs sketch}, we assume that $\rep$ is deterministic.  Denote by $(\Key, P) \leftarrow \gen(V)$.
-By Markov's inequality, there exists a set $A_{\eps}$ such that $\Pr[p\in A_{\eps}]\ge 1/2$ and $\forall p\in A_{\eps}$, 
+By Markov's inequality, there exists a set $A_{\epsilon}$ such that $\Pr[p\in A_{\epsilon}]\ge 1/2$ and $\forall p\in A_{\epsilon}$, 
 \[
 (\Key |P =p) \approx_{2\epsilon} (U_\kappa , P =p).
 \]
