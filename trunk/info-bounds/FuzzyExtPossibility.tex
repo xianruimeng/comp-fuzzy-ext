@@ -752,7 +752,7 @@ Furthermore, this is true on average.  Let $V$ be process of uniformly sampling 
 
 \begin{proof}[Proof Outline]
 We prove the stronger average case statement.
-Let $\nu = \omega(\log n)$ and $\nu = o(n^{1/2}/\log n)$.  Let $t=4\nu n^{1/2}$ and note that $n/\nu >t$.  
+Let $\nu = \omega(\log n)$ and $\nu = o(n^{1/2}/\log n)$.  Let $t=4\nu n^{1/2}+1$ and note that $n/\nu >t$.  
 
 Our counterexample uses a slightly different family of distributions $\mathcal{W}$ than the counterexample for secure sketches.  
 We will work over a binary alphabet~(we used a large alphabet in our counterexample for secure sketches).  A  property of the binary Hamming space is that a large fraction of any set of bounded size is the near ``boundary'' of that set.  This will be crucial in our proof.  We will embed the larger alphabet we used into the binary Hamming metric.
@@ -773,8 +773,8 @@ We now present an outline of the proof~(proofs in \apref{sec:fuzz ext proof}):
 \item \propref{prop:dist uniform fuzz}: the distribution $V$ is uniform.
 \item \lemref{lem:fuzz can't get key}: In expectation across $Z$, a large subset of keys that are not possible.  In more detail,
 \begin{itemize}
-\item Half the keys have at most $2^{n- \kappa}$ pre images in the metric space~(this is at most half the metric space).  Denote this set as $R_{small}$.  
-\item Consider some $\key \in R_{small}$.  %Our goal is to show there are few values of $v \in V|Z$ that could produce this key.  
+\item Half the keys have at most $2^{n- \kappa}$ pre images in the metric space~(this is at most half the metric space).  Denote this set as $\Key_{small}$.  
+\item Consider some $\key \in \Key_{small}$.  %Our goal is to show there are few values of $v \in V|Z$ that could produce this key.  
 Consider the set of $V_{\key } = \{w | \rep(w, p) = \key \}$.  All points in $V | \sketch(V)$ are distance $t$ from a boundary of $V_\key$~(the functionality of $\rep$ guarantees that for the true $w$ all nearby points map to the same $\key$).  We show that most of $V_\key$ is near a boundary.  A result of Frankel and F{\"u}redi says that the boundary of a region is minimized by a ball containing the same number of points~\cite{frankl1981short}.  Hoeffding's inequality says that most of a ball lies near its boundary~\cite{hoeffding1963probability}.  Together these two results imply that $V_\key$ is small.
 \item As before, there are many possible values for $z_1, z_2$ for the side information $Z$~(and these possible values are equally likely).  Furthermore, the distributions $V|Z=z_1 $ and $V| Z=z_2$ have disjoint support outside of $v$.
 \item For most values of possible $Z$, the intersection between the viable pre images of $V|Z$ and $V_\key$ contains at most one point~(the received point $v$).  Checking if $V|Z \cap V_{\key}$ is nonempty is an effective distinguisher.
@@ -911,26 +911,29 @@ This means that showing security for a family of distributions $\mathcal{W}$ is 
 %Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for fuzzy extractors as well as secure sketches.  Additionally they generalize to imperfect correctness.
 \section{Fuzzy min-entropy}
 \label{sec:proof fuzz necessary}
+In this section, we provide proofs of the items in \secref{sec:minimal conditions}.  
 \begin{proof}[Proof of \propref{prop:fuzz necessary}]
 Let $W$ be a distribution where $\Hfuzz(W) = m$.  This means that there exists a point $w' \in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, w')\leq t] = 2^{-m}$.  Consider the following distinguisher $D$:
 \begin{itemize}
-\item Input $r, p$.
-\item If $\rep(w', p) = r$, output $1$.
+\item Input $\key, p$.
+\item If $\rep(w', p) = \key$, output $1$.
 \item Else output $0$.
 \end{itemize}
 Clearly, $\Pr[D(\Key, P) = 1]\geq 2^{-m} - \delta$, while $\Pr[D(U_\kappa, P)=1 ]= 1/2^{-\kappa}$.  Thus,
 \[
-\sd((R, P), (U_\kappa, P)) \ge \delta^D((R, P), (U_\kappa, P))\geq 2^{-m} -\delta -2^{-\kappa}.
+\sd((\Key, P), (U_\kappa, P)) \ge \delta^D((\Key, P), (U_\kappa, P))\geq 2^{-m} -\delta -2^{-\kappa}.
 \]
+This completes the proof of \propref{prop:fuzz necessary}.
 \end{proof}
 \begin{proof}[Proof of \lemref{lem:conditional fuzz rule}]
 \begin{align*}
 \Hfuzz(W | P=p) &= -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \Pr[W=w | P=p] \right)\\
  &= -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \frac{\Pr[W=w \wedge P=p]}{\Pr[P=p]} \right)\\
- &\ge -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \frac{\Pr[W=w]}{\Pr[P=p]} \right)\\
+% &\ge -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \frac{\Pr[W=w]}{\Pr[P=p]} \right)\\
  &\ge -\log \left(\max_{w'}  \sum_{w\in W| \dis(w, w')\le t} \frac{\Pr[W=w]}{\Pr[P=p]} \right)\\
  &= \Hfuzz(W) + \log \Pr[P=p].
 \end{align*}
+This completes the proof of \lemref{lem:conditional fuzz rule}.
 \end{proof}
 
 
@@ -944,6 +947,7 @@ Clearly, $\Pr[D(\Key, P) = 1]\geq 2^{-m} - \delta$, while $\Pr[D(U_\kappa, P)=1 
 &\ge -\log \left( 2^{H_0(P)} \left(\max_{w'} \sum_{w\in W | \dis(w, w')\le t} \Pr[W=w] \right)\right)\\
 &\ge \Hfuzz(W) - H_0(P).
 \end{align*}
+This completes the proof of \lemref{lem:chain rule fuzz}.
 \end{proof}
 
 
@@ -981,43 +985,42 @@ We now argue security of the construction.  First note that the total weight of 
 \Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\nonumber\\
 &\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)
 \end{align}
-For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$  Let $I$ be the random variable of the level information (in what follows, $I$ ranges over $m\le i \le m+n$, where possible we omit this for notational clarity). 
+For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$  Let $L_I$ be the random variable of the level information (in what follows, $L_I$ takes values between $m$ and $m+n$, where possible we omit this for notational clarity). 
 
 \begin{align}
-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}}=0 \wedge I=i}) \right)\nonumber\\
-&=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \mathcal{K}_i \wedge F_i(K_i, W) \wedge 1_{\text{low}}=0 \wedge I=i)}\right)\nonumber\\
-&=-\log \left( \expe_{i\in I} 2^{-\Hav(W |  F_i(K_i, W) \wedge 1_{\text{low}}=0 \wedge I=i)}\right)\nonumber\\
-&\ge-\log \left( \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}-1) +\log \delta)}\right)\nonumber\\
-&\ge-\log \left(\frac{1}{\delta} \expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}-1))}\right)\nonumber\\
-&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}-1))}\right) - \log \frac{1}{\delta}\nonumber\\
-&\ge-\log \left(\expe_{i\in I} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge I=i)-\log (\beta_{t, i}))}\right) - \log \frac{1}{\delta}\label{eq:fuzzy ball size}
+\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i} 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}}=0 \wedge L_I =i }) \right)\nonumber\\
+&=-\log \left( \expe_{i} 2^{-\Hav(W | \mathcal{K}_i \wedge F_i(K_i, W) \wedge 1_{\text{low}}=0 \wedge L_I=i)}\right)\nonumber\\
+&=-\log \left( \expe_{i} 2^{-\Hav(W |  F_i(K_i, W) \wedge 1_{\text{low}}=0 \wedge L_I=i)}\right)\nonumber\\
+&\ge-\log \left( \expe_{i} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge L_I=i)-\log (\beta_{t, i}-1) +\log \delta)}\right)\nonumber\\
+&\ge-\log \left(\frac{1}{\delta} \expe_{i} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge L_I=i)-\log (\beta_{t, i}-1))}\right)\nonumber\\
+&\ge-\log \left(\expe_{i} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge L_I=i)-\log (\beta_{t, i}-1))}\right) - \log \frac{1}{\delta}\nonumber\\
+&\ge-\log \left(\expe_{i} 2^{-(\Hav(W |  1_{\text{low}}=0 \wedge L_I=i)-\log (\beta_{t, i}))}\right) - \log \frac{1}{\delta}\label{eq:fuzzy ball size}
 \end{align}
 
 \noindent
-The third line follows because the only dependence between $\mathcal{K}_i$ and $W$ is in $i$.  The fourth line follows by \cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.  We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  
+The third line follows because the only dependence between $\mathcal{K}_i$ and $W$ is in $i$.  The fourth line follows by \cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.  We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  For convenience denote by $J \overset{def}= (L_I \wedge 1_{\text{low}}=0)$.  That is, $\Pr[J=i] \overset{def}= \Pr[1_{\text{low}}=0 \wedge L_I=i$]. 
 \begin{claim}
 \label{cl:fuzz proportional beta}
-\[\Hoo(W | 1_{\text{low}} =0 \wedge J=j ) -\log \beta_{t, i} \ge \Hfuzz(W | J=j \wedge 1_{\text{low}}=0)-1.\]
+$\Hoo(W |   J=i ) -\log \beta_{t, i} \ge \Hfuzz(W | J=i)-1.$
 \end{claim}
 \begin{proof}
-For convenience denote by $J=j$ the random variable $1_{\text{low}}=0 \wedge I=i$. 
 \begin{align*}
-\Hfuzz(W|J=j) &= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \Pr[W=w | J=j]\right) \right)\\
-&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \min_{w^*\in W=w| J=j}\Pr[W=w^* | J=j]\right) \right)\\
-&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} \max_{w^*\in W=w| J=j}\Pr[W=w^* | J=j]\right) \right)+1\\
-&= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 2^{-\Hoo(W|J=j)}\right) \right)+1\\
-&= \Hoo(W|J=j)- \log\left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')} 1\right) \right)+1\\
-&=\Hoo(W|J=j)-  \log \left(\max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|\right)+1\\
-&=\Hoo(W|J=j)+1-\log \beta_{t, i}.
+\Hfuzz(W|J=i) &= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')\le t} \Pr[W=w | J=i]\right) \right)\\
+&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')\le t}\left( \min_{w^*\in W=w| J=i}\Pr[W=w^* | J=i]\right) \right)\right)\\
+&\le -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')\le t} \left(\max_{w^*\in W=w| J=i}\Pr[W=w^* | J=i]\right) \right)\right)+1\\
+&= -\log \left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')\le t} 2^{-\Hoo(W|J=i)}\right) \right)+1\\
+&= \Hoo(W|J=i)- \log\left(\max_{w' \in \mathcal{M}} \left( \sum_{w\in W | \Pr[W=w]\in L_i \wedge \dis(w, w')\le t} 1\right) \right)+1\\
+&=\Hoo(W|J=i)-  \log \left(\max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|\right)+1\\
+&=\Hoo(W|J=i)+1-\log \beta_{t, i}.
 \end{align*}
-Where the third line follows by \clref{cl:nearly flat after conditioning}, which follow the body of the proof.  This completes the proof of \clref{cl:fuzz proportional beta}.
+Where the third line follows by \lemref{lem:nearly flat after conditioning}, which follows the proof of \thref{thm:layered hashing}.  This completes the proof of \clref{cl:fuzz proportional beta}.
 \end{proof}
 
 \noindent 
 We now return to the proof of \thref{thm:layered hashing}. Together Equation \ref{eq:fuzzy ball size} and \clref{cl:fuzz proportional beta} yield:
 \begin{align*}
-\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}}=0)-1}\right) -\log \frac{1}{\delta} \\
-&=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}} =0)}\right) -1- \log \frac{1}{\delta} \\
+\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}}=0)-1}\right) -\log \frac{1}{\delta} \\
+&=-\log \left( \expe_{i} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}} =0)}\right) -1- \log \frac{1}{\delta} \\
 &=\Hfav(W | I \wedge 1_{\text{low}}=0)-1- \log \frac{1}{\delta} \\
 &\ge\Hfuzz(W | 1_{\text{low}}=0)-1-\log n -\log \frac{1}{\delta}\\
 &\ge\Hfuzz(W)-1-\log n -\log \frac{1}{\delta} - \log (1-2^{-m})
@@ -1034,19 +1037,19 @@ Returning to equation \ref{eq:min-entropy} one has:
 Where the fourth line follows from the third because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$, then $\log (1-2^{-m}) \le 1$ and if $m<1$ the entire bound is vacuous as $\Hfuzz(W) < 1$.
 \end{proof}
 
-\begin{claim}
-\label{cl:nearly flat after conditioning}
+\begin{lemma}
+\label{lem:nearly flat after conditioning}
 Let $W$ be a distribution and let $S\subset W$ such that for all $w_1, w_2 \in S$, $\Pr[W=w_1]\ge \Pr[W=w_2]$.  Let $J$ be as above, then for all $w_1, w_2 \in (S \wedge W|J=j )$, $\Pr[W=w_1 | J=j]\ge \Pr[W=w_2 | J=j]/2$.
-\end{claim}
+\end{lemma}
 \begin{proof}
 \begin{align*}
 \Pr[W=w_1 | J=j] &=\frac{\Pr[W=w_1\wedge J=j] }{\Pr[J=j]}\\
 &= \frac{\Pr[W=w_1]}{\Pr[J=j]}\\
 &\ge \frac{\Pr[W=w_2]}{2 \Pr[J=j]}\\
 &= \frac{\Pr[W=w_2 \wedge J=j]}{2\Pr[J=j]}\\
-&=\frac{\Pr[W=w_2]}{2}.
+&=\frac{\Pr[W=w_2 | J=j]}{2}.
 \end{align*}
-Where the first and last equality follow by Bayes' rule.  The second and fourth equality follow by noting that $\Pr[W=w \wedge J=j] = \Pr[W=w \wedge 1_{\text{low}}=0 \wedge I=i] = \Pr[W=w]$ for all $w\in L_i$.  The inequality proceeds by assumption.  This completes the proof of \clref{cl:nearly flat after conditioning}.
+Where the first and last equality follow by Bayes' rule.  The second and fourth equality follow by noting that $\Pr[W=w \wedge J=j] = \Pr[W=w \wedge 1_{\text{low}}=0 \wedge I=i] = \Pr[W=w]$ for all $w\in L_i$.  The inequality proceeds by assumption.  This completes the proof of \lemref{lem:nearly flat after conditioning}.
 \end{proof}
 
 \section{Proof of \thref{thm:imposs sketch}}
@@ -1185,7 +1188,7 @@ Consider some $w\in V$ over $\zo^n$.  Then $w\leftarrow W$ with coefficients $a_
 
 \begin{lemma}
 \label{lem:fuzz can't get key}
-Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an information-theoretic distinguisher between $(R, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/8-\ngl(n)$.
+Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an information-theoretic distinguisher between $(\Key, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/8-\ngl(n)$.
 \end{lemma}
 \begin{proof}
 As in the proof of \thref{thm:imposs sketch}, we assume that $\rep$ is deterministic.  Denote by $(\Key, P) \leftarrow \gen(V)$.
@@ -1195,26 +1198,22 @@ By Markov's inequality, there exists a set $A_{\epsilon}$ such that $\Pr[p\in A_
 \]
 %\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $p^*\in A_{p}$.  %Since $(R | P=p^*, p^*)\approx_{2\epsilon} (U, p^*)$ this means that $R|P=p^*$ is at least $(1-2\epsilon)2^\kappa$.  
+Consider some $p^*\in A_{p}$.  
 The distribution $\Key|P=p^*$ is the set of possible keys.
 The distribution $\Key|P=p^*$ induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique value $\key$ such that $\rep(w, p^*) =\key$.  Denote this partition by $Q_{p^*,\key} = \{w | \rep(w, p^*) = \key\}$.  
 
-There exists a set $R_{small}$  where $|R_{small} | \ge 2^{\kappa-1}$ such that for all $\key\in R_{small}$,  $|Q_{p^*, r}|\le \mathcal{M}/2^{\kappa} = 2^{n-\kappa }$.  If not, then $\cup_{\key} |Q_{p^*, \key}| > |\mathcal{M}|$.
-For the remainder of the proof we restrict ourselves to elements in $R_{small}$.  Only points that are distance $t$ from points outside of $Q_{p^*, r}$ are viable points in the metric space.  These are the interior of $Q_{p^*, r}$: \lnote{what's $r$? in this and previous lines? also, I can parse definition of interior below}
+There exists a set $\Key_{small}$  where $|\Key_{small} | \ge 2^{\kappa-1}$ such that for all $\key\in \Key_{small}$,  $|Q_{p^*, \key}|\le \mathcal{M}/2^{\kappa} = 2^{n-\kappa }$.  If not, then $\cup_{\key} |Q_{p^*, \key}| > |\mathcal{M}|$.
+For the remainder of the proof we restrict ourselves to elements in $\Key_{small}$.  Only points that are distance $t$ from points outside of $Q_{p^*, r}$ are viable points in the metric space.  These are points where all points within distance $t$ map to the same key.  We call this set the interior of $Q_{p^*, \key}$: 
 \begin{align*}
-\inter(Q_{p^*, \key}) = \{w | \rep(w, p^*) = \key \wedge \forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =\key\},\\
+\inter(Q_{p^*, \key}) = \{w | \rep(w, p^*) = \key \wedge (\forall w', \dis(w, w') \le t \wedge \rep(w', p^*) =\key)\},\\
 %\crust(Q_{p^*, r}) = \{w | \rep(w, p^*) = r \wedge \exists w', \dis(w, w')\le t \wedge \rep(w', p^*) \neq r\}.
 \end{align*}
-
-%Note that $\crust(Q_{p^*, r}) \cap \inter(Q_{p^*,r}) =\emptyset$.  
-We will use the term deficient ball\footnote{In most statements of the isoperimetric inequality, this type of set is simply called a ball.  We use the term deficient ball for emphasis.}:\bnote{use a term other than deficient} \lnote{how about ``almost ball''}
+ The isoperimetric inequality says $\inter(Q_{p^*, \key})$ must be of bounded size.  This statement use the sets which are nearly balls in the Hamming space\footnote{In most statements of the isoperimetric inequality, this type of set is simply called a ball.  We use the term near ball for emphasis.}:
 \begin{definition}
-A set $S$ is a $\eta$-deficient ball if there exists a point $x$ such that $B_{\eta-1}(x) \subseteq S \subseteq B_{\eta}(x)$.
+A set $S$ is a $\eta$-near ball if there exists a point $x$ such that $B_{\eta-1}(x) \subseteq S \subseteq B_{\eta}(x)$.
 \end{definition}
-
-Consider some $\key^*\in R_{small}$.  
-We now proceed to show that the interior of each $Q_{p^*, \key^*}$ is small:
-%Recall that $B_{n-\kappa-t}$ denotes the ball of radius $n-\kappa -t$.
+\noindent
+We now show for any $\key^*$, $\inter(Q_{p^*, \key^*})$ is small:
 
 \begin{lemma}
 $|\inter(Q_{p^*, \key^*})| \le 2^{n-4\nu}$.
@@ -1222,22 +1221,23 @@ $|\inter(Q_{p^*, \key^*})| \le 2^{n-4\nu}$.
 \begin{proof}
 By the isoperimetric inequality on the Hamming space~(we use a version
 due to~\cite[Theorem 1]{frankl1981short}, the original result is due
-to Harper~\cite{harper1966optimal}), there exists a $\eta$-deficient
-ball $S_{p^*, \key^*}$ centered at $0^n$ and a deficient ball $D$,
+to Harper~\cite{harper1966optimal}), there exists a $\eta$-near
+ball $S_{p^*, \key^*}$ centered at $0^n$ and a near ball $D$,
 centered at $1^n$, such that
 $|S_{p^*, \key^*}| = |\inter(Q_{p^*, \key^*})|$, $|D| = |Q_{p^*,
   \key^*}^\complement|$ (where $\cdot^\complement$ denotes the
 complement of a set) and $\forall s\in S_{p^*, \key^*}, d\in D$,
-$\dis(s, d) \ge t$~(that is, the distance between the sets is $t$).  Note that $S_{p^*, \key^*} \cup D^\complement$ is a deficient ball~(and its radius is $\eta+t$).\lnote{Why?}
+$\dis(s, d) \ge t$~(that is, the distance between the sets is $t$).  Since $S_{p^*, \key^*}$ is a near ball and the set $D^\complement$ contains all points of distance less than $t$ from $S_{p^*, \key^*}$.  Thus, the set $S_{p^*, \key^*} \cup D^\complement$ contains a near ball of radius is $\eta+t-1$).
 We now bound the size of $S_{p^*, \key^*}$.
 
-Recall that $|S_{p^*, \key^*} \cup D| = |Q_{p^*, \key^*} | \le 2^{n-\kappa}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a deficient sphere \lnote{ball} of radius at most $n/2-t$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}: \lnote{should the first $n$ in the line below be $n/2$?}
+Recall that $|S_{p^*, \key^*} \cup D^\complement| = |Q_{p^*, \key^*} | \le 2^{n-\kappa}\leq |\mathcal{M}|/2$.  Since this set contains less than half the points in the metric space we know its radius at most $n/2$.  This means that $|S_{p^*, \key^*}|$ is a near ball of radius at most $n/2-t+1$.  Let $X$ denote a uniform string on $\zo^n$.  We use Hoeffding's inequality~\cite{hoeffding1963probability}:
 
 \begin{align*}
-|S_{p^*, \key^*}| \le \{ x | \dis (x, 0)\le n-t\} &= 2^n \Pr_{X\leftarrow \zo^n} [ wt(X) \le (1/2-t/n)n] \le 2^n e^{-n ((t/n)^2)} = 2^n e^{-4\nu} \le 2^{n - 4\nu}
+|S_{p^*, \key^*}| &\le \{ x | \dis (x, 0)\le \frac{n}{2}-t+1\}\\&= 2^n \Pr_{X\leftarrow \zo^n} [ wt(X) \le (\frac{1}{2}-\frac{t-1}{n})n] \\
+&\le 2^n e^{-n (((t-1)/n)^2)} = 2^n e^{-4\nu} \le 2^{n - 4\nu}.
 \end{align*}
 where the second to last equality follows from the definition of $t$
-(as $4\nu \sqrt{n}$) at the beginning of the proof of Theorem~\ref{thm:imposs fuzz ext}.
+(as $4\nu \sqrt{n}+1$) at the beginning of the proof of Theorem~\ref{thm:imposs fuzz ext}.
 \end{proof}
 
 We have shown that $|\inter(Q_{p^*, \key^*})| \le 2^{n-4\nu}$.  
@@ -1252,36 +1252,36 @@ Recall that $Z$ consists of $2n/\nu$ coefficients and there are $(2^{n/\nu}-1)^{
  \end{align*}
 Consider two possible $z_1, z_2$ that are possible values of $Z$.  The distributions $V| Z=z_1$ and $V | Z=z_2$ intersect at one point~(namely $v$).  
 
-This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, \key^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of all preimages of $R_{small}$ denoted $Q_{small} = \cup_{\key\in R_{small}} \inter(Q_{\key, p^*})$.  Note that $Q_{small} \le 2^{n-4\nu}|R_{small}|$.  We now show that the intersection between $Q_{\key, p^*}$ is small for most possible values $z$.  As before each container~(the values of $z$)  receives one item for free~(the point $v$).
+This means that the $\gen$ algorithm may include points for possible $Z$ values into parts $Q_{p^*, \key^*}$~(other than $v$) and these values are disjoint.  The optimum strategy is to include these values uniformly from different $Z$ values.  Consider the set of all preimages of $\Key_{small}$ denoted $Q_{small} = \cup_{\key\in \Key_{small}} \inter(Q_{\key, p^*})$.  Note that $Q_{small} \le 2^{n-4\nu}|\Key_{small}|$.  We now show that the intersection between $Q_{\key, p^*}$ is small for most possible values $z$.  As before each container~(the values of $z$)  receives one item for free~(the point $v$).
 \begin{align*}
 \expe_z |Q_{small} \cap (V | P=p^* \wedge Z=z) | &\le \left(\frac{\text{\# items}+\text{\# containers}}{\text{\# containers}}\right)\\
-&\le \frac{2^{n-4\nu}|R_{small}|}{2^{n - 3\nu}}+1\\
-&=\frac{|R_{small}|}{2^{\nu}}+1
+&\le \frac{2^{n-4\nu}|\Key_{small}|}{2^{n - 3\nu}}+1\\
+&=\frac{|\Key_{small}|}{2^{\nu}}+1
 \end{align*}
 In expectation across $Z$, 
-\[\frac{\frac{|R_{small}|}{2^{\nu}}+1}{|R_{small}|} \le \frac{1}{2^\nu}+\frac{1}{|R_{small}|} \] fraction of $R_{small}$ receive any support.  %Thus, at most $1+1/2^{\nu} = \ngl(n)$ keys in $R_{small}$ have any support  conditioned on $p^*$ and $Z$~(note this is an expectation across the values of $Z$).  
+\[\frac{\frac{|\Key_{small}|}{2^{\nu}}+1}{|\Key_{small}|} \le \frac{1}{2^\nu}+\frac{1}{|\Key_{small}|} \] fraction of $\Key_{small}$ receive any support.  
 We now present a distinguisher $D_{p^*}$ for a particular $p^*$:
 \begin{enumerate}
-\item On input $x, z$.
+\item On input $\key, z$.
 %\item If $x\not \in R_{small}$ output random bit $b$.
-\item Compute $V|P=p^* \wedge Z=z$ and $Q_{p^*, x}$. 
-\item If $(Q_{p^*, x} \cap V|P=p^* \wedge Z=z) =\emptyset$ output $b=0$.
+\item Compute $V|P=p^* \wedge Z=z$ and $Q_{p^*, \key}$. 
+\item If $(Q_{p^*, \key} \cap V|P=p^* \wedge Z=z) =\emptyset$ output $b=0$.
 \item Else output $b=1$.
 \end{enumerate}
 
-The distinguisher $D(x, p, z)$ is formed by calling $D_p(x, z)$ when $p\in A_p$ and outputting a random bit otherwise.  The advantage of $D$ is 
+The distinguisher $D(\key, p, z)$ is formed by calling $D_p(\key, z)$ when $p\in A_p$ and outputting a random bit otherwise.  The advantage of $D$ is 
 \begin{align*}
 \Pr[D(\Key, P, Z) = 1] &- \Pr[D(U, P, Z) =1]\\
 &=(\Pr[D(\Key, P, Z) = 1| P\in A_p] - \Pr[D(U, P, Z) =1 | P\in A_p])\Pr[P\in A_p]\\
 &\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1 - \Pr[D_{p^*}(U, Z)=1]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \Pr[D_{p^*}(U, Z)=1 | U\in R_{small}]\Pr[U\in R_{small}] - \Pr[U\not\in R_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \left(\left(\frac{1}{|R_{small}|}+\frac{1}{2^\nu}\right)\Pr[U\in R_{small}]\right) - \Pr[U\not\in R_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in R_{small}] - \Pr[U\not \in R_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in R_{small}] - \Pr[U\not \in R_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -1+\frac{1}{2}\Pr[U\in R_{small}] \right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \Pr[D_{p^*}(U, Z)=1 | U\in \Key_{small}]\Pr[U\in \Key_{small}] - \Pr[U\not\in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \left(\left(\frac{1}{|\Key_{small}|}+\frac{1}{2^\nu}\right)\Pr[U\in \Key_{small}]\right) - \Pr[U\not\in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in \Key_{small}] - \Pr[U\not \in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in \Key_{small}] - \Pr[U\not \in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -1+\frac{1}{2}\Pr[U\in \Key_{small}] \right)\\
 &\ge \sum_{p^* \in A_p} \Pr[P=p^*]\left(1/4-\ngl(n)\right) \ge \frac{1}{8}-\ngl(n).
 \end{align*}
-The sixth line follows since $R_{small} \ge 2^{\kappa-1}\ge 2$.  The eighth line follows because $\Pr[U\in R_{small}]\ge 1/2$.  The last inequality proceeds because $\Pr[P\in A_p]\ge 1/2$.
+The sixth line follows since $\Key_{small} \ge 2^{\kappa-1}\ge 2$.  The eighth line follows because $\Pr[U\in \Key_{small}]\ge 1/2$.  The last inequality proceeds because $\Pr[P\in A_p]\ge 1/2$.
 This completes the proof of \lemref{lem:fuzz can't get key}.
 \end{proof}
 
