@@ -1201,11 +1201,11 @@ This is a contradiction and completes the proof of \lemref{lem:samp unguess}.
 \bnote{can be tightened to $\omega(n^c \log n)$.}
 \begin{proof}[Proof of \lemref{lem:sampling errors}]
 
-Recall that $\dis(w, w')\leq t$ and that the locations of the errors is independent of the selected locations.  Denote by $\mu = -\frac{(c-1)\log n}{2}$.  Since $\eta = \omega(\log n)$, we will assume
+Recall that $\dis(w, w')\leq t$ and that the locations of the errors is independent of the selected locations.  Denote by $\mu = -\frac{(c-1)\log n}{2}$ and note that $t\leq \mu(\gamma-\eta)/\eta$.  Since $\eta = \omega(\log n)$, we will assume
 $\eta\ge 2\mu$.  We begin by computing the probability that a single $v_i = v_i'$.
 \begin{align*}
 \Pr[v_i = v_i'] &= \Pr[w\text{ and }w'\text{ agree on positions }j_{i,1},..., j_{i,\eta}]\\
-&\ge \prod_{j=0}^{\eta-1} \left( 1- \frac{t}{\gamma -j }\right) \ge \prod_{j=0}^{\eta-1}\left(1-\frac{\mu(\gamma-\eta)/\eta}{\eta-j}\right)\\
+&\ge \prod_{j=0}^{\eta-1} \left( 1- \frac{t}{\gamma -j }\right) \ge \prod_{j=0}^{\eta-1}\left(1-\frac{\mu(\gamma-\eta)/\eta}{\gamma-j}\right)\\
 &\ge \prod_{j=0}^{\eta-1} \left( 1- \frac{\mu}{\eta}\left(\frac{\gamma-\eta}{\gamma -j }\right)\right)\ge \prod_{j=0}^{\eta-1}\left(1-\frac{\mu}{\eta}\right)\\
 &= \left(1-\frac{\mu}{\eta}\right)^{\eta} =\left( \left(1-\frac{\mu}{\eta}\right)^{\eta/\mu}\right)^\mu\geq \left(\frac{1}{2}\right)^{2\mu}\\
 &\ge \left(\frac{1}{2}\right)^{(c-1) \log n}= \frac{1}{n^{c-1}}.
