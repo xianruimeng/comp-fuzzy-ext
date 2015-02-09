@@ -645,10 +645,10 @@ Before proving security of \consref{cons:leveling} we extend the notation to the
 
 \begin{theorem}
 \label{thm:layered hashing}
-Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 3$.
+Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 4$.
 
 \end{theorem}
-We provide a proof in \apref{sec:proof of layered hashing}.  The main idea is to show that an adversary that knows the level of $w$ cannot perform much better than an adversary without this information.  \bnote{this sentence isn't helpful, provide better intuition}
+We provide a proof in \apref{sec:proof of layered hashing}.  The main idea is that providing the level information makes the distribution look nearly flat~(the probability of points differs by at most a factor of two).  We can apply similar techniques to \lemref{lem:flat hashing} to show security for each nearly flat distribution. Then, we show that providing the level information does not hurt security too much.
 
 \begin{corollary}
 \label{cor:extension to fuzz ext}
@@ -929,7 +929,7 @@ Clearly, $\Pr[D(\Key, P) = 1]\geq 2^{-m} - \delta$, while $\Pr[D(U_\kappa, P)=1 
  &= -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \frac{\Pr[W=w \wedge P=p]}{\Pr[P=p]} \right)\\
  &\ge -\log \left(\max_{w'}  \sum_{w\in (W |P=p) | \dis(w, w')\le t} \frac{\Pr[W=w]}{\Pr[P=p]} \right)\\
  &\ge -\log \left(\max_{w'}  \sum_{w\in W| \dis(w, w')\le t} \frac{\Pr[W=w]}{\Pr[P=p]} \right)\\
- &= \Hfuzz(W) - \log \frac{1}{\Pr[P=p]}.
+ &= \Hfuzz(W) + \log \Pr[P=p].
 \end{align*}
 \end{proof}
 
@@ -981,7 +981,7 @@ We now argue security of the construction.  First note that the total weight of 
 \Hav(W | \sketch(W)) &= -\log \left(\Pr[1_{\text{low}}=1] * 1 + \Pr[1_{\text{low}} =0]   2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\right)\nonumber\\
 &\ge -\log\left( 2^{-m} + (1-2^{-m})2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}} = 0)}\label{eq:min-entropy}\right)
 \end{align}
-For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$  Let $I$ be the random variable of the level information (in what follows, $I$ ranges over $m\le i \le m+n$, where possible we omit this for notation clarity). 
+For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1_{\text{low}} =0).$  Let $I$ be the random variable of the level information (in what follows, $I$ ranges over $m\le i \le m+n$, where possible we omit this for notational clarity). 
 
 \begin{align}
 \Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hav(W | \sketch(W) \wedge 1_{\text{low}}=0 \wedge I=i}) \right)\nonumber\\
@@ -994,10 +994,10 @@ For the remainder of the proof, we seek a bound on $\Hav(W | \sketch(W) \wedge 1
 \end{align}
 
 \noindent
-We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  
+The third line follows because the only dependence between $\mathcal{K}_i$ and $W$ is in $i$.  The fourth line follows by \cite[Lemma 2.2]{DBLP:journals/siamcomp/DodisORS08}.  We now show that the fuzzy min-entropy conditioned on the level information is proportional to $\beta_{t, i}$.  
 \begin{claim}
 \label{cl:fuzz proportional beta}
-\[\Hoo(W | 1_{\text{low}} =0 \wedge J=j ) -\log \beta_{t, i} \ge \Hfuzz(W | J=j \wedge 1_{\text{low}}=0)+1.\]
+\[\Hoo(W | 1_{\text{low}} =0 \wedge J=j ) -\log \beta_{t, i} \ge \Hfuzz(W | J=j \wedge 1_{\text{low}}=0)-1.\]
 \end{claim}
 \begin{proof}
 For convenience denote by $J=j$ the random variable $1_{\text{low}}=0 \wedge I=i$. 
@@ -1010,26 +1010,11 @@ For convenience denote by $J=j$ the random variable $1_{\text{low}}=0 \wedge I=i
 &=\Hoo(W|J=j)-  \log \left(\max_{w' \in \mathcal{M}} \left|\{w | \dis(w, w')\le t \wedge \Pr[W=w]\in L_i\}\right|\right)+1\\
 &=\Hoo(W|J=j)+1-\log \beta_{t, i}.
 \end{align*}
-Where the third line follows by \clref{cl:nearly flat after conditioning}, which follows.  This completes the proof of \clref{cl:fuzz proportional beta}.
-\end{proof}
-
-\begin{claim}
-\label{cl:nearly flat after conditioning}
-Let $W$ be a distribution and let $S\subset W$ such that for all $w_1, w_2 \in S$, $\Pr[W=w_1]\ge \Pr[W=w_2]$.  Let $J$ be as above, then for all $w_1, w_2 \in (S \wedge W|J=j )$, $\Pr[W=w_1 | J=j]\ge \Pr[W=w_2 | J=j]/2$.
-\end{claim}
-\begin{proof}
-\begin{align*}
-\Pr[W=w_1 | J=j] &=&\frac{\Pr[W=w_1\wedge J=j] }{\Pr[J=j]}
-&=& \frac{\Pr[W=w_1]}{\Pr[J=j]}\\
-&\ge& \frac{\Pr[W=w_2]}{2 \Pr[J=j]}
-&=& \frac{\Pr[W=w_2 \wedge J=j]}{2\Pr[J=j]}\\
-&=&\frac{\Pr[W=w_2]}{2}.
-\end{align*}
-Where the first and last equality follow by Bayes' rule.  The second and fourth equality follow by noting that $\Pr[W=w \wedge J=j] = \Pr[W=w]$ for all $w\in L_i$.  The inequality proceeds by assumption.  This completes the proof of \clref{cl:nearly flat after conditioning}.
+Where the third line follows by \clref{cl:nearly flat after conditioning}, which follow the body of the proof.  This completes the proof of \clref{cl:fuzz proportional beta}.
 \end{proof}
 
 \noindent 
-We now return to the proof of \lemref{lem:flat hashing}. Together Equation \ref{eq:fuzzy ball size} and \clref{cl:fuzz proportional beta} yield:
+We now return to the proof of \thref{thm:layered hashing}. Together Equation \ref{eq:fuzzy ball size} and \clref{cl:fuzz proportional beta} yield:
 \begin{align*}
 \Hav(W | \sketch(W) \wedge 1_{\text{low}} =0) &=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}}=0)-1}\right) -\log \frac{1}{\delta} \\
 &=-\log \left( \expe_{i\in I} 2^{-\Hfuzz(W | I=i \wedge 1_{\text{low}} =0)}\right) -1- \log \frac{1}{\delta} \\
@@ -1044,9 +1029,24 @@ Returning to equation \ref{eq:min-entropy} one has:
 &\ge -\log \left(2^{-m}+2^{-(\Hfuzz(W) -1 - \log n  -\log 1/\delta-2\log (1-2^{-m}) )}\right)\\
 &\ge -\log \min\{2^{-m}, 2^{-(\Hfuzz(W) -1 - \log n  -\log 1/\delta-2\log (1-2^{-m}) )}\}-1\\
 &\ge \Hfuzz(W) - 2- \log n - \log 1/\delta  -2\log (1-2^{-m}) \\
-&\ge \Hfuzz(W) - 3- \log n - \log 1/\delta
+&\ge \Hfuzz(W) - 4- \log n - \log 1/\delta
 \end{align*}
 Where the fourth line follows from the third because $\Hfuzz(W)\le \Hoo(W) = m$. The last line follows from the fourth because if $m\ge 1$, then $\log (1-2^{-m}) \le 1$ and if $m<1$ the entire bound is vacuous as $\Hfuzz(W) < 1$.
+\end{proof}
+
+\begin{claim}
+\label{cl:nearly flat after conditioning}
+Let $W$ be a distribution and let $S\subset W$ such that for all $w_1, w_2 \in S$, $\Pr[W=w_1]\ge \Pr[W=w_2]$.  Let $J$ be as above, then for all $w_1, w_2 \in (S \wedge W|J=j )$, $\Pr[W=w_1 | J=j]\ge \Pr[W=w_2 | J=j]/2$.
+\end{claim}
+\begin{proof}
+\begin{align*}
+\Pr[W=w_1 | J=j] &=\frac{\Pr[W=w_1\wedge J=j] }{\Pr[J=j]}\\
+&= \frac{\Pr[W=w_1]}{\Pr[J=j]}\\
+&\ge \frac{\Pr[W=w_2]}{2 \Pr[J=j]}\\
+&= \frac{\Pr[W=w_2 \wedge J=j]}{2\Pr[J=j]}\\
+&=\frac{\Pr[W=w_2]}{2}.
+\end{align*}
+Where the first and last equality follow by Bayes' rule.  The second and fourth equality follow by noting that $\Pr[W=w \wedge J=j] = \Pr[W=w \wedge 1_{\text{low}}=0 \wedge I=i] = \Pr[W=w]$ for all $w\in L_i$.  The inequality proceeds by assumption.  This completes the proof of \clref{cl:nearly flat after conditioning}.
 \end{proof}
 
 \section{Proof of \thref{thm:imposs sketch}}
