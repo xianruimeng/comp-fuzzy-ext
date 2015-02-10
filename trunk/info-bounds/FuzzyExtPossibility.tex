@@ -613,7 +613,7 @@ To set parameters, we restrict our notation of the maximum likelihood ball to po
 
 \begin{theorem}
 \label{thm:layered hashing}
-Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = (\beta_{t,i}-1) /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 4$.
+Let $W$ be a distribution over $\mathcal{M}$ where $n =\log \M$.  Let $\delta>0$ be an function of $n$.  Let $F_i: \mathcal{K}_i \times \mathcal{M}\rightarrow R_i$ be a parameterized family of universal hash functions where $|R_i| = \beta_{t,i} /\delta$.  When $\ell = n$ \consref{cons:leveling} is a $(\mathcal{M}, \{W\}, \tilde{m}, t)$-known distribution secure sketch with error $\delta$ for $\tilde{m} = \Hfuzz(W) - \log n - \log 1/\delta - 4$.
 
 \end{theorem}
 \noindent
@@ -654,7 +654,7 @@ Let $\mathcal{W}_Z$ be the set of all distributions of the form
 \[w =  \begin{pmatrix} \vec{1} \\a_2  \\ \vdots \\ a_{\gamma} \end{pmatrix} w_1 + \begin{pmatrix} 0  \\ 
 b_2\\ \vdots \\ b_{\gamma} \end{pmatrix} 
 \]
-The family is defined by the parameters $a_2,.., a_\gamma$ and $b_2,..., b_\gamma$ (seen by the adversary) and the distribution is sampled by sampling $w_1$.  Each distribution $W_z$ is an affine line in space $\mathbb{F}^\gamma$. The algorithm $\sketch, \rec$ never see $Z$ only the outcome of $v\leftarrow V$.
+The family is defined by the parameters $a_2,.., a_\gamma$ and $b_2,..., b_\gamma$ (seen by the adversary) for arbitrary $b_i$ and $a_i\neq 0$.  The outcome $w\leftarrow W_z$ is sampled by sampling $w_1$ and computing $w$.  Each distribution $W_z$ is an affine line in space $\mathbb{F}^\gamma$. The algorithm $\sketch, \rec$ never see $Z$ only the outcome of $v\leftarrow V$.
 Fix some $4\le t < \gamma$.
 We show the following~(in \apref{sec:proof secure sketch imposs}):
 
@@ -727,8 +727,8 @@ Interpret $x_1,..., x_{\nu}$ as a element $x\in \mathbb{F}$ and let
 \[w =  \begin{pmatrix} \vec{1} \\a_2  \\ \vdots \\ a_{n/\nu} \end{pmatrix} x + \begin{pmatrix} 0  \\ 
 b_2\\ \vdots \\ b_{n/\nu} \end{pmatrix} .
 \]
-The multiplication is in $\mathbb{F}$.  The family $\mathcal{W}_Z$ is parameterized by $z = a_2,..., a_{n/\nu}, b_2,..., b_{n/\nu}$.  
-A particular distribution $W_z$ is then the uniform distribution over choices of $x$.
+The multiplication is in $\mathbb{F}$.  The family $\mathcal{W}_Z$ is parameterized by $z = a_2,..., a_{n/\nu}, b_2,..., b_{n/\nu}$ for arbitrary $b_i$ and $a_i\neq 0$.  
+A particular distribution $W_z$ is the uniform distribution over choices of $x$.
  Define $V$ as the process of uniformly choosing $W_z\leftarrow \mathcal{W}_Z$ and then sampling from $w\leftarrow W_z$.  The adversary sees $\sketch(V)$  and $Z$.  We then show the following~(proofs in \apref{sec:fuzz ext proof}):
 \begin{itemize}
 \item \propref{prop:dist fuzzy ent fuzz}: for all $W_z\in \mathcal{W}_Z$, $\Hfuzz(W_z) = \omega (\log n)$. 
@@ -786,54 +786,23 @@ Renner and Wolf characterize when it is possible to derive keys from correlated 
 \consref{cons:leveling} can be used to derive keys from correlated random variables.  The main change is to define \[W^* = \{w | \Pr[W=w | W'=w'] >0 \wedge \Pr[W=w]\in L_i\}.\]  
 Our result shows if one is satisfied with obtaining a strong key when possible (our protocol has losses of $2\log 1/\epsilon + \log n+\log 1/\delta$), then a protocol is possible (and explicitly constructible) in the original space. 
 
-
-
-
-
-%\section{Leveraging convex combinations?}
-%\label{sec:convex comb}
-%\bnote{be careful uncommenting this, some notation may be out of date}
-%In many situations solving a problem for min-entropy distributions can be reduced to solving the problem for flat distributions and then using the fact that any min-entropy distribution is a convex combination of flat distributions.  For example, consider the following hypothetical extension to \consref{cons:universal hash}.  Let $W$ be some distribution that is a finite convex combination of flat sources $W_1,..., W_\alpha$ where each $\forall i, \Hoo(W_i)\ge k$.\footnote{A distribution may be an  convex combination of an infinite number of distributions.  However, the problem arises even when considering a finite combination so we restrict ourselves to this simpler case.}  For convenience we assume that the coefficients on all $W_i$ are the same and distributions may be repeated. 
-%
-%We now describe a possible modification to the hashing construction.  Upon receiving an input $w$, sample a distribution $W_i$ from the set of distributions where $w$ has nonzero probability, write $i$ and perform the sketch as before for distribution $W_i$.  Intuitively, writing down a distribution $i$ should not do any harm as each of distributions $W_i$ has the same min-entropy as the starting distribution.  Unfortunately, this proposal may remove all entropy.  %Furthermore, each of these distributions is flat and thus, \consref{cons:universal hash} should apply.  However, this is not the case.
-%
-%%In the flat case, we used a hash whose length was proportional to the number of points in the largest ball.  The residual entropy in this case was within a superlogarithmic factor of $\Hfuzz(W)$.  However, in the setting where $W$ is a convex combination of flat sources this does not hold.
-%
-%Consider set of distributions $W_i$ where each $W_i$ has two components, first $W_i$ contains a distinguished point $w^*$ where $\Pr[W=w^*] = 2^{-k}$ and $w^*$ has no neighbors and $W_i$ contains a set $B_i$ of $2^{-k}-1$ points within distance $t$ each with probability $2^{-k}$.  This distribution is illustrated in \figref{fig:convex comb}.  
-%
-%\begin{figure}
-%
-%\centering
-%    \includegraphics[width=.9\textwidth]{convexCombExample.png}
-%    \caption{A convex combination of $W_1,..., W_\alpha$ has high min and fuzzy min-entropy, but sketching by using the component flat distributions removes all entropy.}
-%\label{fig:convex comb}    
-%\end{figure}
-%
-%
-%The fuzzy min-entropy of $W_i$ is almost $0$ as the overwhelming majority of the probability space lies in $B_i$.  Now consider the distribution $W$ that is a convex combination of the $W_i$~(we assume that $B_i$ do not intersect).  Note that $\Hoo(W)=k$ and that $\Hfuzz(W)\approx \min\{\alpha, k\}$ where $\alpha$ is the number of distributions $W_1,..., W_\gamma$.  The value $\alpha$ may be quite large and $k$ may be the dominant factor.
-%
-%Consider an input point $w\in W$.  One of two cases occurs either $w=w^*$ or $w\in B_i$ for some $i$.  It should be clear in either case that the selected distribution $W_i$ is uniformly distributed from $\{1,..., \alpha\}$.  For any of the selected distributions, there is a ball with $\approx 2^{-k}$ points and thus the hash based construction must write down approximately $k$ points.  This means that $\Hav(W | \sketch(W))  = \Hav(W_i | \sketch(W_i)) \approx 0$.  This is despite the fact $\Hfuzz(W) \approx \min\{\gamma, k\}$.  Thus, the ability to sketch flat distributions does not easily admit a technique to sketch non-flat distributions.  
-\bnote{I removed the discussion of convex combs for the submitted version}
-
 \section{A Definitional Equivalence}
 \label{sec:def equiv}
-%We refer to $\mathcal{W}$ as the \emph{family}, the distribution $W$ as a \emph{source} and the particular outcome taken $w\in W$ as the \emph{sample}.   
 
-As described in \secref{sec:family of dist}, our negative results rule out security for an average member of $\mathcal{W}$.  It may be possible to significantly improve parameters by only ruling out security for a single member $W$.  
+As described in \secref{sec:family of dist}, our negative results rule out security for an average member of $\mathcal{W}_Z$.  It may be possible to significantly improve parameters by only ruling out security for a single member $W_z$.  
 
-Recall the security game of a fuzzy extractor: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W\in \mathcal{W}$ 3) The challenger wins if $\Hav(W|\sketch(W))\ge \tilde{m}$.  Instead of just thinking of the uniform distribution over $\mathcal{W}$, consider an arbitrary distribution $V$ over elements of $\mathcal{W}$.  The minimax theorem says we can reverse which of these actions is announced first~\cite{neumann1928theorie} if $\mathcal{A}$ announces $V$ instead of a single element $W$.  That is, the following two player games have the same equilibrium:
-
+Recall the security game of a fuzzy extractor: 1) the challenger specifies $(\sketch, \rec)$, 2) the adversary specifies a source $W_z\in \mathcal{W}_Z$ 3) The challenger wins if $\Hav(W_z|\sketch(W_z))\ge \tilde{m}$.  Instead of just thinking of the uniform distribution over $\mathcal{W}_Z$, consider an arbitrary distribution $V$ over elements of $\mathcal{W}_Z$.  The minimax theorem says we can reverse which of these actions is announced first~\cite{neumann1928theorie} if $\mathcal{A}$ announces $V$ instead of a single element $W_z$.  That is, the following two player games have the same equilibrium:
 
 \begin{center}
 \begin{tabular}{c|c}
 \begin{minipage}{3in}
 \begin{tabbing}
 123\=123\=123\=123\=123\=\kill
-\textbf{Experiment} $\Exp^{\mathcal{W}}_1(\mathcal{A}, \mathcal{C}, \tilde{m})$: \\
-$(\sketch, \rec)\leftarrow \mathcal{C}(\mathcal{W})$\\
-$W \leftarrow \mathcal{A}(\mathcal{W}, \sketch, \rec)$\\
-If $W\not\in \mathcal{W}$, $\mathcal{C}$ wins.\\
-If $\Hav(W | \sketch(W))\ge \tilde{m}$, $\mathcal{C}$ wins.\\
+\textbf{Experiment} $\Exp^{\mathcal{W}_Z}_1(\mathcal{A}, \mathcal{C}, \tilde{m})$: \\
+$(\sketch, \rec)\leftarrow \mathcal{C}(\mathcal{W}_Z)$\\
+$W_z \leftarrow \mathcal{A}(\mathcal{W}, \sketch, \rec)$\\
+If $W_z\not\in \mathcal{W}_Z$, $\mathcal{C}$ wins.\\
+If $\Hav(W_z | \sketch(W_z))\ge \tilde{m}$, $\mathcal{C}$ wins.\\
 Else $\mathcal{A}$ wins.
 \end{tabbing} 
 \vspace{.065in}
@@ -841,38 +810,23 @@ Else $\mathcal{A}$ wins.
 \begin{minipage}{3in}
 \begin{tabbing}
 123\=123\=123\=123\=123\=\kill
-\textbf{Experiment} $\Exp^{\mathcal{W}}_2(\mathcal{A}, \mathcal{C}, \tilde{m})$: \\
-$V \leftarrow \mathcal{A}(\mathcal{W})$\\
-$(\sketch, \rec)\leftarrow \mathcal{C}(V, \mathcal{W})$\\
-$W \leftarrow V$\\
-If $W\not\in \mathcal{W}$, $\mathcal{C}$ wins.\\
-If $\Hav(W | \sketch(W))\ge \tilde{m}$, $\mathcal{C}$ wins.\\
+\textbf{Experiment} $\Exp^{\mathcal{W}_Z}_2(\mathcal{A}, \mathcal{C}, \tilde{m})$: \\
+$V \leftarrow \mathcal{A}(\mathcal{W}_Z)$\\
+$(\sketch, \rec)\leftarrow \mathcal{C}(V, \mathcal{W}_Z)$\\
+$W_z \leftarrow V$\\
+If $\Hav(W_z | \sketch(W_z))\ge \tilde{m}$, $\mathcal{C}$ wins.\\
 Else $\mathcal{A}$ wins.
 \end{tabbing}
 \end{minipage}
 \end{tabular}
 \end{center}
 
-%The difference between these two games is which player announces their action first, in $\Exp^{\mathcal{W}}_1$, the challenger announces a pair of algorithms and the adversary specifies a source.  In $\Exp^{\mathcal{W}}_2$, the adversary specifies a distribution $V$ over sources, and the challenger then specifies their algorithm.  
-This means that showing security for a family of distributions $\mathcal{W}$ is equivalent to showing security for all  distributions $V$ when the distribution is known to the algorithms $V$.  In our negative results, the adversary  uses the uniform distribution $V$ over $\mathcal{W}$.  However, it may be possible to improve parameters by using a different $V$. This would just rule out some member of $\mathcal{W}$ not an average member.  This is true for fuzzy extractors as well and is resilient to changes in parameters including imperfect correctness.
+\noindent
+This means that showing security for a family of distributions $\mathcal{W}_Z$ is equivalent to showing security for all distributions $V$ when the distribution is known to the algorithms $(\sketch, \rec)$.  In our negative results, the adversary uses the uniform distribution over $\mathcal{W}_Z$.  However, it may be possible to improve parameters by using a different $V$. 
 
-
-%Since the distribution used in our negative results was uniform it is stronger, ruling out security for an average $\mathcal{W}$.  However, constructing a nonuniform $V$ may improve these results.
-%\begin{lemma}
-%\label{lem:quant switch fuzz}
-%Let $\mathcal{W}$ be a family of distributions.  If for all adversaries $\mathcal{A}$, there Let $(\sketch, \rec)$ be a $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch.  Let $V$ be a distribution over $\mathcal{W}$.  Then there exists $(\sketch', \rec')$ that is a $(\mathcal{M}, V, \tilde{m}, t)$-secure sketch on the mixed distribution $V$ when the adversary knows the sampled distribution $W$.\footnote{The other direction of this lemma is true as well.  If it is possible to construct a fuzzy extractor for an arbitrary distribution over a family then it is possible to construct a fuzzy extractor for every element of the family.}
-%\end{lemma}
-
-
-%\begin{corollary}
-%\label{cor:no fuzz for dist}
-%Let $\mathcal{W}$ be a family of distributions.  Let $V$ be an arbitrary distribution over elements of $\mathcal{W}$.  If there does not exist a $(\mathcal{M}, V, \tilde{m}, t)$-secure sketch on the mixed distribution $V$, then there is no $(\mathcal{M}, \mathcal{W}, \tilde{m}, t)$-secure sketch.
-%\end{corollary}
-%
-%Both \lemref{lem:quant switch fuzz} and \corref{cor:no fuzz for dist} apply for fuzzy extractors as well as secure sketches.  Additionally they generalize to imperfect correctness.
 \section{Fuzzy min-entropy}
 \label{sec:proof fuzz necessary}
-In this section, we provide proofs of the items in \secref{sec:minimal conditions}.  
+In this section, we provide proofs of statements in \secref{sec:minimal conditions}.  
 \begin{proof}[Proof of \propref{prop:fuzz necessary}]
 Let $W$ be a distribution where $\Hfuzz(W) = m$.  This means that there exists a point $w' \in \mathcal{M}$ such that $\Pr_{w\in W}[\dis (w, w')\leq t] = 2^{-m}$.  Consider the following distinguisher $D$:
 \begin{itemize}
@@ -936,7 +890,7 @@ Throughout the proof we assume that $\ell = n$ is the number of levels.  The pro
 Let $W^*$ denote the set of elements of $W$ in $L_i$ within distance $t$ of $w'$.  The size of $W^*$ is at most $\beta_{t,i}$. The choice of $w, w'$ is independent of $\sketch$, so this set is independent of $\mathcal{K}_i$~(it does effect the value of $i$ but not the particular outcome from $\mathcal{K}_i$).  The probability that another element $w^*$ matches the hash is:
 \begin{align*}
 \Pr[\exists w^* \in W^* |w^* \neq w \wedge F(K, w^*) = F(K, w)] &\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
- &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{\beta_{t,i}-1}{|R_i|} = \delta
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R_i|} \le \frac{\beta_{t,i}-1}{|R_i|}\le \frac{\beta_{t, i}}{|R_i|} = \delta
 \end{align*}
 The first inequality is by union bound. The first equality follows from the universality of $F$.  The second inequality follows since the number of neighbors is bounded by $\beta_{t,i}$.  
 
@@ -1026,17 +980,17 @@ Let $C$ be a set over space $\mathcal{M}$.  We say that $C$ is an $(t,\delta)$-\
 We now prove item in the outline of \thref{thm:imposs sketch}.
 
 \begin{proposition} 
-\label{prop:each element good} For each $W\in\mathcal{W}$, $\Hfuzz(W) = \omega(\log n)$.
+\label{prop:each element good} For each $W_z\in\mathcal{W}_Z$, $\Hfuzz(W_z) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some $W\in\mathcal{W}$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W) =\omega(\log n)$.  We now show that for any $w, w'\in W$, $\dis(w, w') = \gamma>t$.  This shows that $\Hfuzz(W) = \Hoo(W)$.  Fix some $w, w'\in W$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\gamma$.
+Consider some $W_z\in\mathcal{W}_Z$.  The value $w_1$ is uniform in a field of size $\omega(\poly(n))$, so $\Hoo(W_z) \ge \omega(\log n)$.  We now show that for any $w, w'\in W_z$, $\dis(w, w') = \gamma>t$.  This shows that $\Hfuzz(W_z) = \Hoo(W_z)$.  Fix some $w, w'\in W_z$.  Clearly, $w_1 \neq w_1'$, for any $i$, $w_i = a_i w_1 + b_i$ and $w_i' = a_i w_1' + b_i$.  Since $a_i\neq 0$, $a_iw_1 \neq a_iw_1'$ and thus $a_iw_1+b_i \neq a_iw_1'+b_i$.  That is, $\dis (w, w')  =\gamma$.
 \end{proof}
 
 \begin{proposition}
 \label{prop:distribution uniform} $V$ is the uniform distribution over $\mathbb{F}^\gamma$.
 \end{proposition}
 \begin{proof}
-Consider some $w\in V$.  Then $w$ was drawn from some intermediate distribution $W$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_1$ is uniformly random and $w_i$ are uniformly random since $b_2,..., b_\gamma$ are uniformly random.
+Consider some $w\in V$.  Then $w$ was drawn from an intermediate distribution $W_z$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_1$ is uniformly random and $w_i$ are uniformly random since $b_2,..., b_\gamma$ are uniformly distributed.
 \end{proof}
 
 
@@ -1068,8 +1022,8 @@ $\Hav(V | \sketch(V), Z) <2$.
 \end{lemma}
 \begin{proof}
 Recall that $Z$ consists of $2\gamma$ coefficients and there are $(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}$ equally likely values for $Z$.
- As described above, the view of $\sketch, \rec$ is a uniform distribution $V$.  %Having seen $V$ there are many possible values for $Z$.  Furthermore, the distributions $V|Z$ have disjoint support outside of the observed point.  
- The only information seen by $\sketch$ algorithm is in the point $V=v$.  The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
+ As described above, the view of $\sketch, \rec$ is a uniform distribution $V$. 
+The length of this point is $|\mathbb{F}|^\gamma$.  Conditioned on this information there are still many possible values for $Z$.  That is, 
  \[
  \forall v, H_0(Z | V=v) =\log \left(\frac{(|\mathbb{F}|-1)^{\gamma-1} |\mathbb{F}|^{\gamma-1}}{|\mathbb{F}|^\gamma}\right) = \log \left( (|\mathbb{F}|-1)^{\gamma-1}/|\mathbb{F}|\right).
  \]
@@ -1088,14 +1042,14 @@ Conditioned on seeing the point $V$ there are $(|\mathbb{F}|-1)^{\gamma-1}/|\mat
 \tilde{H}_0(V |Z  , \sketch(V) = ss) &\le \log \left(\frac{\text{\# items}+\text{\# containers}}{\text{\# containers}}\right)\\
 &= \log \left(\frac{2^{h_{ss}}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} +1 \right)
 \end{align*}
-Then averaging over the possible values of $s$, we have the following as long as $t\ge 4$~(using  \lemref{lem:log-minus-one}, which appears below):
+Then averaging over the possible values of $s$, we have the following as long as $t\ge 4$:
 \begin{align*}
 \tilde{H}_0(V |Z , \sketch(V) ) &= \log \expe_{s\in \sketch(V)} 2^{\tilde{H}_0(V |  \sketch(V) =ss , (Z| \sketch(V) =ss) )}\\
 &= \log\expe_{s\in \sketch(V)} \left(\frac{2^{h_s}|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} +1\right)\\
 &\le \max\left\{ \log \left(\frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\right)+1, 1\right\}.
 \end{align*}
-Where the inequality follows because $\log x+1 \le \max\{ 1+ \log x,1\}$ for $x\ge 0$.
-The left operand to $\max$ is bounded by $2$~(bounding the $\max$ by $2$):
+Where the inequality follows because $\log (x+1) \le \max\{ \log x+ 1,1\}$ for $x\ge 0$.
+The left operand to $\max$ is bounded by $2$~(bounding the $\max$ by $2$).  This argument uses a technical lemma that appears directly after (\lemref{lem:log-minus-one}).
 \begin{align*}
 \log \left(\frac{|\mathbb{F}|}{(|\mathbb{F}|-1)^{\gamma-1}} \expe_{s\in \sketch(V)} 2^{h_s}\right)+1
 &=\log |\mathbb{F}| - (\gamma -1)\log (|\mathbb{F}|-1) + \log \left(\expe_{s\in \sketch(V)} 2^{h_s}\right) +1\\
@@ -1111,8 +1065,6 @@ The statement of the lemma follows by noting that for any $X, Y$, $\Hav(X|Y)\le 
 \lnote{need for \lemref{lem:log-minus-one}:  $\gamma-1\le |F|$ and $|F|\ge 4$}
 \lnote{change the any needed theorem statements it affects in light of the tightening}
 
-\lnote{this lemma should probably live elsewhere since it is also needed for the FE case}
-\bnote{fine with it being here as the FE case lives in the appendix too}
 \begin{lemma}
 \label{lem:log-minus-one}
 For any real numbers $\alpha \leq \eta$ with $\eta \ge e+1$ (in particular, $\eta\ge 4$ suffices), the following holds:
@@ -1132,19 +1084,19 @@ Taking the logarithm of both sides yields the statement of the lemma.
 \label{sec:fuzz ext proof}
 \begin{proposition} 
 \label{prop:dist fuzzy ent fuzz}
-For each $W\in\mathcal{W}$, $\Hfuzz(W) = \omega(\log n)$.
+For each $W_z\in\mathcal{W}_Z$, $\Hfuzz(W_z) = \omega(\log n)$.
 \end{proposition}
 \begin{proof}
-Consider some fixed $W\in\mathcal{W}$.  The bits $w_{1,..., \nu}$ are uniform, so $\Hoo(W) =\omega(\log n)$.  Recall that $t=o (n/\nu)$. 
+Consider some fixed $W_z\in\mathcal{W}_Z$.  The bits $w_{1,..., \nu} =x$ are uniform, so $\Hoo(W_z) =\omega(\log n)$.  Recall that $t=o (n/\nu)$. 
  %We now show that for any $w, w'\in W$, $\dis(w, w') \ge n/\nu$ and thus $\Hfuzz(W) = \Hoo(W)$.  
-Fix some $w, w'\in W$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i x + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$. That is, at least one of the bits in each block differs between $w$ and $w'$, and so $\dis(w, w') \ge n/\nu$. Since no two values in the support of $W$ lie in the same ball of radius $t$, we have $\Hfuzz(W) = \Hoo(W)= \omega(\log n)$.
+Fix some $w, w'\in W_z$.  Denote by $x, x'$ the values that produce $w, w'$ respectively.  Clearly, $x\neq x'$.  Thus, for any $i$, $a_i x + b_i \neq a_i x' + b_i$.  This implies that $w_{i\nu+1,...., (i+1)\nu} \neq w'_{i\nu+1,..., (i+1)\nu}$. That is, at least one of the bits in each block differs between $w$ and $w'$, and so $\dis(w, w') \ge n/\nu$. Since no two values in the support of $W_z$ lie in the same ball of radius $t$, we have $\Hfuzz(W_z) = \Hoo(W_z)= \omega(\log n)$.
 \end{proof}
 
 \begin{proposition}\label{prop:dist uniform fuzz}
 $V$ is the uniform distribution over $\mathbb{F}^\gamma$.
 \end{proposition}
 \begin{proof}
-Consider some $w\in V$ over $\zo^n$.  Then $w\leftarrow W$ with coefficients $a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_{1,...,\nu} =x $ is uniformly random and $w_{i\nu+1,...,(i+1)\nu}$ are uniformly random since $b_2,..., b_\gamma$ are random.
+Consider some $w\in V$ over $\zo^n$.  Then $w\leftarrow W_z$ for coefficients $z=a_2, b_2, ..., a_\gamma , b_\gamma$.  The value $w_{1,...,\nu} =x $ is uniformly random and $w_{i\nu+1,...,(i+1)\nu}$ are uniformly random since $b_2,..., b_\gamma$ are random.
 \end{proof}
 
 \begin{lemma}
@@ -1159,7 +1111,7 @@ By Markov's inequality, there exists a set $A_{\epsilon}$ such that $\Pr[p\in A_
 \]
 %\{w' | \dis (w', w)\le t \wedge \rec(w', p) \neq w\}\le 2\delta < 1/2.\]
 
-Consider some $p^*\in A_{p}$.  
+Consider some $p^*\in A_{\epsilon}$.  
 The distribution $\Key|P=p^*$ is the set of possible keys.
 The distribution $\Key|P=p^*$ induces a partition on the metric space.  That is, for every $w\in\mathcal{M}$, there exists a unique value $\key$ such that $\rep(w, p^*) =\key$.  Denote this partition by $Q_{p^*,\key} = \{w | \rep(w, p^*) = \key\}$.  
 
@@ -1230,19 +1182,19 @@ We now present a distinguisher $D_{p^*}$ for a particular $p^*$:
 \item Else output $b=1$.
 \end{enumerate}
 
-The distinguisher $D(\key, p, z)$ is formed by calling $D_p(\key, z)$ when $p\in A_p$ and outputting a random bit otherwise.  The advantage of $D$ is 
+The distinguisher $D(\key, p, z)$ is formed by calling $D_p(\key, z)$ when $p\in A_{\epsilon}$ and outputting a random bit otherwise.  The advantage of $D$ is 
 \begin{align*}
 \Pr[D(\Key, P, Z) = 1] &- \Pr[D(U, P, Z) =1]\\
-&=(\Pr[D(\Key, P, Z) = 1| P\in A_p] - \Pr[D(U, P, Z) =1 | P\in A_p])\Pr[P\in A_p]\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1 - \Pr[D_{p^*}(U, Z)=1]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \Pr[D_{p^*}(U, Z)=1 | U\in \Key_{small}]\Pr[U\in \Key_{small}] - \Pr[U\not\in \Key_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \left(\left(\frac{1}{|\Key_{small}|}+\frac{1}{2^\nu}\right)\Pr[U\in \Key_{small}]\right) - \Pr[U\not\in \Key_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in \Key_{small}] - \Pr[U\not \in \Key_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in \Key_{small}] - \Pr[U\not \in \Key_{small}]\right)\\
-&\ge \sum_{p^*\in A_p} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -1+\frac{1}{2}\Pr[U\in \Key_{small}] \right)\\
-&\ge \sum_{p^* \in A_p} \Pr[P=p^*]\left(1/4-\ngl(n)\right) \ge \frac{1}{8}-\ngl(n).
+&=(\Pr[D(\Key, P, Z) = 1| P\in A_{\epsilon}] - \Pr[D(U, P, Z) =1 | P\in A_{\epsilon}])\Pr[P\in A_{\epsilon}]\\
+&\ge \sum_{p^*\in A_{\epsilon}} \Pr[P=p^*] \left(1 - \Pr[D_{p^*}(U, Z)=1]\right)\\
+&\ge \sum_{p^*\in A_{\epsilon}} \Pr[P=p^*] \left(1- \Pr[D_{p^*}(U, Z)=1 | U\in \Key_{small}]\Pr[U\in \Key_{small}] - \Pr[U\not\in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_{\epsilon}} \Pr[P=p^*] \left(1- \left(\left(\frac{1}{|\Key_{small}|}+\frac{1}{2^\nu}\right)\Pr[U\in \Key_{small}]\right) - \Pr[U\not\in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_{\epsilon}} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in \Key_{small}] - \Pr[U\not \in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_{\epsilon}} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -\frac{1}{2}\Pr[U\in \Key_{small}] - \Pr[U\not \in \Key_{small}]\right)\\
+&\ge \sum_{p^*\in A_{\epsilon}} \Pr[P=p^*] \left(1- \frac{1}{2^{\nu}} -1+\frac{1}{2}\Pr[U\in \Key_{small}] \right)\\
+&\ge \sum_{p^* \in A_{\epsilon}} \Pr[P=p^*]\left(1/4-\ngl(n)\right) \ge \frac{1}{8}-\ngl(n).
 \end{align*}
-The sixth line follows since $\Key_{small} \ge 2^{\kappa-1}\ge 2$.  The eighth line follows because $\Pr[U\in \Key_{small}]\ge 1/2$.  The last inequality proceeds because $\Pr[P\in A_p]\ge 1/2$.
+The sixth line follows since $\Key_{small} \ge 2^{\kappa-1}\ge 2$.  The eighth line follows because $\Pr[U\in \Key_{small}]\ge 1/2$.  The last inequality proceeds because $\Pr[P\in A_{\epsilon}]\ge 1/2$.
 This completes the proof of \lemref{lem:fuzz can't get key}.
 \end{proof}
 
