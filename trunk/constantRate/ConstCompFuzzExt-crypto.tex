@@ -1,16 +1,32 @@
-\documentclass[11pt]{article}
-%\documentclass{llncs}
-\def\shownotes{1}
-\def\blinded{0}
+\def\shownotes{0}
+\def\blinded{1}
+\def\lncs{1}
+
+\ifnum\lncs=0
+	\documentclass[11pt]{article}
+	\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+	\geometry{letterpaper}                   % ... or a4paper or a5paper or ...
+	%\geometry{landscape}                % Activate for for rotated page geometry
+	%\usepackage[parfill]{parskip}
+	\usepackage{amsthm}
+	\newtheorem{theorem}{Theorem}[section]
+	\newtheorem{lemma}[theorem]{Lemma}
+	\newtheorem{proposition}[theorem]{Proposition}
+	\newtheorem{corollary}[theorem]{Corollary}
+	\newtheorem{definition}[theorem]{Definition}
+	\newtheorem{assumption}[theorem]{Assumption}
+	\newtheorem{claim}[theorem]{Claim}
+	\newtheorem{problem}[theorem]{Problem}
+	\newtheorem{construction}[theorem]{Construction}
+
+\else
+	\documentclass[runningheads]{../Asiacrypt/llncs}
+	\newtheorem{construction}{Construction}
+\fi
 
 
-\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
-\geometry{letterpaper}                   % ... or a4paper or a5paper or ...
-%\geometry{landscape}                % Activate for for rotated page geometry
-%\usepackage[parfill]{parskip}
 \usepackage{graphicx}
 \usepackage{amssymb, amsmath, amsfonts}
-\usepackage{amsthm}
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{xspace}
@@ -108,15 +124,6 @@
 \newcommand{\LWE}{\class{LWE}}
 \newcommand{\distLWE}{\ensuremath{\class{dist\mbox{-}LWE}}}
 
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{assumption}[theorem]{Assumption}
-\newtheorem{claim}[theorem]{Claim}
-\newtheorem{problem}[theorem]{Problem}
-\newtheorem{construction}[theorem]{Construction}
 
 \newcounter{ctr}
 \newcounter{savectr}
@@ -235,7 +242,7 @@
 \newcommand{\Vol}{\mathsf{Vol}}
 \newcommand{\subsetEntropy}{\alpha}
 
-\title{Fuzzy Extractors for Noisy Sources with More Errors Than Entropy}
+\title{Fuzzy Extractors for Noisy Sources \\with More Errors Than Entropy}
 %\author{Ran Canetti \and Benjamin Fuller \and Omer Paneth \and Leonid Reyzin \and Adam Smith}
 \blind{
 \author{Ran Canetti\footnote{Email: {\tt canetti@cs.bu.edu}. Boston University and Tel Aviv University.} \and Benjamin Fuller\footnote{Email: {\tt bfuller@cs.bu.edu}.  Boston University and MIT Lincoln Laboratory.} \and Omer Paneth\footnote{Email: {\tt paneth@cs.bu.edu}. Boston University.} \and Leonid Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.} \and Adam Smith\footnote{Email: {\tt asmith@cse.psu.edu}.  Pennsylvania State University; work performed while at Boston University's Hariri Institute for Computing and RISCS Center, and Harvard University's
@@ -248,6 +255,8 @@
 \begin{abstract}
 Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. To eliminate noise, they require an initial enrollment phase that takes the first noisy reading of the secret and produces a nonsecret helper string to be used in subsequent readings. This helper string reduces  the entropy of the original secret---in the worst case, by as much as the logarithm of the number of tolerated error patterns. For many practical sources of secrets, reliability demands that the number of tolerated error patterns is large, making this loss greater than the original entropy of the secret. We say that such sources have \emph{more errors than entropy}.  Most known approaches for building fuzzy extractors cannot be used for such sources.
 
+\ifnum\lncs=1\medskip\fi
+
 %\emph{Reusable} fuzzy extractors (Boyen, CCS 2004)
 % remain secure even when the initial enrollment phase is repeated multiple times on correlated readings, producing multiple helper strings. Prior approaches to building reusable fuzzy extractors severely restricted allowed correlations among initial enrollment readings.
 %   
@@ -256,6 +265,7 @@ Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings 
 We provide constructions of fuzzy extractors for large classes of sources with more errors than entropy.  Our constructions exploit the structural properties of a source in addition to its entropy guarantees. Some are made possible by relaxing the security requirement from information-theoretic to computational.
 
 %One is information-theoretic; the other two rely computational assumptions. They differ in the types of sources they support.
+\ifnum\lncs=1\medskip\fi
 
 \emph{Reusable} fuzzy extractors (Boyen, CCS 2004)
  remain secure even when the initial enrollment phase is repeated multiple times with the same or correlated secrets, producing multiple helper strings. By relying on computational security, we construct the first reusable fuzzy extractors that make no assumption about how multiple readings of the source are correlated.
@@ -272,7 +282,7 @@ We provide constructions of fuzzy extractors for large classes of sources with m
 \paragraph{Fuzzy Extractors}
 Cryptography relies on long-term secrets for key derivation and authentication. However, many sources with sufficient randomness to form long-term secrets provide similar but not identical values of the secret at repeated readings. Prominent examples include biometrics and other human-generated data~\cite{daugman2004,zviran1993comparison,brostoff2000passfaces,ellison2000protecting,mayrhofer2009shake,monrose2002password},
 physically unclonable functions (PUFs)~\cite{pappu2002physical,tuyls2006puf,gassend2002silicon,suh2007physical},
-and quantum information~\cite{bennett1988privacy}. Turning similar readings into identical values is known as \emph{information reconciliation}; further converting those values into uniformly random secret strings is known as \emph{privacy amplification}~\cite{bennett1988privacy}.
+and quantum information \cite{bennett1988privacy}. Turning similar readings into identical values is known as \emph{information reconciliation}; further converting those values into uniformly random secret strings is known as \emph{privacy amplification}~\cite{bennett1988privacy}.
 Both of these problems have interactive and non-interactive versions.  In this paper, we are interested in the non-interactive case, which is useful for a single user trying to produce the same key from multiple noisy readings of a secret at different times.
  A \emph{fuzzy extractor} is the primitive that accomplishes both information reconciliation and privacy amplification non-interactively; fuzzy extractors are defined in~\cite{DBLP:journals/siamcomp/DodisORS08}.
 
@@ -308,6 +318,35 @@ For example, the IrisCode~\cite{daugman2004}, which is the state of the art appr
 
 
 
+
+\begin{table}
+\begin{center}
+\ifnum\lncs=0
+\begin{tabular}{l l l l l}
+  & Source Structure & Error Rate  & Techniques\\
+\hline
+Cons. \ref{cons:sampling} (reusable)  & high-entropy samples & any subconstant &  Sample-then-obfuscate \\
+Cons. \ref{cons:first construction}  & sparse high-entropy  marginals & constant &  Error-correct-and-obfuscate\\
+Cons. \ref{cons:info theoretic} (info-theoretic)   & sparse block source  & constant & Condense-then-fuzzy-extract\\
+\end{tabular}
+\else
+\begin{tabular}{l l l l l}
+  & Source Structure & Error Rate  & Techniques\\
+\hline \vspace{-3mm} \\
+Construction \ref{cons:sampling} & high-entropy & any subconstant \ \ &  Sample-then-obfuscate \\
+\ \ (reusable)& \ \ samples\\ \vspace{-3mm} \\
+Construction \ref{cons:first construction}  & sparse high-entropy \ \  & constant &  Error-correct-and-obfuscate\\
+& \ \ marginals\\ \vspace{-3mm} \\
+Construction \ref{cons:info theoretic}   & sparse block source  & constant & Condense-then-fuzzy-extract\\
+\ \ (info-theoretic)\\
+\hline\end{tabular}
+\fi
+\end{center}
+%end centering
+\caption{Summary of new constructions. \consref{cons:sampling} supports the widest class of sources, including sources supported by the other two constructions, but tolerates fewer errors than the other two constructions.  \consref{cons:first construction} and \consref{cons:info theoretic} support incomparable classes of sources.}
+\label{tab:upper bounds}
+\end{table}
+
 \paragraph{Our Contributions: Handling More Errors than Entropy}
 We provide the first constructions of fuzzy extractors that can be used for large classes of sources that have more errors than entropy.  Our constructions work for Hamming errors for strings $w$ of length $\gamma$ over some alphabet $\mathcal{Z}$. Naturally, as argued above, these constructions cannot work for all sources of a given entropy and for any $t$ errors. In this work, each construction takes advantage of the specific properties of a source, but still works for any $t$ errors. (It is an open problem to achieve our goal by restricting the error patterns instead of restricting the source distribution.)
 
@@ -328,21 +367,6 @@ The reusability we obtain is very strong:  security holds even if the multiple r
 
 
 
-
-\begin{table}
-\begin{center}
-\begin{tabular}{l l l l l}
-  & Source Structure & Error Rate  & Techniques\\
-\hline
-Cons. \ref{cons:sampling} (reusable)  & high-entropy samples & any subconstant &  Sample-then-obfuscate \\
-Cons. \ref{cons:first construction}  & sparse high-entropy  marginals & constant &  Error-correct-and-obfuscate\\
-Cons. \ref{cons:info theoretic} (info-theoretic)   & sparse block source  & constant & Condense-then-fuzzy-extract\\
-\hline\end{tabular}
-\end{center}
-%end centering
-\caption{Summary of new constructions. \consref{cons:sampling} supports the widest class of sources, including sources supported by the other two constructions, but tolerates fewer errors than the other two constructions.  \consref{cons:first construction} and \consref{cons:info theoretic} support incomparable classes of sources.}
-\label{tab:upper bounds}
-\end{table}
 
 
 %\begin{table}
@@ -473,7 +497,15 @@ The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite
 \label{sec:sampling}
 
 \paragraph{Sources with High-Entropy Samples}
-Let the source $W=W_1, \dots, W_\gamma$ consist of strings of length $\gamma$ over some arbitrary alphabet $\mathcal{Z}$. For some parameters $\eta, \subsetEntropy$, we say that the source $W$ is a source with  \emph{$\subsetEntropy$-entropy $\eta$-samples} if $\Hav(W_{j_1}, \dots, W_{j_\eta}\, |\, j_1, \dots, j_\eta)>\subsetEntropy$ for uniformly random distinct $1< j_1, \dots, j_\eta \le \gamma$. This property can hold, for example, if the symbols $W_i$ are $\eta$-wise independent, and each has entropy at least $\subsetEntropy/\eta$. However, that's not the only way for the property to hold: for example, we can allow sources in which some symbols have little entropy or depend on other symbols, by simply choosing a larger $\eta$ to compensate.
+Let the source $W=W_1, \dots, W_\gamma$ consist of strings of length $\gamma$ over some arbitrary alphabet $\mathcal{Z}$. For some parameters $\eta, \subsetEntropy$, we say that the source $W$ is a source with  \emph{$\subsetEntropy$-entropy $\eta$-samples} if 
+\ifnum\lncs=0
+$\Hav(W_{j_1}, \dots, W_{j_\eta}\, |\, j_1, \dots, j_\eta)>\subsetEntropy$ 
+\else
+\[
+\Hav(W_{j_1}, \dots, W_{j_\eta}\, |\, j_1, \dots, j_\eta)>\subsetEntropy
+\]
+\fi
+for uniformly random distinct $1< j_1, \dots, j_\eta \le \gamma$. This property can hold, for example, if the symbols $W_i$ are $\eta$-wise independent, and each has entropy at least $\subsetEntropy/\eta$. However, that's not the only way for the property to hold: for example, we can allow sources in which some symbols have little entropy or depend on other symbols, by simply choosing a larger $\eta$ to compensate.
 
 Such sources $W$ can arise naturally as a result of signal processing and discretization. For example, suppose we start with a high-entropy reading $x$ of some physical source, and obtain each symbol $w_i$ by applying a short-output condenser (e.g., a random projection followed by discretization) to $x$. 
 Each subsequent element in the sequence $w_{j_1}, \dots, w_{j_\eta}$ will extract fresh entropy as long as there remains entropy in $x$ conditioned on the previous elements (by a simple conditional entropy argument).
@@ -489,7 +521,11 @@ Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator for the family of digit
 
 \begin{center}
 \begin{tabular}{c|c}
+\ifnum\lncs=0
 \begin{minipage}{3in}
+\else
+\begin{minipage}{2.3in}
+\fi
 \textbf{\gen}
 \begin{enumerate}
 \item \underline{Input}: $w = w_1,..., w_\gamma$
@@ -503,9 +539,13 @@ Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator for the family of digit
 \end{enumerate}
 \item Output $(r, p)$, where $p=p_1\dots p_\ell$.
 \end{enumerate}
- \end{minipage} &
+ \end{minipage}\ \  &
+\ifnum\lncs=0
 \begin{minipage}{3in}
-\textbf{\rep}
+\else
+\begin{minipage}{2.2in}
+\fi
+\ \ \textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w'=w_1',..., w_\gamma', p = p_1\dots p_\ell)$
 \item For $i=1,..., \ell$:
@@ -516,7 +556,9 @@ Let $\mathcal{O}$ be an $\ell$-composable VGB obfuscator for the family of digit
 \end{enumerate}
 \item Output $\perp$.
 \end{enumerate}
-\vspace{0.37in}
+\ifnum\lncs=0
+\vspace{0.6in}
+\fi
 \end{minipage}
 \end{tabular}
 \end{center}
@@ -606,14 +648,18 @@ A set $C$~(over $\zo^\gamma$) is a $(t, \delta_{code})$-Z code if there exists a
 \end{definition}
 
 
-\begin{construction}
+\begin{construction}[Error-Correct-and-Obfuscate]
 \label{cons:first construction}
 Let $\mathcal{Z}$ be an alphabet and let $W = W_1,..., W_\gamma$ be a distribution over $\mathcal{Z}^\gamma$.  Let $\mathcal{O}$ be an obfuscator for point functions with points from $\mathcal{Z}$.  Let  $C\subset \zo^\gamma$ be $(t, \delta_{code})$-Z code.
 We describe $\gen, \rep$ as follows:
 
 \begin{center}
 \begin{tabular}{c|c}
+\ifnum\lncs=0
 \begin{minipage}{3in}
+\else
+\begin{minipage}{2.25in}
+\fi
 \textbf{\gen}
 \begin{enumerate}
 \item \underline{Input}: $w = w_1,..., w_\gamma$
@@ -626,9 +672,13 @@ We describe $\gen, \rep$ as follows:
 \end{enumerate}
 \item Output $(c, p)$, where $p=p_1\dots p_\gamma$.
 \end{enumerate}
- \end{minipage} &
+ \end{minipage} \ \ &
+\ifnum\lncs=0
 \begin{minipage}{3in}
-\textbf{\rep}
+\else
+\begin{minipage}{2.25in}
+\fi
+\ \ \textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w', p)$
 \item For $j=1,..., \gamma$:
@@ -650,7 +700,7 @@ We describe $\gen, \rep$ as follows:
 %In locations where $c_j=0$, it is hard to find $w_j$ given access to the point obfuscation.
 %There are two possible reasons for a bit $c_j'$ to be $1$: because the true value was $1$ and because $w_j \neq w_j'$.  However, if a bit $c_j'$ is $0$, this likely means that $w_j=w_j'$ because collisions when $c_j=0$ are unlikely~(occurring with probability $1/|\mathcal{Z}|$).  This is the reason for the use of a code that only corrects $0\rightarrow 1$ flips.
 
-
+\noindent
 As presented, \consref{cons:first construction} is not yet a computational fuzzy extractor.  The codewords $c$ are not uniformly distributed and it is possible to learn some bits of $c$~(for the symbols of $W$ without much entropy).  However, we can show that $c$ looks like it has entropy to a computationally bounded adversary who knows $p$. Applying a randomness extractor with outputs over $\zo^\kappa$ (technically, an average-case computational randomness extractor) to $c$, and adding the extractor seed to $p$, will give us the desired fuzzy extractor. See \apref{sec:further defs} for the formal details.
 
 \consref{cons:first construction} is secure if no distinguisher can tell whether it is working with random obfuscations or obfuscations of $W_j$.  By the security of point obfuscation, anything learnable from the obfuscation is learnable from oracle access to the function. Therefore, our construction is secure as long as enough symbols are unpredictable even after adaptive queries to equality oracles for individual symbols, which is exactly the property satisfied by sources with sparse high-entropy marginals.
@@ -667,7 +717,7 @@ Let $\mathcal{W}$ be a family of sources with $\beta$-sparse $\alpha=\omega(\log
 In this section, we show that \consref{cons:first construction} can support distributions with more errors than entropy.
 We first calculate the size of the Hamming ball.
 \[
-\log |B_t| = \log \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i> \log {\gamma \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\gamma\choose t}
+\log |B_t| = \log \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i> \log {\gamma \choose t} (|\mathcal{Z}|-1)^t =\Theta(t\log |\mathcal{Z}|) + \log {\gamma\choose t}\,.
 \]
 The simplest type of a source with high-entropy marginals is where each symbol is independent and has super-logarithmic entropy~(\clref{cl:independent high ent}).  For this type of source the entropy is $\Hoo(W) = \gamma\omega(\log n)$.  This yields:
 \[
@@ -710,7 +760,11 @@ The main idea of the construction is that errors are ``corrected'' on the large 
 Let $\mathcal{Z}$ be an alphabet and let $W=W_1,..., W_\gamma$ be a distribution over $\mathcal{Z}^\gamma$.  We describe $\gen, \rep$ as follows:
 \begin{center}
 \begin{tabular}{c|c}
+\ifnum\lncs=0
 \begin{minipage}{3in}
+\else
+\begin{minipage}{2.25in}
+\fi
 \textbf{\gen}
 \begin{enumerate}
 \item \underline{Input}: $w = w_1,..., w_\gamma$
@@ -723,9 +777,13 @@ Let $\mathcal{Z}$ be an alphabet and let $W=W_1,..., W_\gamma$ be a distribution
 \item Set $p = (p', seed_1,..., seed_\gamma)$.
 \item Output $(r, p)$.
 \end{enumerate}
- \end{minipage} &
+ \end{minipage} & \ \ 
+\ifnum\lncs=0
 \begin{minipage}{3in}
-\textbf{\rep}
+\else
+\begin{minipage}{2.25in}
+\fi
+\ \ \textbf{\rep}
 \begin{enumerate}
 \item \underline{Input}: $(w', p = (p', seed_1,..., seed_\gamma))$
 \item For $j=1,..., \gamma$:
@@ -734,7 +792,11 @@ Let $\mathcal{Z}$ be an alphabet and let $W=W_1,..., W_\gamma$ be a distribution
 \end{enumerate}
 \item Output $r = \rep'(v', p')$.
 \end{enumerate}
-\vspace{0.7in}
+\ifnum\lncs=0
+	\vspace{0.7in}
+\else
+	\vspace{0.15in}
+\fi
 \end{minipage}
 \end{tabular}
 \end{center}
@@ -779,13 +841,13 @@ Leonid Reyzin is supported in part by US NSF grants 0831281, 1012910, 1012798, a
 We first define a slightly weaker object than a computational fuzzy extractor: it outputs a key with computational entropy~(instead of a pseudorandom key).  
 We call this object a computational fuzzy conductor.  It is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
 
-Before defining this object, we define conditional computational (``HILL''~\cite{DBLP:journals/siamcomp/HastadILL99}) entropy.
+Before defining this object, we define conditional computational (``HILL'' \cite{DBLP:journals/siamcomp/HastadILL99}) entropy.
 
 \begin{definition}\protect{~\cite[Definition 3]{DBLP:conf/eurocrypt/HsiaoLR07}}
 \label{def:hill ent}
 Let $(W, S)$ be a pair of random variables.  $W$ has
 \emph{HILL entropy} at least $k$ conditioned on $S$,
-denoted $H^{\hill}_{\epsilon_{sec}, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S),(X,S))\leq \epsilon_{sec}$.
+denoted $H^{\hill}_{\epsilon_{sec}, s_{sec}}(W|S)\geq k$ if there exists a joint distribution $(X, S)$, such that $\Hav(X|S)\geq k$ and $\delta^{\mathcal{D}_{s_{sec}}} ((W, S), \allowbreak (X,S))\leq \epsilon_{sec}$.
 \end{definition}
 
 \begin{definition}
@@ -802,8 +864,19 @@ A computational extractor is the adaption of a randomness extractor to the compu
 \begin{definition}
 A function $\cext: \zo^\gamma \times \{0,1\}^d \rightarrow \{0,1\}^\kappa$ a \emph{$(m, \epsilon_{sec}, s_{sec})$-average-case computational extractor} if for all pairs
 of random variables $X, Y$ (with $X$ over $\zo^\gamma$) such that
-$\tilde{H}_\infty(X|Y) \ge m$, we have $\delta^{\mathcal{D}_{s_{sec}}}((\cext(X; U_d), U_d, Y), U_\kappa\times
-U_d \times Y) \le \epsilon_{sec}$.
+$\tilde{H}_\infty(X|Y) \ge m$, we have 
+\ifnum\lncs=0
+$
+\else
+\[
+\fi
+\delta^{\mathcal{D}_{s_{sec}}}((\cext(X; U_d), U_d, Y), U_\kappa\times
+U_d \times Y) \le \epsilon_{sec}
+\ifnum\lncs=0
+$.
+\else
+\,.\]
+\fi
 \end{definition}
 
 
@@ -868,9 +941,15 @@ We require that the obfuscation is composable and secure with respect to auxilia
 \begin{enumerate}
 \item \emph{Functionality:} for every $n$ and $I \in \mathtt{I}_n$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.\lnote{imperfect correctness allowed? It's need for the RO construction.}
 \item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^\ell \in \mathtt{I}_n$, (where $\ell=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
+\ifnum\lncs=0
 \[
 |\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | < \frac{1}{p(n)} \enspace,
 \]
+\else
+\begin{align*}
+|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1]   - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | \\ < \frac{1}{p(n)} \enspace,
+\end{align*}
+\fi
 where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
 \end{enumerate}
 \end{definition}
@@ -904,12 +983,26 @@ We now prove the following lemma, which shows that $S$ cannot distinguish betwee
 \begin{lemma}
 \label{lem:sim cannot distinguish samp}
 Let $U$ denote the uniform distribution over $\zo^\kappa$. Then
+\ifnum\lncs=0
 \begin{align}
-\label{eq:sim cannot distinguish samp}
+\else
+\begin{eqnarray}
+\lefteqn{
+\fi
 \left| \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)} \left (R, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right) 
+\ifnum\lncs=1
+\right.} \nonumber \\
+& & \left.
+\fi
 - \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)}  
-\left (U, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right)\right| \le \frac{q(q+1)}{2^\subsetEntropy} \le \ngl(n)\,.
+\left (U, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right)\right|
+ \le \frac{q(q+1)}{2^\subsetEntropy} \le \ngl(n)\,.
+\label{eq:sim cannot distinguish samp}
+\ifnum\lncs=0
 \end{align}
+\else
+\end{eqnarray}
+\fi
 \end{lemma}
 
 \begin{proof}
@@ -1118,7 +1211,11 @@ Rearranging terms in Equation~\ref{eq:ways to remove ent}, we have:
  \end{align*}
  When there is a $1$ response and $c_j=0$ this means that there is no remaining min-entropy.  If this occurs with over $2^{-\alpha}$ probability this violates the condition on $W$ (\defref{def:block guessable}).  By the union bound over the indices $j\in J$ the total probability of a $1$ in $J$ is at most $(\gamma-\beta)2^{-\alpha+1}$. Recall that $c^*, c'$ match on all indices outside of $J$. Thus, for all $c^*, c'$ the statistical distance is at most $(\gamma- \beta)2^{-\alpha+1}$.  This concludes the proof of \lemref{lem:codewords in I close}.
 \end{proof}
-By averaging over all points in $C'$ we conclude that $\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\gamma \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\gamma \log |Z|})) < (\gamma -\beta)2^{-(\alpha+1)}$.  This completes the proof of \lemref{lem:sim cannot distinguish}.
+By averaging over all points in $C'$ we conclude that 
+\[
+\Delta(S^{I_X(\cdot, \cdot)}(C, 1^{\gamma \log |Z|}), S^{I_X(\cdot, \cdot)}(C', 1^{\gamma \log |Z|})) < (\gamma -\beta)2^{-(\alpha+1)}\,.
+\]
+This completes the proof of \lemref{lem:sim cannot distinguish}.
 \end{proof}
 
 \noindent Now by the security of obfuscation we have that
