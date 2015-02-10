@@ -626,17 +626,15 @@ Let all the variables be as in \thref{thm:sampling}.
 \fi
 
 \subsection{Reusability of \consref{cons:sampling}}
-\lnote{haven't looked at this---may need work}
-The reusability of \consref{cons:sampling} follows from the security of the VGB obfuscator with auxiliary input.  We consider a bounded $q = \poly(n)$ number of reuses.  For some fixed $i\in \{1,..., q\}$ we will treat the remaining keys as auxiliary input to the adversary, and the simulator still performs comparably to a distinguisher with access to the obfuscations.  Thus, given sufficiently strong reusability we achieve the following result:
+The reusability of \consref{cons:sampling} follows from the security of the VGB obfuscator with auxiliary input. Consider any $q = \poly(n)$ number of reuses.  For each fixed $i\in \{1,..., q\}$, we can treat the keys $r_1,\dots, r_{i-1}, r_{i+1}, \dots, r_q$ and the strings $p_1, \dots, p_q$ as auxiliary input to the obfuscation adversary. The result follows by simulatability of this adversary, using the same argument as the proof of Theorem~\label{thm:sampling} in \apref{sec:analysis sampling} (note that the simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations, which allows reading $w_i$ to be chosen depending on public values $p_1,..., p_{i-1}$).
+
+
+  Thus, given sufficiently strong reusability we achieve the following result:
 
 \begin{theorem}
 \label{thm:reusability}
-Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, except that $\mathcal{O}$ be an $\ell\times q$-composable VGB obfuscator for digital lockers~(with $\kappa$ bit outputs) with auxiliary inputs.  For any admissible $f_2,..., f_q$, for all $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $(\gen, \rep)$ is $(q, \epsilon_{sec}, s_{sec}, f_2,..., f_q)$-reusable fuzzy extractor.
+Let $q = \poly(n)$, and let all the variables be as in \thref{thm:sampling}, except that $\mathcal{O}$ is an $\ell\times q$-composable VGB obfuscator for digital lockers~(with $\kappa$ bit outputs) with auxiliary inputs.  For any admissible $f_2,..., f_q$, for all $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that $(\gen, \rep)$ is $(q, \epsilon_{sec}, s_{sec}, f_2,..., f_q)$-reusable fuzzy extractor.
 \end{theorem}
-\begin{proof}
-The only modification to the outline presented in \secref{ssec:sec cons sampling} is in \lemref{lem:samp unguess} with the other keys $R_1,..., R_{i-1}, R_{i+1}, ..., R_q$ treated as additional auxiliary input to the adversary/simulator.  The simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations.  Thus allows reading $w_i$ to be chosen depending on public values $p_1,..., p_{i-1}$.
-\bnote{say more here?}
-\end{proof}
 
 \iffalse
 \subsection{More errors than entropy?}
