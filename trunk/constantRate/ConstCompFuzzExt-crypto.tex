@@ -343,7 +343,7 @@ Construction \ref{cons:info theoretic}   & sparse block source  & constant & Con
 \fi
 \end{center}
 %end centering
-\caption{Summary of new constructions. \consref{cons:sampling} supports the widest class of sources, including sources supported by the other two constructions, but tolerates fewer errors than the other two constructions.  \consref{cons:first construction} and \consref{cons:info theoretic} support incomparable classes of sources.}
+\caption{Summary of new constructions. \consref{cons:sampling} supports the widest class of sources, including the sources supported by the other two constructions, but tolerates fewer errors than the other two constructions.  \consref{cons:first construction} and \consref{cons:info theoretic} support incomparable classes of sources.}
 \label{tab:upper bounds}
 \end{table}
 
@@ -352,9 +352,9 @@ We provide the first constructions of fuzzy extractors that can be used for larg
 
 Our first construction works for \emph{sources with high-entropy samples}: these are sources for which a randomly sampled substring of some superlogarithmic length is likely to have superlogarithmic  entropy. For example, a source can satisfy this condition if a constant fraction of symbols are almost $k$-wise independent for some superlogarithmic $k$ (note there is no total entropy requirement:  the total entropy of such a source may be not  much greater than the entropy of the sample). This construction uses digital lockers~\cite{canetti2008obfuscating}, which lock up the output $r$ using the sampled substring as the key to the locker. Such lockers can be constructed very efficiently via a single application of a cryptographic hash function (under appropriate assumptions) or, more generally, from point obfuscation, as we discuss below.
 
-We augment the first construction with error-correcting codes to obtain our second construction, which works for \emph{sources with sparse high-entropy marginals}: sources over large alphabets for which sufficiently many symbols have high entropy individually, but no independence among symbols is assumed. In this construction, we use single symbols of $w$ for locking up bits of a secret that we then transform into $r$. This construction tolerates a higher error rate than the first construction, but over a larger alphabet, where errors may be more likely. 
+We augment the first construction with error-correcting codes to obtain our second construction, which works for \emph{sources with sparse high-entropy marginals}: sources over large alphabets for which sufficiently many symbols have high entropy individually, but no independence among symbols is assumed. In this construction, we use single symbols of $w$ to lock up bits of a secret that we then transform into $r$. This construction tolerates a higher error rate than the first construction, but over a larger alphabet, where errors may be more likely. 
 
-Our third construction provides information-theoretic, rather than computational, security. It works for \emph{sparse block sources}. These are sources in which a sufficient fraction of the symbols have entropy conditioned on previous symbols. It uses symbol-by-symbol condensers to reduce the alphabet size while preserving most of the entropy, and then applies existing fuzzy extractors to the resulting string.
+Our third construction provides information-theoretic, rather than computational, security. It works for \emph{sparse block sources}. These are sources in which a sufficient fraction of the symbols have entropy conditioned on previous symbols. It uses symbol-by-symbol condensers to reduce the alphabet size while preserving most of the entropy, and then applies a standard fuzzy extractor to the resulting string.
 
 Our approach in all three constructions is different from most known constructions of fuzzy extractors, which put sufficient information in $p$ to recover the original $w$ from a nearby $w'$ during $\rep$ (this procedure is called a \emph{secure sketch}). We deliberately do not recover $w$, because known techniques for building secure sketches do not work for sources with more errors than entropy, since they lose at least $\log |B_t|$ bits of entropy regardless of the source. (This loss is necessary when the source is uniform~\cite[Lemma C.1]{DBLP:journals/siamcomp/DodisORS08} or when reusability against a sufficiently rich class of correlations is desired~\cite[Theorem 11]{Boyen2004}; computational definitions of secure sketches suffer from similar problems~\cite[Corollary 3.8, Theorem 3.10]{fuller2013computational}.)
 
@@ -430,7 +430,7 @@ and the {\em average (conditional)} min-entropy of $X$ given $Y$ is  $\Hav(X|Y) 
 The {\em statistical distance} between random variables $X$ and $Y$ with the same domain is $\Delta(X,Y) = \frac12 \sum_x |\Pr[X=x] - \Pr[Y=x]|$.
 For a distinguisher $D$ we write the \emph{computational distance} between $X$ and $Y$ as $\delta^D(X,Y) = \left| \expe[D(X)]-\expe[D(Y)]\right |$ (we extend it to a class of distinguishers $\mathcal{D}$ by taking the maximum over all distinguishers $D\in\mathcal{D}$).  We denote by $\mathcal{D}_{s}$ the class of randomized circuits which output a single bit and have size at most $s$.
 
-For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\gamma$, defined via $\dis(x,y) = \{i | x_i \neq y_i\}$.  For this metric, $|B_t| = \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  Unless otherwise noted logarithms are base $2$.
+For a metric space $(\mathcal{M}, \dis)$, the \emph{(closed) ball of radius $t$ around $x$} is the set of all points within radius $t$, that is, $B_t(x) = \{y| \dis(x, y)\leq t\}$.  If the size of a ball in a metric space does not depend on $x$, we denote by $|B_t|$ the size of a ball of radius $t$.  We consider the Hamming metric over vectors in $\mathcal{Z}^\gamma$, defined via $\dis(x,y) = |\{i | x_i \neq y_i\}|$.  For this metric, $|B_t| = \sum_{i=0}^t {\gamma \choose i} (|\mathcal{Z}|-1)^i $.  $U_n$ denotes the uniformly  distributed random variable on $\{0,1\}^n$.  Unless otherwise noted logarithms are base $2$.
 Usually, we use capitalized letters for random variables and corresponding lowercase letters for their samples.
 
 \subsection{Fuzzy Extractors}
@@ -505,7 +505,7 @@ $\Hav(W_{j_1}, \dots, W_{j_\eta}\, |\, j_1, \dots, j_\eta)>\subsetEntropy$
 \Hav(W_{j_1}, \dots, W_{j_\eta}\, |\, j_1, \dots, j_\eta)>\subsetEntropy
 \]
 \fi
-for uniformly random distinct $1< j_1, \dots, j_\eta \le \gamma$. This property can hold, for example, if the symbols $W_i$ are $\eta$-wise independent, and each has entropy at least $\subsetEntropy/\eta$. However, that's not the only way for the property to hold: for example, we can allow sources in which some symbols have little entropy or depend on other symbols, by simply choosing a larger $\eta$ to compensate.
+for uniformly random distinct $1< j_1, \dots, j_\eta \le \gamma$. \bnote{there is no probabilistic guarantee here} This property can hold, for example, if the symbols $W_i$ are $\eta$-wise independent, and each has entropy at least $\subsetEntropy/\eta$. However, that's not the only way for the property to hold: for example, we can allow sources in which some symbols have little entropy or depend on other symbols, by simply choosing a larger $\eta$ to compensate.
 
 Such sources $W$ can arise naturally as a result of signal processing and discretization. For example, suppose we start with a high-entropy reading $x$ of some physical source, and obtain each symbol $w_i$ by applying a short-output condenser (e.g., a random projection followed by discretization) to $x$. 
 Each subsequent element in the sequence $w_{j_1}, \dots, w_{j_\eta}$ will extract fresh entropy as long as there remains entropy in $x$ conditioned on the previous elements (by a simple conditional entropy argument).
@@ -840,7 +840,6 @@ Leonid Reyzin is supported in part by US NSF grants 0831281, 1012910, 1012798, a
 
 We first define a slightly weaker object than a computational fuzzy extractor: it outputs a key with computational entropy~(instead of a pseudorandom key).  
 We call this object a computational fuzzy conductor.  It is the computational analogue of a fuzzy conductor~(introduced by Kanukurthi and Reyzin~\cite{KanukurthiR09}).
-
 Before defining this object, we define conditional computational (``HILL'' \cite{DBLP:journals/siamcomp/HastadILL99}) entropy.
 
 \begin{definition}\protect{~\cite[Definition 3]{DBLP:conf/eurocrypt/HsiaoLR07}}
