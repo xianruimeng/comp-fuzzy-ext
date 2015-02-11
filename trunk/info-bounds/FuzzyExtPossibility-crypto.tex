@@ -282,24 +282,27 @@ key. A minimum condition for the security of the key is the hardness
 of guessing a value that is similar to the secret, because the fuzzy
 extractor converts such a guess to the key.
 
+\smallskip
 We define \emph{fuzzy min-entropy} to quantify this property of a noisy source of secrets.  Fuzzy min-entropy measures the success of the adversary when provided with \emph{only} the functionality of the fuzzy extractor, that is, the \emph{ideal} security possible from a noisy distribution.  
 High fuzzy min-entropy is necessary for the existence of a fuzzy
 extractor. 
-% ; moreover, there is evidence that it may be sufficient when only computational security is required.
+\smallskip
 
 We ask: \emph{is high fuzzy min-entropy a
-  sufficient condition for noise-tolerant key extraction?}
+  sufficient condition for key extraction from noisy sources?}
 If only computational security is required, recent progress on program
 obfuscation gives evidence that fuzzy
 min-entropy is indeed sufficient. In contrast,
 information-theoretic fuzzy extractors are not known for many
 practically relevant sources of high fuzzy min-entropy. 
+\smallskip
 
 In this paper, we show that fuzzy min-entropy is also sufficient for
 information-theoretically secure fuzzy extraction. For every source
 distribution $W$ for which security is possible we give a secure fuzzy
 extractor. 
 
+\smallskip
 Our construction relies on the fuzzy extractor knowing the precise
 distribution of the source $W$.  A more ambitious goal is to design a
 single extractor that works for all possible sources.  We show that
@@ -368,7 +371,7 @@ Fuzzy min-entropy measures the ideal security of a noisy source of
 entropy when used for key derivation, similar to distributional
 notions of program obfuscation
 (e.g.,~\cite{barak2001possibility,DBLP:conf/stoc/DodisS05,DBLP:conf/tcc/DodisS05};
-see \secref{sec:related settings} for discussion).  Superlogarithmic fuzzy min-entropy is \emph{necessary} for nontrivial key extraction~(\propref{prop:fuzz necessary}).  
+see \secref{sec:related settings} for discussion).  Superlogarithmic fuzzy min-entropy is \emph{necessary} for nontrivial key extraction~(Proposition \ref{prop:fuzz necessary}).  
 
 However, existing constructions do not measure their security in terms
 of fuzzy min-entropy; instead, their security is shown to be
@@ -460,7 +463,7 @@ non-zero probability points in $B^*$. Since $\Hfuzz(W)$ is
 determined by the weight of $B^*$, the number of points cannot be
 too high and there will be entropy left after the sketch is published.
 %
-This remaining entropy is sufficient for extracting a key.
+This remaining entropy suffices to extract a key.
 
 For an arbitrary distribution, we cannot afford to disambiguate points in the ball with the greatest number of points, because there could be too many low-probability points in a single ball despite a high $\Hfuzz(W)$.  We solve this problem by splitting the arbitrary distribution into a number of nearly flat distributions we call ``levels.''  We then write down, as part of the sketch, the level of the original reading $w$ and apply the above construction considering only points in that level.  We call this construction \emph{leveled hashing}~(\consref{cons:leveling}).
 
@@ -671,10 +674,22 @@ Let $F :\mathcal{K}\times \mathcal{M}\rightarrow R$ be a universal hash function
 \end{construction}
 
 \begin{lemma}
-\label{lem:flat hashing} (Proof in \apref{sec:proof of flat hashing})
+\label{lem:flat hashing}
 Let $W$ be a flat with $\Hoo(W)\ge m$.  Then
 \consref{cons:universal hash} is a $(\mathcal{M}, \{W\}, m - \log |R|, t)$-known distribution secure sketch with error $\delta \le \frac{\beta_{t}-1}{|R|}$. 
 \end{lemma}
+\begin{proof}
+We first argue security.  Fix some $W\in\mathcal{W}$. Since $\mathcal{K}$ and $W$ are independent $\Hav(W | \mathcal{K}) = \Hoo(W) = m$.  Then by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(W | \mathcal{K}, F(\mathcal{K}, W)) \ge \Hoo(W) - \log |F(\mathcal{W}, W)| \ge m - \log |R|$.
+
+\noindent
+We now argue correctness.  Fix some $w, w'$.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$.  The size of $W^*$ is at most $\beta_{t}$.  Since $w, w'$ are independent of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  The algorithm  $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ collides is:
+\begin{align*}
+\Pr[\exists w^* \in W^* |w^* \neq w &\wedge F(K, w^*) = F(K, w)] \\&\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
+ &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R|} \le \frac{\beta_{t}-1}{|R|}
+\end{align*}
+The inequality proceeds by union bound. The first equality proceeds by the universality of $F$ and the second inequality proceeds by noting the number of wrong neighbors is bounded by $\beta_{t}-1$.  This completes the proof.
+\end{proof}
+
 %\noindent
 %\consref{cons:universal hash} writes down enough information to disambiguate any ball of points.  The remaining entropy for this construction is $\Hav(W |\sketch(W)) = \Hoo(W) - \log \beta_{t} -\log 1/\delta$. For a flat distribution this is within a superlogarithmic factor of optimal~(see Equation~\eqref{eq:fuzz for flat}). By choosing $\delta$ based on $\Hfuzz(W)$ we build $(\sketch, \rec)$ such that $\Hav(W | \sketch(W)) = \omega(\log n)$.
 
@@ -992,19 +1007,8 @@ This completes the proof of \lemref{lem:chain rule fuzz}.
 
 
 
-\section{Proof of \lemref{lem:flat hashing}}
-\label{sec:proof of flat hashing}
-\begin{proof}
-We first argue security.  Fix some $W\in\mathcal{W}$. Since $\mathcal{K}$ and $W$ are independent $\Hav(W | \mathcal{K}) = \Hoo(W) = m$.  Then by \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(W | \mathcal{K}, F(\mathcal{K}, W)) \ge \Hoo(W) - \log |F(\mathcal{W}, W)| \ge m - \log |R|$.
-
-\noindent
-We now argue correctness.  Fix some $w, w'$.  Let $W^*$ denote the set of elements in $W$ within distance $t$ of $w'$.  The size of $W^*$ is at most $\beta_{t}$.  Since $w, w'$ are independent of $\sketch$ this set is independent of the choice of $\mathcal{K}$.  The algorithm  $\rec$ will never output $\perp$ as the correct $w$ will match the hash.  The probability that another element $w^*$ collides is:
-\begin{align*}
-\Pr[\exists w^* \in W^* |w^* \neq w &\wedge F(K, w^*) = F(K, w)] \\&\le \sum_{w^*\in W^* | w^*\neq w} \Pr[F(K, w^*) = F(K, w)] \\
- &= \sum_{w^*\in W^* | w^*\neq w} \frac{1}{|R|} \le \frac{\beta_{t}-1}{|R|}
-\end{align*}
-The inequality proceeds by union bound. The first equality proceeds by the universality of $F$ and the second inequality proceeds by noting the number of wrong neighbors is bounded by $\beta_{t}-1$.  This completes the proof.
-\end{proof}
+%\section{Proof of \lemref{lem:flat hashing}}
+%\label{sec:proof of flat hashing}
 
 \section{Proof of \thref{thm:layered hashing}}
 \label{sec:proof of layered hashing}
