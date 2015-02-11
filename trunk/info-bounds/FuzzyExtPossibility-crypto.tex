@@ -271,20 +271,76 @@ Reyzin\footnote{Email: {\tt reyzin@cs.bu.edu}.  Boston University.}
   Pennsylvania State University. This work performed while visiting Boston
   University's Hariri Institute for Computing.}}
 }
+\author{}\institute{}
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy readings of a high-entropy secret into the same uniformly distributed key. A minimum condition for the security of the key is the hardness of guessing a value that is similar to the secret, because the fuzzy extractor converts such a guess to the key.
-We define \emph{fuzzy min-entropy} to quantify this property of a noisy source of secrets.  Fuzzy min-entropy measures the success of the adversary when provided with \emph{only} the functionality of the fuzzy extractor, that is, the \emph{ideal} security possible from a noisy distribution.  
+Fuzzy extractors (Dodis et al., Eurocrypt 2004) convert repeated noisy
+readings of a high-entropy secret into the same uniformly distributed
+key. A minimum condition for the security of the key is the hardness
+of guessing a value that is similar to the secret, because the fuzzy
+extractor converts such a guess to the key.
 
-High fuzzy min-entropy is necessary for the existence of a fuzzy extractor; moreover, there is evidence that it may be sufficient when only computational security is required. Nevertheless, information-theoretic fuzzy extractors are not known for many practically relevant sources of high fuzzy min-entropy. In this work, we ask whether this challenge is inherent.  We show the following:
-\begin{itemize}
-\item \textbf{Sufficiency of fuzzy min-entropy:}  We construct a fuzzy extractor for each physical source with fuzzy min-entropy.  This result justifies fuzzy min-entropy as the right measure of the quality of a noisy distribution for key derivation.  Previous results considered the entropy and error tolerance of a separately and had not secured many sources with fuzzy min-entropy.  
-The constructed fuzzy extractor must \emph{precisely know} the distribution of the noisy source.
-\item \textbf{Cost of distributional uncertainty:}  High entropy sources can never be fully observed and must be modeled.  An adversary may have a better model than the fuzzy extractor designer.  To compensate, fuzzy extractors are typically designed to work for families of physical sources. We build a family of high fuzzy min-entropy sources which no fuzzy extractor can secure.  This result emphasizes the importance of high fidelity models of high entropy sources.
-\end{itemize}
-We provide similar but stronger results for secure sketches, whose goal is not to derive a consistent key, but to recover a consistent reading of the secret.  Our results are information-theoretic, but we discuss implications for the computational setting. 
+We define \emph{fuzzy min-entropy} to quantify this property of a noisy source of secrets.  Fuzzy min-entropy measures the success of the adversary when provided with \emph{only} the functionality of the fuzzy extractor, that is, the \emph{ideal} security possible from a noisy distribution.  
+High fuzzy min-entropy is necessary for the existence of a fuzzy
+extractor. 
+% ; moreover, there is evidence that it may be sufficient when only computational security is required.
+
+We ask: \emph{is high fuzzy min-entropy a
+  sufficient condition for noise-tolerant extraction?}
+If only computational security is required, recent progress on program
+obfuscation gives evidence that fuzzy
+min-entropy is indeed sufficient. In contrast,
+information-theoretic fuzzy extractors are not known for many
+practically relevant sources of high fuzzy min-entropy. 
+
+In this paper,
+show that fuzzy min-entropy is also sufficient for
+information-theoretically secure fuzzy extraction. For every source
+distribution $W$ for which security is possible in an ideal world with
+access only to the extractor functionality, we give a secure fuzzy
+extractor. 
+
+Our construction relies on the extractor knowing the precise
+distribution of the source $W$.  A more ambitious goal is to design a
+single extractor that works for all possible sources.  We show that
+this more ambitious goal is impossible: we give a family of sources
+with high fuzzy min-entropy for which no single fuzzy extractor is
+secure.  This result emphasizes the importance of accurate models
+of high entropy sources.
+
+% \begin{itemize}
+% \item \textbf{Sufficiency of fuzzy min-entropy:} We show that for each
+%   source with nontrivial (that is, $\omega(\log n)$) fuzzy min-entropy,
+%   there is an infor\-mation-theoretic fuzzy extractor that reliably
+%   extracts a key of length roughly the fuzzy min-entropy.  This result
+%   justifies fuzzy min-entropy as the ``right'' measure of the quality
+%   of a noisy distribution for key derivation. Previous results
+%   considered the entropy and error tolerance of a source separately;
+%   consequently, for many sources with high fuzzy min-entropy, existing
+%   constructions did not lead to secure fuzzy extractors.
+
+%   Our construction works for every source, but requires
+%   \emph{precise knowledge} of the distribution of the source.
+  
+% \item \textbf{Cost of distributional uncertainty:} A more ambitious
+%   goal is to design a single extractor that works for all possible
+%   sources. 
+
+% High entropy
+%   sources can never be fully observed by sampling, and so some
+%   modeling assumptions must be used. 
+
+% Moreover,  An
+%   adversary may have a better model than the fuzzy extractor designer.
+%   To compensate, fuzzy extractors are typically designed to work for
+%   families of physical sources. We build a family of high fuzzy
+%   min-entropy sources which no fuzzy extractor can secure.  This
+%   result emphasizes the importance of high fidelity models of high
+%   entropy sources.
+% \end{itemize}
+% We provide similar but stronger results for secure sketches, whose goal is not to derive a consistent key, but to recover a consistent reading of the secret.  Our results are information-theoretic, but we discuss implications for the computational setting. 
 
 \medskip
 \textbf{Keywords:} Fuzzy extractors, secure sketches, information theory, biometric authentication, error-tolerance, key derivation, error-correcting codes.
@@ -303,23 +359,42 @@ The security requirement for fuzzy extractors is that $\key$ is uniform even to 
 
 
 \paragraph{Fuzzy Min-Entropy}
-We introduce a new entropy notion that precisely measures how hard it is for the adversary to guess a value within distance $t$ of the original reading $w$, thus subverting the security of $\key$ by running $\rep$. Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within the ball $B_t(w')$ of radius $t$ around $w'$.
+We introduce a new entropy notion that precisely measures how hard it
+is for the adversary to guess a value within distance $t$ of the
+original reading $w$. 
+Suppose $w$ is sampled from a distribution $W$.   To have the maximum chance that $w'$ is within distance $t$ of $w$, the adversary would want to maximize the total probability mass of $W$ within the ball $B_t(w')$ of radius $t$ around $w'$.
 We  therefore define \emph{fuzzy min-entropy} $\Hfuzz(W) \eqdef -\log \max_{w'} \Pr[W\in B_t(w')]$.  Observe that this quantity can be bounded in terms of min-entropy: $\Hoo(W) \ge \Hfuzz(W) \ge \Hoo(W)-\log |B_t|$.
 
-Fuzzy min-entropy measures the quality of a distribution when provided oracle access to the functionality of a fuzzy extractor.  Fuzzy min-entropy measures the ideal security of a noisy source of entropy when used for key derivation, similar to distributional notions of program obfuscation~\cite{barak2001possibility,DBLP:conf/stoc/DodisS05,DBLP:conf/tcc/DodisS05}---we discuss the connection in \secref{sec:related settings}.  Superlogarithmic fuzzy min-entropy is \emph{necessary} for nontrivial key extraction~(\propref{prop:fuzz necessary} formalizes the above intuition).  
+% Fuzzy min-entropy measures the quality of a distribution when provided oracle access to the functionality of a fuzzy extractor.  
+Fuzzy min-entropy measures the ideal security of a noisy source of
+entropy when used for key derivation, similar to distributional
+notions of program obfuscation
+(e.g.,~\cite{barak2001possibility,DBLP:conf/stoc/DodisS05,DBLP:conf/tcc/DodisS05};
+see \secref{sec:related settings} for discussion).  Superlogarithmic fuzzy min-entropy is \emph{necessary} for nontrivial key extraction~(\propref{prop:fuzz necessary}).  
 
-However, existing constructions do not measure their security in terms of fuzzy min-entropy; instead, their security is shown to be  $\Hoo(W)$ minus some loss that is at least $\log |B_t|$ due to error-tolerance. Since $\Hoo(W)-\log |B_t| \le \Hfuzz(W)$, it is natural to ask whether this loss is necessary. This question is particularly relevant when the gap between the two sides of the inequality is high.\footnote{For nearly uniform distributions, $\Hfuzz(W) \approx \Hoo(W)- \log |B_t|$.  In this setting, standard coding based constructions of fuzzy extractors (instantiated with optimum codes) yield keys of size approximately $\Hfuzz(W)$.}  As an example, iris scans appear to have significant $\Hfuzz(W)$ (because iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing}) but negative $\Hoo(W) -\log |B_t|$ \cite[Section 5]{blanton2009biometric}. We therefore ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?} There is evidence that it may be when the security requirement is computational rather than information-theoretic---see \secref{sec:related settings}. We provide an answer in two settings.
+However, existing constructions do not measure their security in terms
+of fuzzy min-entropy; instead, their security is shown to be
+$\Hoo(W)$ minus some loss, for error-tolerance, that is at least $\log |B_t|$. Since $\Hoo(W)-\log |B_t| \le \Hfuzz(W)$, it is natural to ask whether this loss is necessary. This question is particularly relevant when the gap between the two sides of the inequality is high.\footnote{For nearly uniform distributions, $\Hfuzz(W) \approx \Hoo(W)- \log |B_t|$.  In this setting, standard coding based constructions of fuzzy extractors (instantiated with optimum codes) yield keys of size approximately $\Hfuzz(W)$.}  As an example, iris scans appear to have significant $\Hfuzz(W)$ (because iris scans for different people appear to be well-spread in the metric space~\cite{daugman2006probing}) but negative $\Hoo(W) -\log |B_t|$ \cite[Section 5]{blanton2009biometric}. We therefore ask: \emph{is fuzzy min-entropy sufficient for fuzzy extraction?} There is evidence that it may be when the security requirement is computational rather than information-theoretic---see \secref{sec:related settings}. We provide an answer in two settings.
 
 \paragraph{Sufficiency of $\Hfuzz(W)$ for a Precisely Known Distribution}
-Ideally, a fuzzy extractor has \emph{precise knowledge} of the probability distribution function of $W$.  We call this  the \emph{precise knowledge} setting.  In this setting, we show that for every source $W$ with superlogarithmic $\Hfuzz(W)$, it is possible to construct a fuzzy extractor with a superlogarithmic length $\key$ (\corref{cor:extension to fuzz ext}). Our construction crucially utilizes the probability distribution function of $W$ and, in particular, is not polynomial time.  This result shows that $\Hfuzz(W)$ is a necessary and sufficient condition for building a fuzzy extractor of a distribution $W$.  
+Ideally, a fuzzy extractor has \emph{precise knowledge} of the
+probability distribution function of $W$.  We call this  the
+\emph{precise knowledge} setting.  In this setting, we show that for
+every source $W$ with superlogarithmic $\Hfuzz(W)$, it is possible to
+construct a fuzzy extractor with a superlogarithmic length $\key$
+(\corref{cor:extension to fuzz ext}). Our construction crucially
+utilizes the probability distribution function of $W$ and, in
+particular, is not polynomial time.  This result shows that
+$\Hfuzz(W)$ is a necessary and sufficient condition for building a
+fuzzy extractor for a given distribution $W$.  
 
 A number of previous works in the precise knowledge setting have provided efficient algorithms and
 tight bounds for specific distributions---generally the uniform distribution or
 i.i.d. sequences (for example, \cite{JW99,LT03,DBLP:conf/eccv/TuylsG04,hao2006combining}, \cite{DBLP:journals/corr/abs-1112-5630,IgnatenkoW2012}). 
 Our characterization unifies previous work, and justifies using $\Hfuzz(W)$ as the measure of the quality of a noisy distribution,  rather than cruder measures such as $\Hoo(W)-\log |B_t|$. 
 
-\paragraph{The Challenge of Precisely Distributional Knowledge}
-Assuming \emph{precise knowledge} of a distribution $W$ may be unrealistic. Indeed, high-entropy distributions can never be fully observed directly and must therefore be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary, with greater resources, would likely be able to build a better model. Therefore, fuzzy extractor designs cannot usually be tailored to one  particular source. Existing designs work for a family of sources (for example, all sources of min-entropy at least $m$ with at most $t$ errors). Thus, the design is fixed with a partially known distribution, and the adversary may know more about the distribution than the designer of the fuzzy extractor.  We call this the \emph{distributional uncertainty} setting.
+\paragraph{The Challenge of Precise Distributional Knowledge}
+Assuming precise knowledge of a distribution $W$ may be unrealistic. Indeed, high-entropy distributions can never be fully observed directly and must therefore be modeled. It is imprudent to assume that the designer's model of a distribution is completely accurate---the adversary, with greater resources, would likely be able to build a better model. Therefore, fuzzy extractor designs cannot usually be tailored to one  particular source. Existing designs work for a family of sources (for example, all sources of min-entropy at least $m$ with at most $t$ errors). Thus, the design is fixed with a partially known distribution, and the adversary may know more about the distribution than the designer of the fuzzy extractor.  We call this the \emph{distributional uncertainty} setting.
 
 \paragraph{The Cost of Distributional Uncertainty}
 When the distribution is $W$ is uncertain, our results are negative.   In this setting, $W$ is known to be an element of a family of distributions $\mathcal{W}_Z$.
@@ -343,7 +418,8 @@ Secure Sketch & Yes~(\corref{cor:extension to fuzz ext}) & No~(\thref{thm:imposs
 \paragraph{Stronger Results on Information Reconciliation (Secure Sketches)}
 Traditionally, fuzzy extractors use a secure sketch to perform information reconciliation~(mapping $w'$ back to $w$), followed by randomness extractor~\cite{nisan1993randomness} to transform $w$ into a uniform key.  The security losses incurred in the first of these two steps dominate for typical sources and, indeed, this step is less well understood.\footnote{Randomness extractors have matching upper and lower bounds on the security loss: for every extra two bits of output key, they lose one bit of security} Formally, a secure sketch performs non-interactive information reconciliation via pair of algorithms: $\sketch$ takes $w$ and produces a nonsecret value $ss$, while $\rec$ takes a value $w'$ within distance $t$ of $w$ and uses $\sketch$ to output the original reading $w$.  
 
-We show comparable, but stronger, results for secure sketches.  Namely, we show in \corref{cor:extension to fuzz ext} that secure sketches are possible if the distribution $W$ is precisely known. (In fact, we obtain our fuzzy extractors for the case of a known distribution from this result by applying a randomness extractor.) 
+For secure sketches, we show results that are similar to but
+stronger than our results for fuzzy extractor.  Namely, we show in \corref{cor:extension to fuzz ext} that secure sketches are possible if the distribution $W$ is precisely known. (In fact, we obtain our fuzzy extractors for the case of a known distribution from this result by applying a randomness extractor.) 
 
 On the other hand, there is a family of sources, $\mathcal{W}_Z$, where each element has $\Hfuzz(W_z)=\Hoo(W_z) = \omega(\log n)$ for which no secure sketch correcting even a few errors is possible~(\thref{thm:imposs sketch}). The impossibility result applies even when $\rec$ is allowed to be incorrect with probability up to $1/4$ (as opposed to our fuzzy extractor impossibility result). 
 
