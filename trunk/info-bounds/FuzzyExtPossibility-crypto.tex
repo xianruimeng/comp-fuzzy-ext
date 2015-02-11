@@ -1,13 +1,29 @@
-\documentclass{llncs}
-% \documentclass{llncs}
-\def\shownotes{1}
+\def\shownotes{0}
 \def\blinded{1}
+\def\lncs{1}
 
+\ifnum\lncs=0
+	\documentclass[11pt]{article}
+	\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
+	\geometry{letterpaper}                   % ... or a4paper or a5paper or ...
+	%\geometry{landscape}                % Activate for for rotated page geometry
+	%\usepackage[parfill]{parskip}
+	\usepackage{amsthm}
+	\newtheorem{theorem}{Theorem}[section]
+	\newtheorem{lemma}[theorem]{Lemma}
+	\newtheorem{proposition}[theorem]{Proposition}
+	\newtheorem{corollary}[theorem]{Corollary}
+	\newtheorem{definition}[theorem]{Definition}
+	\newtheorem{assumption}[theorem]{Assumption}
+	\newtheorem{claim}[theorem]{Claim}
+	\newtheorem{problem}[theorem]{Problem}
+	\newtheorem{construction}[theorem]{Construction}
 
-%\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}      % [top=2cm, bottom=2cm, left=2cm, right=2cm]
-%\geometry{letterpaper}                   % ... or a4paper or a5paper or ...
-%\geometry{landscape}                % Activate for for rotated page geometry
-%\usepackage[parfill]{parskip}
+\else
+	\documentclass[runningheads]{llncs}
+	\newtheorem{construction}{Construction}
+\fi
+
 \usepackage{graphicx}
 \usepackage{amssymb, amsmath, amsfonts}
 %\usepackage{amsthm}
@@ -125,7 +141,7 @@
 \newtheorem{assumption}[theorem]{Assumption}
 %\newtheorem{claim}[theorem]{Claim}
 %\newtheorem{problem}[theorem]{Problem}
-\newtheorem{construction}[theorem]{Construction}
+%\newtheorem{construction}[theorem]{Construction}
 
 \newcounter{ctr}
 \newcounter{savectr}
@@ -1097,7 +1113,7 @@ Consider some $w\in V$ over $\zo^n$.  Then $w\leftarrow W_z$ for coefficients $z
 
 \begin{lemma}
 \label{lem:fuzz can't get key}
-Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an information-theoretic distinguisher between $(\Key, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/8-\ngl(n)$.
+Fix some $(\gen, \rep)$ algorithm with $\kappa \ge 2$.  There exists an information theoretic distinguisher between $(\Key, P, Z)$ and $(U_\kappa, P, Z)$ with advantage $\epsilon = 1/8-\ngl(n)$.
 \end{lemma}
 \begin{proof}
 As in the proof of \thref{thm:imposs sketch}, we assume that $\rep$ is deterministic.  Denote by $(\Key, P) \leftarrow \gen(V)$.
