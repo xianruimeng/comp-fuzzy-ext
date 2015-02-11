@@ -452,7 +452,7 @@ In the above definition, the errors are chosen before $P$: if the error pattern 
 
 Information-theoretic fuzzy extractors are obtained by replacing computational distance by statistical distance.  We do make a second definitional modification.  The standard definition of information-theoretic fuzzy extractors considers $\mathcal{W}$  consisting of all distributions of a given entropy.  As described in the introduction, it is impossible to provide security for all distributions with more errors than entropy.  In both the computational and information-theoretic settings we consider a family of distributions $\mathcal{W}$.
 
-\subsubsection{Reusable Fuzzy Extractors}
+\subsection{Reusable Fuzzy Extractors}
 \label{sec:reusable}
 
 An additional desirable feature of fuzzy extractors is reusability~\cite{Boyen2004}. Inuitively, it is the ability to support multiple independent enrollments of the same value, allowing users to reuse the same biometric or PUF, for example, with multiple noncommunicating providers. More precisely, the algorithm $\gen$ may be run multiple times on correlated readings $w_1,..., w_q$ of a given source. Each time, $\gen$ will produce a different pair of values $(r_1, p_1),..., (r_q, p_q)$. Security for each extracted string $r_i$ should hold even in the presence of all the helper strings $p_1, \dots, p_q$ (the reproduction procedure $\rep$ at the $i$th provider still obtains only a single $w'_i$ close to $w_i$ and uses a single helper string $p_i$). Because the multiple providers may not trust each other, a stronger security feature (which we satisfy) ensures that each $r_i$ is secure even when all $r_j$ for $j\neq i$ are also given to the adversary.
@@ -460,7 +460,7 @@ An additional desirable feature of fuzzy extractors is reusability~\cite{Boyen20
  Our ability to construct reusable fuzzy extractors depends on the types of correlations allowed among $w_1, \dots, w_q$. Boyen \cite{Boyen2004} showed how to do so when each $w_i$ is a shift of $w_1$ by a value that is oblivious to the value of $w_1$ itself (formally, $w_i$ is a result of a transitive isometry applied to $w_1$). Boyen also showed that even for this weak class of correlations, any secure sketch must lose at least $\log |B_t|$ entropy~\cite[Theorem 11]{Boyen2004}.
   
 
-We modify the definition of Boyen~\cite[Definition 6]{Boyen2004} for the computational setting.  We discuss the our definition and definitions due to Boyen in \apref{sec:comparing reusability}.
+We modify the definition of Boyen~\cite[Definition 6]{Boyen2004} for the computational setting.  We first present our definition and then compare to the definitions of Boyen.
 
 \begin{definition}[Reusable Fuzzy Extractors]
 \label{def:outsider fuzz ext}
@@ -483,6 +483,18 @@ The definition is parameterized by $f_2,..., f_q$.  This adversary implicitly de
 Let $(\gen, \rep)$ be a $(\mathcal{M}, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $(\epsilon_{sec}, s_{sec})$-hard with error $\delta$.  In the reusability game above, we say a set of functions $f_2,..., f_q$ are \emph{admissible} if for all $W_1\in \mathcal{W}$ for all $w_1\in W_1$ and $\forall p_1,..., p_q$ that are the public outputs of $\gen$ the distribution $W_{i,w_1,p_1,..., p_{i-1}} = f_i(w_1,p_1,..., p_{i-1})$ is a member of $\mathcal{W}$.
 \end{definition}
 
+\paragraph{Comparison with the definition of Boyen}
+Boyen considers two versions of reusable fuzzy extractors, first where the adversary sees $p_1,..., p_q$~(outsider security~\cite[Definition 6]{Boyen2004}) and tries to learn about the values $w_1,..., w_q$ or the keys $r_1,..., r_q$.  Second, where the adversary controls some subset of the servers and can key generation on arbitrary $p_i'$~(insider security~\cite[Definition 7]{Boyen2004}).   This allows the adversary to learn a subset of keys $r_i$~(by performing key generation on the valid $p_i$).  This definition makes sense when servers are compromised~(after enrollment) and act maliciously.  In both definitions, the adversary creates a perturbation function $f_i$ after seeing $p_1,..., p_{i-1}$~(and generated keys for outsider security) and the challenger generates $w_i = f_i(w_1)$.  The definition is parameterized by the class of allowed perturbation functions.
+
+Boyen constructs a outsider reusable cryptographic fuzzy extractor for unbounded $q$ when the perturbation family is a transitive isometric permutation groups. Boyen transforms this construction to insider security using random oracles. %In both constructions, the correlation between  $w_1,..., w_q$ is limited to a transitive isometric permutation group.  
+
+Insider security strengthens outsider security in two ways.  First, it allows the adversary to see some subset of keys, second it allows the adversary to perform key generation on arbitrary $p_i$.  This mixes two properties of a fuzzy extractor:  reusability and robustness~\cite{dkrs2006}.  Robust fuzzy extractors provide security against modified $p$.  
+In this work, we show reusability when $r_i$ are observed but do not handle the issue of robustness.  That is, we assume keys may be exposed but servers keep honest state.  Our definition lies between outsider and insider security.
+
+The definition of Boyen considers a single adversary.  \defref{def:outsider fuzz ext} splits the adversary into two parts, one of which is information-theoretic and another that is computationally bounded.  The functions $f_2,..., f_q$ can be thought of as a single adversary that sees all prior state.  However, to provide meaningful security in the computational setting, we cannot have communication between $f_2,..., f_q$ and $D$.  This is because $f_2,..., f_q$ are computationally unbounded and thus could break any security that only holds against computationally bounded adversaries.
+Because these two adversaries do not communicate we strengthen the definition by allowing the perturbation functions,  $f_i$, to see the original sample $w_1$.\footnote{An alternative would be to have a single computationally bounded adversary that provides perturbation functions but does not see the original reading $w_1$ as in the definition of Boyen.  \consref{cons:sampling} also satisfies this alternative adaption of Boyen's definition.}  This was not allowed in the definition of Boyen, because the adversary was not split-state, and so giving $w_1$ to the adversary would make security impossible.
+
+%Finally, we allow the distinguishing adversary to see other keys \lnote{we do? then why do we call our definition ``outsider''?}.  This is strictly stronger than the definition of Boyen \lnote{you mean than the outsider security definition of Boyen?}.  However, it is weaker than the notion of insider reusable fuzzy extractors where the adversary sees key generation on arbitrary $p$.  This \lnote{what is ``this''?} is a mixture of reusability and robustness~\cite{dkrs2006} of the fuzzy extractor.  Our reusable construction~(\consref{cons:sampling}) is not insider secure \lnote{according to Boyen's notion, right? Why not say ``not robust'' and/or clarify that $r_i$ can leak but $p_i$ cannot be modified.}.
 \subsection{Obfuscation}
 Our constructions will use obfuscation for two types of circuits: point functions and digital lockers. The family of point functions $\mathtt{I}_n = \{I_w\}_{w \in \zo^n}$ defined as follows:
 \[
@@ -492,7 +504,29 @@ and the class of digital lockers is $\mathtt{I}_n = \{I_{w, r}\}_{w \in \zo^n, r
 \[
 I_{w, r}(x):\begin{cases} r & x=w\\\perp & \text{otherwise}\end{cases}.
 \]
-The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at a polynomial number of oracle queries to the function. VGB obfuscators for point functions and digital lockers are constructible from specific number-theoretic assumptions or by strong assumptions on hash functions.  We provide more details and a formal definition in \apref{sec:obfuscation def}.
+The required notion of obfuscation is virtual grey-box (VGB) introduced in \cite{bitansky2010strong}. This notion is weaker then the standard notion of virtual black-box (\cite{barak2001possibility}), as it allows the simulator to run in unbounded time while making at a polynomial number of oracle queries to the function. In addition, we require that the obfuscation is composable and secure with respect to auxiliary input. 
+
+Composable auxiliary-input VGB obfuscators for point functions and digital lockers are constructed in \cite[Theorem 6.1]{bitansky2010strong} (following \cite{canetti2008obfuscating,CKVW10}) from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. As described in the Introduction, they can also be constructed by assuming strong properties of cryptographic hash functions~\cite{canetti1997towards}, \cite[Section 4]{lynn2004positive}, \cite[Section 3.2]{canetti2008obfuscating}, \cite[Section 8.2.3]{dakdoukThesis} (such a construction results in an obfuscated function that, at a few hard-to-find-inputs, differs from the original function; this change does not materially affect our results).
+
+\begin{definition}[composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
+\label{def:obf} A PPT algorithm $\mathcal{O}$ is an $\ell$-composable VGB obfuscator for $\mathtt{I}_{n}$~(resp. $\mathtt{I}_{n+\kappa}$) with auxiliary-input if the following conditions are met:
+\begin{enumerate}
+\item \emph{Functionality:} for every $n$ and $I \in \mathtt{I}_n$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.\lnote{imperfect correctness allowed? It's need for the RO construction.}
+\item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^\ell \in \mathtt{I}_n$, (where $\ell=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
+\ifnum\lncs=0
+\[
+|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | < \frac{1}{p(n)} \enspace,
+\]
+\else
+\begin{align*}
+|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1]   - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | \\ < \frac{1}{p(n)} \enspace,
+\end{align*}
+\fi
+where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
+\end{enumerate}
+\end{definition}
+For notational convenience, when we use point function obfuscation, we denote the oracle $(I^1,\dots,I^\ell)$ provided to the simulator in the above definition as $I_w(\cdot, \cdot)$ where $w = w_1,..., w_\gamma$ is the vector of obfuscated points.  When we use digital lockers, we denote the oracle  $(I^1,\dots,I^\ell)$ provided to the simulator as $I_{v, r}(\cdot, \cdot)$ where $v = v_1,..., v_\ell$ is the vector of obfuscated points and $r$ is the hidden value~(we will hide the same value in each obfuscation). 
+
 
 \section{Reusable Construction for Sources with High-Entropy Samples}
 \label{sec:sampling}
@@ -580,10 +614,68 @@ Let $n$ be a security parameter, $\mathcal{Z}$ be a constant-size alphabet, and 
 $s_{sec} = \poly(n)$ there exists some $\epsilon_{sec} = \ngl(n)$ such that \consref{cons:sampling} is a $(\mathcal{Z}^\gamma, \mathcal{W}, \kappa, t)$-computational fuzzy extractor that is $\left (\epsilon_{sec}, s_{sec}\right)$-hard with negligible error.
 \end{theorem}
  
- Correctness follows immediately: for any given $i$, the probability that $v'_i=v_i$ is at least $1/p(n)$. By choosing $\ell$ sufficiently bigger than $1/p(n)$, we guarantee that for at least one $i$,  $v'_i=v_i$ with all but negligible probability
+\begin{proof} It suffices to argue correctness and security.
+
+\textbf{Correctness:} Correctness follows immediately: for any given $i$, the probability that $v'_i=v_i$ is at least $1/p(n)$. By choosing $\ell$ sufficiently bigger than $1/p(n)$, we guarantee that for at least one $i$,  $v'_i=v_i$ with all but negligible probability
 (indeed, because the $\ell$ samples are independent, the probability this does not happen is at most $(1-1/p(n))^\ell \le e^{-\ell/p(n)}$, using $1+x \le e^x$).
 
-Security follows from obfuscation and is analyzed in \apref{sec:analysis sampling}.
+\textbf{Security:}
+We now argue security.
+ Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U, P))\le \epsilon_{sec}$. Let $D$ be a distinguisher of size at most $s_{sec}$. We want to bound 
+\[
+| \expe[D(R, P)] - \expe[D(U, P)]|
+\]
+by a negligible function.
+
+Define the oracle $I_{v_1, ..., v_\ell, r}(\cdot, \cdot)$ as follows:
+\[I_{v_1,..., v_\ell, r}(x, i) =
+\begin{cases}
+r & v_i = x\\
+\perp & \text{otherwise.}
+\end{cases}\]
+By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $q\le s_{sec}$ queries) such that
+\begin{align}
+\label{eq:dist before sampling}
+\left|\expe [D(R, P_1,..., P_\ell)] - \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)} \left (R, \{j_{ik}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right) \right|  \leq\ngl(n).
+\end{align}
+
+The same is true if we replaced $R$ above by and independent uniform random variable $U$ over $\zo^\kappa$. 
+We now prove the following lemma, which shows that $S$ cannot distinguish between $R$ and $U$.
+
+\begin{lemma}
+\label{lem:sim cannot distinguish samp}
+Let $U$ denote the uniform distribution over $\zo^\kappa$. Then
+\ifnum\lncs=0
+\begin{align}
+\left| \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)} \left (R, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right) 
+- \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)}  
+\left (U, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right)\right|
+\le \frac{q(q+1)}{2^\subsetEntropy} \le \ngl(n)\,.
+\label{eq:sim cannot distinguish samp}
+\end{align}
+\else
+\begin{eqnarray}
+\lefteqn{
+\left| \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)} \left (R, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right) 
+\right.} \nonumber \\
+& & \left.
+- \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)}  
+\left (U, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right)\right|
+\le \frac{q(q+1)}{2^\subsetEntropy} \le \ngl(n)\,.
+\label{eq:sim cannot distinguish samp}
+\end{eqnarray}
+\fi
+
+
+\end{lemma}
+
+\begin{proof}
+Fix any $u\in \zo^\kappa$ (the lemma will follow by averaging over all $u$). Let $r$ be the correct value of $R$.
+The only information about whether the value is $r$ or $u$ can obtained by $S$ through the query responses. First, modify $S$ slightly to quit immediately if it gets a response not equal to $\perp$ (such $S$ is equally successful at distinguishing between $r$ and $u$, because the first non-$\perp$ response suffices). There are $q+1$ possible values for the view of $S$ on a given input ($q$ of those views consist of some number of $\perp$ responses followed by the first non-$\perp$ response, and one view has all $q$ responses equal to $\perp$) . By \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(V_i | View(S), \{j_{ik}\}) \ge \Hav(V_j | \{j_{ik}\}) - \log (q+1) \ge \subsetEntropy - \log(q+1)$. Therefore, at each query, the probability that $S$ gets a non-$\perp$ answer (equivalently, guesses $V_i$) is at most $(q+1)2^{-\subsetEntropy}$. Since there are $q$ queries of $S$, the result of \lemref{lem:sim cannot distinguish samp} follows by the union bound. Note that  $q(q+1)/2^\subsetEntropy$ is negligible, because $q$ is polynomial and $\subsetEntropy=\omega(\log n)$.
+\end{proof}
+
+Adding together Equation~\ref{eq:dist before sampling}, Equation~\ref{eq:sim cannot distinguish samp}, and Equation~\ref{eq:dist before sampling} in which $R$ is replaced with $U$, we obtain the desired result by the triangle inequality.  This completes the proof of \thref{thm:sampling}.
+\end{proof}
  
 \paragraph{Any sublinear error-rate can be supported if most symbols in a sample contribute entropy.}
 The requirement on $t$ can be expressed (by taking the negative logarithm of both sides) as $\eta \log  \left(1-\frac{t }{\gamma-\eta}\right) = O (\log n)$. Using $\ln (1+x)\approx x$ and relying on $O$ to absorb any 
@@ -595,7 +687,7 @@ The amount of entropy in $W$ need not exceed $\subsetEntropy$---thus, it can be 
 
 
 \subsection{Reusability of \consref{cons:sampling}}
-The reusability of \consref{cons:sampling} follows from the security of the VGB obfuscator with auxiliary input. Consider any $q = \poly(n)$ number of reuses.  For each fixed $i\in \{1,..., q\}$, we can treat the keys $r_1,\dots, r_{i-1}, r_{i+1}, \dots, r_q$ and the strings $p_1, \dots, p_q$ as auxiliary input to the obfuscation adversary. The result follows by simulatability of this adversary, using the same argument as the proof of Theorem~\ref{thm:sampling} in \apref{sec:analysis sampling}. Note that the simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations, which allows the $i$th reading of $w$ to be chosen depending on public values $p_1,..., p_{i-1}$, as required by definition of reusability.
+The reusability of \consref{cons:sampling} follows from the security of the VGB obfuscator with auxiliary input. Consider any $q = \poly(n)$ number of reuses.  For each fixed $i\in \{1,..., q\}$, we can treat the keys $r_1,\dots, r_{i-1}, r_{i+1}, \dots, r_q$ and the strings $p_1, \dots, p_q$ as auxiliary input to the obfuscation adversary. The result follows by simulatability of this adversary, using the same argument as the proof of Theorem~\ref{thm:sampling} above. Note that the simulator in the definition of composable obfuscation is required to function for arbitrary circuits in the family even if the choice of these circuits depends on the previous obfuscations, which allows the $i$th reading of $w$ to be chosen depending on public values $p_1,..., p_{i-1}$, as required by definition of reusability.
 
 
   Thus we achieve the following result:
@@ -804,13 +896,62 @@ Let $\mathcal{Z}$ be an alphabet and let $W=W_1,..., W_\gamma$ be a distribution
 \end{construction}
 
 \noindent
-The following theorem shows the security of this construction (proof is in \apref{sec:info theory sec}).
+The following theorem shows the security of this construction.
 
 \begin{theorem}
 \label{thm:info theory sec}
 %Let $n$ be a security parameter and let $\gamma = \omega(\log n)$.
 Let $\mathcal{W}$ be a family of $(\alpha = \Omega(1), \beta\leq \gamma(1-\Theta(1)))$-sparse block sources over $\mathcal{Z}^\gamma$ and let $\cond: \mathcal{Z} \times \zo^d\rightarrow \mathcal{Y}$ be a $(\alpha, \tilde{\alpha}, \epsilon_{cond})$-randomness conductor.  Define $\mathcal{V}$ as the family of all distributions with min-entropy at least $\tilde{\alpha}(\gamma-\beta)$ and let $(\gen', \rep')$ be $(\mathcal{Y}^\gamma, \mathcal{V}, \kappa, t, \epsilon_{fext})$-fuzzy extractor with error $\delta$.\footnote{We actually need $(\gen', \rep')$ to be an average case fuzzy extractor~(see \cite[Definition 4]{DBLP:journals/siamcomp/DodisORS08} and the accompanying discussion).  Most known constructions of fuzzy extractors are average-case fuzzy extractors.  For simplicity we refer to $\gen', \rep'$ as simply a fuzzy extractor.}  Then $(\gen, \rep)$ is a $(\mathcal{Z}^\gamma, \mathcal{W}, \kappa, t, \gamma\epsilon_{cond}+\epsilon_{fext})$-fuzzy extractor with error $\delta$.
 \end{theorem}
+\begin{proof}
+Let $W\in \mathcal{W}$.
+It suffices to argue correctness and security.  We first argue correctness.
+
+\textbf{Correctness:}
+When $w_i = w_i'$, then $\cond(w_i , seed_i) = \cond(w_i', seed_i)$ and thus $v_i = v_i'$.  Thus, for all $w, w'$ where $\dis(w, w')\le t$, then $\dis (v, v')\le t$.  Then by correctness of $(\gen', \rep')$, $\Pr[(r, p)\leftarrow \gen'(v) \wedge r'\leftarrow \rep(v',p) \wedge r' = r]\ge 1-\delta$.
+
+\textbf{Security:}
+We now argue security.  Denote by $seed$ the random variable consisting of all $\gamma$ seeds and $V$ the entire string of generated $V_1,..., V_\gamma$.  To show that \[R | P, seed \approx_{\gamma \epsilon_{cond} + \epsilon_{fext}} U | P, seed,\] it suffices to show that $\Hav(V | seed)$ is $\gamma \epsilon_{cond}$ close to a distribution with average min-entropy $\tilde{\alpha}(\gamma - \beta)$.  The lemma then follows by the security of $(\gen', \rep')$.\footnote{Note, again, that $(\gen', \rep')$ must be an average-case fuzzy extractor.  Most known constructions are average-case and we omit this notation.}
+
+We now argue that there exists a distribution $Y$ where $\Hav(Y | seed)\ge \tilde{\alpha}(\gamma - \beta)$ and $(V, seed_1,..., seed_\gamma)\approx (Y, seed_1,.., seed_\gamma)$.  First note since $W$ is $(\alpha, \beta)$ sparse block source that
+there exists a set of indices $J$ where $|J| \geq \gamma - \beta$ such that the following holds:
+\[
+\forall j\in J, \forall w_1,..., w_{j-1} \in W_1,..., W_{j-1}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}) \geq \alpha.
+\]
+Then consider the first element of $j_1\in J$, $\forall w_1,..., w_{j_1-1}\in W_1,..., W_{j_1-1}$,
+\[\Hoo(W_{j_1} | W_1 = w_1,..., W_{j_1-1} = w_{j_1-1})\ge \alpha.\]
+
+%\[(\ext (W_1, seed_1), seed_1) \approx_{\epsilon} (U_{\mathcal{Y}}, seed_1)\]
+%Then since $W$ is a block-source,
+%\[ \forall w_1\in W_1, \Hoo(W_2 | w_1)\ge k.\]
+\noindent
+Thus, there exists a distribution $Y_{j_1}$ with $\Hav(Y_{j_1} | seed_{j_1}) \ge \tilde{\alpha}$ such that
+\[(\cond (W_{j_1}, seed_{j_1}), seed_{j_1}, W_1,..., W_{j_1-1}) \approx_{\epsilon_{cond}} (Y_{j_1}, seed_{j_1}, W_1,..., W_{j_1-1})\]
+and since $(seed_1,..., seed_{j_1})$ are independent of these values
+\ifnum\lncs=0
+\[(\cond (W_{j_1},seed_{j_1}), W_{j_1-1},..., W_1, seed_{j_1}, ..., seed_{1}) \approx_{\epsilon_{cond}} (Y_{j_1}, W_{j_1-1},..., W_1, seed_{j_1}, , ...,  seed_{1})\,.\]
+\else
+\begin{align*}
+(\cond (W_{j_1},seed_{j_1}), W_{j_1-1},..., W_1, seed_{j_1}, ..., seed_{1}) \approx_{\epsilon_{cond}}\\ (Y_{j_1}, W_{j_1-1},..., W_1, seed_{j_1}, , ...,  seed_{1})\,.
+\end{align*}
+\fi
+Consider the random variable $Z_{j_1} =( Y_{j_1}, \cond(W_{j_1-1},seed_{j_1-1}),..., \cond(W_{1}, seed_{1}))$ and note that \[\Hav(Z_{j_1} | seed_1,...,seed_{j_1})\ge \alpha'.\]
+Applying a deterministic function does not increase statistical distance and thus,
+\begin{align*}
+(\cond (W_{j_1}, seed_{j_1}), \cond(W_{j_1-1}, seed_{j_1-1}),..., \cond(W_1, seed_1), seed_{j_1},..., seed_{1}) \\\approx_{\gamma \epsilon_{cond}} (Z_{j_1}, seed_{j_1},..., seed_1)
+\end{align*}
+
+\noindent
+By a hybrid argument there exists a distribution $Z$ with $\Hav(Z | seed) \ge \tilde{\alpha}(\gamma -\beta)$ where
+\[
+(\cond(W_\gamma, seed_\gamma), ..., \cond(W_1, seed_1), seed_\gamma,..., seed_1) \approx_{\gamma \epsilon_{cond}} (Z, seed_\gamma,...,  seed_1).\]
+%By the security of $(\sketch, \rec)$ we know that $\Hav(Z | seed, ss) \ge \tilde{m}$.  %Note that $U_{\mathcal{Y}}^\gamma$ is independent of $seed_1,..., seed_\gamma$ and so $\Hav(U_{\mathcal{Y}}^\gamma, seed_1,..., seed_\gamma, p)\ge \tilde{m}$.
+%That is,
+%\[
+%(V, seed_1,..., seed_\gamma, p) \approx_{\epsilon\gamma} (U_{\mathcal{Y}}^\gamma, seed_1,..., seed_\gamma, p).\]
+
+This completes the proof of \thref{thm:info theory sec}
+\end{proof}
 
 \paragraph{More errors than entropy}
 
@@ -913,106 +1054,21 @@ Then define $D$ as follows.  On input $(y, p')$ sample $seed\leftarrow U_d$, com
 Where the last line follows by noting that $D'$ is of size at most $s_{ext}$.  Thus $D$ distinguishes $X$ from all $Y$ with sufficient conditional min-entropy.  This is a contradiction.
 \end{proof}
 
-\subsection{Reusability of Fuzzy Extractors}
-\label{sec:comparing reusability}
+%\subsection{Reusability of Fuzzy Extractors}
+%\label{sec:comparing reusability}
 
-The goal of a reusable fuzzy extractor is to allow enrollment of a source across multiple services.  A service $i$ sees an reading of the source $w_i$.
-Boyen considers two versions of reusable fuzzy extractors, first where the adversary sees $p_1,..., p_q$~(outsider security~\cite[Definition 6]{Boyen2004}) and tries to learn about the values $w_1,..., w_q$ or the keys $r_1,..., r_q$.  Second, where the adversary controls some subset of the servers and can key generation on arbitrary $p_i'$~(insider security~\cite[Definition 7]{Boyen2004}).   This allows the adversary to learn a subset of keys $r_i$~(by performing key generation on the valid $p_i$).  This definition makes sense when servers are compromised~(after enrollment) and act maliciously.  In both definitions, the adversary creates a perturbation function $f_i$ after seeing $p_1,..., p_{i-1}$~(and generated keys for outsider security) and the challenger generates $w_i = f_i(w_1)$.  The definition is parameterized by the class of allowed perturbation functions.
 
-Boyen constructs a outsider reusable cryptographic fuzzy extractor for unbounded $q$ when the perturbation family is a transitive isometric permutation groups. Boyen transforms this construction to insider security using random oracles. %In both constructions, the correlation between  $w_1,..., w_q$ is limited to a transitive isometric permutation group.  
 
-Insider security strengthens outsider security in two ways.  First, it allows the adversary to see some subset of keys, second it allows the adversary to perform key generation on arbitrary $p_i$.  This mixes two properties of a fuzzy extractor:  reusability and robustness~\cite{dkrs2006}.  Robust fuzzy extractors provide security against modified $p$.  
-In this work, we show reusability when $r_i$ are observed but do not handle the issue of robustness.  That is, we assume keys may be exposed but servers keep honest state.  Our definition lies between outsider and insider security.
+%\subsection{Obfuscation}
+%\label{sec:obfuscation def}
 
-We adapt the definition of Boyen to the computational setting~(\defref{def:outsider fuzz ext}).  
-The definition of Boyen considers a single adversary.  We split the adversary into two parts, one of which is information-theoretic and another that is computationally bounded.  The functions $f_2,..., f_q$ can be thought of as a single adversary that sees all prior state.  However, to provide meaningful security in the computational setting, we cannot have communication between $f_2,..., f_q$ and $D$.  This is because $f_2,..., f_q$ are computationally unbounded and thus could break any security that only holds against computationally bounded adversaries.
-Because these two adversaries do not communicate we strengthen the definition by allowing the perturbation functions,  $f_i$, to see the original sample $w_1$.\footnote{An alternative would be to have a single computationally bounded adversary that provides perturbation functions but does not see the original reading $w_1$ as in the definition of Boyen.  \consref{cons:sampling} also satisfies this alternative adaption of Boyen's definition.}  This was not allowed in the definition of Boyen, because the adversary was not split-state, and so giving $w_1$ to the adversary would make security impossible.
-
-%Finally, we allow the distinguishing adversary to see other keys \lnote{we do? then why do we call our definition ``outsider''?}.  This is strictly stronger than the definition of Boyen \lnote{you mean than the outsider security definition of Boyen?}.  However, it is weaker than the notion of insider reusable fuzzy extractors where the adversary sees key generation on arbitrary $p$.  This \lnote{what is ``this''?} is a mixture of reusability and robustness~\cite{dkrs2006} of the fuzzy extractor.  Our reusable construction~(\consref{cons:sampling}) is not insider secure \lnote{according to Boyen's notion, right? Why not say ``not robust'' and/or clarify that $r_i$ can leak but $p_i$ cannot be modified.}.
-
-\subsection{Obfuscation}
-\label{sec:obfuscation def}
-
-In this section, we give a formal definition of the required notion of obfuscation.
-We require that the obfuscation is composable and secure with respect to auxiliary input. Composable auxiliary-input VGB obfuscators for point functions and digital lockers are constructed in \cite[Theorem 6.1]{bitansky2010strong} (following \cite{canetti2008obfuscating,CKVW10}) from the Strong Vector Decision Diffie-Hellman assumption, which is a generalization of the strong DDH assumption of \cite{canetti1997towards} for tuples of points. As described in the Introduction, they can also be constructed by assuming strong properties of cryptographic hash functions~\cite{canetti1997towards}, \cite[Section 4]{lynn2004positive}, \cite[Section 3.2]{canetti2008obfuscating}, \cite[Section 8.2.3]{dakdoukThesis} (such a construction results in an obfuscated function that, at a few hard-to-find-inputs, differs from the original function; this change does not materially affect our results).
-
-\begin{definition}[composable obfuscation VGB obfuscation with auxiliary input \cite{bitansky2010strong}]
-\label{def:obf} A PPT algorithm $\mathcal{O}$ is an $\ell$-composable VGB obfuscator for $\mathtt{I}_{n}$~(resp. $\mathtt{I}_{n+\kappa}$) with auxiliary-input if the following conditions are met:
-\begin{enumerate}
-\item \emph{Functionality:} for every $n$ and $I \in \mathtt{I}_n$, $\mathcal{O}(I)$ is a circuit that computes the same function as $I$.\lnote{imperfect correctness allowed? It's need for the RO construction.}
-\item \emph{Virtual grey-box:}  For every PPT adversary $A$ and polynomial $p$, there exists a (possibly inefficient) simulator $S$ and a polynomial $q$ such that for all sufficiently large $n$, any  sequence of circuits $I^1,\dots,I^\ell \in \mathtt{I}_n$, (where $\ell=\poly(n)$) and for all auxiliary inputs $z\in \zo^*$:
-\ifnum\lncs=0
-\[
-|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1] - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | < \frac{1}{p(n)} \enspace,
-\]
-\else
-\begin{align*}
-|\Pr_{A,\mathcal{O}}[A(z,\mathcal{O}(I^1),\dots,\mathcal{O}(I^\ell)) = 1]   - \Pr_{S}[S^{(I^1,\dots,I^\ell)[q(n)]}(z, 1^{|I^1|},\dots,1^{|I^\ell|}) = 1] | \\ < \frac{1}{p(n)} \enspace,
-\end{align*}
-\fi
-where $(I^1,\dots,I^\ell)[q(n)]$ is an oracle that answers at most $q(n)$ queries, and where every query of the form $(i,x)$ is answered by $I^i(x)$.
-\end{enumerate}
-\end{definition}
-For notational convenience, when we use point function obfuscation, we denote the oracle $(I^1,\dots,I^\ell)$ provided to the simulator in the above definition as $I_w(\cdot, \cdot)$ where $w = w_1,..., w_\gamma$ is the vector of obfuscated points.  When we use digital lockers, we denote the oracle  $(I^1,\dots,I^\ell)$ provided to the simulator as $I_{v, r}(\cdot, \cdot)$ where $v = v_1,..., v_\ell$ is the vector of obfuscated points and $r$ is the hidden value~(we will hide the same value in each obfuscation). 
 
 %\consref{cons:sampling} is the fuzzy extractor that allows for arbitrary correlation between $w_1,..., w_q$ as long as each $w_i$ comes from an admissible distribution.  %Our construction can be made secure information-theoretically for fixed values of $q$ or computationally for an arbitrary value $q = \poly(n)$.  Our construction is based on a modification of the computational fuzzy extractor of Canetti et al.~\cite[Construction 5.2]{canetti2014key}.  Their construction is secure for a restricted class of distributions.\footnote{This is necessary as they secure distributions with more errors than entropy.  In order to provide any meaningful security guarantee, the source distribution must be restricted.  See the introduction of~\cite{canetti2014key} for discussion.}  In addition to showing the reusability of their construction, we provide two significant improvements:
 
-\section{Proof of Security of \consref{cons:sampling}}
-\label{sec:analysis sampling}
- Our goal is to show that for all $s_{sec} = \poly(n)$ there exists $\epsilon_{sec} =\ngl(n)$ such that $\delta^{\mathcal{D}_{s_{sec}}}((R, P), (U, P))\le \epsilon_{sec}$. Let $D$ be a distinguisher of size at most $s_{sec}$. We want to bound 
-\[
-| \expe[D(R, P)] - \expe[D(U, P)]|
-\]
-by a negligible function.
+%\section{Proof of Security of \consref{cons:sampling}}
+%\label{sec:analysis sampling}
 
-Define the oracle $I_{v_1, ..., v_\ell, r}(\cdot, \cdot)$ as follows:
-\[I_{v_1,..., v_\ell, r}(x, i) =
-\begin{cases}
-r & v_i = x\\
-\perp & \text{otherwise.}
-\end{cases}\]
-By the security of obfuscation~(\defref{def:obf}), there exists a unbounded time simulator $S$~(making at most $q\le s_{sec}$ queries) such that
-\begin{align}
-\label{eq:dist before sampling}
-\left|\expe [D(R, P_1,..., P_\ell)] - \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)} \left (R, \{j_{ik}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right) \right|  \leq\ngl(n).
-\end{align}
-
-The same is true if we replaced $R$ above by and independent uniform random variable $U$ over $\zo^\kappa$. 
-We now prove the following lemma, which shows that $S$ cannot distinguish between $R$ and $U$.
-
-\begin{lemma}
-\label{lem:sim cannot distinguish samp}
-Let $U$ denote the uniform distribution over $\zo^\kappa$. Then
-\ifnum\lncs=0
-\begin{align}
-\left| \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)} \left (R, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right) 
-- \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)}  
-\left (U, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right)\right|
-\le \frac{q(q+1)}{2^\subsetEntropy} \le \ngl(n)\,.
-\label{eq:sim cannot distinguish samp}
-\end{align}
-\else
-\begin{eqnarray}
-\lefteqn{
-\left| \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)} \left (R, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right) 
-\right.} \nonumber \\
-& & \left.
-- \expe [S^{I_{v_1, ..., v_\ell, r}(\cdot, \cdot)}  
-\left (U, \{j_{ij}\}, 1^{\ell (\kappa+\eta\log |\mathcal Z|)} \right)\right|
-\le \frac{q(q+1)}{2^\subsetEntropy} \le \ngl(n)\,.
-\label{eq:sim cannot distinguish samp}
-\end{eqnarray}
-\fi
-
-
-\end{lemma}
-
-\begin{proof}
-Fix any $u\in \zo^\kappa$ (the lemma will follow by averaging over all $u$). Let $r$ be the correct value of $R$.
-The only information about whether the value is $r$ or $u$ can obtained by $S$ through the query responses. First, modify $S$ slightly to quit immediately if it gets a response not equal to $\perp$ (such $S$ is equally successful at distinguishing between $r$ and $u$, because the first non-$\perp$ response suffices). There are $q+1$ possible values for the view of $S$ on a given input ($q$ of those views consist of some number of $\perp$ responses followed by the first non-$\perp$ response, and one view has all $q$ responses equal to $\perp$) . By \cite[Lemma 2.2b]{DBLP:journals/siamcomp/DodisORS08}, $\Hav(V_i | View(S), \{j_{ik}\}) \ge \Hav(V_j | \{j_{ik}\}) - \log (q+1) \ge \subsetEntropy - \log(q+1)$. Therefore, at each query, the probability that $S$ gets a non-$\perp$ answer (equivalently, guesses $V_i$) is at most $(q+1)2^{-\subsetEntropy}$. Since there are $q$ queries of $S$, the result of \lemref{lem:sim cannot distinguish samp} follows by the union bound. Note that  $q(q+1)/2^\subsetEntropy$ is negligible, because $q$ is polynomial and $\subsetEntropy=\omega(\log n)$.
-\end{proof}
-
-Adding together Equation~\ref{eq:dist before sampling}, Equation~\ref{eq:sim cannot distinguish samp}, and Equation~\ref{eq:dist before sampling} in which $R$ is replaced with $U$, we obtain the desired result by the triangle inequality.\section{Analysis of \consref{cons:first construction}}
+\section{Analysis of \consref{cons:first construction}}
 \label{sec:construction analysis}
 
 \subsection{Characterizing sources with sparse high-entropy marginals}
@@ -1283,55 +1339,6 @@ Consider a coordinate $j$ for which $c_j=1$. Since $w'$ is chosen independently 
 Since there are most $t$ locations for which $w_j\neq w_j'$ there are at most $t$ $0\rightarrow 1$ bit flips in $c$, which the code will correct with probability $1-\delta_{code}$, because $c$ was chosen uniformly.
 Therefore, \consref{cons:first construction} is correct with error at most $\gamma/|\mathcal{Z}|$.
 
-
-
-\section{Analysis of \consref{cons:info theoretic}}
-\label{sec:info theory sec}
-\begin{proof}[Proof of Theorem~\ref{thm:info theory sec}]
-Let $W\in \mathcal{W}$.
-It suffices to argue correctness and security.  We first argue correctness.
-When $w_i = w_i'$, then $\cond(w_i , seed_i) = \cond(w_i', seed_i)$ and thus $v_i = v_i'$.  Thus, for all $w, w'$ where $\dis(w, w')\le t$, then $\dis (v, v')\le t$.  Then by correctness of $(\gen', \rep')$, $\Pr[(r, p)\leftarrow \gen'(v) \wedge r'\leftarrow \rep(v',p) \wedge r' = r]\ge 1-\delta$.
-
-We now argue security.  Denote by $seed$ the random variable consisting of all $\gamma$ seeds and $V$ the entire string of generated $V_1,..., V_\gamma$.  To show that $R | P, seed \approx_{\gamma \epsilon_{cond} + \epsilon_{fext}} U | P, seed$, it suffices to show that $\Hav(V | seed)$ is $\gamma \epsilon_{cond}$ close to a distribution with average min-entropy $\tilde{\alpha}(\gamma - \beta)$.  The lemma then follows by the security of $(\gen', \rep')$.\footnote{Note, again, that $(\gen', \rep')$ must be an average-case fuzzy extractor.  Most known constructions are average-case and we omit this notation.}
-
-We now argue that there exists a distribution $Y$ where $\Hav(Y | seed)\ge \tilde{\alpha}(\gamma - \beta)$ and $(V, seed_1,..., seed_\gamma)\approx (Y, seed_1,.., seed_\gamma)$.  First note since $W$ is $(\alpha, \beta)$ sparse block source that
-there exists a set of indices $J$ where $|J| \geq \gamma - \beta$ such that the following holds:
-\[
-\forall j\in J, \forall w_1,..., w_{j-1} \in W_1,..., W_{j-1}, \Hoo(W_j | W_1 = w_1,..., W_{j-1}=w_{j-1}) \geq \alpha.
-\]
-Then consider the first element of $j_1\in J$, $\forall w_1,..., w_{j_1-1}\in W_1,..., W_{j_1-1}$,
-\[\Hoo(W_{j_1} | W_1 = w_1,..., W_{j_1-1} = w_{j_1-1})\ge \alpha.\]
-
-%\[(\ext (W_1, seed_1), seed_1) \approx_{\epsilon} (U_{\mathcal{Y}}, seed_1)\]
-%Then since $W$ is a block-source,
-%\[ \forall w_1\in W_1, \Hoo(W_2 | w_1)\ge k.\]
-\noindent
-Thus, there exists a distribution $Y_{j_1}$ with $\Hav(Y_{j_1} | seed_{j_1}) \ge \tilde{\alpha}$ such that
-\[(\cond (W_{j_1}, seed_{j_1}), seed_{j_1}, W_1,..., W_{j_1-1}) \approx_{\epsilon_{cond}} (Y_{j_1}, seed_{j_1}, W_1,..., W_{j_1-1})\]
-and since $(seed_1,..., seed_{j_1})$ are independent of these values
-\ifnum\lncs=0
-\[(\cond (W_{j_1},seed_{j_1}), W_{j_1-1},..., W_1, seed_{j_1}, ..., seed_{1}) \approx_{\epsilon_{cond}} (Y_{j_1}, W_{j_1-1},..., W_1, seed_{j_1}, , ...,  seed_{1})\,.\]
-\else
-\begin{align*}
-(\cond (W_{j_1},seed_{j_1}), W_{j_1-1},..., W_1, seed_{j_1}, ..., seed_{1}) \approx_{\epsilon_{cond}}\\ (Y_{j_1}, W_{j_1-1},..., W_1, seed_{j_1}, , ...,  seed_{1})\,.
-\end{align*}
-\fi
-Consider the random variable $Z_{j_1} =( Y_{j_1}, \cond(W_{j_1-1},seed_{j_1-1}),..., \cond(W_{1}, seed_{1}))$ and note that \[\Hav(Z_{j_1} | seed_1,...,seed_{j_1})\ge \alpha'.\]
-Applying a deterministic function does not increase statistical distance and thus,
-\begin{align*}
-(\cond (W_{j_1}, seed_{j_1}), \cond(W_{j_1-1}, seed_{j_1-1}),..., \cond(W_1, seed_1), seed_{j_1},..., seed_{1}) \\\approx_{\gamma \epsilon_{cond}} (Z_{j_1}, seed_{j_1},..., seed_1)
-\end{align*}
-
-\noindent
-By a hybrid argument there exists a distribution $Z$ with $\Hav(Z | seed) \ge \tilde{\alpha}(\gamma -\beta)$ where
-\[
-(\cond(W_\gamma, seed_\gamma), ..., \cond(W_1, seed_1), seed_\gamma,..., seed_1) \approx_{\gamma \epsilon_{cond}} (Z, seed_\gamma,...,  seed_1).\]
-%By the security of $(\sketch, \rec)$ we know that $\Hav(Z | seed, ss) \ge \tilde{m}$.  %Note that $U_{\mathcal{Y}}^\gamma$ is independent of $seed_1,..., seed_\gamma$ and so $\Hav(U_{\mathcal{Y}}^\gamma, seed_1,..., seed_\gamma, p)\ge \tilde{m}$.
-%That is,
-%\[
-%(V, seed_1,..., seed_\gamma, p) \approx_{\epsilon\gamma} (U_{\mathcal{Y}}^\gamma, seed_1,..., seed_\gamma, p).\]
-This completes the proof.
-\end{proof}
 
 
 
