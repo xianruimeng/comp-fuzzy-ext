@@ -419,22 +419,58 @@ Traditionally, fuzzy extractors use a secure sketch to perform information recon
 For secure sketches, we show results that are similar to but
 stronger than our results for fuzzy extractor.  Namely, we show in \corref{cor:extension to fuzz ext} that secure sketches are possible if the distribution $W$ is precisely known. (In fact, we obtain our fuzzy extractors for the case of a known distribution from this result by applying a randomness extractor.) 
 
-On the other hand, there is a family of sources, $\mathcal{W}_Z$, where each element has $\Hfuzz(W_z)=\Hoo(W_z) = \omega(\log n)$ for which no secure sketch correcting even a few errors is possible~(\thref{thm:imposs sketch}). The impossibility result applies even when $\rec$ is allowed to be incorrect with probability up to $1/4$ (as opposed to our fuzzy extractor impossibility result). 
+On the other hand, there is a family of sources, $\mathcal{W}_Z$,
+where each element has $\Hfuzz(W_z)=\Hoo(W_z) = \omega(\log n)$ for
+which no secure sketch correcting even a few errors is
+possible~(\thref{thm:imposs sketch}). The impossibility result applies
+even when $\rec$ is allowed to be incorrect with probability up to
+$1/4$ (in contrast to our fuzzy extractor impossibility result, which
+requires perfect reconstruction). 
 
-\paragraph{Interpreting our Results}
-Our results show that fuzzy min-entropy is sufficient for noisy key derivation if the distribution is precisely known but insufficient if the distribution is only known to come from a family.  A similar situation occurs in the (noiseless) randomness extraction literature~\cite{nisan1993randomness}.  Deterministic randomness extractors are possible if the distribution is precisely known, but impossible for all high min-entropy distributions~\cite{santha1986generating}.  This impossibility can be overcome by the use of a short seed of uniform randomness.  
-We must find an analogous relaxation to derive keys from noisy sources.  One natural relaxation is providing security against only  computationally bounded adversaries, see \secref{sec:related settings}.
+% \paragraph{Interpreting our Results}
+% Our results show that fuzzy min-entropy is necessary and sufficient for noisy key
+% derivation if the distribution is precisely known. We give evidence
+% that fuzzy min-entropy alone is not sufficient when the exact
+% distribution is uncertain.  
+%  % but insufficient if the distribution is only known to come from a
+%  % family. 
+%  A similar situation occurs in the (noiseless) randomness extraction literature~\cite{nisan1993randomness}.  Deterministic randomness extractors are possible if the distribution is precisely known, but impossible for all high min-entropy distributions~\cite{santha1986generating}.  This impossibility can be overcome by the use of a short seed of uniform randomness.  
+% We must find an analogous relaxation to derive keys from noisy sources.  One natural relaxation is providing security against only  computationally bounded adversaries, see \secref{sec:related settings}.
 
 \subsection{Our Techniques}
 
-\paragraph{Techniques for Positive Results for a Precisely Known Distribution} We now explain how to construct a secure sketch for a precisely known distribution $W$ with fuzzy min-entropy (we already explained how to construct a fuzzy extractor from it).  We begin with distributions in which all points in the support have the same probability (so-called ``flat'' distributions).   Consider some subsequent reading $w'$. To achieve correctness, the sketch algorithm must disambiguate which point $w\in W$ within distance $t$ of $w'$ was sketched. Disambiguating multiple points can be accomplished by universal hashing, as long as the size of hash output space is slightly greater than the number of possible points. Thus, our sketch is computed via a universal hash of $w$. To determine the length of that sketch, consider the heaviest (according to $W$) ball of radius $t$. Because the distribution is flat, it is also the ball with the most points of nonzero probability. Thus, the length of the sketch needs to be slightly greater than the logarithm of the number of non-zero probability point in that ball. Since $\Hfuzz(W)$ is determined by the weight of that ball, the number of points cannot be too high and there will be entropy left after the sketch is published.
+\paragraph{Techniques for Positive Results for a Precisely Known
+  Distribution} 
+We now explain how to construct a secure sketch for a precisely known
+distribution $W$ with fuzzy min-entropy (we already explained how to
+construct a fuzzy extractor from it).  We begin with distributions in
+which all points in the support have the same probability (so-called
+``flat'' distributions).  Consider some subsequent reading $w'$. To
+achieve correctness, the sketch algorithm must disambiguate which
+point $w\in W$ within distance $t$ of $w'$ was
+sketched. Disambiguating multiple points can be accomplished by
+universal hashing, as long as the size of hash output space is
+slightly greater than the number of possible points. Thus, our sketch
+is computed via a universal hash of $w$. To determine the length of
+that sketch, consider the heaviest (according to $W$) ball $B^*$ of radius
+$t$. Because the distribution is flat, $B^*$ is also the ball with the
+most points of nonzero probability. Thus, the length of the sketch
+needs to be slightly greater than the logarithm of the number of
+non-zero probability point in $B^*$. Since $\Hfuzz(W)$ is
+determined by the weight of that ball, the number of points cannot be
+too high and there will be entropy left after the sketch is published.
+%
+This remaining entropy is sufficient for extracting a key.
 
 For an arbitrary distribution, we cannot afford to disambiguate points in the ball with the greatest number of points, because there could be too many low-probability points in a single ball despite a high $\Hfuzz(W)$.  We solve this problem by splitting the arbitrary distribution into a number of nearly flat distributions we call ``levels.''  We then write down, as part of the sketch, the level of the original reading $w$ and apply the above construction considering only points in that level.  We call this construction \emph{leveled hashing}~(\consref{cons:leveling}).
 
 \paragraph{Techniques for Negative Results for Distributional Uncertainty}
 We construct a family of distributions $\mathcal{W}_Z$ and prove impossibility for a uniformly random $W_z \leftarrow \mathcal{W}_Z$.
 We start by observing the following asymmetry: $\gen$  sees only the sample $w$ (obtained via $W_z\leftarrow \mathcal{W}_Z$ and $w\leftarrow W_z$), while
-the adversary knows $W_z$.   To exploit the asymmetry, we construct $\mathcal{W}_Z$ so that conditioning on the knowledge of $W_z$~(the outcome $z$) reduces the distribution to a single affine line, but conditioning on $w$ leaves the rest of the distribution uniform on a large fraction of the entire space.
+the adversary knows $W_z$.   To exploit the asymmetry, we construct
+$\mathcal{W}_Z$ so that conditioning on the knowledge of $W_z$~(the
+outcome $z$) reduces the distribution to a single affine line, but
+conditioning on \emph{only} $w$ leaves the rest of the distribution uniform on a large fraction of the entire space.
 
 An adversary can exploit the knowledge of the affine line to reduce the uncertainty about $w$ (in the secure sketch case) or $\key$ (in the fuzzy extractor case). 
 In the secure sketch case, $ss$ can be used to find fixed points of $\rec(\cdot, ss)$ which, by the correctness requirement of the sketch, must be separated by minimum distance $t$. This means there aren't too many of them, so few can lie on an average line, permitting the adversary to guess one easily.
