@@ -1,0 +1,112 @@
+Still need to read:
+http://pub.uni-bielefeld.de/luur/download?func=downloadFile&recordOId=1780491&fileOId=2312929
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.31.8086&rep=rep1&type=pdf
+http://download.springer.com/static/pdf/610/chp%253A10.1007%252F3-540-48405-1_4.pdf?auth66=1426178608_176fb12e63fe8c78bba02de416dfa9bb&ext=.pdf
+
+
+Wyner's constructrive result: if the input is uniform and the adersary's knowledge is BSC(input), then a good extractor is syndrome(input). (idea attributed to Mallows)
+
+
+Wyner's paper has only five references: Winyer-Ziv for a lemma about entropy after BSC, two info-theory textbooks, Shannon, and Hellman. (stimulated the research)
+
+Citations:
+
+
+
+Yao 1982 Theory and Applications of Trapdoor Functions: connects computational cryptography to Wyner: sending f(x) for a TDP if Bob knows the key but Eve doesn’t is similar. Amplification using XOR. (XOR Lemma)
+
+Levin 1985-1987 (OWFs and PRGs) builds on Yao+Wyner:  Yao’s idea that Wyner’s techniques can be used in the computational setting. Amplifies hardcore bits and shows that bits of an error-correcting code are hardcore. First to proves Yao’s XOR lemma.
+
+Bennett-Brassard-Robert 1988: add authenticated channel, arbitrary information to Eve, adversarial modification to Bob (universal-hashing extractors come from here); stronger definition of privacy
+
+Ozarow-Wyner: Wiretap Channel II (Crypto 1985): wire-tapper chooses symbols (syndrome construction still works)
+
+Vazirani STOC ’87 and Santha-Vazirani show (JCSS journal version) that Wyner’s construction is an extractor for their sources
+
+Crepeau-Kilian Crypto 88, FOCS 88: OT from noise
+Crepeau 97: bit commitment
+
+Maurer 90 Bounded storage model
+
+Maurer 93 IEEE TIT adds public discussion removes need for Eve to know worse
+than Alice and Bob (conf version Crypto 92 and STOC 91 -- not sure of the
+differences)
+
+Maurer 94: stronger definition of security (total information rather than
+information rate (U. M. Maurer, The strong secret key rate of discrete random
+triples)) 
+
+Charles H. Bennett, Gilles Brassard, Claude Crepeau,
+and Ueli M. Maurer, Renyi entropy is the right notion; also, stronger def of
+security
+
+Cachin-Maurer J. Crypt 1997: info-rec reduces renyi entropy by 2 bits per bit sent
+
+Wiretap Channel with Feedback
+(http://oai.dtic.mil/oai/oai?verb=getRecord&metadataPrefix=html&identifier=ADA032751)
+by Leung-Yan-Cheong introduces the idea of public discussion for dealing
+with the case when Eve's channel is not a degraded version of Alice and Bob's
+channel (Hellman's Ph.D. Student, Ph.D. 1976)
+
+
+COuldn’t get:
+http://link.springer.com/article/10.1007/BF01088987 (Gel’fand-Prelov, probably not important, survey)
+
+Sloane 1982 (Error-Correcting Codes and Cryptography — expository article in cryptologia/mathematical gardner — can get by paying but not for free )
+
+http://link.springer.com/article/10.1007/BF02843103 (ratna-kak, survey)
+
+Yao, Computational information theory, 1988 http://link.springer.com/chapter/10.1007/978-1-4612-3774-7_1
+
+Specific Coding:
+
+Leung-Yan-Cheong IEEE TIT 1977
+(improves our understanding of Gamma(R))
+J. L. Massey. 
+A simplified treatment of wyner's wire-tap channel.
+In Proc. 21st Allerton Conf. on Comm., Control and Computing, pages 268-276,
+1983.
+(improves our understanding of the region)
+
+Csiszar-Korner IEEE TIT 1978
+http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1055892 (
+(generalize to channels in which W is not a degraded version of M and in which
+you want to send a message over W channel, too, but keep the message sent over
+M private); more importantly, assume (assumption later removed by BBCM) that
+Eve's channel is more noisy than Alice and Bob's (this assumption is removed
+by Maurer 1993, IEEE TIT by use of a non-secret authenticated channel; he says
+this channel was also used by Leung-Yan-Cheong and BBR)
+
+http://www.sciencedirect.com/science/article/pii/0012365X85900263 (Huguet)
+
+http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1056012&tag=1 (Verriest-Hellman, 1979)
+
+http://www-ee.stanford.edu/~hellman/publications/26.pdf (Carleial and Hellman, 1977; shows that higher rates can be achieved if you attempt to protect portions of the message indidivually rather than jointly)
+
+http://hirosuke.it.k.u-tokyo.ac.jp/files/ABST/pdfs/IT-89-572.pdf
+
+Superficial Mentions:
+
+Simmons (Crypto 1984): Uses Wyner’s term “active wiretapper” (I couldn’t find this term) and talks about information-theoretic bounds on MACs. Widely cited — may be worth exploring the connection
+
+http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1675242 (Kam-Davida)
+
+http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1056749 (Yamamoto)
+
+Rivets-Sherman 1982 http://people.csail.mit.edu/rivest/pubs/RS82b.pdf
+
+http://www-ee.stanford.edu/~hellman/publications/25.pdf (Hellman, 1977; cites Wyner for another approach; Wyner cites him)
+
+
+
+Merkle 1978: cites Wyner for another approach
+
+Haven’ looked Look at:
+
+Leung-Yan-Cheong 1976 ph thesis (stanfaord)
+
+Kahn-Hellman on the Wiretap channel with feedback 
+(doesn't seem to exist -- vaporware)
+
+
+Need to look at Ahlswede Csiszar
